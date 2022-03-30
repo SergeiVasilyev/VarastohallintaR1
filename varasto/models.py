@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 
 class Storage_name(models.Model):
@@ -59,6 +60,7 @@ class Goods(models.Model):
     cost_centre = models.CharField(max_length=20)
     reg_number = models.CharField(max_length=20)
     purchase_year = models.CharField(max_length=20)
+    purchase_price = models.Model
     purchase_place = models.CharField(max_length=20)
     invoice_number = models.CharField(max_length=20)
     storageID = models.ForeignKey(Storage_place, on_delete=models.CASCADE,blank=True)
@@ -89,3 +91,8 @@ class Staff_event(models.Model):
     date = models.DateField
     amount = models.IntegerField
     remarks = models.CharField(max_length=100)
+
+class product_group(models.Model):
+    product_groupID = models.Model(Primarykey=True)
+    itemID = models.ForeignKey(Storage_place, on_delete=models.CASCADE,blank=True)
+    group_str = models.Model(str, unique)  
