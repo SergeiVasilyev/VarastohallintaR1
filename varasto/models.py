@@ -2,6 +2,9 @@ from enum import unique
 from django.conf import Settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import UserManager
 
 class Category(models.Model):
     category = models.CharField(max_length=20)
@@ -67,27 +70,29 @@ class Employee(models.Model):
          return '%s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass, self.phone, self.email, self.employee_code)
 
 
-# class Student(models.Model):
-#     first_name = models.CharField(max_length=30)
-#     last_name = models.CharField(max_length=30)
-#     username = models.CharField(max_length=20)
-#     userpass = models.CharField(max_length=20)
-#     phone = models.CharField(max_length=20)
-#     email = models.CharField(max_length=30)
-#     student_code = models.CharField(max_length=20)
-#     photo = models.CharField(max_length=20)
-#     # responsible_teacher = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=True, null=True)
-#     responsible_teacher = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
+class Student(AbstractBaseUser, PermissionsMixin):
+    USERNAME_FIELD = 'email'
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    username = models.CharField(max_length=20)
+    password = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20)
+    email = models.CharField(max_length=30, unique=True)
+    student_code = models.CharField(max_length=20)
+    photo = models.CharField(max_length=20)
+    # responsible_teacher = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=True, null=True)
+    # responsible_teacher = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
+    objects = UserManager()
 
-#     def __str__(self):
-#          return '%s %s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass,
-#          self.phone, self.email, self.student_code, self.photo, self.responsible_teacher)
+    def __str__(self):
+         return '%s %s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass,
+         self.phone, self.email, self.student_code, self.photo)
 
 
 class Rental_event(models.Model):
     # Jos oppilas poistetaan, pitäisikös oppilas ja hänen tietonsa ja lainauksensa tallentaa?
     # studentID = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True, null=True)
-    renter = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
+    # renter = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
     # Jos employee poistetaan, pitäisikös oppilas ja hänen tietonsa ja lainauksensa tallentaa? 
     # employeeID = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=True, null=True)
     itemID = models.ForeignKey(Goods,  on_delete=models.CASCADE, blank=True, null=True)
@@ -106,7 +111,7 @@ class Rental_event(models.Model):
 class Staff_event(models.Model):
     # employeeID = models.ForeignKey(Employee,  on_delete=models.CASCADE, blank=True, null=True)
     # studentID = models.ForeignKey(Student,  on_delete=models.CASCADE, blank=True, null=True)
-    staff = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
+    # staff = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
     itemID = models.ForeignKey(Goods,  on_delete=models.CASCADE, blank=True, null=True)
     # We need to use related_name if we have 2 ForegnKey to same table.
     from_storage = models.ForeignKey(Storage_place, related_name='from_storage', on_delete=models.CASCADE, blank=True, null=True)
