@@ -67,21 +67,21 @@ class Employee(models.Model):
          return '%s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass, self.phone, self.email, self.employee_code)
 
 
-class Student(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    username = models.CharField(max_length=20)
-    userpass = models.CharField(max_length=20)
-    phone = models.CharField(max_length=20)
-    email = models.CharField(max_length=30)
-    student_code = models.CharField(max_length=20)
-    photo = models.CharField(max_length=20)
-    # responsible_teacher = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=True, null=True)
-    responsible_teacher = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
+# class Student(models.Model):
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#     username = models.CharField(max_length=20)
+#     userpass = models.CharField(max_length=20)
+#     phone = models.CharField(max_length=20)
+#     email = models.CharField(max_length=30)
+#     student_code = models.CharField(max_length=20)
+#     photo = models.CharField(max_length=20)
+#     # responsible_teacher = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=True, null=True)
+#     responsible_teacher = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True) #!!!!!!!!!!!!!
 
-    def __str__(self):
-         return '%s %s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass,
-         self.phone, self.email, self.student_code, self.photo, self.responsible_teacher)
+#     def __str__(self):
+#          return '%s %s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.userpass,
+#          self.phone, self.email, self.student_code, self.photo, self.responsible_teacher)
 
 
 class Rental_event(models.Model):
