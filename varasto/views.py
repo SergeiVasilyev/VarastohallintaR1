@@ -7,6 +7,6 @@ import varasto
 def index(request):
 
 
-    return render(request, 'varasto/index.html')
+    return render(request, 'varasto/login.html')
 
 

@@ -37,6 +37,15 @@ form {
     /* border: 3px solid red; */
 }
 
+.form .form-label {
+    color: white !important;
+}
+
+.form .form-text {
+    color: gainsboro !important;
+}
+
+
 .link_container {
     text-align: center;
 }
