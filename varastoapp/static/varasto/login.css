@@ -1,0 +1,59 @@
+h1 {
+    color: #2D3748;
+    text-align: center;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    
+}
+
+.form {
+    width: 700px;
+    height: 500px;
+    padding: 2.2em 7em;
+    /* border: 1px solid green; */
+
+    background: rgba(255, 255, 255, 0.1);
+    mix-blend-mode: normal;
+    backdrop-filter: blur(10px);
+}
+
+.box {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    /* border: 3px solid red; */
+    background: url('pics/background_pic.jpg');
+
+    
+}
+
+
+form {
+    /* max-width: 450px; */ 
+    /* border: 3px solid red; */
+}
+
+.link_container {
+    text-align: center;
+}
+
+.botton_container {
+    display: flex;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #28314B !important;
+    border: #28314B !important;
+    padding: 0.7em 3em !important;
+}
+
+.exm {
+    border: 3px solid green;
+}

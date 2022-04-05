@@ -1,3 +1,12 @@
 from django.shortcuts import render
 
-# Create your views here.
+import varasto
+
+
+
+def index(request):
+
+
+    return render(request, 'varasto/index.html')
+
+
