@@ -15,4 +15,8 @@ def person_view(request):
 
     return render(request, 'varasto/person.html')
 
+def user_recovery(request):
+
+
+    return render(request, 'varasto/recovery.html')
 
