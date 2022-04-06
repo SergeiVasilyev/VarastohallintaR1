@@ -1,8 +1,8 @@
 h1 {
+    /* color: #2D3748; */
     color: #2D3748;
-    /* color: red; */
     text-align: center;
-    font-family: inherit;
+    font-family: 'rubik';
     /* font-family: 'rubik'; */
 }
 
@@ -34,6 +34,7 @@ body * {
     /* border: 3px solid red; */
     background: url('pics/background_pic.jpg');
     background-size: cover;
+    /*backdrop-filter: blur(10px);*/
 }
 
 .form .form-label {
@@ -41,11 +42,12 @@ body * {
 }
 
 .form .form-text {
-    color: gainsboro !important;
+    color: white !important;
 }
 
 .link_container {
     text-align: center;
+    color: gainsboro
 }
 
 .botton_container {
@@ -63,4 +65,23 @@ body * {
 
 .exm {
     border: 3px solid green;
+}
+
+.form .b {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    color: white
+    
+}
+
+.upperText {
+    -webkit-text-stroke-width: 0.3px;
+    -webkit-text-stroke-color: black;
+    color: white;
+}
+
+.lowerText {
+    -webkit-text-stroke-width: 0.3px;
+    -webkit-text-stroke-color: black;
+    color: white;
 }

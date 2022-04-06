@@ -20,22 +20,27 @@
             <div class="mb-3">
                 <!--<label for="exampleInputEmail1" class="form-label">Käyttäjätunnus</label>-->
                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Sähköposti">
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                <!--<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
             </div>
             <!--<div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
                 <input type="password" class="form-control" id="exampleInputPassword1">
             </div>-->
-            <div class="mb-3 link_container">
+            <div class="mb-3 lowerText">
                 <!--<a href="#" class="link-light link">Unohditko salasanasi?</a>-->
                 <b>HUOM! Sähköpostiosoitteen jonka annat täytyy olla sama jonka olet antanut aikaisemmin rekisteröidessä Varasto sivulle</b>
             </div>
             <div class="botton_container mt-5">
                 <a href="{% url 'login' %}" class="btn btn-primary me-5">Takaisin</a>
-                <button type="submit" class="btn btn-primary ms-5">Lähetä</button>
+                <button type="submit" class="btn btn-primary">Lähetä</button>
             </div>
         </form>
     </div>
 </div>
 
+
+
 {% endblock %}
+
+
+
