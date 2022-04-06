@@ -20,3 +20,9 @@ def user_recovery(request):
 
     return render(request, 'varasto/recovery.html')
 
+
+def test(request):
+    
+
+    return render(request, 'varasto/test.html')
+
