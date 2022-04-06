@@ -32,6 +32,8 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+def recovery_view(request):
+    return render(request, 'varasto/recovery.html')
 
 def index(request):
     if not request.user.is_authenticated:

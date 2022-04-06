@@ -13,8 +13,8 @@
         <h1>Login</h1>
         <form method="post">
             {% csrf_token %}
-            <div class="mb-5">
-                <label for="exampleInputEmail1" class="form-label">Käyttäjätunnus</label>
+            <div class="mb-5 mt-5">
+                <!-- <label for="exampleInputEmail1" class="form-label">Käyttäjätunnus</label> -->
                 {{form.username}}
                 <!-- <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"> -->
                 <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
@@ -25,7 +25,7 @@
                 <input type="password" class="form-control" id="exampleInputPassword1"> -->
             </div>
             <div class="mb-5 link_container">
-                <a href="#" class="link-light link">Unohditko salasanasi?</a>
+                <a href="{% url 'recovery' %}" class="link-light link">Unohditko salasanasi?</a>
             </div>
             <div class="botton_container mt-5">
                 <button type="submit" class="btn btn-primary">Kirjaudu</button>
