@@ -20,3 +20,8 @@ def user_recovery(request):
 
     return render(request, 'varasto/recovery.html')
 
+def new_item_view(request):
+
+
+    return render(request, 'varasto/new_item_view.html')
+

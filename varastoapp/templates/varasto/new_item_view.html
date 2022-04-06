@@ -1,0 +1,28 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block title %}New Item{% endblock %}
+
+
+{% block content %}
+    Remember this, where ever you go...there you are
+    <div class="box">
+    
+        <div class="form">            
+            <form>                
+                <div class="mb-3">
+                    <label for="text" class="form-label">Uusi tavara</label>
+                    <input type="text" class="form-control" id="text">
+                </div>
+                
+                <div class="botton_container mt-5">
+                    <button type="submit" class="btn btn-primary">PERUUTA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+    
+{% endblock %}
