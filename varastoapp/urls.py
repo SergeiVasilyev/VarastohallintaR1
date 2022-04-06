@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from varasto.views import index, login_view, logout_view
 from varasto import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='home'),
+    path('', index, name="index"),
+    path('login/', login_view, name="login"),
+    path('logout/', logout_view, name="logout"),
 ]

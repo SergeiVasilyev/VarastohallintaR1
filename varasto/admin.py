@@ -1,38 +1,19 @@
 from django.contrib import admin
 
-from .models import *
+from .models import Category
+
+
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+
+
+from .models import CustomUser
+admin.site.register(CustomUser)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
+    fields = ['catName', 'catName2']
 
-@admin.register(Goods)
-class GoodsAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
-
-@admin.register(Storage_name)
-class Storage_nameAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
-
-@admin.register(Storage_place)
-class Storage_placeAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
-
-@admin.register(Rental_event)
-class Rental_eventAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
-
-@admin.register(Staff_event)
-class Staff_eventAdmin(admin.ModelAdmin):
-    fields = ['__ALL__']
-
-
-# @admin.register(Employee)
-# class EmployeeAdmin(admin.ModelAdmin):
-#     fields = ['__ALL__']
-
-# @admin.register(Student)
-# class StudentAdmin(admin.ModelAdmin):
-#     fields = ['__ALL__']
+admin.site.register(User, UserAdmin)
 
 

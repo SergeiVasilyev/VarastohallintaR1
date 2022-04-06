@@ -1,23 +1,40 @@
-from multiprocessing import AuthenticationError
-from django.shortcuts import render
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render
-from django.contrib.auth import authenticate
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+)
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login, logout
+from .forms import CustomUserForm
 
 
+def login_view(request):
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                print('sucsess')
+                return redirect('index')
+            else:
+                print('error')
+                return HttpResponse("<html><body><h1>error</h1></body></html>")
+        else:
+            form = CustomUserForm()
+            context = {'form': form}
+            return render(request, 'varasto/login.html', context)
+    else:
+        return redirect('index')
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def index(request):
-    # user = authenticate(username='admin', password='admin')
-
-    # if user is not None:
-    #     print('sucssess')
-    # else:
-    #     print('not sucssess')
-
-
-    # return HttpResponse('successfully uploaded2') 
-    return render(request, 'index.html')
+    return render(request, 'varasto/index.html')
 
 
 
