@@ -26,3 +26,13 @@ def test(request):
 
     return render(request, 'varasto/test.html')
 
+def new_item_view(request):
+
+
+    return render(request, 'varasto/new_item_view.html')
+
+def person_view(request):
+
+
+    return render(request, 'varasto/person.html')
+
