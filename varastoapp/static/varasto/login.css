@@ -46,6 +46,7 @@ body * {
 
 .link_container {
     text-align: center;
+    color: gainsboro
 }
 
 .botton_container {
@@ -63,4 +64,12 @@ body * {
 
 .exm {
     border: 3px solid green;
+}
+
+.form .b {
+    color: gainsboro
+}
+
+.upperText {
+    color: gainsboro !important;
 }
