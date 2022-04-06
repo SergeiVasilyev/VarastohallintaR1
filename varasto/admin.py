@@ -6,8 +6,9 @@ from .models import Category
 from django.contrib.auth.admin import UserAdmin
 from .models import User
 
-
 from .models import CustomUser
+
+
 admin.site.register(CustomUser)
 
 @admin.register(Category)
