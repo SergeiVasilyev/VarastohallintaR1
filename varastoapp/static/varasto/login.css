@@ -1,12 +1,18 @@
 h1 {
-    color: #2D3748;
+    /* color: #2D3748; */
+    color: red;
     text-align: center;
+    font-family: inherit;
+    /* font-family: 'rubik'; */
 }
 
 html, body {
     height: 100%;
-    margin: 0;
-    
+    margin: 0;  
+}
+
+body * {
+    font-family: 'rubik';
 }
 
 .form {
@@ -27,14 +33,7 @@ html, body {
     justify-content: center;
     /* border: 3px solid red; */
     background: url('pics/background_pic.jpg');
-
-    
-}
-
-
-form {
-    /* max-width: 450px; */ 
-    /* border: 3px solid red; */
+    background-size: cover;
 }
 
 .form .form-label {
@@ -44,7 +43,6 @@ form {
 .form .form-text {
     color: gainsboro !important;
 }
-
 
 .link_container {
     text-align: center;
