@@ -22,7 +22,6 @@ from varasto import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='home'),
     path('', index, name="index"),
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
