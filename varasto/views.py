@@ -56,6 +56,9 @@ def new_item_view(request):
 def person_view(request):
     return render(request, 'varasto/person.html')
 
+def menu_view(request):
+    return render(request, 'varasto/menu.html')
+
 
 
 
