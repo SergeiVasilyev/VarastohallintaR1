@@ -42,7 +42,8 @@ def index(request):
 
 
 
-
+def new_item(request):
+    return render(request, 'varasto/new_item.html')
 
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
