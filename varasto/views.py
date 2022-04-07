@@ -32,9 +32,38 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+def recovery_view(request):
+    return render(request, 'varasto/recovery.html')
 
 def index(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     return render(request, 'varasto/index.html')
+
+
+
+def new_item(request):
+    return render(request, 'varasto/new_item.html')
+
+def user_recovery(request):
+    return render(request, 'varasto/recovery.html')
+
+def test(request):
+    return render(request, 'varasto/test.html')
+
+def new_item_view(request):
+    return render(request, 'varasto/new_item_view.html')
+
+def person_view(request):
+    return render(request, 'varasto/person.html')
+
+def menu_view(request):
+    return render(request, 'varasto/menu.html')
+
+
+
+
+
 
 
 
