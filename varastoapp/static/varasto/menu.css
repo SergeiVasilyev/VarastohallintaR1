@@ -1,0 +1,27 @@
+.rectangle {
+    border: 1px solid red;
+    width: 713px;
+    height: 964px;
+}
+
+.nappi {
+    /* border: 3px solid green; */
+    margin: 5px 6px;
+    background-color: aqua;
+}
+
+.warp {
+    border: 5px solid blue  ;
+}
+
+.harma_text {
+    color: grey;
+}
+
+.white_text {
+    color: white;
+}
+
+.harma_text :hover {
+    
+}
