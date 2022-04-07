@@ -1,10 +1,10 @@
-.rectangle {
+.menu_warp {
     border: 1px solid red;
     width: 280px;
 }
 
-.nappi {
-    /* border: 3px solid green; */
+/* .nappi {
+    border: 3px solid green;
     margin: 5px 6px;
     background-color: aqua;
 }
@@ -23,4 +23,4 @@
 
 .harma_text :hover {
     
-}
+} */
