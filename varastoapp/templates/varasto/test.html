@@ -9,7 +9,99 @@
 
 {% block content %}
 TEST
+<html>
+    <head>
+        <style>
+            .button {
+                display: inline-flex;
+                height: 50px;
+                padding: 0;
+                background: #24A19C;
+                border: none;
+                outline: none;
+                border-radius: 5px;
+                overflow: hidden;
+                font-family: 'Quicksand', sans-serif;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+            }
 
+            .button:hover{
+                background: #24A19C;
+            }
+            .button:active{
+                background: #75CAC3;
+            }
+            .button__text,
+            .button__icon {
+                display: inline-flex;
+                align-items: center;
+                padding: 0 24px;
+                color: #FFFFFF;
+                height: 100%;
+            }
+
+            .button__icon{
+                font-size: 1.5em;
+                background: rgba(0, 0, 0, 0.08);
+            }
+
+            .button1 {
+                display: inline-flex;
+                height: 50px;
+                padding: 0;
+                background: #E4E4E4;
+                border: none;
+                outline: none;
+                border-radius: 3px;
+                overflow: hidden;
+                font-family: 'Quicksand', sans-serif;
+                font-size: 16px;
+                font-weight: 500px;
+                cursor: pointer;
+                width: 280px;
+            
+            }
+            .button__text1 {
+                display: inline-flex;
+                align-items: center;
+                padding: 0 24px;
+                color: #2D3748;
+                height: 100%;
+
+        </style>
+    </head>
+    <body>
+      <button type="button" class="button">
+         <span class="button__text">Uusi tapahtuma</span>
+         <span class="button__icon">
+            <ion-icon name="add-outline"></ion-icon>
+         </span>
+      </button>
+      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+      <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </body>
+
+    <body>
+        <button type="button" class="button">
+            <span class="button__text">Uusi tavara</span>
+            <span class="button__icon">
+               <ion-icon name="add-circle-outline"></ion-icon>
+            </span>
+         </button>
+     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script> 
+    </body>
+
+    <body>
+        <button type="button" class="button1">
+            <span class="button__text1">Vuokraaminen</span>
+         </button>
+     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script> 
+    </body>
+</html>
 
 
 
