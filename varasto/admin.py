@@ -9,26 +9,28 @@ from .models import CustomUser
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-
+# staff status antaa oikeus päästä Adminpaneliin
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'is_staff', 'is_active',)
+    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', )
     list_filter = ('is_staff', 'is_active',)
     fieldsets = (
-        ('Main information', {'fields': ('username', 'password', 'last_login', 'first_name', 'last_name', 'email')}),
-        ('Contact information', {'fields': ('phone', 'code', 'role', 'responsible_teacher', 'photo', 'date_joined')}),
+        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', )}),
+        ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
-        
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2', 'is_staff', 'is_active')}
+        ('Main information', {
+            'classes': ('wide', ),
+            'fields': ('username', 'password', 'first_name', 'last_name', )}
         ),
+        ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
-    search_fields = ('username',)
+    list_display_links = ('username', 'first_name', 'last_name', 'code',)
+    search_fields = ('username', 'first_name', 'last_name',)
     ordering = ('username',)
 
 

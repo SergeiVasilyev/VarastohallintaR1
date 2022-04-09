@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.utils.translation import gettext as _
@@ -22,8 +23,9 @@ class CustomUser(AbstractUser):
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
-        self.phone, self.email, self.code, self.photo)
+        return '%s' % (self.username,)
+        # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
+        # self.phone, self.email, self.code, self.photo)
 
 
 
@@ -35,7 +37,7 @@ class Category(models.Model):
 
 
 class Goods(models.Model):
-    cat_name = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=20)
     brand = models.CharField(max_length=20, blank=True, null=True)
     model = models.CharField(max_length=20, blank=True, null=True)
@@ -67,24 +69,25 @@ class Storage_name(models.Model):
 
 # Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara?
 class Storage_place(models.Model):
-    item = models.ForeignKey(Goods, on_delete=models.CASCADE, blank=True, null=True)
+    item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
     rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
     shelf = models.CharField(max_length=20, blank=True, null=True)
     place = models.CharField(max_length=20, blank=True, null=True)
     amount = models.CharField(max_length=30)
-    storage_name = models.ForeignKey(Storage_name, on_delete=models.CASCADE, blank=True, null=True)
+    storage_name = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return '%s %s %s %s %s %s' % (self.item, self.rack, self.shelf, self.place, self.amount, self.storage_name)
 
 
 class Rental_event(models.Model):
-    item = models.ForeignKey(Goods, on_delete=models.CASCADE)
-    storage = models.ForeignKey(Storage_place, on_delete=models.CASCADE, blank=True, null=True)
-    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.CASCADE)
-    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.CASCADE)
-    amount = models.IntegerField
-    start_date = models.DateTimeField
+    item = models.ForeignKey(Goods, on_delete=models.PROTECT)
+    storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
+    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
+    amount = models.IntegerField # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
+    # start_date = models.DateTimeField
+    start_date = datetime.now()
     estimated_date = models.DateTimeField
     returned_date = models.DateTimeField
     remarks = models.CharField(max_length=255, blank=True, null=True)
@@ -95,13 +98,13 @@ class Rental_event(models.Model):
 
 
 class Staff_event(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    item = models.ForeignKey(Goods,  on_delete=models.CASCADE)
+    staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    item = models.ForeignKey(Goods,  on_delete=models.PROTECT)
     # We need to use related_name if we have 2 ForegnKey to same table.
-    from_storage = models.ForeignKey(Storage_place, related_name='from_storage', on_delete=models.CASCADE, blank=True, null=True)
-    to_storage = models.ForeignKey(Storage_place, related_name='to_storage', on_delete=models.CASCADE, blank=True, null=True)
-    date = models.DateField
-    amount = models.IntegerField
+    from_storage = models.ForeignKey(Storage_place, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
+    to_storage = models.ForeignKey(Storage_place, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
+    date = datetime.now()
+    amount = models.IntegerField(default=1)
     remarks = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
