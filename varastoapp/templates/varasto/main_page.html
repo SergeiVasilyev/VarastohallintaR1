@@ -12,18 +12,45 @@
 
 <div class="main_container">
     <header>
+        
         <div class="warp">
-            <div class="logo"><span>Logo</span></div>
-            <div class="page_name">Main page</div>
-            <div class="search">Search</div>
-            <div class="account">Account</div>
+            <div class="logos item_left">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </span>
+                <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
+            </div>
+            <div class="page_name item_left">
+                <span>Kotisivu / Uusi tavara</span>
+                <span>UUSI TAVARA</span>
+            </div>
+            <div class="search"><span>Search</span></div>
+            <div class="account item_right"><span>Account</span></div>
         </div>
     </header>
 
     <aside>
         <div class="white_background">
             <nav>
-                menu
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tapahtuma</span>
+                    <span class="button__icon">+</span>
+                </button>
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tavara</span>
+                    <span class="button__icon">+</span>
+                </button>
+                <button type="button" class="button button_bg_gray resize mb-2">
+                    <span class="button__text resize">Vuokraaminen</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Tavarat</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Asetukset</span>
+                </button>
             </nav>
         </div>
     </aside>
