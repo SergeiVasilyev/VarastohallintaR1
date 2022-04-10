@@ -33,6 +33,8 @@ def logout_view(request):
     return redirect('login')
 
 def recovery_view(request):
+    if request.user.is_authenticated:
+        return redirect('login')
     return render(request, 'varasto/recovery.html')
 
 def index(request):
@@ -60,7 +62,8 @@ def person_view(request):
 def menu_view(request):
     return render(request, 'varasto/menu.html')
 
-
+def main_page(request):
+    return render(request, 'varasto/main_page.html')
 
 
 
