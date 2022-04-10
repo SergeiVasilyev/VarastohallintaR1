@@ -1,0 +1,40 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/main_page.css' %}">
+{% endblock %}
+
+{% block title %}Main page{% endblock %}
+
+{% block content %}
+
+<div class="main_container">
+    <header>
+        <div class="warp">
+            <div class="logo"><span>Logo</span></div>
+            <div class="page_name">Main page</div>
+            <div class="search">Search</div>
+            <div class="account">Account</div>
+        </div>
+    </header>
+
+    <aside>
+        <div class="white_background">
+            <nav>
+                menu
+            </nav>
+        </div>
+    </aside>
+
+
+    <main>
+        <div class="white_background">
+            main
+        </div>
+    </main>
+</div>
+
+
+{% endblock %}

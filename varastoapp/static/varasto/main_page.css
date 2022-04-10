@@ -1,0 +1,68 @@
+.main_container {
+    display: grid; 
+    grid-template-columns: 280px 1fr 1fr 1fr; 
+    grid-template-rows: 105px 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "Header Header Header Header"
+      "aside main main main"
+      "aside main main main"; 
+    min-width: 400px;
+	/* max-width: 1600px; */
+	margin: 0 auto;
+    height: 100%;
+    border: 1px solid green;
+    background-color: #F2F2F2;
+}
+
+    header { 
+        grid-area: Header;
+        padding: 1em;
+    }
+    aside { 
+        grid-area: aside;
+        padding: 1em;
+        }
+    main { 
+        grid-area: main;
+        padding: 1em;
+    }
+
+    header, aside, main {
+        border: 1px solid red;
+    }
+
+    .white_background {
+        background-color: white;
+        border-radius: 3px;
+        height: 100%;
+    }
+    header .warp {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr; 
+        background-color: white;
+        border-radius: 3px;
+        width: 100%;
+        height: 100%;
+    }
+    header .warp div {
+        display: flex; /* For items */
+        justify-content: start;
+
+        place-self: center stretch; /* For this block */
+        /* justify-self: start; */
+
+        border: 1px solid red;
+    }
+
+aside {
+
+}
+    nav {
+
+    }
+
+
+main {
+
+}
