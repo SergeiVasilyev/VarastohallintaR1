@@ -66,10 +66,29 @@ header .warp {
     header .warp > div {
         place-self: center stretch;
         /* justify-self: start; */
-        /* border: 1px solid green; */ 
+        /* border: 1px solid green; */
     }
+    .search form {
+        display: inline-flex;
+        /* border: 1px solid red; */
+        width: 100%;
+        min-width: 20em;
+    }
+
     .logos {
         font-size: 1.5em;
+    }
+    .account {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+    .account span {
+        text-align: right;
+    }
+    .account a, .account a:hover, .account a:visited    , .account span {
+        text-decoration: none;
+        color: #718096;
     }
     .page_name {
         display: flex;
@@ -165,7 +184,54 @@ aside {
 
 
 /* ----MAIN---- */
-main {
-
+.main__warp {
+    /* border: 1px solid green; */
 }
+
+.main__item {
+    display: grid;
+    grid-template-columns: 60px minmax(20em, 1fr) repeat(5, minmax(5em, 0.3fr));
+    /* border: 1px solid blue; */
+}
+
+.main__item > div {
+    /* border: 1px solid red; */
+    padding: 5px;
+    place-self: center stretch;
+}
+
+.main__item_photo > div{
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    
+}
+.main__item_photo img {
+    width: 120px;
+    height: 80px;
+    object-fit:cover;
+    object-position: -38px 10%;
+    /* object-position: 50% 50%; */ /* kuva keskellä */
+}
+
+
+.main__item_student {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+.main__item_student span {
+    padding-left: 1em;
+    text-align: left;
+}
+.main__item_student span:nth-child(1) {
+    font-size: 1em;
+    font-weight: 600;
+}
+.main__item_student span:nth-child(2) {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
 /* /----MAIN---- */

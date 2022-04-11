@@ -10,6 +10,7 @@ from .forms import CustomUserForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+from datetime import datetime
 
 
 def login_view(request):
@@ -81,10 +82,11 @@ def menu_view(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def main_page(request):
-    
-
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
     context = {
-        'role': request.user
+        'datenow': datenow,
+        'user': request.user
     }
 
     return render(request, 'varasto/main_page.html', context)

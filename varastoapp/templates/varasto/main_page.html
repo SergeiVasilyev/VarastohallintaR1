@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/main_page.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
 {% block title %}Main page{% endblock %}
@@ -12,7 +13,6 @@
 
 <div class="main_container">
     <header>
-        
         <div class="warp">
             <div class="logos item_left">
                 <span>
@@ -26,10 +26,31 @@
                 <span>Kotisivu / Uusi tavara</span>
                 <span>UUSI TAVARA</span>
             </div>
-            <div class="search"><span>Search</span></div>
-            <div class="account item_right"><a href="{% url 'logout' %}">Logout</a></div>
+            <div class="search">
+                <form action="" method="get">
+                    <input name="search_form" type="text" class="form-control size" placeholder="Etsi reseptejä...">
+                    <button class="btn btn-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>  
+                </form>
+            </div>
+            <div class="account item_right">
+                <span>
+                    <a href="{% url 'logout' %}">
+                    {% if user.first_name %}
+                        {{ user.first_name }} {{ user.last_name }} 
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    logout
+                    </a>
+                </span>
+                <span>{{datenow}}</span>
+            </div>
         </div>
     </header>
+
+
 
     <aside>
         <div class="white_background">
@@ -38,7 +59,7 @@
                     <span class="button__text resize">Uusi tapahtuma</span>
                     <span class="button__icon">+</span>
                 </button>
-                {% if role == 'management'  %}
+                {% if user.role == 'management' %}
                 <button type="button" class="button button_bg_green resize mb-2">
                     <span class="button__text resize">Uusi tavara</span>
                     <span class="button__icon">+</span>
@@ -60,7 +81,23 @@
 
     <main>
         <div class="white_background">
-            main
+            <div class="main__warp">
+                <div class="main__item">
+                    <div class="main__item_photo">
+                        <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
+                    </div>
+                    <div class="main__item_student">
+                        <span>James Bond</span>
+                        <span>15222@edu.raseko.com</span>
+                    </div>
+                    <div class="main__item_group">3</div>
+                    <div class="main__item_status">4</div>
+                    <div class="main__item_st-time">5</div>
+                    <div class="main__item_etime">6</div>
+                    <div class="main__item_end-time">7</div>
+                </div>
+                
+            </div>
         </div>
     </main>
 </div>
