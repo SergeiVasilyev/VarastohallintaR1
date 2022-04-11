@@ -5,19 +5,35 @@
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/menu.css' %}">
 {% endblock %}
+
 {% block title %}Menu{% endblock %}
 
 {% block content %}
 
-    <div class="rectangle">
-         <div class="nappi">
-             <div class="warp">
+<!-- Main menu -->
+<div class="main"> 
+    <div class="menu_warp">
+        <button class="nappi">
+            <div class="warp">
+                <span>
+                    UUSI TAPAHTUMA
+                </span>
+                <span class="menu__icon">+</span>
+            </div>
+        </button>
+        <button type="button" class="btn btn-primary">
+            <span class="menu__text">
+                UUSI TAPAHTUMA
+            </span>
+            <span class="menu__icon">+</span>
+        </button>
+        <div class="nappi grey_background">
+            <div class="warp">
                 <p>sss</p>
-                <p>+</p>
-             </div>
-         </div>
-         <div class="nappi white_text">
-            <p>sss</p>  
+            </div>
+        </div>
+        <div class="nappi white_text">
+        <p>sss</p>  
         </div>
         <div class="nappi harma_text">
             <p>sss</p>
@@ -29,5 +45,8 @@
             <p>ss</p>
         </div>
     </div>
+</div>
+<!-- /Main menu -->
+
 
 {% endblock %}
