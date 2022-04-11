@@ -50,13 +50,11 @@
     display: flex;
     justify-content:space-between;
     align-items:center;
-    
 }
 
 .harma_text {
     color: grey;
 }
-
 
 .btn-primary {
     color: #24A19C !important;

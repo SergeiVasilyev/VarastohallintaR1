@@ -7,15 +7,22 @@
 {% block content %}
 <!-- <img src="{% static 'varasto/pics/background_pic.jpg' %}" alt=""> -->
 <div class="box">
+<div class="warp">
+
+    <div class="logo">
+        <img src='/varastoapp/static/varasto/pics/varasto_logo.png' alt="varasto_logo">
+    </div>
+    
+
     
     <div class="form">
         <h1>Unohditko salasanasi?</h1>
         <div>
             <div class="mb-3 upperText">
-                <b>Ei hätää, voimme lähettää sinulle
+                Ei hätää, voimme lähettää sinulle
                     sähköpostitse ohjeet uuden salasanan vaihtamiseen,
                     Täytä sähköpostiosoitteesi alla olevaan kenttään
-                    ja paina “LÄHETÄ”</b>
+                    ja paina “LÄHETÄ”
             </div>
             <div class="mb-3">
                 <!--<label for="exampleInputEmail1" class="form-label">Käyttäjätunnus</label>-->
@@ -28,7 +35,7 @@
             </div>-->
             <div class="mb-3 lowerText">
                 <!--<a href="#" class="link-light link">Unohditko salasanasi?</a>-->
-                <b>HUOM! Sähköpostiosoitteen jonka annat täytyy olla sama jonka olet antanut aikaisemmin rekisteröidessä Varasto sivulle</b>
+                HUOM! Sähköpostiosoitteen jonka annat täytyy olla sama jonka olet antanut aikaisemmin rekisteröidessä Varasto sivulle
             </div>
             <div class="botton_container mt-5">
                 <a href="{% url 'login' %}" class="btn btn-primary me-5">Takaisin</a>
@@ -37,6 +44,8 @@
         </form>
     </div>
 </div>
+</div>
+
 
 
 

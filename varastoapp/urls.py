@@ -33,4 +33,5 @@ urlpatterns = [
     path('new_item_view/', views.new_item_view, name='new_item'),
     path('menu_view/', views.menu_view, name='menu_view'),
     path('new_item/', views.new_item, name='new_item'),
+    path('main_page/', views.main_page, name='main_page'),
 ]
