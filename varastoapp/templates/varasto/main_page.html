@@ -27,7 +27,7 @@
                 <span>UUSI TAVARA</span>
             </div>
             <div class="search"><span>Search</span></div>
-            <div class="account item_right"><span>Account</span></div>
+            <div class="account item_right"><a href="{% url 'logout' %}">Logout</a></div>
         </div>
     </header>
 
@@ -38,10 +38,12 @@
                     <span class="button__text resize">Uusi tapahtuma</span>
                     <span class="button__icon">+</span>
                 </button>
+                {% if role == 'management'  %}
                 <button type="button" class="button button_bg_green resize mb-2">
                     <span class="button__text resize">Uusi tavara</span>
                     <span class="button__icon">+</span>
                 </button>
+                {% endif %}
                 <button type="button" class="button button_bg_gray resize mb-2">
                     <span class="button__text resize">Vuokraaminen</span>
                 </button>

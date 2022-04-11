@@ -30,6 +30,7 @@ class CustomUserForm(ModelForm):
             'password': TextInput(attrs={
                 'class': 'form-control left',
                 'placeholder': 'password',
+                'type': "password",
             }),
 
         }
