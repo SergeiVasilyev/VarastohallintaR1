@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
 
     phone = models.CharField(max_length=15)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
-    photo = models.CharField(max_length=255, blank=True, null=True) # Käytetään tässä URL
+    photo = models.ImageField(upload_to='images/students/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE)
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
@@ -45,7 +45,7 @@ class Goods(models.Model):
     size = models.CharField(max_length=20, blank=True, null=True)
     parameters = models.CharField(max_length=20, blank=True, null=True)
     package = models.CharField(max_length=20)
-    picture = models.CharField(max_length=20, blank=True, null=True)
+    picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
     item_description = models.CharField(max_length=20, blank=True, null=True)
     cost_centre = models.CharField(max_length=20)
     reg_number = models.CharField(max_length=20, blank=True, null=True)
