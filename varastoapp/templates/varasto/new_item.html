@@ -1,14 +1,17 @@
-{% extends "varasto/base.html" %}
+{% extends "varasto/main_base.html" %}
 
 {% load static %}
 
-{% block stylesheet %}{% endblock %}
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/main_base.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
 
-{% block title %}Uusi Tavara{% endblock %}
+{% block title %}NEW ITEM{% endblock %}
 
-{% block content %}
+{% block newItem %}
 
-test
+dsd'm'sdms'ldbk
 
 
 {% endblock %}
