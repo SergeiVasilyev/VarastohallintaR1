@@ -1,0 +1,95 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/main_base.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Main page{% endblock %}
+
+{% block content %}
+
+<div class="main_container">
+    <header>
+        <div class="warp">
+            <div class="logos item_left">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </span>
+                <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
+            </div>
+            <div class="page_name item_left">
+                <span>Kotisivu / Vuokraaminen</span>
+                <span>Vuokraaminen</span>
+            </div>
+            <div class="search">
+                <form action="" method="get">
+                    <input name="search_form" type="text" class="form-control size" placeholder="Etsiminen">
+                    <button class="btn btn-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>  
+                </form>
+            </div>
+            <div class="account item_right">
+                <span>
+                    <a href="{% url 'logout' %}">
+                    {% if user.first_name %}
+                        {{ user.first_name }} {{ user.last_name }} 
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    logout
+                    </a>
+                </span>
+                <span>{{datenow}}</span>
+            </div>
+        </div>
+    </header>
+
+
+
+    <aside>
+        <div class="white_background">
+            <nav>
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tapahtuma</span>
+                    <span class="button__icon">+</span>
+                </button>
+                {% if user.role == 'management' %}
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tavara</span>
+                    <span class="button__icon">+</span>
+                </button>
+                {% endif %}
+                <button type="button" class="button button_bg_gray resize mb-2">
+                    <span class="button__text resize">Vuokraaminen</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Tavarat</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Asetukset</span>
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+
+    <main>
+        <div class="white_background">
+            sdblsjdbvlsdb
+            
+
+
+
+
+        </div>
+    </main>
+</div>
+
+
+{% endblock %}

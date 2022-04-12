@@ -75,7 +75,8 @@ def person_view(request):
 def menu_view(request):
     return render(request, 'varasto/menu.html')
 
-
+def main_base_view(request):
+    return render(request, 'varasto/main_base.html')
 
 
 # @user_passes_test(user_check, redirect_field_name=None)
