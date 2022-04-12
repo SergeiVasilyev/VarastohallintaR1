@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -6,6 +7,10 @@ from django.http import (
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserForm
+from .checkUser import *
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
+from datetime import datetime
 
 
 def login_view(request):
@@ -17,16 +22,24 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 print('sucsess')
-                return redirect('index')
+                if user_check(user) and is_not_student(user):
+                    return redirect('main_page')
+                else:
+                    return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
-                print('error')
-                return HttpResponse("<html><body><h1>error</h1></body></html>")
+                # Pitää rakentaa frontendilla vastaus, että kirjoitettu salasana tai tunnus oli väärin
+                return redirect('login')
+                # return HttpResponse("<html><body><h1>error</h1></body></html>")
         else:
             form = CustomUserForm()
             context = {'form': form}
             return render(request, 'varasto/login.html', context)
     else:
-        return redirect('index')
+        if user_check(request.user) and is_not_student(request.user):
+            return redirect('main_page')
+        else:
+            return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
+
 
 def logout_view(request):
     logout(request)
@@ -62,10 +75,22 @@ def person_view(request):
 def menu_view(request):
     return render(request, 'varasto/menu.html')
 
+def main_base_view(request):
+    return render(request, 'varasto/main_base.html')
+
+
+# @user_passes_test(user_check, redirect_field_name=None)
+@login_required()
+@user_passes_test(is_not_student, redirect_field_name=None)
 def main_page(request):
-    return render(request, 'varasto/main_page.html')
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
 
-
+    return render(request, 'varasto/main_page.html', context)
 
 
 
