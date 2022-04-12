@@ -82,57 +82,95 @@
     <main>
         <div class="white_background">
             <div class="list">
-                <div class="list__item">
-                    <div class="list__item_photo">
-                        <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
+                <div class="list_warp brd_bottom">
+                    <div class="list__item">
+                        <div class="list__item_photo">
+                            <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
+                        </div>
+                        <div class="list__item_student">
+                            <span>James Bond</span>
+                            <span>15222@edu.raseko.com</span>
+                        </div>
+                        <div class="list__item_group">
+                            <span>Opiskelija</span>
+                            <span>Tivi20oa</span>
+                        </div>
+                        <div class="list__item_status">
+                            <span></span>
+                        </div>
+                        <div class="list__item_st-time">
+                            <!-- <span>15.02.2022</span> -->
+                        </div>
+                        <div class="list__item_etime">
+                            <!-- <span>15.02.2022</span> -->
+                            <button type="button" class="list__button list__button_bg_green btn_strech">
+                                <span class="list__button__text ">Muokata</span>
+                            </button>
+                        </div>
+                        <div class="list__collapse">
+                            <button type="button" class="list__button list__button_bg_white">
+                                <div>
+                                    <!-- down -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16" style="">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                </div>
+                                <!-- up -->
+                                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                    <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                </svg> -->
+                            </button>
+                        </div>
                     </div>
-                    <div class="list__item_student">
-                        <span>James Bond</span>
-                        <span>15222@edu.raseko.com</span>
-                    </div>
-                    <div class="list__item_group">
-                        <span>Opiskelija</span>
-                        <span>Tivi20oa</span>
-                    </div>
-                    <div class="list__item_status">
-                        <span></span>
-                    </div>
-                    <div class="list__item_st-time">
-                        <span>15.02.2022</span>
-                    </div>
-                    <div class="list__item_etime">
-                        <span>15.02.2022</span>
-                    </div>
-                    <div class="list__item_end-time">
-                        <span>15.02.2022</span>
-                    </div>
-                </div>
-                <div class="list__rented_item">
-                    <div class="list__item_photo">
-                        <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-                    </div>
-                    <div class="list__nameof_rented_item">
-                        <span>SPX YLEISKÄYTTÖINEN TIMANTTILAIKKA</span>
-                        <span>HILTI 125mm 22.23</span>
-                    </div>
-                    <!-- <div class="list__item_group">
-                        <span></span>
-                        <span></span>
-                    </div> -->
-                    <div class="list__rented_item_status">
-                        <span>Lainalla</span>
-                    </div>
-                    <div class="list__item_st-time">
-                        <span>15.02.2022</span>
-                    </div>
-                    <div class="list__item_etime">
-                        <span>15.02.2022</span>
-                    </div>
-                    <div class="list__item_end-time">
-                        <span>15.02.2022</span>
+                    <div class="sublist_warp ">
+                        <div class="list__rented_item">
+                            <div class="list__nameof_rented_item brd_left">
+                                <span>SPX YLEISKÄYTTÖINEN TIMANTTILAIKKA</span>
+                                <span>HILTI 125mm 22.23</span>
+                            </div>
+                            <div class="list__rented_item_status status_green">
+                                <span>Lainalla</span>
+                            </div>
+                            <div class="list__item_st-time">
+                                <span>15.02.2022</span>
+                            </div>
+                            <div class="list__item_etime">
+                                <span>15.02.2022</span>
+                            </div>
+                            <div class="list__item_end-time">
+                                <span>15.02.2022</span>
+                            </div>
+                        </div>
+                        <div class="list__rented_item">
+                            <div class="list__nameof_rented_item brd_left">
+                                <span>Makita Screwdriver</span>
+                                <span>OST-25</span>
+                            </div>
+                            <div class="list__rented_item_status status_gray">
+                                <span>Kiini</span>
+                            </div>
+                            <div class="list__item_st-time">
+                                <span>30.02.2022</span>
+                            </div>
+                            <div class="list__item_etime">
+                                <span>01.02.2022</span>
+                            </div>
+                            <div class="list__item_end-time">
+                                <span>25.02.2022</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
+
+
+                
+
+
+
+
+
+
             </div>
         </div>
     </main>
