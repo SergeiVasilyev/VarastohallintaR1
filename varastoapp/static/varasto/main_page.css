@@ -185,6 +185,54 @@ aside {
 
 /* ----MAIN---- */
 
+
+/* filter panel */
+
+.filter_panel {
+    display: grid;
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+    /* border: 1px solid red; */
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+}
+
+    .filter_panel > div {
+        /* border: 1px solid blue; */
+    }
+
+    .sorting button {
+        background-color: white !important;
+        color: #2D3748 !important;
+        font-size: 0.875em;
+    }
+
+    /* Checkbox filters */
+    .checkbox_filters {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.875em;
+    }
+    /* Date */
+    .date_selection {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .date_selection button {
+        background-color: white !important;
+        color: #2D3748 !important;
+        font-size: 0.875em;
+    }
+
+
+
+
+
+/* BUTTON IN LIST */
 .list__button {
     display: inline-flex;
     height: 39px;
@@ -200,37 +248,64 @@ aside {
     justify-content: center;
     
 }
-.btn_strech {
-    place-self: center stretch;
-}
-.list__button__text {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 24px;
-    height: 100%;
+    .btn_strech {
+        place-self: center stretch;
+    }
+    .list__button__text {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+        /* border: 1px solid blue; */
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #325288;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+
+
+
+
+
+
+/* COLUMNS */
+.column_names {
+    display: grid;
+    grid-template-columns: minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));
+    padding: 5px;
+    margin-left: 60px;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 1.5em;
     /* border: 1px solid blue; */
-}
-.list__button_bg_green {
-    color: white;
-    background: #325288;
-}
-.list__button_bg_white {
-    background: white;
-}
-.list__collapse button div {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 24px;
-    height: 100%;
-}
 
-
-
-
-.sublist_warp {
-    /* margin-bottom: 1em; */
+}
+.column_names div{
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid green; */
+}
+.column_names div:nth-child(1) span {
+    text-align: left;
+}
+.column_names div span {
+    font-size: 0.75em;
+    text-align: center;
+    color: #A0AEC0;
+    text-transform: uppercase;
 }
 
+
+/* ITEM LIST */
 .list__item {
     display: grid;
     grid-template-columns: 60px minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));
@@ -244,8 +319,6 @@ aside {
 .list__rented_item {
     display: grid;
     grid-template-columns: minmax(16em, 1.5fr) repeat(4, minmax(6em, 0.5fr));
-    /* border-bottom: 1px solid #E2E8F0; */
-    /* border: 1px solid blue; */
     margin-left: 60px;
 }
 
