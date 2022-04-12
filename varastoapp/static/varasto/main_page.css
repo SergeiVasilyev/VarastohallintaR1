@@ -6,8 +6,7 @@
     grid-template-areas: 
       "Header Header Header Header"
       "aside main main main"
-      "aside main main main"; 
-    min-width: 400px;
+      "aside main main main";
 	/* max-width: 1600px; */
 	margin: 0 auto;
     height: 100%;
@@ -16,6 +15,7 @@
     color: #2D3748;
     font-family: rubik;
     font-size: 16px;
+    min-width: 1200px;
 }
 
     header { 
@@ -32,7 +32,7 @@
     }
 
     header, aside, main {
-        /* border: 1px solid red; */
+        border: 1px solid red;
     }
 
     .white_background {
@@ -69,10 +69,10 @@ header .warp {
         /* border: 1px solid green; */
     }
     .search form {
-        display: inline-flex;
-        /* border: 1px solid red; */
+        display: inline-flex;        
         width: 100%;
         min-width: 20em;
+        /* border: 1px solid red; */
     }
 
     .logos {
@@ -86,7 +86,7 @@ header .warp {
     .account span {
         text-align: right;
     }
-    .account a, .account a:hover, .account a:visited    , .account span {
+    .account a, .account a:hover, .account a:visited, .account span {
         text-decoration: none;
         color: #718096;
     }
@@ -184,30 +184,38 @@ aside {
 
 
 /* ----MAIN---- */
-.main__warp {
+.list {
     /* border: 1px solid green; */
 }
 
-.main__item {
+.list__item {
     display: grid;
-    grid-template-columns: 60px minmax(20em, 1fr) repeat(5, minmax(5em, 0.3fr));
+    grid-template-columns: 60px minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));
+    border-bottom: 1px solid #E2E8F0;
     /* border: 1px solid blue; */
 }
 
-.main__item > div {
+.list__rented_item {
+    display: grid;
+    grid-template-columns: 60px minmax(16em, 1.5fr) repeat(4, minmax(6em, 0.5fr));
+    border-bottom: 1px solid #E2E8F0;
+    /* border: 1px solid blue; */
+}
+
+.list__item > div, .list__rented_item > div {
     /* border: 1px solid red; */
     padding: 5px;
     place-self: center stretch;
 }
 
-.main__item_photo > div{
+.list__item_photo > div{
     overflow: hidden;
     width: 50px;
     height: 50px;
     border-radius: 0.7em;
     
 }
-.main__item_photo img {
+.list__item_photo img {
     width: 120px;
     height: 80px;
     object-fit:cover;
@@ -216,22 +224,65 @@ aside {
 }
 
 
-.main__item_student {
+.list__item_student, .list__item_group, .list__item_st-time, .list__item_etime, .list__item_end-time, 
+.list__nameof_rented_item {
     display: flex;
     flex-direction: column;
     justify-content: end;
 }
-.main__item_student span {
+.list__item_student span, .list__nameof_rented_item span {
     padding-left: 1em;
     text-align: left;
 }
-.main__item_student span:nth-child(1) {
+.list__item_group span {
+    text-align: center;
+}
+.list__item_student span:nth-child(1), .list__item_group span:nth-child(1),
+.list__nameof_rented_item span:nth-child(1) {
     font-size: 1em;
-    font-weight: 600;
+    font-weight: 500;
+    color: #2D3748;
 }
-.main__item_student span:nth-child(2) {
+.list__item_student span:nth-child(2), .list__item_group span:nth-child(2),
+.list__nameof_rented_item span:nth-child(2) {
     font-size: 0.875em;
-    font-weight: 600;
+    font-weight: 400;
+    color: #718096;
 }
+
+.list__item_status, .list__rented_item_status {
+    display: flex;
+    justify-content: center;
+}
+
+.list__item_status > span{
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    text-align: center;
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+}
+
+.list__item_st-time span, .list__item_etime span, .list__item_end-time span{
+    text-align: center;
+    font-size: 1em;
+    font-weight: 400;
+    /* border: 1px solid #24A19C; */
+}
+
+.list__rented_item_status > span{
+    display: block;
+    /* width: 7em; */
+    padding: 0 1.2em;
+    height: 1.5em;
+    border-radius: 0.5em;
+    text-align: center;
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: white;
+}
+
 
 /* /----MAIN---- */
