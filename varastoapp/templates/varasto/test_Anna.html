@@ -1,0 +1,27 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/test_Anna.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Test Anna{% endblock %}
+
+{% block content %}
+
+
+
+    <div>
+        <button type="button" class="button">
+            <span class="button__text">Tehdä kuva</span>
+        </button>
+
+        <button type="button" class="button">
+            <span class="button__text">Browse</span>  
+         </button>
+
+    </div>
+
+{% endblock %}
