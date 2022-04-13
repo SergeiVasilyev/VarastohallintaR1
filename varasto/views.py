@@ -11,6 +11,7 @@ from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
 
 
 def login_view(request):
@@ -83,9 +84,16 @@ def main_base_view(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def main_page(request):
+    rental_events = Rental_event.objects.all().order_by('start_date', 'renter')
+    # t = Rental_event.objects.get(id=2)
+    # r = t.renter.last_name
+    # print(r)
+    for i in rental_events:
+        print(i.renter.last_name)
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
+        'rental_events': rental_events,
         'datenow': datenow,
         'user': request.user
     }

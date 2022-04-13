@@ -11,7 +11,11 @@
 
 {% block newItem %}
 
-
+{% now "d.m.Y" as todays_date %}
+{{rental_event.estimated_date|date:"d.m.Y"}}<br/>{{datenow}}<br/>{{todays_date}}
+{% if rental_event.estimated_date|date:"d.m.Y" < todays_date %}
+<span></span>
+{% endif %}
 
 
 {% endblock %}

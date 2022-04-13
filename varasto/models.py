@@ -2,6 +2,8 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.utils.translation import gettext as _
+import pytz
+
 
 
 class CustomUser(AbstractUser):
@@ -11,12 +13,13 @@ class CustomUser(AbstractUser):
         ("student_ext", _("Student extended")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
         ("storage_employee", _("Storage employee")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
         ("management", _("Management")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
+        ("teacher", _("Teacher")),
     ]
-
+    group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
     photo = models.ImageField(upload_to='images/students/', blank=True, null=True) # Сделать подпапки
-    role = models.CharField(max_length=255, choices=ROLE)
+    role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
 
@@ -33,7 +36,7 @@ class Category(models.Model):
     cat_name = models.CharField(max_length=20)
 
     def __str__(self):
-        return '%s' % (self.category)
+        return '%s' % (self.cat_name)
 
 
 class Goods(models.Model):
@@ -67,7 +70,8 @@ class Storage_name(models.Model):
         return '%s' % (self.name)
 
 
-# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara?
+# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
+# Нужно добавить Foreign key на Storage в Goods
 class Storage_place(models.Model):
     item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
     rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
@@ -81,20 +85,48 @@ class Storage_place(models.Model):
 
 
 class Rental_event(models.Model):
-    item = models.ForeignKey(Goods, on_delete=models.PROTECT)
+    item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
     storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
     amount = models.IntegerField # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
-    # start_date = models.DateTimeField
-    start_date = datetime.now()
-    estimated_date = models.DateTimeField
-    returned_date = models.DateTimeField
+    start_date = models.DateTimeField(datetime.now(), blank=True, null=True)
+    estimated_date = models.DateTimeField(blank=True, null=True)
+    returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
 
+    @property
+    def is_past_due(self):
+        now = datetime.now()
+        now = pytz.utc.localize(now)
+        # self.estimated_date имеет смещение часового пояся, datetime.now() нет.
+        # print(type(self.estimated_date))
+        # print(f"{self.estimated_date}>{now}")
+        # print(self.estimated_date > now)
+        return self.estimated_date > now
+
+    # Tarkistaminen 
+    @property
+    def is_user_have_non_returned_item(self):
+        result = 0
+        now = datetime.now()
+        now = pytz.utc.localize(now)
+        event = Rental_event.objects.filter(renter = self.renter)
+        for e in event:
+            # print (e.estimated_date, now)
+            if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
+                print(e.estimated_date, now)
+                result += 1
+        print (self.renter.first_name, ' - ', result)
+        return result
+        # return f"{self.renter.first_name} {self.renter.last_name}"
+
+
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s %s' % (self.item, self.storage, self.renter, self.staff, self.amount, self.start_date,
-        self.estimated_date, self.returned_date, self.remarks)
+        return '%s %s %s' % (self.item, self.estimated_date, self.returned_date)
+    # def __str__(self):
+    #     return '%s %s %s %s %s %s %s %s %s' % (self.item, self.storage, self.renter, self.staff, self.amount, self.start_date,
+    #     self.estimated_date, self.returned_date, self.remarks)
 
 
 class Staff_event(models.Model):

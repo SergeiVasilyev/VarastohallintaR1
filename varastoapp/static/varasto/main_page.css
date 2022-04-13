@@ -315,6 +315,10 @@ aside {
 .brd_bottom {
     border-bottom: 1px solid #E2E8F0;
 }
+.brd_top {
+    padding-top: 1em;
+    border-top: 1px solid #E2E8F0;
+}
 
 .list__rented_item {
     display: grid;
@@ -387,14 +391,13 @@ aside {
     justify-content: center;
 }
 
+
 .list__item_status > span{
     display: block;
     width: 1.5em;
     height: 1.5em;
     border-radius: 50%;
     text-align: center;
-    background-color: #24A19C;
-    border: 1px solid #24A19C;
 }
 
 .list__item_st-time span, .list__item_etime span, .list__item_end-time span {
@@ -412,7 +415,7 @@ aside {
 
 .list__rented_item_status > span{
     display: block;
-    width: 6.5em;
+    width: 7.5em;
     padding: 0 1.2em;
     height: 1.5em;
     border-radius: 0.5em;
@@ -428,6 +431,11 @@ aside {
     background-color: #CBD5E0;
     border: 1px solid #CBD5E0;
     color: #7897AB;
+} 
+.status_red > span {
+    background-color: #D96098;
+    border: 1px solid #D96098;
+    color: white;
 } 
 
 

@@ -117,20 +117,20 @@
 
                 <div class="checkbox_filters px-3">
                     <div class="form-check me-4">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Lainalla</label>
+                        <input class="form-check-input" type="checkbox" value="" id="chk-01">
+                        <label class="form-check-label" for="chk-01">Lainalla</label>
                     </div>
                     <div class="form-check me-4">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Opiskelijat</label>
+                        <input class="form-check-input" type="checkbox" value="" id="chk-02">
+                        <label class="form-check-label" for="chk-02">Opiskelijat</label>
                     </div>
                     <div class="form-check me-4">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Opettajat</label>
+                        <input class="form-check-input" type="checkbox" value="" id="chk-03">
+                        <label class="form-check-label" for="chk-03">Opettajat</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">Erääntynyt</label>
+                        <input class="form-check-input" type="checkbox" value="" id="chk-04">
+                        <label class="form-check-label" for="chk-04">Erääntynyt</label>
                     </div>
                 </div>
             </div>
@@ -147,20 +147,22 @@
             
             
             <div class="list">
-                <div class="list_warp brd_bottom">
-                    <div class="list__item">
+                {% for rental_event in rental_events %}
+                <div class="list_warp">
+                    {% ifchanged rental_event.renter.username %}
+                    <div class="list__item brd_top">
                         <div class="list__item_photo">
                             <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
                         </div>
                         <div class="list__item_student">
-                            <span>James Bond</span>
-                            <span>15222@edu.raseko.com</span>
+                            <span>{{rental_event.renter.username|length}} {{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
+                            <span>{{rental_event.renter.email}}</span>
                         </div>
                         <div class="list__item_group">
-                            <span>Opiskelija</span>
-                            <span>Tivi20oa</span>
+                            <span>{{rental_event.renter.role}}</span>
+                            <span>{{rental_event.renter.group}}</span>
                         </div>
-                        <div class="list__item_status">
+                        <div class="list__item_status {% if not rental_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
                             <span></span>
                         </div>
                         <div class="list__item_st-time">
@@ -189,46 +191,51 @@
                             </button>
                         </div>
                     </div>
+                    {% endifchanged %}
                     <div class="sublist_warp ">
                         <div class="list__rented_item">
                             <div class="list__nameof_rented_item brd_left">
-                                <span>SPX YLEISKÄYTTÖINEN TIMANTTILAIKKA</span>
-                                <span>HILTI 125mm 22.23</span>
+                                <span>{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+                                <span>
+                                    {{rental_event.item.model}} 
+                                    {{rental_event.item.item_type}} 
+                                    {{rental_event.item.size}}
+                                    {{rental_event.item.parameters}}
+                                    {{rental_event.item.package}}
+                                    > 
+                                </span>
                             </div>
+                            {% if not rental_event.returned_date and rental_event.is_past_due %}
                             <div class="list__rented_item_status status_green">
                                 <span>Lainalla</span>
                             </div>
-                            <div class="list__item_st-time">
-                                <span>15.02.2022</span>
+                            {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                            <div class="list__rented_item_status status_red">
+                                <span>Erääntynyt</span>
                             </div>
-                            <div class="list__item_etime">
-                                <span>15.02.2022</span>
-                            </div>
-                            <div class="list__item_end-time">
-                                <span>15.02.2022</span>
-                            </div>
-                        </div>
-                        <div class="list__rented_item">
-                            <div class="list__nameof_rented_item brd_left">
-                                <span>Makita Screwdriver</span>
-                                <span>OST-25</span>
-                            </div>
+                            {% else %}{% if rental_event.returned_date %}
                             <div class="list__rented_item_status status_gray">
-                                <span>Kiini</span>
+                                <span>Päätynyt</span>
                             </div>
+                            {% endif %}
+                            {% endif %}
+                            {% endif %}
                             <div class="list__item_st-time">
-                                <span>30.02.2022</span>
+                                <span>{{rental_event.start_date}}</span> 
                             </div>
                             <div class="list__item_etime">
-                                <span>01.02.2022</span>
+                                <span>{{rental_event.estimated_date}}</span>
                             </div>
                             <div class="list__item_end-time">
-                                <span>25.02.2022</span>
+                                <span>{{rental_event.returned_date}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            
+                {% empty %}
+                Sorry, no data in the list!
+
+                {% endfor %}
             </div>
         </div>
     </main>
