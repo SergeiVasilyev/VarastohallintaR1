@@ -28,3 +28,44 @@
     height: 100%;
 }
 
+
+.button_icon_plus {
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_icon_dash {
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #D96098;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+
+
