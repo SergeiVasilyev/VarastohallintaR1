@@ -11,11 +11,24 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('username', )
+        fields = ('username', 'password')
+        # widgets = {
+        #     'password': TextInput(attrs={
+        #         'placeholder': 'password',
+        #         'type': "password",
+        #     })
+        # }
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('username', )
+        fields = ('username', 'password')
+        # widgets = {
+        #     'password': TextInput(attrs={
+        #         'placeholder': 'password',
+        #         'type': "password",
+        #     })
+        # }
 
 
 class CustomUserForm(ModelForm):
