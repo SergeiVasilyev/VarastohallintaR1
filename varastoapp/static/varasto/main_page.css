@@ -40,6 +40,10 @@
         border-radius: 3px;
         height: 100%;
         padding: 0.5em;
+        
+    }
+    main .white_background {
+        overflow-y: scroll;
     }
 
 
@@ -306,6 +310,11 @@ aside {
 
 
 /* ITEM LIST */
+
+.sublist_warp {
+    width: 100%;
+}
+
 .list__item {
     display: grid;
     grid-template-columns: 60px minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));

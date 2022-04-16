@@ -204,20 +204,14 @@
                                     {{rental_event.item.package}}
                                 </span>
                             </div>
-                            {% if not rental_event.returned_date and rental_event.is_past_due %}
+                            {% if not rental_event.is_past_due %}
                             <div class="list__rented_item_status status_green">
                                 <span>Lainalla</span>
                             </div>
-                            {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                            {% else %}
                             <div class="list__rented_item_status status_red">
                                 <span>Erääntynyt</span>
                             </div>
-                            {% else %}{% if rental_event.returned_date %}
-                            <div class="list__rented_item_status status_gray">
-                                <span>Päättänyt</span>
-                            </div>
-                            {% endif %}
-                            {% endif %}
                             {% endif %}
                             <div class="list__item_st-time">
                                 <span>{{rental_event.start_date}}</span> 

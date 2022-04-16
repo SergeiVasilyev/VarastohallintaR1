@@ -58,9 +58,10 @@ class Goods(models.Model):
     invoice_number = models.CharField(max_length=20) #16
 
     def __str__(self):
-        return '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.cat_name, self.item_name, self.brand, 
-        self.model, self.item_type, self.size, self.parameters, self.package, self.picture,
-        self.item_description, self.cost_centre, self.reg_number, self.purchase_data, self.purchase_price, self.purchase_place, self.invoice_number)
+        return '%s' % (self.item_name)
+        # return '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.cat_name, self.item_name, self.brand, 
+        # self.model, self.item_type, self.size, self.parameters, self.package, self.picture,
+        # self.item_description, self.cost_centre, self.reg_number, self.purchase_data, self.purchase_price, self.purchase_place, self.invoice_number)
 
 
 class Storage_name(models.Model):
@@ -102,6 +103,7 @@ class Rental_event(models.Model):
         # self.estimated_date имеет смещение часового пояся, datetime.now() нет.
         # print(type(self.estimated_date))
         # print(f"{self.estimated_date}>{now}")
+        # print(self.renter.first_name)
         # print(self.estimated_date > now)
         return self.estimated_date > now
 
@@ -113,11 +115,10 @@ class Rental_event(models.Model):
         now = pytz.utc.localize(now)
         event = Rental_event.objects.filter(renter = self.renter)
         for e in event:
-            # print (e.estimated_date, now)
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
-                print(e.estimated_date, now)
+                # print(e.estimated_date, now)
                 result += 1
-        print (self.renter.first_name, ' - ', result)
+        # print (self.renter.first_name, ' - ', result)
         return result
         # return f"{self.renter.first_name} {self.renter.last_name}"
 
