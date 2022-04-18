@@ -92,13 +92,10 @@ def main_base_view(request):
 @user_passes_test(is_not_student, redirect_field_name=None)
 def main_page(request):
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date'))
-    grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
+    # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
     grouped_events = Rental_event.objects.filter(returned_date__isnull=True).filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date').distinct('start_date')
 
-    # print(query_set)
-    # print(query_set.renter, query_set.start_date)
-    # print(x)
     for i in grouped_events: 
         print(i)
 
@@ -107,12 +104,9 @@ def main_page(request):
         # print(i['renter'])
         print(i.renter_id, i.item, i.start_date)
 
-    # zippedList = zip(grouped_events, events)
-
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
-        # 'zippedList': zippedList,
         'grouped_events': grouped_events,
         'events': events,
         'datenow': datenow,
@@ -120,26 +114,6 @@ def main_page(request):
     }
 
     return render(request, 'varasto/main_page.html', context)
-
-
-# {'renter': 8, 'mindate': datetime.datetime(2022, 1, 3, 21, 36, 13, tzinfo=datetime.timezone.utc)}
-# {'renter': 9, 'mindate': datetime.datetime(2022, 1, 4, 10, 58, 10, tzinfo=datetime.timezone.utc)}
-# {'renter': 17, 'mindate': datetime.datetime(2022, 1, 5, 22, 47, 34, tzinfo=datetime.timezone.utc)}
-# {'renter': 11, 'mindate': datetime.datetime(2022, 1, 7, 15, 42, 14, tzinfo=datetime.timezone.utc)}
-# {'renter': 18, 'mindate': datetime.datetime(2022, 1, 10, 0, 35, 28, tzinfo=datetime.timezone.utc)}
-# {'renter': 10, 'mindate': datetime.datetime(2022, 1, 13, 5, 35, 25, tzinfo=datetime.timezone.utc)}
-# {'renter': 15, 'mindate': datetime.datetime(2022, 1, 18, 16, 7, 46, tzinfo=datetime.timezone.utc)}
-# {'renter': 16, 'mindate': datetime.datetime(2022, 1, 20, 12, 14, 52, tzinfo=datetime.timezone.utc)}
-# {'renter': 13, 'mindate': datetime.datetime(2022, 1, 25, 12, 57, 24, tzinfo=datetime.timezone.utc)}
-# {'renter': 6, 'mindate': datetime.datetime(2022, 1, 25, 14, 19, 51, tzinfo=datetime.timezone.utc)}
-# {'renter': 12, 'mindate': datetime.datetime(2022, 1, 29, 19, 16, 49, tzinfo=datetime.timezone.utc)}
-# {'renter': 7, 'mindate': datetime.datetime(2022, 1, 30, 19, 55, 31, tzinfo=datetime.timezone.utc)}
-# {'renter': 2, 'mindate': datetime.datetime(2022, 2, 1, 22, 0, tzinfo=datetime.timezone.utc)}
-# {'renter': 14, 'mindate': datetime.datetime(2022, 2, 2, 5, 27, 33, tzinfo=datetime.timezone.utc)}
-# {'renter': 3, 'mindate': datetime.datetime(2022, 2, 2, 22, 0, tzinfo=datetime.timezone.utc)}
-
-
-
 
 
 
@@ -174,134 +148,6 @@ def dict_question(request):
     return render(request, 'varasto/question.html', context)   
 
 
-
-
-
-
-
-
-# @login_required()
-# @user_passes_test(is_not_student, redirect_field_name=None)
-# def main_page(request):
-#    # rental_events = Rental_event.objects.all().order_by('renter', 'start_date')
-    # rental_events = Rental_event.objects.all().order_by('start_date')
-    # query_set = Rental_event.objects.select_related('renter').filter(returned_date__isnull=True).order_by('start_date')
-    # query_set = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
-    # query_set = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(Count('item')).order_by('renter')  
-    # query_set = Rental_event.objects.filter(returned_date__isnull=True).annotate(month=Trunc('start_date', 'day')).values('renter', 'item', 'start_date').order_by('renter', 'start_date')
-    # query_set = Rental_event.objects.values('renter', 'item', 'start_date').filter(returned_date__isnull=True).order_by('renter', 'start_date')
-    # query_set = Rental_event.objects.values('start_date', 'renter').filter(returned_date__isnull=True).annotate(Count('renter')).order_by('start_date').distinct('renter')
-    query_set = Rental_event.objects.filter(returned_date__isnull=True).order_by('start_date')
-    # query_set = Rental_event.objects.values('start_date', 'renter').filter(returned_date__isnull=True).order_by('start_date')
-    # new = query_set.distinct('renter').order_by('start_date')
-    
-
-    # distinct = Rental_event.objects.values(
-    # 'renter', 'start_date'
-    # ).filter(returned_date__isnull=True).annotate(
-    #     name_count=Count('start_date')
-    # ).order_by('start_date').filter(name_count=1)
-    # # records = Rental_event.objects.values('renter').filter(renter__in=[item['renter'] for item in distinct])
-    # records = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(Count('renter'))
-    # rec2 = Rental_event.objects.filter(renter__in=[item['renter'] for item in records])
-
-
-
-
-#     # arch = {}
-#     # for a in Rental_event.objects.filter(returned_date__isnull=True).order_by('start_date'):
-#     #     print(a.start_date)
-#     #     usernameq = arch.get(a.renter.username, {})
-#     #     date = usernameq.get(a.start_date, [])
-#     #     date.append(a)
-#     #     usernameq[a.renter.username] = date
-#     #     arch[a.renter.username] = usernameq
-
-#     # print(arch)
-#     query_set = Rental_event.objects.select_related('renter', 'item').filter(returned_date__isnull=True).annotate(total_count=Count('start_date')).order_by('start_date')
-#     # print(query_set)
-#     for i in query_set:
-#         print(i.renter, i.item)
-
-#     newlist = {
-#         'first': ['one', 'two'],
-#         'second': ['three', 'four'],
-#     }
-#     # for i in query_set:
-#     #     if not i.returned_date:
-#     #         if i.renter.username in newlist:
-#     #             newlist[i.renter.username] = newlist[i.renter.username] + [i.item] + [i.renter]
-#     #             # newlist[i.renter.username] += [i.item, i.renter, i.start_date, i.estimated_date, i.returned_date, i.renter.id]
-#     #         else:
-#     #             newlist[i.renter.username] = [i.item]
-#     #             # newlist[i.renter.username] = [i.item, i.renter, i.start_date, i.estimated_date, i.returned_date, i.renter.id]
-                
-#     print(newlist)
-#     # print(newlist['user6'][0].brand)
-#     # print(newlist['user6'][1].first_name)
-#     # print(newlist['user6'][2])
-#     # print(newlist['user6'][3])
-#     # print(newlist['user6'][4])
-
-#     # for event in newlist:
-#     #     for x, item in enumerate(newlist[event]):
-#     #         print(newlist[event][0].brand)
-
-
-#     now = datetime.now()
-#     datenow = now.strftime("%d.%m.%Y")
-#     context = {
-        
-#         'rental_events': newlist,
-#         'datenow': datenow,
-#         'user': request.user
-#     }
-
-#     return render(request, 'varasto/main_page.html', context)
-
-# # @user_passes_test(user_check, redirect_field_name=None)
-# @login_required()
-# @user_passes_test(is_not_student, redirect_field_name=None)
-# def main_page(request):
-#     # rental_events = Rental_event.objects.all().order_by('renter', 'start_date')
-#     rental_events = Rental_event.objects.all().order_by('start_date')
-#     # t = Rental_event.objects.get(id=2)
-#     # r = t.renter.last_name
-#     newlist = {}
-#     for i in rental_events:
-#         if not i.returned_date:
-#             if i.renter.username in newlist:
-#                 newlist[i.renter.id] += [i.item, i.renter, i.start_date, i.estimated_date, i.id]
-#             else:
-#                 newlist[i.renter.id] = [i.item, i.renter, i.start_date, i.estimated_date, i.id]
-
-#     for x in newlist[7]:
-#         print(x)
-#     print(newlist)
-
-
-#     # for item, amount in newlist.items():  # dct.iteritems() in Python 2
-#     #     print("{} ({})".format(item, amount))
-
-
-#     # db_sorted = sorted(newlist, key=lambda row: (row['start_date']))
-#     # print(db_sorted)
-#     # test = rental_events[0]
-#     # r = test.renter.code
-#     # print(r)
-#         # print(i.renter.last_name)
-#     # print(rental_events.values('renter_id'))
-#     # print(newlist['user1'])
-#     now = datetime.now()
-#     datenow = now.strftime("%d.%m.%Y")
-#     context = {
-#         'newlist': newlist, # теперь можно перебрать массив по имени, а данные уже отсортированы по дате
-#         'rental_events': newlist,
-#         'datenow': datenow,
-#         'user': request.user
-#     }
-
-#     return render(request, 'varasto/main_page.html', context)
 
 
 

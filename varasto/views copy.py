@@ -170,7 +170,21 @@ def dict_question(request):
 
 
 
-
+# {'renter': 8, 'mindate': datetime.datetime(2022, 1, 3, 21, 36, 13, tzinfo=datetime.timezone.utc)}
+# {'renter': 9, 'mindate': datetime.datetime(2022, 1, 4, 10, 58, 10, tzinfo=datetime.timezone.utc)}
+# {'renter': 17, 'mindate': datetime.datetime(2022, 1, 5, 22, 47, 34, tzinfo=datetime.timezone.utc)}
+# {'renter': 11, 'mindate': datetime.datetime(2022, 1, 7, 15, 42, 14, tzinfo=datetime.timezone.utc)}
+# {'renter': 18, 'mindate': datetime.datetime(2022, 1, 10, 0, 35, 28, tzinfo=datetime.timezone.utc)}
+# {'renter': 10, 'mindate': datetime.datetime(2022, 1, 13, 5, 35, 25, tzinfo=datetime.timezone.utc)}
+# {'renter': 15, 'mindate': datetime.datetime(2022, 1, 18, 16, 7, 46, tzinfo=datetime.timezone.utc)}
+# {'renter': 16, 'mindate': datetime.datetime(2022, 1, 20, 12, 14, 52, tzinfo=datetime.timezone.utc)}
+# {'renter': 13, 'mindate': datetime.datetime(2022, 1, 25, 12, 57, 24, tzinfo=datetime.timezone.utc)}
+# {'renter': 6, 'mindate': datetime.datetime(2022, 1, 25, 14, 19, 51, tzinfo=datetime.timezone.utc)}
+# {'renter': 12, 'mindate': datetime.datetime(2022, 1, 29, 19, 16, 49, tzinfo=datetime.timezone.utc)}
+# {'renter': 7, 'mindate': datetime.datetime(2022, 1, 30, 19, 55, 31, tzinfo=datetime.timezone.utc)}
+# {'renter': 2, 'mindate': datetime.datetime(2022, 2, 1, 22, 0, tzinfo=datetime.timezone.utc)}
+# {'renter': 14, 'mindate': datetime.datetime(2022, 2, 2, 5, 27, 33, tzinfo=datetime.timezone.utc)}
+# {'renter': 3, 'mindate': datetime.datetime(2022, 2, 2, 22, 0, tzinfo=datetime.timezone.utc)}
 
 
 
