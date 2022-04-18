@@ -148,19 +148,94 @@
             
             
             <div class="list">
-                {% for grouped_event in grouped_events %}
-                    {{grouped_event.renter}} - {{grouped_event.item}} - {{grouped_event.start_date}}
-                    <br />
-                    {% for el in events %}
-                        {% if el.renter.id == grouped_event.renter_id %}
-                            ------- {{el.item}} - 
-                            {{el.start_date}}
-                            <br />
-                        {% endif %}
-                    {% endfor %}
+                
+                {% for rental_event in rental_events %}
+                <div class="list_warp" userid="{{rental_event.renter.id}}">
+                    {% ifchanged rental_event.renter.username %}
+                    <div class="list__item brd_top">
+                        <div class="list__item_photo">
+                            <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
+                        </div>
+                        <div class="list__item_student">
+                            <span>{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
+                            <span>{{rental_event.renter.email}}</span>
+                        </div>
+                        <div class="list__item_group">
+                            <span>{{rental_event.renter.role}}</span>
+                            <span>{{rental_event.renter.group}}</span>
+                        </div>
+                        <div class="list__item_status {% if not rental_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
+                            <span></span>
+                        </div>
+                        <div class="list__item_st-time">
+                            <!-- <span>15.02.2022</span> -->
+                        </div>
+                        <div class="list__item_etime">
+                            <!-- <span>15.02.2022</span> -->
+                            <button type="button" class="list__button list__button_bg_green btn_strech">
+                                <span class="list__button__text ">Muokata</span>
+                            </button>
+                        </div>
+                        <div class="list__collapse">
+                            <button type="button" userid="{{rental_event.renter.id}}" class="list__button list__button_bg_white">
+                                <div>
+                                    <i class="bi bi-caret-left"></i>
+                                </div>
+                                <!-- <div style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16" style="">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                </div> -->
+                            </button>
+                        </div>
+                    </div>
+                    {% endifchanged %}
+                    <div class="sublist_warp" userid="{{rental_event.renter.id}}" style="display: none;">
+                        <div class="list__rented_item">
+                            <div class="list__nameof_rented_item brd_left">
+                                <span>{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+                                <span>
+                                    {{rental_event.item.model}} 
+                                    {{rental_event.item.item_type}} 
+                                    {{rental_event.item.size}}
+                                    {{rental_event.item.parameters}}
+                                    {{rental_event.item.package}}
+                                </span>
+                            </div>
+                            {% if not rental_event.returned_date and rental_event.is_past_due %}
+                            <div class="list__rented_item_status status_green">
+                                <span>Lainalla</span>
+                            </div>
+                            {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                            <div class="list__rented_item_status status_red">
+                                <span>Erääntynyt</span>
+                            </div>
+                            {% else %}{% if rental_event.returned_date %}
+                            <div class="list__rented_item_status status_gray">
+                                <span>Päättänyt</span>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {% endif %}
+                            <div class="list__item_st-time">
+                                <span>{{rental_event.start_date}}</span> 
+                            </div>
+                            <div class="list__item_etime">
+                                <span>{{rental_event.estimated_date}}</span>
+                            </div>
+                            <div class="list__item_end-time">
+                                <span>{{rental_event.returned_date}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                Sorry, no data in the list!
+
                 {% endfor %}
-
-
             </div>
         </div>
     </main>
