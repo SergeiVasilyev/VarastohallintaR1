@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.utils.translation import gettext as _
 import pytz
+from django.template.defaulttags import register
 
 
 
@@ -14,6 +15,7 @@ class CustomUser(AbstractUser):
         ("storage_employee", _("Storage employee")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
         ("management", _("Management")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
         ("teacher", _("Teacher")),
+        ("super", _("Super")),
     ]
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
@@ -41,21 +43,21 @@ class Category(models.Model):
 
 class Goods(models.Model):
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
-    item_name = models.CharField(max_length=20)
-    brand = models.CharField(max_length=20, blank=True, null=True)
-    model = models.CharField(max_length=20, blank=True, null=True)
-    item_type = models.CharField(max_length=20, blank=True, null=True)
-    size = models.CharField(max_length=20, blank=True, null=True)
-    parameters = models.CharField(max_length=20, blank=True, null=True)
-    package = models.CharField(max_length=20)
+    item_name = models.CharField(max_length=150)
+    brand = models.CharField(max_length=150, blank=True, null=True)
+    model = models.CharField(max_length=150, blank=True, null=True)
+    item_type = models.CharField(max_length=100, blank=True, null=True)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    parameters = models.CharField(max_length=100, blank=True, null=True)
+    package = models.CharField(max_length=50)
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
-    item_description = models.CharField(max_length=20, blank=True, null=True)
-    cost_centre = models.CharField(max_length=20)
-    reg_number = models.CharField(max_length=20, blank=True, null=True)
+    item_description = models.CharField(max_length=255, blank=True, null=True)
+    cost_centre = models.CharField(max_length=100)
+    reg_number = models.CharField(max_length=50, blank=True, null=True)
     purchase_data = models.DateField()
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2)
-    purchase_place = models.CharField(max_length=20)
-    invoice_number = models.CharField(max_length=20) #16
+    purchase_place = models.CharField(max_length=50)
+    invoice_number = models.CharField(max_length=50) #16
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -95,6 +97,11 @@ class Rental_event(models.Model):
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+
+    @register.filter
+    def get_item(dictionary, key):
+        # return dictionary.get(key)
+        return dictionary[key]
 
     @property
     def is_past_due(self):
