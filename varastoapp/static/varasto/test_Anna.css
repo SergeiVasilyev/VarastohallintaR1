@@ -1,0 +1,112 @@
+.row01 {
+    display: flex;
+    border: 1px solid red;
+    padding: 1em;
+}
+
+.button_green{
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 130;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_green:hover,
+.button_green:active{
+    background: #24A19C;
+}  
+
+.button__green_text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    border: 1px solid red;
+}
+
+.button_icon_plus {
+    margin-top: 100px;
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_icon_dash {
+    margin-top: 100px;
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #D96098;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 130;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button:hover,
+.button:active{
+    background: #325288;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    border: 1px solid red;
+}
+
+.right{
+    display: flex;
+    justify-content: right;   
+}
