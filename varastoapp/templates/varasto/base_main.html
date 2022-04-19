@@ -2,13 +2,6 @@
 
 {% load static %}
 
-{% block stylesheet %}
-<link rel="stylesheet" type="text/css" href="{% static 'varasto/main_page.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-{% endblock %}
-
-{% block title %}Main page{% endblock %}
-
 {% block content %}
 
 <div class="main_container">
@@ -50,24 +43,28 @@
         </div>
     </header>
 
-
-
     <aside>
         <div class="white_background">
             <nav>
-                <button type="button" class="button button_bg_green resize mb-2">
-                    <span class="button__text resize">Uusi tapahtuma</span>
-                    <span class="button__icon">+</span>
-                </button>
-                {% if user.role == 'management' %}
-                <button type="button" class="button button_bg_green resize mb-2">
-                    <span class="button__text resize">Uusi tavara</span>
-                    <span class="button__icon">+</span>
-                </button>
-                {% endif %}
-                <button type="button" class="button button_bg_gray resize mb-2">
-                    <span class="button__text resize">Vuokraaminen</span>
-                </button>
+                <a class="nodecor" href="#">
+                    <button type="button" class="button button_bg_green resize mb-2">
+                        <span class="button__text resize">Uusi tapahtuma</span>
+                        <span class="button__icon">+</span>
+                    </button>
+                </a>
+                {% comment %} {% if user.role == 'management' %} {% endcomment %}
+                <a class="nodecor" href="#">
+                    <button type="button" class="button button_bg_green resize mb-2">
+                        <span class="button__text resize">Uusi tavara</span>
+                        <span class="button__icon">+</span>
+                    </button>
+                </a>
+                {% comment %} {% endif %} {% endcomment %}
+                <a class="nodecor" href="{% url 'storage_events' %}">
+                    <button type="button" class="button button_bg_gray resize mb-2">
+                        <span class="button__text resize">Vuokraaminen</span>
+                    </button>
+                </a>
                 <button type="button" class="button button_bg_white resize mb-2">
                     <span class="button__text resize">Tavarat</span>
                 </button>

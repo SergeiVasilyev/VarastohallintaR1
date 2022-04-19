@@ -183,12 +183,13 @@ aside {
         width: 100%;
     }
 
+    .nodecor, .nodecor:hover, .nodecor:active, .nodecor:visited{
+        text-decoration: none;
+    }
+
 /* /----MENU---- */
 
 
 
 /* ----MAIN---- */
-
-
-
 /* /----MAIN---- */
