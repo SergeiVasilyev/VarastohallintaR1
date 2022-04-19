@@ -1,0 +1,16 @@
+{% for rental_event in rental_events.items %}
+<p>
+    {{rental_event}}
+    <br />
+    {% for x in rental_event %}
+        <!-- Dict key nimi näyttää kuin dict arvo -->
+        {{x}} , 
+    {% endfor %}
+    <br />
+    {% for x in rental_event %}
+        <!-- Dict key nimi näyttää kuin dict arvo -->
+        {{x.0}} ,
+    {% endfor %}
+    {% comment %} {{rental_event.renter.username}} ----- {{rental_event.item.brand}} ----- {{rental_event.start_date}} ----- {{rental_event.estimated_date}} {% endcomment %}
+</p>
+{% endfor %}
