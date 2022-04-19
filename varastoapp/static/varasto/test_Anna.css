@@ -1,9 +1,14 @@
-/* .row01 {
+.warp_newevent{
+    display: flex;
+    justify-content: center;
+}
+
+ .row01 {
     display: flex;
     border: 1px solid red;
     padding: 1em;
 }
-
+/*
 .button_green{
     display: inline-flex;
     height: 39px;
