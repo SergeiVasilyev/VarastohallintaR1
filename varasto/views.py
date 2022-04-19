@@ -18,6 +18,18 @@ from django.db.models import Min, Max
 
 
 
+def new_item(request):
+    return render(request, 'varasto/new_item.html')
+
+def test(request):
+    return render(request, 'varasto/test.html')
+
+def person_view(request):
+    return render(request, 'varasto/person.html')
+
+
+
+
 
 
 
@@ -63,28 +75,9 @@ def index(request):
         return redirect('login')
     return render(request, 'varasto/index.html')
 
-
-
-def new_item(request):
-    return render(request, 'varasto/new_item.html')
-
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
 
-def test(request):
-    return render(request, 'varasto/test.html')
-
-def new_item_view(request):
-    return render(request, 'varasto/new_item_view.html')
-
-def person_view(request):
-    return render(request, 'varasto/person.html')
-
-def menu_view(request):
-    return render(request, 'varasto/menu.html')
-
-def main_base_view(request):
-    return render(request, 'varasto/main_base.html')
 
 def base_main(request):
     now = datetime.now()
@@ -101,7 +94,6 @@ def update_rental_status(request):
 def test_Anna_view(request):
     return render(request, 'varasto/test_Anna.html')
 
-# @user_passes_test(user_check, redirect_field_name=None)
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def storage_events(request):
@@ -128,9 +120,6 @@ def storage_events(request):
     }
 
     return render(request, 'varasto/storage_events.html', context)
-
-
-
 
 
 def dict_question(request):
