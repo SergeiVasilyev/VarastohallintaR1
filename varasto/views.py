@@ -86,6 +86,15 @@ def menu_view(request):
 def main_base_view(request):
     return render(request, 'varasto/main_base.html')
 
+def base_main(request):
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/base_main.html', context)
+
 
 # @user_passes_test(user_check, redirect_field_name=None)
 @login_required()
@@ -96,13 +105,13 @@ def main_page(request):
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
     grouped_events = Rental_event.objects.filter(returned_date__isnull=True).filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date').distinct('start_date')
 
-    for i in grouped_events: 
-        print(i)
+    # for i in grouped_events: 
+    #     print(i)
 
-    for i in grouped_events: 
-        # print(i)
-        # print(i['renter'])
-        print(i.renter_id, i.item, i.start_date)
+    # for i in grouped_events: 
+    #     # print(i)
+    #     # print(i['renter'])
+    #     print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")

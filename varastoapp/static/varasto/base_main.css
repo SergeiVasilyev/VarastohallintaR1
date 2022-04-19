@@ -1,0 +1,194 @@
+.main_container {
+    display: grid; 
+    grid-template-columns: 280px 1fr 1fr 1fr; 
+    grid-template-rows: 105px 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "Header Header Header Header"
+      "aside main main main"
+      "aside main main main";
+	/* max-width: 1600px; */
+	margin: 0 auto;
+    height: 100%;
+    /* border: 1px solid green; */
+    background-color: #F2F2F2;
+    color: #2D3748;
+    font-family: rubik;
+    font-size: 16px;
+    min-width: 1200px;
+}
+
+    header { 
+        grid-area: Header;
+        padding: 1em;
+    }
+    aside { 
+        grid-area: aside;
+        padding: 0em 0.5em 1em 1em; /* Aside oikealla 0.5em ja Main väsemällä 0.5em */
+        }
+    main { 
+        grid-area: main;
+        padding: 0em 1em 1em 0.5em; /* Aside oikealla 0.5em ja Main väsemällä 0.5em */
+    }
+
+    header, aside, main {
+        /* border: 1px solid red; */
+    }
+
+    .white_background {
+        background-color: white;
+        border-radius: 3px;
+        height: 100%;
+        padding: 0.5em;
+        
+    }
+    main .white_background {
+        overflow-y: scroll;
+    }
+
+
+/* ----HEADER---- */
+header .warp {
+    display: grid;
+    grid-template-columns: 20em 1fr 1fr 1fr;
+    border-radius: 3px;
+    width: 100%;
+    height: 100%;
+    /* border: 1px solid red; */
+}
+    /* header .warp > div {
+        place-self: center stretch;
+        justify-self: start;
+        border: 1px solid green;
+        padding-left: 10px;
+        font-size: 1.5em;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        gap: 10px;
+        justify-content: space-between;
+    } */
+    header .warp > div {
+        place-self: center stretch;
+        /* justify-self: start; */
+        /* border: 1px solid green; */
+    }
+    .search form {
+        display: inline-flex;        
+        width: 100%;
+        min-width: 20em;
+        /* border: 1px solid red; */
+    }
+
+    .logos {
+        font-size: 1.5em;
+    }
+    .account {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+    .account span {
+        text-align: right;
+    }
+    .account a, .account a:hover, .account a:visited, .account span {
+        text-decoration: none;
+        color: #718096;
+    }
+    .page_name {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .page_name span {
+        text-align: left;
+    }
+    .page_name span:nth-child(1) {
+        font-size: 0.9em;
+        font-weight: 400;
+    }
+    .page_name span:nth-child(2) {
+        font-size: 1.5em;
+        font-weight: 700;
+    }
+
+    .item_left {
+        display: flex;
+        justify-content: start;
+    }
+    .item_right {
+        display: flex;
+        justify-content: end;
+    }
+
+    .image {
+        max-width: 7em;
+        height: auto;
+    }
+    header .warp > div span {
+        padding-left: 10px;
+        padding-right: 10px;
+        /* border: 1px solid red;  */
+    }
+    
+/* /----HEADER---- */
+
+
+/* ----MENU---- */
+aside {
+
+}
+    .button {
+        display: inline-flex;
+        height: 55px;
+        padding: 0;
+        border: none;
+        outline: none;
+        border-radius: 3px;
+        overflow: hidden;
+        font-family: 'rubik';
+        font-size: 1em;
+        font-weight: 400;
+        cursor: pointer;
+    }
+    .button_bg_green {
+        color: white;
+        background: #24A19C;
+    }
+    .button_bg_gray { /* active button*/
+        color: #2D3748 !important;
+        background: #E4E4E4 !important;
+    }
+    .button_bg_white { /* inactive button*/
+        color: #2D3748;
+        background: white;
+    }
+    .button:hover{
+        filter: opacity(85%);
+    }
+    .button:active{
+        filter: opacity(60%);
+    }
+    .button__text,
+    .button__icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+    .button__icon{
+        font-size: 1.5em;
+        background: rgba(0, 0, 0, 0.08);
+    }
+    .resize {
+        width: 100%;
+    }
+
+/* /----MENU---- */
+
+
+
+/* ----MAIN---- */
+
+
+
+/* /----MAIN---- */

@@ -36,4 +36,5 @@ urlpatterns = [
     path('main_page/', views.main_page, name='main_page'), 
     path('main_base/', views.main_base_view, name='main_base'),
     path('dict_question/', views.dict_question, name='dict_question'),
+    path('base_main/', views.base_main, name='base_main'),
 ]
