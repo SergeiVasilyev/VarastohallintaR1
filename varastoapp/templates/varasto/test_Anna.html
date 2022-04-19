@@ -1,0 +1,66 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/test_Anna.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Test Anna{% endblock %}
+
+{% block content %}
+
+<div class="warp_newevent">
+    <div class="refund_page">
+        <div class="row01">
+            <div>
+            <p>Skannaa opiskelijakortti ta kirjoittaa käsin opiskelijanumero.</p>
+            
+            <input type="search" class="form-control" placeholder="Skannaa opiskelijakortti ta kirjoittaa käsin opiskelijanumero." aria-label="Search" />
+            </div>
+            
+            <button type="button" class="button_icon_plus">
+                <span class="bi bi-plus"></span>
+                <!-- <span>+</span> -->
+            </button>
+
+        </div>
+
+        <div class="row01">
+            <button type="button" class="button_green">
+                <span class="button__green_text">Lisää tuote</span>
+            </button>
+            
+            <input type="search" class="form-control" placeholder="" aria-label="Search" />
+            
+            <button type="button" class="button_icon_plus">
+                <span class="bi bi-plus"></span> 
+            </button>
+        </div>
+        <div class="row01">
+
+            <div>
+                <h4>Yleisruuvi PROF</h4>
+                <p>M18 FHIWF 12</p>
+            </div>
+            <button type="button" class="button_icon_dash">
+                <span class="bi bi-dash"></span> 
+            </button> 
+        </div>
+        
+    </div>
+</div>
+<div class="row01 right">
+    <div class="mt-5">
+        <button type="button" class="button">
+            <span class="button__text">PERUTA</span>
+        </button>
+
+        <button type="button" class="button">
+            <span class="button__text">TALLENNA</span>  
+        </button>
+
+    </div>
+</div>
+{% endblock %}

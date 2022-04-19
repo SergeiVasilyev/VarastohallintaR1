@@ -98,6 +98,9 @@ def base_main(request):
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
+def test_Anna_view(request):
+    return render(request, 'varasto/test_Anna.html')
+
 # @user_passes_test(user_check, redirect_field_name=None)
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)

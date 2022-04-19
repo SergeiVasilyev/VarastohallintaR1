@@ -1,0 +1,114 @@
+.warp_newevent{
+    display: flex;
+    justify-content: center;
+}
+
+ .row01 {
+    display: flex;
+    border: 1px solid red;
+    padding: 1em;
+}
+/*
+.button_green{
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 130;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_green:hover,
+.button_green:active{
+    background: #24A19C;
+}  
+
+.button__green_text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    border: 1px solid red;
+} */
+
+.button_icon_plus {
+    display: inline-flex;
+    height: 40px;
+    width: 50px;
+    padding: 0.1em 0 0 0;
+    color: #FFFFFF;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 0.40em;
+    overflow: hidden;
+    cursor: pointer;
+    justify-content:center;
+    align-items:center;
+    /* border: 1px solid red; */
+}
+.button_icon_plus span, .button_icon_dash span{
+    font-size: 2em;
+    /* border: 1px solid red; */
+}
+
+.button_icon_dash {
+    display: inline-flex;
+    height: 40px;
+    width: 50px;
+    padding: 0.1em 0 0 0;
+    color: #FFFFFF;
+    background: #D96098;
+    border: none;
+    outline: none;
+    border-radius: 0.40em;
+    overflow: hidden;
+    cursor: pointer;
+    justify-content:center;
+    align-items:center;
+}
+
+/* .button {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 130;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button:hover,
+.button:active{
+    background: #325288;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    border: 1px solid red;
+}
+
+.right{
+    display: flex;
+    justify-content: right;   
+} */

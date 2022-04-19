@@ -6,20 +6,20 @@
 }
 
 .row01 {
-    /*border: 1px solid red;*/
+    border: 1px solid red;
     padding: 1em;
 }
 
 .row02 {
     grid-column-start: 1;
     grid-column-end: 3;
-    /*border: 1px solid red;*/
+    border: 1px solid red;
     padding: 1em;
 }
 
 .span_warp span{
     display: block;
-    /*border: 1px solid red;*/
+    border: 1px solid red;
 }
 
 .largest{
@@ -158,5 +158,6 @@
     cursor: pointer;
     justify-content:center ;
 }
+
 
 
