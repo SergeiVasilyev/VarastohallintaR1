@@ -95,6 +95,8 @@ def base_main(request):
     }
     return render(request, 'varasto/base_main.html', context)
 
+def update_rental_status(request):
+    return render(request, 'varasto/update_rental_status.html')
 
 # @user_passes_test(user_check, redirect_field_name=None)
 @login_required()
