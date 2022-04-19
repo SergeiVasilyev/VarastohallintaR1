@@ -35,4 +35,5 @@ urlpatterns = [
     path('new_item/', views.new_item, name='new_item'),
     path('main_page/', views.main_page, name='main_page'),
     path('main_base/', views.main_base_view, name='main_base'),
+    path('test_Anna/', views.test_Anna_view, name='test_Anna'),
 ]
