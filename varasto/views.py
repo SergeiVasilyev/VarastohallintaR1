@@ -43,7 +43,7 @@ def login_view(request):
                 login(request, user)
                 print('sucsess')
                 if user_check(user) and is_not_student(user):
-                    return redirect('storage_events')
+                    return redirect('rental_events')
                 else:
                     return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
@@ -56,7 +56,7 @@ def login_view(request):
             return render(request, 'varasto/login.html', context)
     else:
         if user_check(request.user) and is_not_student(request.user):
-            return redirect('storage_events')
+            return redirect('rental_events')
         else:
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
@@ -96,7 +96,7 @@ def test_Anna_view(request):
 
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
-def storage_events(request):
+def rental_events(request):
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date'))
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
@@ -119,7 +119,7 @@ def storage_events(request):
         'user': request.user
     }
 
-    return render(request, 'varasto/storage_events.html', context)
+    return render(request, 'varasto/rental_events.html', context)
 
 
 def dict_question(request):
