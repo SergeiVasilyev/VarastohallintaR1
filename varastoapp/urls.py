@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from varasto.views import index, login_view, logout_view, recovery_view, new_item_view, user_recovery, test, person_view
+from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, test, person_view, rental_events
 from varasto import views
 
 urlpatterns = [
@@ -26,13 +26,14 @@ urlpatterns = [
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
     path('recovery/', recovery_view, name="recovery"),
+    path('rental_events/', views.rental_events, name='rental_events'),
+    path('base_main/', views.base_main, name='base_main'),
 
+    path('dict_question/', views.dict_question, name='dict_question'),
     path('person/', views.person_view, name='person'),
     path('test/', views.test, name='test'),
     path('recovery/', views.user_recovery, name='recovery'),
-    path('new_item_view/', views.new_item_view, name='new_item'),
-    path('menu_view/', views.menu_view, name='menu_view'),
     path('new_item/', views.new_item, name='new_item'),
-    path('main_page/', views.main_page, name='main_page'),
-    path('main_base/', views.main_base_view, name='main_base'),
+    path('update_rental_status/', views.update_rental_status, name='update_rental_status'),
+    path('test_Anna/', views.test_Anna_view, name='test_Anna'),
 ]

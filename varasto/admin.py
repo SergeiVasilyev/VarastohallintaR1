@@ -14,22 +14,22 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', )
+    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', )
     list_filter = ('is_staff', 'is_active',)
     fieldsets = (
-        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', )}),
+        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group')}),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         ('Main information', {
             'classes': ('wide', ),
-            'fields': ('username', 'password', 'first_name', 'last_name', )}
+            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group')}
         ),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
-    list_display_links = ('username', 'first_name', 'last_name', 'code',)
+    list_display_links = ('username', 'first_name', 'last_name', 'code', 'role')
     search_fields = ('username', 'first_name', 'last_name',)
     ordering = ('username',)
 
