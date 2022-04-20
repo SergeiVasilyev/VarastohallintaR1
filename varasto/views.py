@@ -27,7 +27,8 @@ def test(request):
 def person_view(request):
     return render(request, 'varasto/person.html')
 
-
+def new_event(request):
+    return render(request, 'varasto/new_event.html')
 
 
 
