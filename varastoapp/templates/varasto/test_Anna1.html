@@ -1,0 +1,88 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/test_Anna1.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Test Anna{% endblock %}
+
+{% block content %}
+
+
+<div class="refund_page">
+    <div class="row01">
+        <img src="https://www.hilti.fi/medias/sys_master/images/h86/hdf/9531940339742.jpg" class="img-thumbnail" alt="9531940339742.jpg">
+    </div>
+    <div class="row01">
+        <div class="span_warp">
+            <span class="largest">Akkuporakone HILTI</span>
+            <span class="small_medium">SF10W- A22</span>
+            <span class="middle_medium">Tuotetiedot</span>
+            <span class="small">Tuotenumero</span>
+            <span class="middle">00003232</span>
+            <span class="small">EAN-koodi</span>
+            <span class="middle">4059952563855</span>
+        </div>
+    </div>
+    <div class="row02">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Palautettu
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+            <label class="form-check-label" for="flexCheckChecked">
+                Merkitä vikaa
+            </label>
+          </div>
+    </div>
+    <div class="row02">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 277px "></textarea>
+            <label for="floatingTextarea2">Tähän voit kuvailla tuotevika.</label>
+          </div>
+    </div>
+    <div class="row02 right">
+        <div>
+            <button type="button" class="button">
+                <span class="button__text">PERUTA</span>
+            </button>
+    
+            <button type="button" class="button">
+                <span class="button__text">TALLENNA</span>  
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<!-- Button's -->
+    <div class="mt-5">
+        <button type="button" class="button">
+            <span class="button__text">Tehdä kuva</span>
+        </button>
+
+        <button type="button" class="button">
+            <span class="button__text">Browse</span>  
+         </button>
+
+    </div>
+
+    <div>
+
+        <button type="button" class="button_icon_plus">
+            <span class="bi bi-plus"></span> 
+         </button>
+
+         <button type="button" class="button_icon_dash">
+            <span class="bi bi-dash"></span> 
+         </button>
+
+    </div>
+
+{% endblock %}

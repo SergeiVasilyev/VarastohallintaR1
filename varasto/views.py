@@ -1,4 +1,4 @@
-from multiprocessing import context
+import operator
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -11,6 +11,26 @@ from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
+from django.db.models import Count
+from django.db.models.functions import TruncMonth, Trunc
+from django.db.models import Min, Max
+
+
+
+def new_item(request):
+    return render(request, 'varasto/new_item.html')
+
+def test(request):
+    return render(request, 'varasto/test.html')
+
+def person_view(request):
+    return render(request, 'varasto/person.html')
+
+
+
+
+
 
 
 def login_view(request):
@@ -23,7 +43,7 @@ def login_view(request):
                 login(request, user)
                 print('sucsess')
                 if user_check(user) and is_not_student(user):
-                    return redirect('main_page')
+                    return redirect('rental_events')
                 else:
                     return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
@@ -36,7 +56,7 @@ def login_view(request):
             return render(request, 'varasto/login.html', context)
     else:
         if user_check(request.user) and is_not_student(request.user):
-            return redirect('main_page')
+            return redirect('rental_events')
         else:
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
@@ -55,42 +75,81 @@ def index(request):
         return redirect('login')
     return render(request, 'varasto/index.html')
 
-
-
-def new_item(request):
-    return render(request, 'varasto/new_item.html')
-
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
 
-def test(request):
-    return render(request, 'varasto/test.html')
 
-def new_item_view(request):
-    return render(request, 'varasto/new_item_view.html')
-
-def person_view(request):
-    return render(request, 'varasto/person.html')
-
-def menu_view(request):
-    return render(request, 'varasto/menu.html')
-
-def main_base_view(request):
-    return render(request, 'varasto/main_base.html')
-
-
-# @user_passes_test(user_check, redirect_field_name=None)
-@login_required()
-@user_passes_test(is_not_student, redirect_field_name=None)
-def main_page(request):
+def base_main(request):
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
         'datenow': datenow,
         'user': request.user
     }
+    return render(request, 'varasto/base_main.html', context)
 
-    return render(request, 'varasto/main_page.html', context)
+def update_rental_status(request):
+    return render(request, 'varasto/update_rental_status.html')
+
+def test_Anna_view(request):
+    return render(request, 'varasto/test_Anna.html')
+
+@login_required()
+@user_passes_test(is_not_student, redirect_field_name=None)
+def rental_events(request):
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date'))
+    # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
+    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
+    grouped_events = Rental_event.objects.filter(returned_date__isnull=True).filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date').distinct('start_date')
+
+    # for i in grouped_events: 
+    #     print(i)
+
+    # for i in grouped_events: 
+    #     # print(i)
+    #     # print(i['renter'])
+    #     print(i.renter_id, i.item, i.start_date)
+
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'grouped_events': grouped_events,
+        'events': events,
+        'datenow': datenow,
+        'user': request.user
+    }
+
+    return render(request, 'varasto/rental_events.html', context)
+
+
+def dict_question(request):
+
+    query_set = Rental_event.objects.filter(returned_date__isnull=True).order_by('start_date')
+    # print(query_set)
+    # for i in query_set:
+    #     print(i.renter, i.item)
+    # newlist = {}
+    # for i in query_set:
+    #     if not i.returned_date:
+    #         if i.renter.username in newlist:
+    #             newlist[i.renter.username] += [i.item, i.renter, i.start_date]
+    #         else:
+    #             newlist[i.renter.username] = [i.item, i.renter, i.start_date]         
+    
+    newlist = {
+        'first': ['one', 'two'],
+        'second': ['three', 'four'],
+        'third': {'fifth': ['five', 'six'], 'seventh': 'SEVEN'}
+    }
+
+    print(newlist)
+    print(newlist['third']['fifth'][1])
+
+    context = {
+        'rental_events': newlist,
+    }
+    return render(request, 'varasto/question.html', context)   
+
 
 
 
