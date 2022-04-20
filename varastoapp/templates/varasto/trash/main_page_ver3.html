@@ -1,0 +1,238 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/main_page.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Main page{% endblock %}
+
+{% block content %}
+
+<div class="main_container">
+    <header>
+        <div class="warp">
+            <div class="logos item_left">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </span>
+                <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
+            </div>
+            <div class="page_name item_left">
+                <span>Kotisivu / Vuokraaminen</span>
+                <span>Vuokraaminen</span>
+            </div>
+            <div class="search">
+                <form action="" method="get">
+                    <input name="search_form" type="text" class="form-control size" placeholder="Etsiminen">
+                    <button class="btn btn-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>  
+                </form>
+            </div>
+            <div class="account item_right">
+                <span>
+                    <a href="{% url 'logout' %}">
+                    {% if user.first_name %}
+                        {{ user.first_name }} {{ user.last_name }} 
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    logout
+                    </a>
+                </span>
+                <span>{{datenow}}</span>
+            </div>
+        </div>
+    </header>
+
+
+
+    <aside>
+        <div class="white_background">
+            <nav>
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tapahtuma</span>
+                    <span class="button__icon">+</span>
+                </button>
+                {% if user.role == 'management' %}
+                <button type="button" class="button button_bg_green resize mb-2">
+                    <span class="button__text resize">Uusi tavara</span>
+                    <span class="button__icon">+</span>
+                </button>
+                {% endif %}
+                <button type="button" class="button button_bg_gray resize mb-2">
+                    <span class="button__text resize">Vuokraaminen</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Tavarat</span>
+                </button>
+                <button type="button" class="button button_bg_white resize mb-2">
+                    <span class="button__text resize">Asetukset</span>
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+
+    <main>
+        <div class="white_background">
+
+            <div class="filter_panel">
+
+                <div class="sorting">
+                    <div class="btn-group"> <!--  bi-sort-alpha-up-alt -->
+                        <button type="button" class="btn btn-secondary bi-sort-alpha-down">
+                          
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Alkamispäivä
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#">Alkamispäivä</a></li>
+                          <li><a class="dropdown-item" href="#">Päättymispäivä</a></li>
+                          <li><a class="dropdown-item" href="#">Status</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#">Nimi</a></li>
+                          <li><a class="dropdown-item" href="#">Tavara</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="date_selection">
+                    <button type="button" class="btn btn-secondary">
+                        01.02.2022
+                    </button>
+                    <span class="ms-2 me-2"> - </span>
+                    <button type="button" class="btn btn-secondary">
+                        25.02.2022
+                    </button>
+                </div>
+
+                <div class="checkbox_filters px-3">
+                    <div class="form-check me-4">
+                        <input class="form-check-input" type="checkbox" value="" id="chk-01">
+                        <label class="form-check-label" for="chk-01">Lainalla</label>
+                    </div>
+                    <div class="form-check me-4">
+                        <input class="form-check-input" type="checkbox" value="" id="chk-02">
+                        <label class="form-check-label" for="chk-02">Opiskelijat</label>
+                    </div>
+                    <div class="form-check me-4">
+                        <input class="form-check-input" type="checkbox" value="" id="chk-03">
+                        <label class="form-check-label" for="chk-03">Opettajat</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="chk-04">
+                        <label class="form-check-label" for="chk-04">Erääntynyt</label>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="column_names">
+                <div class="column"><span>lainanottaja</span></div>
+                <div class="column"><span>KUOLUN RYHMÄ</span></div>
+                <div class="column"><span>STATUS</span></div>
+                <div class="column"><span>alkamispäivä</span></div>
+                <div class="column"><span>arvioitu paluupäivä</span></div>
+                <div class="column"><span>päättymispäivä</span></div>
+            </div>
+
+            
+            
+            <div class="list">
+                {% for rental_event in rental_events %}
+                <div class="list_warp" userid="{{rental_event.renter.id}}">
+                    {% ifchanged rental_event.renter.username %}
+                    <div class="list__item brd_top">
+                        <div class="list__item_photo">
+                            <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div>
+                        </div>
+                        <div class="list__item_student">
+                            <span>{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
+                            <span>{{rental_event.renter.email}}</span>
+                        </div>
+                        <div class="list__item_group">
+                            <span>{{rental_event.renter.role}}</span>
+                            <span>{{rental_event.renter.group}}</span>
+                        </div>
+                        <div class="list__item_status {% if not rental_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
+                            <span></span>
+                        </div>
+                        <div class="list__item_st-time">
+                            <!-- <span>15.02.2022</span> -->
+                        </div>
+                        <div class="list__item_etime">
+                            <!-- <span>15.02.2022</span> -->
+                            <button type="button" class="list__button list__button_bg_green btn_strech">
+                                <span class="list__button__text ">Muokata</span>
+                            </button>
+                        </div>
+                        <div class="list__collapse">
+                            <button type="button" userid="{{rental_event.renter.id}}" class="list__button list__button_bg_white">
+                                <div>
+                                    <i class="bi bi-caret-left"></i>
+                                </div>
+                                <!-- <div style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16" style="">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                </div> -->
+                            </button>
+                        </div>
+                    </div>
+                    {% endifchanged %}
+                    <div class="sublist_warp" userid="{{rental_event.renter.id}}" style="display: none;">
+                        <div class="list__rented_item">
+                            <div class="list__nameof_rented_item brd_left">
+                                <span>{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+                                <span>
+                                    {{rental_event.item.model}} 
+                                    {{rental_event.item.item_type}} 
+                                    {{rental_event.item.size}}
+                                    {{rental_event.item.parameters}}
+                                    {{rental_event.item.package}}
+                                </span>
+                            </div>
+                            {% if not rental_event.is_past_due %}
+                            <div class="list__rented_item_status status_green">
+                                <span>Lainalla</span>
+                            </div>
+                            {% else %}
+                            <div class="list__rented_item_status status_red">
+                                <span>Erääntynyt</span>
+                            </div>
+                            {% endif %}
+                            <div class="list__item_st-time">
+                                <span>{{rental_event.start_date}}</span> 
+                            </div>
+                            <div class="list__item_etime">
+                                <span>{{rental_event.estimated_date}}</span>
+                            </div>
+                            <div class="list__item_end-time">
+                                <span>{{rental_event.returned_date}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                Sorry, no data in the list!
+
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</div>
+
+
+{% endblock %}
