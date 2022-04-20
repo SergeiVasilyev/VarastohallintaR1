@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block title %}Storage events{% endblock %}
+{% block path %}Vuokratapahtuma{% endblock %}
+{% block page %}Vuokratapahtuma{% endblock %}
 
 {% block main_content %}
     <div class="filter_panel">
@@ -94,9 +96,11 @@
                 </div>
                 <div class="list__item_etime">
                     <!-- <span>15.02.2022</span> -->
-                    <button type="button" class="list__button list__button_bg_green btn_strech">
-                        <span class="list__button__text ">Muokata</span>
-                    </button>
+                    <a class="button_link" href="{% url 'renter' grouped_event.renter_id %}">
+                        <button type="button" class="list__button list__button_bg_green btn_strech">
+                            <span class="list__button__text ">Muokata</span>
+                        </button>
+                    </a>
                 </div>
                 <div class="list__collapse">
                     <button type="button" userid="{{grouped_event.renter.id}}" class="list__button list__button_bg_white">

@@ -64,6 +64,10 @@
     justify-content: center;
     
 }
+    .button_link, .button_link:hover, .button_link:visited {
+        text-decoration: none;
+    }
+
     .btn_strech {
         place-self: center stretch;
     }
