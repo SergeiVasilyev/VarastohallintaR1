@@ -1,0 +1,53 @@
+/* * {
+    padding: 0 !important;
+    margin: 0 !important;
+} */
+
+.person_info {
+    display: grid;
+    grid-template-columns: auto 3fr 1fr; 
+    align-items: center;
+}
+.information {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 1.1;
+    color: #2D3748;
+}
+.person_info div {
+    /* border: 1px solid green; */
+}
+.student_name {
+    font-size: 2em;
+    font-weight: 600;
+}
+.student_group, .personal_field_data {
+    font-size: 1.5em;
+}
+.personal_field_name {
+    font-size: 1em;
+    color: #718096;
+}
+.photo > div{
+    overflow: hidden;
+    width: 260px;
+    height: 270px;
+    border-radius: 0.7em; 
+}
+.photo > div img {
+    width: 260px;
+    height: 270px;
+    object-fit:cover;
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+.new_rental {
+    align-self: end;
+    display: flex;
+    justify-content: center;
+
+}
+.new_rental button {
+    min-width: 15em;
+}
+

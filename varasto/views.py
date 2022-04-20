@@ -27,7 +27,21 @@ def test(request):
 def person_view(request):
     return render(request, 'varasto/person.html')
 
+@login_required()
+@user_passes_test(is_not_student, redirect_field_name=None)
+def renter(request, idx):
+    selected_user = CustomUser.objects.get(id=idx)
+    print(selected_user)
 
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'selected_user': selected_user,
+        'user': request.user,
+        'idx': idx,
+        'datenow': datenow,
+    }
+    return render(request, 'varasto/renter.html', context)
 
 
 
@@ -71,9 +85,10 @@ def recovery_view(request):
     return render(request, 'varasto/recovery.html')
 
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    return render(request, 'varasto/index.html')
+    return redirect('login')
+    # if not request.user.is_authenticated:
+    #     return redirect('login')
+    # return render(request, 'varasto/index.html')
 
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
