@@ -3,16 +3,26 @@
     margin: 0 !important;
 } */
 
+/* ---person_info--- */
+
 .person_info {
     display: grid;
     grid-template-columns: auto 3fr 1fr; 
-    align-items: center;
+    /* align-items: center; */
 }
 .information {
     display: inline-flex;
     flex-direction: column;
     line-height: 1.1;
     color: #2D3748;
+    /* height: 100%; */
+}
+.information span:nth-child(2n+3) {
+    margin-top: 1.6em;
+}
+.information span {
+    /* height: 100%; */
+    /* border: 1px solid green; */
 }
 .person_info div {
     /* border: 1px solid green; */
@@ -50,4 +60,109 @@
 .new_rental button {
     min-width: 15em;
 }
+/* /---person_info--- */
 
+
+/* ---history--- */
+.history {
+    padding-top: 2em;
+}
+.history_list {
+    display: grid;
+    grid-template-columns: 170px repeat(3, minmax(6em, 1fr));
+}
+.history_list div {
+    /* border: 1px solid green; */
+}
+.history_photo {
+    padding: 0.5em 0.625em;
+}
+.history_photo > div{
+    overflow: hidden;
+    width: 150px;
+    height: 130px;
+    border-radius: 0.7em; 
+}
+.history_photo > div img {
+    width: 150px;
+    height: 130px;
+    object-fit:cover;
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+
+.item_info {
+    display: inline-flex;
+    flex-direction: column;
+}
+.item_info > div {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+}
+.item_name {
+    color: #2D3748;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+.item_props {
+    color: #718096;
+    font-size: 1em;
+    font-weight: 400;
+}
+.item_num {
+    color: #718096;
+    font-size: 0.875em;
+    font-weight: 400;
+}
+
+
+.rental_period{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.rental_period_date{
+    color: #2D3748;
+    font-size: 1.3em;
+    font-weight: 500;
+    margin-bottom: 1em;
+}
+.list__rented_item_status {
+    display: flex;
+    justify-content: center;
+}
+.list__rented_item_status > span{
+    display: block;
+    width: 7.5em;
+    padding: 0 1.2em;
+    height: 1.5em;
+    border-radius: 0.5em;
+    text-align: center;
+}
+.status_green > span {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: white;
+}
+.status_gray > span {
+    background-color: #CBD5E0;
+    border: 1px solid #CBD5E0;
+    color: #7897AB;
+} 
+.status_red > span {
+    background-color: #D96098;
+    border: 1px solid #D96098;
+    color: white;
+} 
+
+
+
+
+
+
+
+
+
+/* /---history--- */

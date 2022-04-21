@@ -21,13 +21,13 @@
             </div>
             <div class="information ps-3">
                 <span class="student_name">{{ selected_user.first_name }} {{ selected_user.last_name }}</span>
-                <span class="student_group">{{ selected_user.group }}</span>
-                <span class="personal_field_name mt-3">Puhelin</span>
-                <span class="personal_field_data">{{ selected_user.phone }}</span>
-                <span class="personal_field_name mt-3">Sähköposti</span>
-                <span class="personal_field_data">{{ selected_user.email }}</span>
-                <span class="personal_field_name mt-3">Vastuopettaja</span>
-                <span class="personal_field_data">{{ selected_user.responsible_teacher.first_name }} {{ selected_user.responsible_teacher.last_name }}</span>
+                <span class="student_group">{{ selected_user.group|default:"-" }}</span>
+                <span class="personal_field_name">Puhelin</span>
+                <span class="personal_field_data">{{ selected_user.phone|default:"-" }}</span>
+                <span class="personal_field_name">Sähköposti</span>
+                <span class="personal_field_data">{{ selected_user.email|default:"-" }}</span>
+                <span class="personal_field_name">Vastuopettaja</span>
+                <span class="personal_field_data">{{ selected_user.responsible_teacher.first_name|default:"-" }} {{ selected_user.responsible_teacher.last_name|default_if_none:"" }}</span>
             </div>
             <div class="new_rental">
                 <a class="nodecor" href="#">
@@ -42,7 +42,37 @@
 
 
         <div class="history">
-            
+            <div class="history_list">
+                <div class="history_photo">
+                    <div><img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}"></div>
+                </div>
+                <div class="item_info">
+                    <div>
+                        <span class="item_name">Yleisruuvi PROF</span>
+                        <span class="item_props">uppokanta Zn T20 4x30mm</span>
+                    </div>
+                    <span class="item_num">Tavaran numero - 00003232</span>
+                </div>
+                <div class="rental_period">
+                    <span class="rental_period_date">01.02.2021 - 15.02.2021</span>
+                    {% if not event.returned_date and event.is_past_due %}
+                        <div class="list__rented_item_status status_green">
+                            <span>Lainalla</span>
+                        </div>
+                        {% else %}{% if not event.returned_date and not event.is_past_due %}
+                        <div class="list__rented_item_status status_red">
+                            <span>Erääntynyt</span>
+                        </div>
+                        {% else %}{% if event.returned_date %}
+                        <div class="list__rented_item_status status_gray">
+                            <span>Päättänyt</span>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div>4</div>
+            </div>
         </div>
 
 
