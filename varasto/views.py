@@ -153,4 +153,5 @@ def dict_question(request):
 
 
 
-
+def main_base(request):
+    return render(request, 'varasto/main_base.html')
