@@ -151,6 +151,8 @@ def dict_question(request):
     }
     return render(request, 'varasto/question.html', context)   
 
+def new_event_goods(request):
+    return render(request, 'varasto/new_event_goods.html')
 
 
 
