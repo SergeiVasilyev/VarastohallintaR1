@@ -186,7 +186,7 @@ aside {
 
 .new_img_desc {
     display: grid;
-    grid-template-columns: 1fr 0.5fr 2fr;
+    grid-template-columns: 0.6fr 0.5fr 2fr;
     /* grid-template-rows: 0.8fr; */
     grid-column-gap: 10px;
     border: 1px solid blue;
@@ -205,11 +205,26 @@ aside {
     border: 1px solid black;
 }
 
+.new_button_top {
+    margin-top: 10%;
+}
+
+.divider {
+    height: 10px;
+}
+
 .desc_container {
     width: 80%;
     height: 80%;
     resize: none;
+    align-self: center;
     
+}
+
+.new_product_desc {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .new_middle {
@@ -224,7 +239,7 @@ aside {
     color: #2D3748;
     font-size: 0.75em;
     font-weight: 600;
-    /* font-size: 12px; */
+    margin-top: 20px;
 }
 
 .new_middle div{
@@ -234,51 +249,72 @@ aside {
 /* .div1 { 
     grid-area: 1 / 1 / 2 / 2;
     display: flex;
-}
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+} */
 
-.div2 {
+/* .div2 {
     grid-area: 1 / 2 / 2 / 3;
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div3 { 
     grid-area: 1 / 3 / 2 / 4; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div4 { 
     grid-area: 1 / 4 / 2 / 5; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div5 { 
     grid-area: 2 / 1 / 3 / 2; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div6 { 
     grid-area: 2 / 2 / 3 / 3; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 } */
+
 
 .div7 { 
     grid-area: 3 / 1 / 4 / 2; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div8 { 
     grid-area: 3 / 2 / 4 / 3; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .div9 { 
     grid-area: 2 / 3 / 3 / 4; 
     display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 .tyokaluryhma_container, .nimi_container, .merkki_container, .malli_container, .tyyppi_container, .koko_container, .tptt_container, .pakkaus_container, .kplmaara_container {
-    height: 40%;
-    width: 70%;
+    height: 50%;
+    width: 80%;
+    align-self: center;
 }
 
 .nimi_container {
@@ -290,19 +326,92 @@ aside {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-column-gap: 3px;
-    grid-row-gap: 4px;
+    grid-column-gap: 20px;
+    grid-row-gap: 22px;
     border: 1px solid yellow;
+    text-align: center;
+    /* justify-content: space-evenly; */
+    height: 15rem;
+    align-content: center;
+    margin-top: 35px;
+}
+
+.div10 { 
+    grid-area: 1 / 1 / 2 / 2;
+    display: flex;
+    flex-direction: column; 
+    font-size: 12px;
+    /* text-align: center; */
+    align-content: left;
+}
+
+.div11 { 
+    grid-area: 1 / 2 / 2 / 3;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
     text-align: center;
 }
 
-.div10 { grid-area: 1 / 1 / 2 / 2; }
-.div11 { grid-area: 1 / 2 / 2 / 3; }
-.div12 { grid-area: 1 / 3 / 2 / 4; }
-.div13 { grid-area: 1 / 4 / 2 / 5; }
-.div14 { grid-area: 2 / 1 / 3 / 2; }
-.div15 { grid-area: 2 / 2 / 3 / 3; }
-.div16 { grid-area: 2 / 3 / 3 / 4; }
+.div12 { 
+    grid-area: 1 / 3 / 2 / 4; 
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    text-align: center;
+}
+
+.div13 { 
+    grid-area: 1 / 4 / 2 / 5;
+    display: flex;
+    flex-direction: column; 
+    font-size: 12px;
+    text-align: center;
+}
+
+.div14 { 
+    grid-area: 2 / 1 / 3 / 2; 
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    text-align: center;
+}
+
+.div15 { 
+    grid-area: 2 / 2 / 3 / 3; 
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    text-align: center;
+}
+
+.div16 { 
+    grid-area: 2 / 3 / 3 / 4;
+    display: flex;
+    flex-direction: column; 
+    font-size: 12px;
+    text-align: center;
+}
+
+.laskunr_container, .hankintapaikka_container, .hankintahinta_container, .hankintavuosi_container, .varastopaikka_container, .kustannuspaikka_container, .reknro_container {
+    height: 50%;
+    width: 80%;
+    align-self: center;
+
+}
+
+.divider2 {
+    padding-left: 4px;
+}
+
+.new_button_bottom {
+    /* display: inline-block; */
+    float: right;
+    padding-right: 5px;
+}
+
+
+
 
 
 
