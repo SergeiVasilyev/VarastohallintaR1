@@ -16,7 +16,8 @@
     <div class="main_warp">
         <div class="person_info">
             <div class="photo">
-                <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div>
+                <!-- <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div> -->
+                <div><img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}"></div>
             </div>
             <div class="information ps-3">
                 <span class="student_name">{{ selected_user.first_name }} {{ selected_user.last_name }}</span>

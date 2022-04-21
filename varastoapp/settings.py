@@ -138,3 +138,5 @@ AUTH_USER_MODEL = 'varasto.CustomUser'
 
 LOGIN_URL = '/login/'
 
+MEDIA_ROOT =  '/varastoapp/static/images/'
+MEDIA_URL = '/images/'
