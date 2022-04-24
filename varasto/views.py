@@ -21,8 +21,8 @@ from django.db.models import Min, Max
 def new_item(request):
     return render(request, 'varasto/new_item.html')
 
-def test(request):
-    return render(request, 'varasto/test.html')
+def inventaario_side_window(request):
+    return render(request, 'varasto/inventaario_side_window.html')
 
 def person_view(request):
     return render(request, 'varasto/person.html')
