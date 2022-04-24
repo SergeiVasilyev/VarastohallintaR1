@@ -1,0 +1,116 @@
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 (NULL,2,2,6,2,'2022-03-17 00:00:00+02','2022-03-17 00:00:00+02','2022-02-02 00:00:00+02'),
+	 (NULL,4,3,6,2,'2022-03-08 00:00:00+02',NULL,'2022-02-03 00:00:00+02'),
+	 (NULL,6,2,6,1,'2022-04-30 00:00:00+03',NULL,'2022-02-02 00:00:00+02'),
+	 (NULL,5,3,6,1,'2022-04-30 00:00:00+03',NULL,'2022-02-03 00:00:00+02'),
+	 ('ac enim in tempor turpis nec',41,12,6,3,'2021-10-10 09:34:39+03',NULL,'2022-02-08 12:52:41+02'),
+	 ('ante ipsum primis in faucibus',30,18,6,3,'2021-12-04 20:06:07+02','2021-09-02 08:48:43+03','2022-03-03 23:52:38+02'),
+	 ('est et tempus semper est quam pharetra magna ac consequat metus sapien ut nunc vestibulum',50,13,6,2,'2022-01-03 22:33:10+02','2022-03-18 04:01:50+02','2022-01-02 03:21:38+02'),
+	 ('nonummy maecenas tincidunt lacus at velit vivamus vel nulla',27,17,6,1,'2022-04-14 04:14:51+03','2021-07-02 01:49:34+03','2022-03-15 06:22:08+02'),
+	 ('nulla dapibus dolor vel est donec',33,15,6,2,'2021-05-21 02:46:33+03',NULL,'2022-02-03 09:40:46+02'),
+	 ('cursus vestibulum proin eu mi nulla ac enim in tempor',22,16,6,2,'2022-04-05 00:13:03+03','2022-03-15 05:52:27+02','2022-03-27 16:19:46+03');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('quis turpis sed ante vivamus tortor duis mattis egestas metus aenean fermentum donec ut mauris eget massa tempor convallis nulla',18,7,6,1,'2022-02-18 09:35:04+02','2021-10-15 06:57:20+03','2022-02-18 17:50:33+02'),
+	 ('aliquam non mauris morbi non lectus aliquam sit amet diam in magna bibendum imperdiet',6,11,6,3,'2022-03-10 16:30:31+02',NULL,'2022-01-07 17:42:14+02'),
+	 ('aliquet pulvinar sed nisl nunc rhoncus dui vel sem sed sagittis nam congue',46,17,6,2,'2021-11-14 20:22:45+02',NULL,'2022-02-26 11:40:42+02'),
+	 ('vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum',37,10,6,3,'2021-04-05 14:16:43+03',NULL,'2022-01-13 07:35:25+02'),
+	 ('amet lobortis sapien sapien non mi integer ac neque',12,11,6,3,'2021-09-03 11:11:37+03','2021-09-26 04:59:28+03','2022-02-22 06:44:25+02'),
+	 ('curae duis faucibus accumsan odio curabitur convallis duis consequat dui nec nisi volutpat eleifend donec ut dolor morbi vel lectus',33,8,6,1,'2021-09-24 21:36:59+03',NULL,'2022-03-24 19:02:04+02'),
+	 ('risus auctor sed tristique in tempus',51,16,6,3,'2022-01-29 14:44:25+02','2021-04-04 18:50:22+03','2022-02-01 06:20:03+02'),
+	 ('pede lobortis ligula sit amet eleifend pede libero quis orci',49,7,6,1,'2021-03-11 21:00:00+02','2021-11-28 04:29:52+02','2022-03-23 21:54:26+02'),
+	 ('ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas',39,9,6,1,'2022-02-28 08:11:02+02','2022-03-04 01:06:37+02','2022-03-07 23:44:40+02'),
+	 ('morbi a ipsum integer a nibh in quis justo maecenas',54,7,6,1,'2021-06-08 22:03:17+03','2021-05-24 20:38:10+03','2022-01-08 20:11:08+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum',31,9,6,3,'2021-08-06 09:27:05+03',NULL,'2022-01-13 08:09:17+02'),
+	 ('morbi non lectus aliquam sit amet diam in magna bibendum imperdiet nullam orci pede venenatis non',28,17,6,3,'2022-04-28 20:08:45+03',NULL,'2022-01-06 00:47:34+02'),
+	 ('vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet consectetuer',47,13,6,3,'2022-04-03 19:42:27+03',NULL,'2022-01-25 14:57:24+02'),
+	 ('maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus',23,13,6,3,'2022-05-09 01:28:11+03','2021-10-13 23:54:59+03','2022-02-22 20:25:37+02'),
+	 ('id mauris vulputate elementum nullam varius nulla facilisi cras non velit nec nisi vulputate nonummy maecenas tincidunt lacus',18,7,6,2,'2022-02-20 02:21:31+02','2022-04-04 09:04:33+03','2022-02-11 02:21:19+02'),
+	 ('sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae nulla',53,10,6,1,'2022-01-12 14:43:59+02','2021-09-14 11:32:04+03','2022-03-23 23:34:13+02'),
+	 ('nulla tellus in sagittis dui vel nisl',1,11,6,3,'2021-04-11 02:07:04+03',NULL,'2022-03-15 21:43:41+02'),
+	 ('magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien cum sociis natoque penatibus et magnis dis parturient montes',41,6,6,3,'2022-02-23 11:01:13+02','2022-03-10 20:48:32+02','2022-02-13 00:37:27+02'),
+	 ('ac nibh fusce lacus purus aliquet at feugiat non',1,9,6,3,'2021-10-31 19:10:45+02','2022-01-04 16:45:56+02','2022-04-01 01:57:04+03'),
+	 ('proin interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing',23,8,6,3,'2021-06-11 21:13:05+03','2021-07-07 11:22:17+03','2022-03-10 23:26:38+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('sed magna at nunc commodo',22,7,6,2,'2021-08-21 21:06:14+03',NULL,'2022-01-30 21:55:31+02'),
+	 ('varius nulla facilisi cras non velit nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus',45,12,6,3,'2022-03-21 07:11:04+02','2021-11-30 19:46:58+02','2022-01-05 14:24:15+02'),
+	 ('nunc purus phasellus in felis donec semper sapien a libero nam dui proin leo odio porttitor id',1,14,6,2,'2022-04-24 07:39:22+03','2022-05-06 08:57:24+03','2022-02-15 12:17:27+02'),
+	 ('consectetuer adipiscing elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante',4,11,6,3,'2021-07-17 07:04:50+03',NULL,'2022-01-08 19:01:55+02'),
+	 ('bibendum morbi non quam nec dui luctus rutrum nulla tellus',29,17,6,3,'2021-10-25 02:43:48+03','2021-07-11 04:09:27+03','2022-01-17 14:50:19+02'),
+	 ('odio consequat varius integer ac leo pellentesque ultrices mattis odio donec vitae nisi nam',26,15,6,1,'2021-12-31 23:06:54+02','2021-06-25 13:43:37+03','2022-01-06 15:33:59+02'),
+	 ('penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum',16,17,6,1,'2021-07-10 20:35:34+03',NULL,'2022-01-21 10:35:06+02'),
+	 ('nulla sed accumsan felis ut at dolor quis odio consequat varius',49,11,6,2,'2021-08-26 05:58:05+03',NULL,'2022-03-27 08:40:47+03'),
+	 ('interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit',3,16,6,3,'2022-01-16 23:58:03+02',NULL,'2022-01-26 10:32:57+02'),
+	 ('hac habitasse platea dictumst morbi vestibulum velit id',43,15,6,1,'2021-04-18 09:57:26+03','2021-03-01 08:46:41+02','2022-03-15 02:01:45+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit',37,13,6,2,'2021-09-22 22:06:53+03',NULL,'2022-03-02 01:47:17+02'),
+	 ('porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor',21,7,6,1,'2022-04-25 13:31:10+03','2021-03-23 17:08:32+02','2022-02-16 19:16:33+02'),
+	 ('malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem ipsum',32,14,6,3,'2022-04-13 17:27:37+03',NULL,'2022-03-14 05:27:43+02'),
+	 ('ultrices posuere cubilia curae nulla dapibus dolor vel est',16,12,6,1,'2021-08-04 22:18:12+03','2022-04-13 21:22:22+03','2022-03-11 20:19:37+02'),
+	 ('semper interdum mauris ullamcorper purus sit amet nulla quisque arcu libero',14,16,6,3,'2022-05-16 06:17:45+03',NULL,'2022-01-25 07:59:09+02'),
+	 ('consequat morbi a ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla',6,6,6,3,'2021-11-25 22:01:28+02','2021-11-23 08:54:16+02','2022-02-11 09:14:39+02'),
+	 (NULL,1,7,6,1,'2022-06-20 01:00:00+03',NULL,'2022-02-01 00:00:00+02'),
+	 ('dui nec nisi volutpat eleifend donec ut dolor morbi vel lectus in quam',4,13,6,1,'2022-04-07 13:02:00+03','2022-05-11 16:48:54+03','2022-03-13 17:18:09+02'),
+	 ('eros vestibulum ac est lacinia',11,11,6,2,'2022-05-08 01:47:13+03',NULL,'2022-03-30 18:50:00+03'),
+	 ('suscipit nulla elit ac nulla sed vel enim',14,12,6,3,'2021-06-06 23:36:42+03',NULL,'2022-01-29 21:16:49+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('metus sapien ut nunc vestibulum ante ipsum',42,16,6,1,'2021-03-14 08:35:14+02',NULL,'2022-02-13 01:19:31+02'),
+	 ('justo nec condimentum neque sapien placerat ante nulla justo aliquam quis turpis',3,12,6,1,'2021-07-04 10:01:03+03','2021-08-12 00:19:19+03','2022-03-18 19:42:03+02'),
+	 ('odio odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet',56,17,6,1,'2021-07-23 18:11:37+03','2021-12-31 09:56:15+02','2022-02-22 09:48:20+02'),
+	 ('porta volutpat erat quisque erat eros viverra eget congue eget semper rutrum nulla',38,15,6,2,'2021-10-03 03:00:57+03','2022-04-27 23:05:25+03','2022-03-13 23:51:37+02'),
+	 ('luctus tincidunt nulla mollis molestie lorem quisque ut',33,9,6,3,'2021-07-25 00:26:58+03',NULL,'2022-01-04 12:58:10+02'),
+	 ('sapien in sapien iaculis congue vivamus metus arcu',12,10,6,3,'2021-09-05 03:48:28+03','2021-11-10 05:28:34+02','2022-03-25 12:15:19+02'),
+	 ('felis eu sapien cursus vestibulum proin eu mi nulla ac',24,10,6,2,'2021-07-16 11:29:34+03','2021-08-02 10:39:59+03','2022-03-25 01:41:37+02'),
+	 ('ut volutpat sapien arcu sed',19,18,6,1,'2022-03-01 11:16:37+02',NULL,'2022-03-11 09:17:06+02'),
+	 ('dolor sit amet consectetuer adipiscing elit proin risus praesent',24,9,6,2,'2021-04-05 00:26:01+03',NULL,'2022-01-30 10:30:24+02'),
+	 ('sapien varius ut blandit non interdum',18,18,6,1,'2022-03-08 21:30:29+02',NULL,'2022-03-03 19:33:08+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('phasellus id sapien in sapien',54,10,6,3,'2021-12-02 14:46:11+02','2021-12-12 14:49:12+02','2022-01-24 14:59:17+02'),
+	 ('libero quis orci nullam molestie nibh',4,10,6,3,'2021-07-21 05:26:40+03',NULL,'2022-01-30 09:42:02+02'),
+	 ('bibendum morbi non quam nec dui luctus rutrum nulla tellus in sagittis dui vel nisl duis ac nibh',4,13,6,2,'2021-08-21 22:34:51+03','2021-05-22 10:37:14+03','2022-03-30 17:28:56+03'),
+	 ('at ipsum ac tellus semper interdum mauris ullamcorper purus sit amet nulla quisque arcu libero rutrum ac lobortis vel dapibus',9,16,6,1,'2021-12-16 05:35:26+02','2021-03-04 10:06:11+02','2022-03-19 14:03:35+02'),
+	 ('lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non',31,16,6,2,'2022-05-03 22:41:59+03',NULL,'2022-02-25 02:42:56+02'),
+	 ('tincidunt in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus in felis eu',38,15,6,1,'2021-09-30 20:55:09+03',NULL,'2022-01-18 18:07:46+02'),
+	 ('diam vitae quam suspendisse potenti nullam porttitor lacus at',55,8,6,2,'2022-02-09 13:18:21+02',NULL,'2022-01-03 23:36:13+02'),
+	 ('a pede posuere nonummy integer non velit donec diam neque',35,8,6,1,'2021-12-05 09:17:59+02',NULL,'2022-03-13 23:20:14+02'),
+	 ('libero convallis eget eleifend luctus ultricies eu nibh quisque id justo',22,15,6,1,'2021-04-01 01:04:38+03','2021-12-06 17:08:39+02','2022-03-21 17:30:26+02'),
+	 ('ultrices aliquet maecenas leo odio condimentum id luctus nec molestie',13,6,6,1,'2021-11-21 11:56:45+02','2021-05-08 02:57:19+03','2022-01-17 12:33:45+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('nisl nunc rhoncus dui vel sem sed sagittis nam',22,17,6,2,'2021-06-06 17:39:06+03','2021-07-17 15:49:53+03','2022-03-16 11:00:04+02'),
+	 ('sed tristique in tempus sit amet sem fusce consequat nulla nisl nunc nisl duis bibendum felis sed interdum venenatis turpis',4,16,6,1,'2021-08-25 09:44:19+03',NULL,'2022-01-20 14:14:52+02'),
+	 ('ut odio cras mi pede malesuada in imperdiet et commodo vulputate',3,12,6,2,'2021-12-06 21:42:33+02',NULL,'2022-02-14 23:42:45+02'),
+	 ('volutpat convallis morbi odio odio elementum eu interdum',19,17,6,1,'2022-03-30 04:34:08+03','2022-04-24 23:09:02+03','2022-01-23 02:09:54+02'),
+	 ('nullam porttitor lacus at turpis donec posuere metus vitae ipsum aliquam non mauris morbi non lectus aliquam',42,16,6,2,'2021-11-08 20:02:14+02',NULL,'2022-03-20 16:06:27+02'),
+	 ('lorem ipsum dolor sit amet consectetuer',45,13,6,2,'2021-07-29 15:34:39+03','2022-01-03 08:46:22+02','2022-03-26 13:52:19+02'),
+	 ('vitae mattis nibh ligula nec sem duis aliquam convallis nunc proin at turpis a pede',44,12,6,1,'2021-03-08 16:07:12+02',NULL,'2022-03-28 07:11:52+03'),
+	 ('morbi quis tortor id nulla ultrices',48,7,6,2,'2021-05-29 07:05:08+03','2022-05-06 22:35:24+03','2022-02-05 23:48:11+02'),
+	 ('erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu mi nulla ac enim in tempor turpis',22,18,6,3,'2022-01-06 00:30:26+02',NULL,'2022-01-10 02:35:28+02'),
+	 ('rhoncus sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis',11,8,6,3,'2021-10-17 16:49:24+03','2022-01-11 06:56:25+02','2022-03-01 11:59:43+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('justo aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis turpis sed ante',1,18,6,1,'2022-01-01 04:21:44+02',NULL,'2022-03-07 06:46:07+02'),
+	 ('id ornare imperdiet sapien urna pretium nisl ut volutpat sapien arcu sed',46,12,6,1,'2022-03-25 21:05:15+02','2021-06-19 10:50:25+03','2022-02-24 10:23:07+02'),
+	 ('ipsum dolor sit amet consectetuer adipiscing elit',39,14,6,1,'2021-09-17 07:42:09+03',NULL,'2022-02-02 07:27:33+02'),
+	 ('in congue etiam justo etiam',7,10,6,1,'2022-05-06 15:14:27+03',NULL,'2022-02-15 20:43:08+02'),
+	 ('sapien iaculis congue vivamus metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean lectus pellentesque',8,9,6,2,'2021-05-13 04:04:25+03','2021-06-07 05:34:59+03','2022-01-27 19:13:46+02'),
+	 ('dapibus dolor vel est donec odio justo sollicitudin ut suscipit',11,12,6,3,'2022-02-03 08:29:51+02','2022-02-14 16:41:35+02','2022-03-08 02:40:11+02'),
+	 ('mauris viverra diam vitae quam suspendisse potenti nullam porttitor lacus at turpis donec posuere metus vitae',31,8,6,3,'2022-01-31 05:35:51+02','2022-05-16 18:36:55+03','2022-03-20 17:08:12+02'),
+	 ('convallis nunc proin at turpis a pede posuere nonummy integer non',24,13,6,1,'2021-12-27 13:17:20+02','2022-01-06 09:12:29+02','2022-02-14 07:19:07+02'),
+	 ('sociis natoque penatibus et magnis dis',49,11,6,2,'2021-12-30 03:36:21+02','2022-03-18 14:53:25+02','2022-01-04 16:26:34+02'),
+	 ('parturient montes nascetur ridiculus mus etiam vel augue vestibulum rutrum rutrum neque aenean auctor gravida sem praesent id',6,14,6,3,'2021-12-08 14:21:34+02','2021-10-20 08:44:26+03','2022-03-19 12:47:26+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('congue eget semper rutrum nulla nunc purus phasellus in felis donec',5,8,6,1,'2021-08-25 21:25:24+03','2021-09-04 08:30:10+03','2022-01-15 01:49:50+02'),
+	 ('purus sit amet nulla quisque arcu libero rutrum ac lobortis vel',8,13,6,1,'2021-10-02 11:17:55+03','2022-03-18 07:15:54+02','2022-01-23 03:40:28+02'),
+	 ('pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et',15,9,6,2,'2021-05-07 21:27:58+03','2022-01-30 02:17:24+02','2022-03-18 19:10:11+02'),
+	 ('montes nascetur ridiculus mus etiam vel augue vestibulum',39,6,6,1,'2022-04-04 06:21:40+03',NULL,'2022-03-12 20:02:46+02'),
+	 ('amet eros suspendisse accumsan tortor quis turpis sed ante vivamus tortor duis mattis egestas metus aenean fermentum donec ut',40,14,6,2,'2022-04-18 05:51:43+03','2021-07-27 02:27:21+03','2022-03-18 22:49:42+02'),
+	 ('pede lobortis ligula sit amet eleifend pede libero quis orci nullam molestie nibh in lectus pellentesque at nulla',43,17,6,1,'2022-03-17 13:58:43+02',NULL,'2022-01-23 19:18:30+02'),
+	 ('aliquam quis turpis eget elit sodales scelerisque mauris sit amet eros suspendisse accumsan tortor quis',54,13,6,2,'2021-11-12 22:01:50+02',NULL,'2022-03-27 08:54:27+03'),
+	 ('eu massa donec dapibus duis at velit eu',28,13,6,2,'2021-11-09 09:38:06+02',NULL,'2022-02-16 23:15:13+02'),
+	 ('eros vestibulum ac est lacinia nisi venenatis tristique fusce congue',27,18,6,2,'2021-11-18 19:57:27+02',NULL,'2022-03-21 15:00:32+02'),
+	 ('aliquet ultrices erat tortor sollicitudin mi sit amet lobortis sapien sapien non mi integer ac',5,8,6,3,'2022-03-22 19:04:54+02','2022-03-07 09:36:30+02','2022-02-24 05:15:50+02');
+INSERT INTO public.varasto_rental_event (remarks,item_id,renter_id,staff_id,storage_id,estimated_date,returned_date,start_date) VALUES
+	 ('in leo maecenas pulvinar lobortis est phasellus sit amet erat nulla tempus vivamus',41,16,6,3,'2021-06-08 18:26:18+03',NULL,'2022-03-19 19:28:13+02'),
+	 ('amet consectetuer adipiscing elit proin interdum mauris non ligula pellentesque ultrices phasellus id',56,11,6,3,'2021-09-05 12:45:37+03','2022-05-08 07:29:19+03','2022-03-15 11:16:14+02'),
+	 ('tincidunt nulla mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh',33,11,6,2,'2022-06-25 21:57:31+03',NULL,'2022-01-24 04:19:44+02'),
+	 ('metus arcu adipiscing molestie hendrerit at vulputate vitae nisl aenean',31,6,6,3,'2022-06-04 02:27:57+03',NULL,'2022-01-31 13:16:05+02'),
+	 ('eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus mauris',41,6,6,2,'2022-12-29 13:55:02+02',NULL,'2022-01-01 16:19:51+02');

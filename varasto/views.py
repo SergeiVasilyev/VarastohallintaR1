@@ -27,7 +27,8 @@ def test(request):
 def person_view(request):
     return render(request, 'varasto/person.html')
 
-
+def new_event(request):
+    return render(request, 'varasto/new_event.html')
 
 
 
@@ -150,6 +151,8 @@ def dict_question(request):
     }
     return render(request, 'varasto/question.html', context)   
 
+def new_event_goods(request):
+    return render(request, 'varasto/new_event_goods.html')
 
 
 
