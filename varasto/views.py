@@ -107,9 +107,6 @@ def base_main(request):
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
-def test_Anna_view(request):
-    return render(request, 'varasto/test_Anna.html')
-
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
@@ -142,5 +139,4 @@ def rental_events(request):
 def new_event_goods(request):
     return render(request, 'varasto/new_event_goods.html')
 
-def main_base(request):
-    return render(request, 'varasto/main_base.html')
+
