@@ -33,7 +33,6 @@ urlpatterns = [
 
     path('new_event/', views.new_event, name='new_event'),
 
-    path('dict_question/', views.dict_question, name='dict_question'),
     path('person/', views.person_view, name='person'),
     path('test/', views.test, name='test'),
     path('recovery/', views.user_recovery, name='recovery'),
