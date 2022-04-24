@@ -27,6 +27,7 @@ def test(request):
 def person_view(request):
     return render(request, 'varasto/person.html')
 
+
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def renter(request, idx):
@@ -42,6 +43,10 @@ def renter(request, idx):
         'datenow': datenow,
     }
     return render(request, 'varasto/renter.html', context)
+
+def new_event(request):
+    return render(request, 'varasto/new_event.html')
+
 
 
 
@@ -165,7 +170,10 @@ def dict_question(request):
     }
     return render(request, 'varasto/question.html', context)   
 
+def new_event_goods(request):
+    return render(request, 'varasto/new_event_goods.html')
 
 
 
-
+def main_base(request):
+    return render(request, 'varasto/main_base.html')
