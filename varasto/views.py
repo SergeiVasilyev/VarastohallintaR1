@@ -21,16 +21,31 @@ from django.db.models import Min, Max
 def new_item(request):
     return render(request, 'varasto/new_item.html')
 
-def test(request):
-    return render(request, 'varasto/test.html')
+def inventaario_side_window(request):
+    return render(request, 'varasto/inventaario_side_window.html')
 
 def person_view(request):
     return render(request, 'varasto/person.html')
 
 
+@login_required()
+@user_passes_test(is_not_student, redirect_field_name=None)
+def renter(request, idx):
+    selected_user = CustomUser.objects.get(id=idx)
+    print(selected_user)
 
+    now = datetime.now()
+    datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'selected_user': selected_user,
+        'user': request.user,
+        'idx': idx,
+        'datenow': datenow,
+    }
+    return render(request, 'varasto/renter.html', context)
 
-
+def new_event(request):
+    return render(request, 'varasto/new_event.html')
 
 
 def login_view(request):
@@ -71,9 +86,10 @@ def recovery_view(request):
     return render(request, 'varasto/recovery.html')
 
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    return render(request, 'varasto/index.html')
+    return redirect('login')
+    # if not request.user.is_authenticated:
+    #     return redirect('login')
+    # return render(request, 'varasto/index.html')
 
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
@@ -90,9 +106,6 @@ def base_main(request):
 
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
-
-def test_Anna_view(request):
-    return render(request, 'varasto/test_Anna.html')
 
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
@@ -122,35 +135,8 @@ def rental_events(request):
     return render(request, 'varasto/rental_events.html', context)
 
 
-def dict_question(request):
 
-    query_set = Rental_event.objects.filter(returned_date__isnull=True).order_by('start_date')
-    # print(query_set)
-    # for i in query_set:
-    #     print(i.renter, i.item)
-    # newlist = {}
-    # for i in query_set:
-    #     if not i.returned_date:
-    #         if i.renter.username in newlist:
-    #             newlist[i.renter.username] += [i.item, i.renter, i.start_date]
-    #         else:
-    #             newlist[i.renter.username] = [i.item, i.renter, i.start_date]         
-    
-    newlist = {
-        'first': ['one', 'two'],
-        'second': ['three', 'four'],
-        'third': {'fifth': ['five', 'six'], 'seventh': 'SEVEN'}
-    }
-
-    print(newlist)
-    print(newlist['third']['fifth'][1])
-
-    context = {
-        'rental_events': newlist,
-    }
-    return render(request, 'varasto/question.html', context)   
-
-
-
+def new_event_goods(request):
+    return render(request, 'varasto/new_event_goods.html')
 
 

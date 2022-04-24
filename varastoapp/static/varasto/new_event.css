@@ -1,0 +1,135 @@
+/* BUTTONS IN CONTENT */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center;
+}
+    .btn_strech {
+        place-self: center stretch;
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #24A19C;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__button_bg_red {
+        color: white;
+        background: #D96098;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+    .list__button__text{
+        padding: 0 1.2em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    .font-size{
+        font-size: 1.5em;
+        padding: 0 0.6em;
+    }
+
+    .form-label{
+        font-size: 0.875em;
+    }
+    
+/* / BUTTONS IN CONTENT */
+
+
+/* CONTENT */
+
+.new_event_warp{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    /* border: 1px solid red; */
+}
+.main_buttons {
+    /* flex: 1 1 auto; */
+    display: flex;
+    align-items: flex-end;
+    justify-content: end;
+}
+.main_buttons div {
+    /* border: 1px solid red; */
+    display: flex;
+    
+    
+}
+.added_items {
+    width: 100%;
+}
+
+.row {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+form {
+    padding: 0 !important;
+}
+
+/* / CONTENT */
+
+
+
+/* MAIN BUTTONS */
+
+.button_s {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_s__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    /* border: 1px solid red; */
+}
+
+/* / MAIN BUTTONS */
+
+h4{
+    color: #2D3748;
+}
+
+p{
+    color: #718096
+}
+
+
+
