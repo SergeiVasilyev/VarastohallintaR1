@@ -64,6 +64,10 @@
     justify-content: center;
     
 }
+    .button_link, .button_link:hover, .button_link:visited {
+        text-decoration: none;
+    }
+
     .btn_strech {
         place-self: center stretch;
     }
@@ -161,11 +165,11 @@
     
 }
 .list__item_photo img {
-    width: 120px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     object-fit:cover;
-    object-position: -38px 10%;
-    /* object-position: 50% 50%; */ /* kuva keskellä */
+    /* object-position: -38px 10%; */
+    object-position: 50% 50%; /* kuva keskellä */
 }
 
 

@@ -16,8 +16,10 @@
                 <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
             </div>
             <div class="page_name item_left">
-                <span>Kotisivu / Vuokraaminen</span>
-                <span>Vuokraaminen</span>
+                {% comment %} <span>Kotisivu / Vuokraaminen</span> {% endcomment %}
+                {% comment %} <span>Vuokraaminen</span> {% endcomment %}
+                <span>Kotisivu / {% block path %}{% endblock %}</span>
+                <span>{% block page %}{% endblock %}</span>
             </div>
             <div class="search">
                 <form action="" method="get">

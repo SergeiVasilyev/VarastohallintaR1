@@ -1,0 +1,109 @@
+{% extends "varasto/base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/inventaario_side_window.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Inventaario_side_window{% endblock %}
+
+{% block content %}
+
+
+<div class="refund_page">
+    <div class="row01">
+        <img src="https://www.hilti.fi/medias/sys_master/images/h86/hdf/9531940339742.jpg" class="img-thumbnail" alt="9531940339742.jpg">
+    </div>
+    <div class="row01">
+        <div class="span_warp">
+            <span class="largest">Akkuporakone BOSH</span>
+            <span class="small_medium">TT- RS200</span>
+            <span class="middle_medium">Tuotetiedot</span>
+            <span class="small">Tuotenumero</span>
+            <span class="middle">00005447</span>
+            <span class="small">EAN-koodi</span>
+            <span class="middle">6942897645789</span>
+        </div>
+    </div>
+
+    
+
+    <div class="xdiv">
+        <div class="row02">
+            <div class="span_warp">
+              <span class="small">Tekniset parametrit</span>
+              <span class="small_medium">1.8kg, Akku 18V</span>
+              <span class="small">Pakkaus</span>
+              <span class="small_medium">1 kpl</span>
+              <span class="small">Tyyppi</span>
+              <span class="small">-</span>
+              <span class="small">Kappalemäärä</span>
+              <span class="small_medium">15 kpl</span>
+            </div>    
+        </div>       
+                
+    
+        <div class="row02"> 
+            <div class="span_warp">
+                <span class="small">Laskun numero</span>
+                <span class="small_medium">91119001001948</span>
+                <span class="small">Hankinta paikka</span>
+                <span class="small_medium">Motonet</span>
+                <span class="small">Hankintahinta</span>
+                <span class="small_medium">371,60€</span>
+                <span class="small">Hankinta päivämäärä</span>
+                <span class="small_medium">03.05.2021</span>
+                <span class="small">Kustannuspaikka</span>
+                <span class="small_medium">534334</span>
+                <span class="small">Sijoituspaikka</span>
+                <span class="small_medium">Rakennus varasto, Esimerkkitie 423</span>
+            </div> 
+        </div> 
+    </div>  
+
+
+
+
+
+    
+
+{% comment %} <div class="xdiv">
+    <div class="row02">
+        <div class="span_warp">
+          <span class="small">Tekniset parametrit<br></span>
+          <span class="small_medium">1.8kg, Akku 18V</span>
+          <span class="small">Pakkaus</span>
+          <span class="small_medium">1 kpl</span>
+          <span class="small">Tyyppi</span>
+          <span class="small">-</span>
+          <span class="small">Kappalemäärä</span>
+          <span class="small_medium">15 kpl</span>
+        </div>    
+    </div> 
+    
+            
+
+    <div class="row02"> 
+        <div class="span_warp">
+            <span class="small">Laskun numero</span>
+            <span class="small_medium">91119001001948</span>
+            <span class="small">Hankinta paikka</span>
+            <span class="small_medium">Motonet</span>
+            <span class="small">Hankintahinta</span>
+            <span class="small_medium">371,60€</span>
+            <span class="small">Hankinta päivämäärä</span>
+            <span class="small_medium">03.05.2021</span>
+            <span class="small">Kustannuspaikka</span>
+            <span class="small_medium">534334</span>
+            <span class="small">Sijoituspaikka</span>
+            <span class="small_medium">Rakennus varasto, Esimerkkitie 423</span>
+        </div> 
+    </div> 
+</div>   {% endcomment %}
+  
+    
+</div>
+
+{% endblock %}
