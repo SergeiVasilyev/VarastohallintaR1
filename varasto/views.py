@@ -156,4 +156,5 @@ def new_event_goods(request):
 
 
 
-
+def main_base(request):
+    return render(request, 'varasto/main_base.html')
