@@ -1,0 +1,79 @@
+.new_event_wrap{
+    display: grid;
+    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 150px;
+    border-top: 1px solid #E2E8F0;
+    align-items: center;
+}
+
+.row01 {
+    /* border: 1px solid red; */
+    padding: 1em;
+}
+
+.item_name span{
+    display: block;
+}
+
+.header{
+    font-size: 1em;
+    font-weight: 600;
+    color: #2D3748;
+
+}
+
+.paragraph{
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #718096;
+}
+
+.code_number{
+    font-weight: 400;
+    color: #2D3748;
+}
+
+.status{
+    font-size: 1em;
+    font-weight: 500;
+    color: #24A19C;
+}
+
+.status_red{
+    font-size: 1em;
+    font-weight: 500;
+    color: #D96098;  
+}
+
+.button_props{
+    display: inline-flex;
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.button_active{
+    color: #FFFFFF;
+    background: #24A19C;
+}
+
+.button_inactive{
+    color: #889EAF;
+    background: #E1E5EA;
+}
+

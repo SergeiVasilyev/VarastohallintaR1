@@ -28,6 +28,7 @@ urlpatterns = [
     path('recovery/', recovery_view, name="recovery"),
     path('rental_events/', views.rental_events, name='rental_events'),
     path('base_main/', views.base_main, name='base_main'),
+    path('new_event/', views.new_event, name='new_event'),
 
     path('dict_question/', views.dict_question, name='dict_question'),
     path('person/', views.person_view, name='person'),
@@ -36,4 +37,5 @@ urlpatterns = [
     path('new_item/', views.new_item, name='new_item'),
     path('update_rental_status/', views.update_rental_status, name='update_rental_status'),
     path('test_Anna/', views.test_Anna_view, name='test_Anna'),
+    path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
 ]
