@@ -66,11 +66,14 @@
 }
     .button_link, .button_link:hover, .button_link:visited {
         text-decoration: none;
+        /* border: 1px solid blue; */
     }
 
     .btn_strech {
         place-self: center stretch;
     }
+    
+
     .list__button__text {
         display: inline-flex;
         align-items: center;
@@ -172,12 +175,23 @@
     object-position: 50% 50%; /* kuva keskellä */
 }
 
+.list__item_etime {
+    display: flex;
+    justify-content: center;
+}
 
-.list__item_student, .list__item_group, .list__item_st-time, .list__item_etime, .list__item_end-time, 
+.list__item_student, .list__item_group, .list__item_st-time, .list__item_end-time, 
 .list__nameof_rented_item, .list__collapse {
     display: flex;
     flex-direction: column;
     justify-content: end;
+}
+
+.list__item_st-time span {
+    color:#718096;
+    font-size: 1em;
+    text-align: center;
+    font-weight: 400;
 }
 
 .brd_left {
@@ -225,7 +239,7 @@
     text-align: center;
 }
 
-.list__item_st-time span, .list__item_etime span, .list__item_end-time span {
+.list__item_etime span, .list__item_end-time span {
     text-align: center;
     font-size: 1em;
     font-weight: 400;

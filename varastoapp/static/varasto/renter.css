@@ -66,10 +66,15 @@
 /* ---history--- */
 .history {
     padding-top: 2em;
+    line-height: 1.1;
+}
+.history_list:nth-child(odd) {
+    background-color: #f8fbff;
 }
 .history_list {
     display: grid;
-    grid-template-columns: 170px repeat(3, minmax(6em, 1fr));
+    /* grid-template-columns: 170px repeat(3, minmax(6em, 1fr)); */
+    grid-template-columns: 170px 1fr minmax(16.1em, 1fr) 0.5fr
 }
 .history_list div {
     /* border: 1px solid green; */
@@ -79,21 +84,25 @@
 }
 .history_photo > div{
     overflow: hidden;
-    width: 150px;
-    height: 130px;
-    border-radius: 0.7em; 
+    width: 130px;
+    height: 120px;
+    border-radius: 0.7em;
+    border: 0.5px solid #7897AB;
+    /* padding: 0em; */
 }
 .history_photo > div img {
-    width: 150px;
-    height: 130px;
-    object-fit:cover;
+    width: 130px;
+    height: 120px;
+    object-fit: cover;
     object-position: 50% 50%; /* kuva keskellä */
+    /* border: 0.5px solid red; */
 }
 
 
 .item_info {
     display: inline-flex;
     flex-direction: column;
+    padding: 0.6em 0.5em;
 }
 .item_info > div {
     display: inline-flex;
@@ -102,7 +111,7 @@
 }
 .item_name {
     color: #2D3748;
-    font-size: 1.5em;
+    font-size: 1.25em;
     font-weight: 600;
 }
 .item_props {
@@ -110,9 +119,15 @@
     font-size: 1em;
     font-weight: 400;
 }
-.item_num {
+.item_num_name {
     color: #718096;
     font-size: 0.875em;
+    font-weight: 400;
+}
+/* !!!!!!!!!!! */
+.item_num {
+    color: #2D3748;
+    font-size: 1.125em;
     font-weight: 400;
 }
 
@@ -122,46 +137,95 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 0.5em;
+    /* border: 1px solid red; */
 }
 .rental_period_date{
     color: #2D3748;
-    font-size: 1.3em;
+    font-size: 1em;
     font-weight: 500;
     margin-bottom: 1em;
 }
 .list__rented_item_status {
     display: flex;
     justify-content: center;
+    align-items: center;
+    /* border: 1px solid red; */
 }
-.list__rented_item_status > span{
-    display: block;
+.list__rented_item_status > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 7.5em;
-    padding: 0 1.2em;
     height: 1.5em;
-    border-radius: 0.5em;
+    border-radius: 0.8em;
     text-align: center;
+    padding: 0.8em;
+    /* border: 1px solid green; */
 }
-.status_green > span {
+
+.status_green {
     background-color: #24A19C;
     border: 1px solid #24A19C;
     color: white;
 }
-.status_gray > span {
+.status_gray {
     background-color: #CBD5E0;
     border: 1px solid #CBD5E0;
     color: #7897AB;
 } 
-.status_red > span {
+.status_red {
     background-color: #D96098;
     border: 1px solid #D96098;
     color: white;
 } 
 
 
+.update_event {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5em; 
+}
 
-
-
-
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center;
+    
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    margin: 0.2em; 
+}
+.button_link, .button_link:hover, .button_link:visited {
+    text-decoration: none;
+}
+.list__button__text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+    /* border: 1px solid blue; */
+}
+.btn_strech {
+    place-self: center stretch;
+}
+.list__button_bg_blue {
+    color: white;
+    background: #325288;
+}
 
 
 

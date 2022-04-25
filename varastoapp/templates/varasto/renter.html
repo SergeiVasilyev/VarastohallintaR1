@@ -40,40 +40,73 @@
 
         </div>
 
-
+        
         <div class="history">
+            {% for rental_event in rental_events %}
             <div class="history_list">
                 <div class="history_photo">
-                    <div><img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}"></div>
+                    <div><img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}"></div>
                 </div>
+
                 <div class="item_info">
                     <div>
-                        <span class="item_name">Yleisruuvi PROF</span>
-                        <span class="item_props">uppokanta Zn T20 4x30mm</span>
+                        <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+                        <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                     </div>
-                    <span class="item_num">Tavaran numero - 00003232</span>
+                    <span class="item_num_name">Tavaran numero</span>
+                    <span class="item_num">{{rental_event.item.id}}</span>
                 </div>
+
                 <div class="rental_period">
-                    <span class="rental_period_date">01.02.2021 - 15.02.2021</span>
-                    {% if not event.returned_date and event.is_past_due %}
-                        <div class="list__rented_item_status status_green">
-                            <span>Lainalla</span>
+                    <span class="rental_period_date">{{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}</span>
+                    {% if not rental_event.returned_date and rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_green"><span>Lainalla</span></div>
                         </div>
-                        {% else %}{% if not event.returned_date and not event.is_past_due %}
-                        <div class="list__rented_item_status status_red">
-                            <span>Erääntynyt</span>
+                        {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_red"><span>Erääntynyt</span></div>
                         </div>
-                        {% else %}{% if event.returned_date %}
-                        <div class="list__rented_item_status status_gray">
-                            <span>Päättänyt</span>
+                        {% else %}{% if rental_event.returned_date %}
+                        <div class="list__rented_item_status">
+                            <div class="status_gray"><span>Päättänyt</span></div>
                         </div>
                         {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
-                <div>4</div>
+                
+                <div class="update_event">
+                    <div class="buttons">
+                        <a class="button_link" href="#">
+                            <button type="button" class="list__button list__button_bg_blue btn_strech">
+                                <span class="list__button__text ">Päivittää</span>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="buttons">
+                        <a class="button_link" href="#">
+                            <button type="button" class="list__button list__button_bg_blue btn_strech">
+                                <span class="list__button__text ">Lopettaa</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+
+            
         </div>
+        
+        
+
+
+
+
+
+
+
+
 
 
 

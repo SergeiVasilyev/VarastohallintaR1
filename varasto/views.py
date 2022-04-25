@@ -32,11 +32,13 @@ def person_view(request):
 @user_passes_test(is_not_student, redirect_field_name=None)
 def renter(request, idx):
     selected_user = CustomUser.objects.get(id=idx)
+    rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
     print(selected_user)
 
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
+        'rental_events': rental_events,
         'selected_user': selected_user,
         'user': request.user,
         'idx': idx,
