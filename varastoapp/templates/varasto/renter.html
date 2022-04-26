@@ -53,8 +53,9 @@
                         <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
                         <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                     </div>
-                    <span class="item_num_name">Tavaran numero</span>
-                    <span class="item_num">{{rental_event.item.id}}</span>
+                    <span class="item_num_name">Tuotekoodi</span>
+                    <span class="item_num">{{rental_event.id_start_null}}</span>
+                    <!-- <span class="item_num">{{rental_event.item.id}}</span> -->
                 </div>
 
                 <div class="rental_period">

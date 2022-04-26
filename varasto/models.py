@@ -98,6 +98,11 @@ class Rental_event(models.Model):
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
 
+    @property
+    def id_start_null (self):
+        new_id = str(self.item.id).zfill(8)
+        return new_id
+
     @register.filter
     def get_item(dictionary, key):
         # return dictionary.get(key)
