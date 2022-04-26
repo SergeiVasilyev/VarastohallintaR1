@@ -51,13 +51,13 @@ class Goods(models.Model):
     parameters = models.CharField(max_length=100, blank=True, null=True)
     package = models.CharField(max_length=50)
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
-    item_description = models.CharField(max_length=255, blank=True, null=True)
-    cost_centre = models.CharField(max_length=100)
-    reg_number = models.CharField(max_length=50, blank=True, null=True)
-    purchase_data = models.DateField()
-    purchase_price = models.DecimalField(max_digits=6, decimal_places=2)
-    purchase_place = models.CharField(max_length=50)
-    invoice_number = models.CharField(max_length=50) #16
+    item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
+    cost_centre = models.CharField(max_length=100) # Kustannuspaikka
+    reg_number = models.CharField(max_length=50, blank=True, null=True) # ???
+    purchase_data = models.DateField() # Hankitapäivä
+    purchase_price = models.DecimalField(max_digits=6, decimal_places=2) # Hankitahinta
+    purchase_place = models.CharField(max_length=50) # Hankitapaikka
+    invoice_number = models.CharField(max_length=50) #16 Laskun numero
 
     def __str__(self):
         return '%s' % (self.item_name)

@@ -53,6 +53,9 @@
                         <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
                         <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                     </div>
+                    <div class="item_info_place">
+                        <span class="item_num">{{rental_event.storage.rack}} - {{rental_event.storage.shelf}} - {{rental_event.storage.place}}</span>
+                    </div>
                     <span class="item_num_name">Tuotekoodi</span>
                     <span class="item_num">{{rental_event.id_start_null}}</span>
                     <!-- <span class="item_num">{{rental_event.item.id}}</span> -->
@@ -79,18 +82,14 @@
                 
                 <div class="update_event">
                     <div class="buttons">
-                        <a class="button_link" href="#">
-                            <button type="button" class="list__button list__button_bg_blue btn_strech">
-                                <span class="list__button__text ">Päivittää</span>
-                            </button>
-                        </a>
+                        <button type="button" class="list__button list__button_bg_blue btn_strech" data-bs-toggle="modal" data-bs-target="#UpdateWindow">
+                            <span class="list__button__text ">Päivittää</span>
+                        </button>
                     </div>
                     <div class="buttons">
-                        <a class="button_link" href="#">
-                            <button type="button" class="list__button list__button_bg_blue btn_strech">
-                                <span class="list__button__text ">Lopettaa</span>
-                            </button>
-                        </a>
+                        <button type="button" class="list__button list__button_bg_blue btn_strech" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qqq" data-bs-whatever="@mdo">
+                            <span class="list__button__text ">Lopettaa</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -99,17 +98,43 @@
             
         </div>
         
-        
 
+    </div>
 
-
-
-
-
-
-
-
-
-
+    <!-- Modal 1 -->
+    <div class="modal fade" id="UpdateWindow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include "varasto/vuokraus_tilanne1.html" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal 2 -->
+    <div class="modal fade" id="qqq" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include "varasto/vuokraus_tilanne1.html" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
