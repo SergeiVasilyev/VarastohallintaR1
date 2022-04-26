@@ -1,5 +1,5 @@
 .new {
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
 }
 
 .new_img_desc {
@@ -7,7 +7,10 @@
     grid-template-columns: 0.6fr 0.5fr 2fr;
     /* grid-template-rows: 0.8fr; */
     grid-column-gap: 10px;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
+    color: #2D3748;
+    font-size: 0.95em;
+    font-weight: 600;
     /* align-items: center; */
 }
 
@@ -31,7 +34,7 @@
     height: 10px;
 }
 
-.desc_container {
+/*.desc_container {
     width: 80%;
     height: 80%;
     resize: none;
@@ -43,6 +46,10 @@
     display: flex;
     flex-direction: column;
     text-align: center;
+}*/
+
+.form-controlli {
+    height: 95%;
 }
 
 .new_middle {
@@ -50,8 +57,8 @@
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 22px;
-    grid-row-gap: 20px;
-    border: 1px solid purple;
+    grid-row-gap: 18px;
+    /* border: 1px solid purple; */
     justify-content: space-evenly;
     height: 15rem;   
     color: #2D3748;
@@ -61,7 +68,7 @@
 }
 
 .new_middle div{
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 /* .div1 { 
@@ -108,7 +115,7 @@
 } */
 
 
-.div7 { 
+/* .div7 {
     grid-area: 3 / 1 / 4 / 2; 
     display: flex;
     flex-direction: column;
@@ -126,8 +133,8 @@
     grid-area: 2 / 3 / 3 / 4; 
     display: flex;
     flex-direction: column;
-    text-align: center;
-}
+    text-align: center; */
+
 
 .tyokaluryhma_container, .nimi_container, .merkki_container, .malli_container, .tyyppi_container, .koko_container, .tptt_container, .pakkaus_container, .kplmaara_container {
     height: 50%;
@@ -143,27 +150,30 @@
 .new_bottom {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 22px;
-    border: 1px solid yellow;
+    /* border: 1px solid yellow; */
     text-align: center;
     /* justify-content: space-evenly; */
     height: 15rem;
     align-content: center;
-    margin-top: 35px;
+    margin-top: 30px;
+    color: #2D3748;
+    font-size: 0.75em;
+    font-weight: 600;
 }
 
-.div10 { 
+/* .div10 {
     grid-area: 1 / 1 / 2 / 2;
     display: flex;
     flex-direction: column; 
     font-size: 12px;
-    /* text-align: center; */
+    /* text-align: center; 
     align-content: left;
-}
+} */
 
-.div11 { 
+/*.div11 { 
     grid-area: 1 / 2 / 2 / 3;
     display: flex;
     flex-direction: column;
@@ -209,7 +219,7 @@
     flex-direction: column; 
     font-size: 12px;
     text-align: center;
-}
+} */
 
 .laskunr_container, .hankintapaikka_container, .hankintahinta_container, .hankintavuosi_container, .varastopaikka_container, .kustannuspaikka_container, .reknro_container {
     height: 50%;
@@ -226,6 +236,20 @@
     /* display: inline-block; */
     float: right;
     padding-right: 5px;
+}
+
+.btn-primary1, .btn-primary1:active, .btn-primary1:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    /* border: #28314B !important; */
+    padding: 0.7em 3em !important;
+    transition-duration: 0,4s;
+}
+
+.btn-primary1:hover {
+    /* background-color: #252d3a !important; */
+    color: white !important;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 
