@@ -142,4 +142,8 @@ def new_event_goods(request):
 def inventory(request):
     return render(request, 'varasto/inventory.html')
 
+def report(request):
+    return render(request, 'varasto/report.html')
+
+
 

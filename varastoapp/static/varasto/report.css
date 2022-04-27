@@ -1,0 +1,80 @@
+.logo_header{
+    display: grid;
+    border: 1px solid blue;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content:space-between;
+}
+
+.subhead, .subhead01{
+    display: grid;
+    border: 1px solid green;
+    grid-template-columns: 1fr 1fr 1fr;
+} 
+
+.button_props{
+    display: inline-flex;
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.button_active{
+    color: #FFFFFF;
+    background: #325288;
+}
+
+.logo_header, .subhead, .subhead01{
+    justify-content:space-between;
+}
+
+.column_name{
+    display: grid;
+    grid-template-columns: minmax(16em, 2fr) repeat(4, 1fr);
+    align-items: center;
+    color: #2D3748;
+}
+
+.column_name div span{
+    font-size: 1,25em;
+    font-weight: 500;
+}
+
+.column_name div, .line_content div{
+    border: 1px solid red;
+}
+
+.column_name > div, .line_content > div{
+    padding: 0 0.2em;
+}
+
+.line_content{
+    display: grid;
+    grid-template-columns:minmax(16em, 2fr) repeat(4, 1fr);
+    align-items: center;
+    
+}
+
+.row01 {
+    border: 1px solid red;
+    /* padding: 1em; */
+}
+
+.item_name span, .renter_information span{
+    display: block;
+}

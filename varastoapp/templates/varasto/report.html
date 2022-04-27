@@ -1,0 +1,147 @@
+{% extends "varasto/base_main.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/report.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}New event{% endblock %}
+
+{% block main_content %}
+
+<div class="logo_header">
+    <div class="">
+        <span class="">VARASTO</span>
+    </div>
+
+    <div class="">
+        <span class="">Vuokraus raportointi</span>
+    </div>
+    
+    <div class="">
+        <span class="">Sivu 1/2</span>
+    </div>
+</div>
+
+<div class="subhead">
+    <div class="row01">
+        <div class="renter_information">
+            <span class="">Vuokraaja:</span>
+            <span class="">Alexa Liras</span>
+            <span class="">TIVI -20a</span>
+            <span class="">+358443565631</span>
+            <span class="">alexaLiras@raseko.fi</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="renter_information">
+            <span class="">Asiointiosoite:</span>
+            <span class="">Raseko</span>
+            <span class="">Rakennusalan varasto</span>
+            <span class="">Juhaninkuja 1</span>
+            <span class="">21200 Raisio</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <button type="button" class="button_props button_active">
+            <span class="button__text">Tulosta</span>
+        </button>
+    </div>
+</div>
+
+<div class="subhead01">
+    <div class="row01">
+        <div class="renter_information">
+            <span class="">Vastuuopettaja:</span>
+            <span class="">Pekka Pirinen</span>
+            <span class="">+3581234576</span>
+            <span class="">pekka.pirinen@raseko.fi</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="renter_information">
+            <span class="">Raportti otettu:</span>
+            <span class="">Erik NIeminen</span>
+            <span class="">26.04.2022</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="column_name">
+
+    <div class="row01">
+        <div class="">
+            <span class="">Tuotteen nimi ja kuvaus</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">Tuotenumero</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">Lukumäärä</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">Vuokra-aika</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">Tavarav vuokrannut henkilö</span>
+        </div>
+    </div>
+</div>
+
+<div class="line_content">
+
+    <div class="row01">
+        <div class="item_name">
+            <span class="header">Makita Screwdriver</span>
+            <span class="paragraph">OST-25</span>
+            
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="">98258</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="">1 kpl</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="">30.03. - 15.04.2022</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="item_name">
+            <span class="">Juha Lindström</span>
+            <span class="">varastontyöntekijä</span>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

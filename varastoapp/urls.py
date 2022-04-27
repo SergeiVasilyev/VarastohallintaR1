@@ -41,4 +41,5 @@ urlpatterns = [
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),
+    path('report/', views.report, name='report'),
 ]
