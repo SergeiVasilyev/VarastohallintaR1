@@ -2,7 +2,16 @@
     display: grid;
     border: 1px solid blue;
     grid-template-columns: 1fr 1fr 1fr;
-    justify-content:space-between;
+}
+
+.center{
+    justify-self: center;
+}
+.left{
+    justify-self: start;
+}
+.right{
+    justify-self: end;
 }
 
 .subhead, .subhead01{
@@ -45,7 +54,7 @@
 
 .column_name{
     display: grid;
-    grid-template-columns: minmax(16em, 2fr) repeat(4, 1fr);
+    grid-template-columns: minmax(16em, 1.5fr) repeat(2, 0.5fr) repeat(2, 1fr);
     align-items: center;
     color: #2D3748;
 }
@@ -65,7 +74,7 @@
 
 .line_content{
     display: grid;
-    grid-template-columns:minmax(16em, 2fr) repeat(4, 1fr);
+    grid-template-columns:minmax(16em, 1.5fr) repeat(2, 0.5fr) repeat(2, 1fr);
     align-items: center;
     
 }
