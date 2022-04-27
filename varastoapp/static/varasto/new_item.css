@@ -252,4 +252,21 @@
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
+.btn-primary2, .btn-primary2:active, .btn-primary2:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    /* border: #28314B !important; */
+    padding: 0.7em 3em !important;
+    transition-duration: 0,4s;
+}
+
+.btn-primary2:hover {
+    /* background-color: #252d3a !important; */
+    color: white !important;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.modal-footer {
+    text-align: center;
+}
 
