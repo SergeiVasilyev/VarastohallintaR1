@@ -1,8 +1,8 @@
 .xdiv {
     display: inline-flex;
     grid-column-start: 1;
-    grid-column-end: 4;
-    border: 1px solid red;
+    grid-column-end: 4;    
+    /*border: 1px solid red;*/
     padding: 1em;
     
 }
@@ -10,8 +10,8 @@
 .refund_page{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 890px;
-    height: 840px;
+    grid-template-rows: auto auto;
+    max-width: 1000px;
 }
 
 .row01 {
