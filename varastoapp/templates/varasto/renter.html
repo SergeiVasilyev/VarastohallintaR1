@@ -63,6 +63,7 @@
                 </div>
 
                 <div class="rental_period">
+                    <!-- Если аренда закончина, написать дату возврата, вместо начала и предполагаемой даты -->
                     <span class="rental_period_date">{{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}</span>
                     {% if not rental_event.returned_date and rental_event.is_past_due %}
                         <div class="list__rented_item_status">
@@ -83,7 +84,8 @@
                 
                 <div class="update_event">
                     <div class="buttons">
-                        <button type="button" class="list__button list__button_bg_blue btn_strech" data-bs-toggle="modal" data-bs-target="#p{{rental_event.item.id}}">
+                        <!-- При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!! -->
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.item.id}}" >
                             <span class="list__button__text ">Päivittää</span>
                         </button>
                     </div>
@@ -130,13 +132,17 @@
                             <h5 class="modal-title" id="exampleModalLabel">Lopettaa tapahtuma</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            {% include 'varasto/vuokraus_tilanne2.html' with rental_event=rental_event datenow=datenow %}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
-                            <button type="button" class="btn btn-secondary">LOPETTAA</button>
-                        </div>
+                        <form action="{% url 'renter' selected_user.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input type="hidden" name="rental_event_id" value="{{ rental_event.id }}">
+                                {% include 'varasto/vuokraus_tilanne2.html' with rental_event=rental_event datenow=datenow %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                                <button type="submit" class="btn btn-secondary">LOPETTAA</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

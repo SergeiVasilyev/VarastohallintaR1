@@ -205,7 +205,6 @@
     font-weight: 400;
     cursor: pointer;
     justify-content: center;
-    
 }
 .buttons {
     display: flex;
@@ -229,6 +228,11 @@
 .list__button_bg_blue {
     color: white;
     background: #325288;
+}
+.list__button_inactive, .list__button_inactive:hover {
+    pointer-events: none;
+    color:#7897AB;
+    background:#CBD5E0;
 }
 
 

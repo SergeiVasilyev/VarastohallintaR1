@@ -85,9 +85,9 @@
 }
 
 .form-floating{
-    font-weight: 400;
-    font-size: 1.25em;
     color: #A0AEC0;
+    font-size: 0.875em;
+    font-weight: 300;
 }
 .img-thumbnail{
     width: 270px;

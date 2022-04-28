@@ -32,16 +32,28 @@ def person_view(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def renter(request, idx):
+    # При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!!
     if request.method == 'POST':
-        print('search_form: ', request.POST.get('rental_event_id'))
-        # item = Rental_event.objects.get(renter__id=idx, item__id=request.POST.get('item_id'))
-        item = Rental_event.objects.get(id=request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
-        sended_date = request.POST.get('rental_close') 
-        date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
-        date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
-        print(item.item.item_name, date_localized)
-        item.estimated_date = date_localized # Save new estimated date into database
-        item.save()
+        # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
+        print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
+        item = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
+        if request.POST.get('rental_close'):
+            sended_date = request.POST.get('rental_close') 
+            date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
+            date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
+            print(item.item.item_name, date_localized)
+            item.estimated_date = date_localized # Save new estimated date into database
+            item.save()
+        if request.POST.getlist('set_end_date'):
+            now = datetime.now()
+            datenow = pytz.utc.localize(now)
+            item.returned_date = datenow # Save new estimated date into database
+            item.save()
+        if request.POST.getlist('set_problem'):
+            print('PROBLEM')
+            item.remarks = request.POST.get('remarks')
+            item.save()
+
     selected_user = CustomUser.objects.get(id=idx)
     rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
     print(selected_user)
