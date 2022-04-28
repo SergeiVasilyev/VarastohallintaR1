@@ -107,8 +107,8 @@
     grid-template-columns: minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));
     padding: 5px;
     margin-left: 60px;
-    border-bottom: 1px solid #E2E8F0;
-    margin-bottom: 1.5em;
+    /* border-bottom: 1px solid #E2E8F0; */
+    /* margin-bottom: 1.5em; */
     /* border: 1px solid blue; */
 
 }
@@ -279,3 +279,8 @@
 
 
 /* /----MAIN---- */
+
+
+
+
+

@@ -1,0 +1,171 @@
+.refund_page{
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+}
+
+.row01 {
+    /* border: 1px solid red; */
+}
+
+.row02 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    /* border: 1px solid red; */
+}
+
+.span_warp span{
+    display: block;
+    /* border: 1px solid red; */
+}
+.span_warp {
+    padding-left: 1em;
+    line-height: 1;
+}
+
+.datepicker_input {
+    max-width: 180px;
+}
+
+.dates{
+    display: flex;
+    
+}
+.form-check {
+    padding-left: 0 !important;
+}
+.boxes{
+    /* display: flex;
+    align-items:center;
+    height: 50px; */
+    /* border: 1px solid red; */
+}
+
+.boxes input {
+
+    margin: 0 !important;
+}
+.largest{
+    font-weight: 500;
+    font-size: 1.5em;
+    color: #2D3748;
+}
+
+.middle_medium{
+    font-weight: 500;
+    font-size: 1.25em;
+    color: #2D3748;
+}
+
+.middle{
+    font-weight: 400;
+    font-size: 1.5em;
+    color: #718096;
+}
+
+.small_medium{
+    font-weight: 500;
+    font-size: 1.125em;
+    color: #718096;
+}
+
+.small{
+    font-weight: 400;
+    font-size: 1.125em;
+    color: #718096;
+}
+
+.form-check-label{
+    font-size: 1em;
+    color: #2D3748;
+}
+
+.right{
+    display: flex;
+    justify-content: right;   
+}
+
+.form-floating{
+    font-weight: 400;
+    font-size: 1.25em;
+    color: #A0AEC0;
+}
+.img-thumbnail{
+    width: 270px;
+    height: 152px;
+}
+
+
+
+/* Button's */
+/* .button {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 130;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button:hover,
+.button:active{
+    background: #325288;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+}
+
+
+.button_icon_plus {
+    margin-top: 100px;
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #24A19C;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_icon_dash {
+    margin-top: 100px;
+    margin: 10px;
+    display: inline-flex;
+    height: 66px;
+    width: 82px;
+    padding: 0;
+    color: #FFFFFF;
+    background: #D96098;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 48px;
+    font-weight: 52;
+    cursor: pointer;
+    justify-content:center ;
+} */
+
+
