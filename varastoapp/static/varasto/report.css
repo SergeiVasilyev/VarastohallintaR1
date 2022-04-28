@@ -1,31 +1,56 @@
 .logo_header{
     display: grid;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     grid-template-columns: 1fr 1fr 1fr;
+    padding: 1.5em 0 0 0 ;
+}
+
+.logo_header > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
+
+.report_logo img{
+    max-width: 150px;
 }
 
 .center{
-    justify-self: center;
+    font-weight: 700;
+    font-size: 1.625em;
+    color: #2D3748;
 }
+
 .left{
     justify-self: start;
+    font-weight: 400;
+    font-size: 1em;
+    color: #2D3748;
 }
+
 .right{
     justify-self: end;
+    font-weight: 400;
+    font-size: 0.875em;
+    color: #2D3748;
 }
 
+.button_right{
+    justify-self: end;
+}
 .subhead, .subhead01{
     display: grid;
-    border: 1px solid green;
     grid-template-columns: 1fr 1fr 1fr;
+    /* border: 1px solid green; */
 } 
 
+/* BUTTON */
 .button_props{
     display: inline-flex;
     width: 100px;
     height: 30px;
     padding: 0;
-    
     border: none;
     outline: none;
     border-radius: 2px;
@@ -56,34 +81,63 @@
     display: grid;
     grid-template-columns: minmax(16em, 1.5fr) repeat(2, 0.5fr) repeat(2, 1fr);
     align-items: center;
-    color: #2D3748;
+    background-color:#325288;
+    color: #FFFFFF;
+    height: 3em;
+    margin-top: 1em;
+}
+
+.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
+    display: flex;
+    justify-content: center;
+    /* border: 1px solid red; */
 }
 
 .column_name div span{
     font-size: 1,25em;
-    font-weight: 500;
-}
-
-.column_name div, .line_content div{
-    border: 1px solid red;
+    font-weight: 700;  
 }
 
 .column_name > div, .line_content > div{
     padding: 0 0.2em;
 }
 
+.remarks{
+    display: flex;
+    flex-direction: column;
+
+}
+
 .line_content{
     display: grid;
     grid-template-columns:minmax(16em, 1.5fr) repeat(2, 0.5fr) repeat(2, 1fr);
-    align-items: center;
-    
+    align-items: center; 
+}
+
+.line_content div span{
+    font-weight: 400;
+    font-size: 1em;
+    color: #2D3748;
+}
+.line_content:nth-child(even){
+    background-color: #F1F5F9;
 }
 
 .row01 {
-    border: 1px solid red;
-    /* padding: 1em; */
+    /* border: 1px solid red; */
+    padding: 1.5em 0 0 0 ;
 }
 
-.item_name span, .renter_information span{
+.item_name span, .renter_information span, .interval span{
     display: block;
+}
+
+.renter_information{
+    font-weight: 400;
+    font-size: 0.875em;
+    color: #2D3748;
+}
+
+.bold{
+    font-weight: 700;
 }
