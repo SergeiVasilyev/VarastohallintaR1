@@ -5,6 +5,7 @@
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/renter.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/vuokraus_tilanne.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
@@ -32,7 +33,7 @@
             <div class="new_rental">
                 <a class="nodecor" href="#">
                     <button type="button" class="button button_bg_green resize">
-                        <span class="button__text resize">Uusi tapahtuma</span>
+                        <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
                 </a>
@@ -40,42 +41,124 @@
 
         </div>
 
-
+        
         <div class="history">
+            {% for rental_event in rental_events %}
             <div class="history_list">
                 <div class="history_photo">
-                    <div><img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}"></div>
+                    <div><img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}"></div>
                 </div>
+
                 <div class="item_info">
                     <div>
-                        <span class="item_name">Yleisruuvi PROF</span>
-                        <span class="item_props">uppokanta Zn T20 4x30mm</span>
+                        <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+                        <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                     </div>
-                    <span class="item_num">Tavaran numero - 00003232</span>
+                    <div class="item_info_place">
+                        <span class="item_num">{{rental_event.storage.rack}} - {{rental_event.storage.shelf}} - {{rental_event.storage.place}}</span>
+                    </div>
+                    <span class="item_num_name">Tuotekoodi</span>
+                    <span class="item_num">{{rental_event.id_start_null}}</span>
+                    <!-- <span class="item_num">{{rental_event.item.id}}</span> -->
                 </div>
+
+                <div class="remarks">{{rental_event.remarks}}</div>
+
                 <div class="rental_period">
-                    <span class="rental_period_date">01.02.2021 - 15.02.2021</span>
-                    {% if not event.returned_date and event.is_past_due %}
-                        <div class="list__rented_item_status status_green">
-                            <span>Lainalla</span>
+                    <!-- Если аренда закончина, написать дату возврата, вместо начала и предполагаемой даты -->
+                    <span class="rental_period_date">{{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}</span>
+                    {% if not rental_event.returned_date and rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_green"><span>Lainalla</span></div>
                         </div>
-                        {% else %}{% if not event.returned_date and not event.is_past_due %}
-                        <div class="list__rented_item_status status_red">
-                            <span>Erääntynyt</span>
+                        {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_red"><span>Erääntynyt</span></div>
                         </div>
-                        {% else %}{% if event.returned_date %}
-                        <div class="list__rented_item_status status_gray">
-                            <span>Päättänyt</span>
+                        {% else %}{% if rental_event.returned_date %}
+                        <div class="list__rented_item_status">
+                            <div class="status_gray"><span>Päättänyt</span></div>
                         </div>
                         {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
-                <div>4</div>
+                
+                <div class="update_event">
+                    <div class="buttons">
+                        <!-- При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!! -->
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.item.id}}" >
+                            <span class="list__button__text ">Päivittää</span>
+                        </button>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.item.id}}">
+                            <span class="list__button__text ">Lopettaa</span>
+                        </button>
+                    </div>
+                </div>
             </div>
+
+
+            <!-- Modal 1-->
+            <div class="modal fade" id="p{{rental_event.item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Päivittää tapahtuma</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'renter' selected_user.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <!-- Send rental id as rental_event_id to renter view -->
+                                <input type="hidden" name="rental_event_id" value="{{ rental_event.id }}">
+                                <!-- Send variables to the vuokraus_tilanne1 -->
+                                {% include 'varasto/vuokraus_tilanne1.html' with rental_event=rental_event datenow=datenow %}
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 2-->
+            <div class="modal fade" id="l{{rental_event.item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Lopettaa tapahtuma</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'renter' selected_user.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input type="hidden" name="rental_event_id" value="{{ rental_event.id }}">
+                                {% include 'varasto/vuokraus_tilanne2.html' with rental_event=rental_event datenow=datenow %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                                <button type="submit" class="btn btn-secondary">LOPETTAA</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            {% endfor %}
+
         </div>
+        
 
-
-
+        
+    
     </div>
+
 {% endblock %}
