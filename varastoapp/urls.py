@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, inventaario_side_window, person_view, rental_events
+from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, inventaario_side_window, person_view, rental_events, inventory
 from varasto import views
 
 urlpatterns = [
@@ -40,5 +40,6 @@ urlpatterns = [
     path('update_rental_status/', views.update_rental_status, name='update_rental_status'),
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
-
+    path('inventory/', views.inventory, name='inventory'),
+    path('report/', views.report, name='report'),
 ]

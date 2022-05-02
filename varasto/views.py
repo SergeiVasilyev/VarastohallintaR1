@@ -165,4 +165,11 @@ def rental_events(request):
 def new_event_goods(request):
     return render(request, 'varasto/new_event_goods.html')
 
+def inventory(request):
+    return render(request, 'varasto/inventory.html')
+
+def report(request):
+    return render(request, 'varasto/report.html')
+
+
 
