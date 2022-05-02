@@ -62,6 +62,8 @@
                     <!-- <span class="item_num">{{rental_event.item.id}}</span> -->
                 </div>
 
+                <div class="remarks">{{rental_event.remarks}}</div>
+
                 <div class="rental_period">
                     <!-- Если аренда закончина, написать дату возврата, вместо начала и предполагаемой даты -->
                     <span class="rental_period_date">{{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}</span>
@@ -90,7 +92,7 @@
                         </button>
                     </div>
                     <div class="buttons">
-                        <button type="button" class="list__button list__button_bg_blue btn_strech" data-bs-toggle="modal" data-bs-target="#l{{rental_event.item.id}}">
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.item.id}}">
                             <span class="list__button__text ">Lopettaa</span>
                         </button>
                     </div>
