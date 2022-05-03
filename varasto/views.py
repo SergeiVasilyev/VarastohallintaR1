@@ -3,11 +3,12 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
+    HttpResponseRedirect,
 )
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm
+from .forms import CustomUserForm, AddItemForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -20,7 +21,7 @@ from django.db.models import Min, Max
 
 
 def new_item(request):
-    return render(request, 'varasto/new_item.html')
+    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
 
 def inventaario_side_window(request):
     return render(request, 'varasto/inventaario_side_window.html')
@@ -171,5 +172,18 @@ def inventory(request):
 def report(request):
     return render(request, 'varasto/report.html')
 
-
+def new_item(request):
+    submitted = False
+    if request.method == "POST":
+        form = AddItemForm(request.POST,request.FILES)
+        print (request.POST.get("item_name"))
+        if form.is_valid():
+            print ("blablalba")
+            form.save()
+            return HttpResponseRedirect('/new_item?submitted=True')
+    else:
+        form = AddItemForm()
+        if 'submitted' in request.GET: 
+            submitted=True
+    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
 

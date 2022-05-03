@@ -40,24 +40,23 @@ class Category(models.Model):
     def __str__(self):
         return '%s' % (self.cat_name)
 
-
 class Goods(models.Model):
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
-    item_name = models.CharField(max_length=150)
+    item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)
     model = models.CharField(max_length=150, blank=True, null=True)
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    package = models.CharField(max_length=50)
+    package = models.CharField(max_length=50, blank=True, null=True)
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
     item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
-    cost_centre = models.CharField(max_length=100) # Kustannuspaikka
+    cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ???
-    purchase_data = models.DateField() # Hankitapäivä
-    purchase_price = models.DecimalField(max_digits=6, decimal_places=2) # Hankitahinta
-    purchase_place = models.CharField(max_length=50) # Hankitapaikka
-    invoice_number = models.CharField(max_length=50) #16 Laskun numero
+    purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
+    purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
+    purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
+    invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
 
     def __str__(self):
         return '%s' % (self.item_name)

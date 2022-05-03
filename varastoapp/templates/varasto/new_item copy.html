@@ -17,6 +17,7 @@
 {% block main_content %}
 <form method="post">
 {% csrf_token %}
+{{ form }}
 <div class="new">
     <div class="new_img_desc">
         <div class="new_product_img">
@@ -36,8 +37,7 @@
         <div class="new_product_desc" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 90%; height: 70%; margin-top: 2em;">
                 <label class="form-label" size="200"> Kuvaus</label>
-                <!-- <textarea class="form-controlli" type="text"> </textarea> -->
-                {{form.item_description}}
+                <textarea class="form-controlli" type="text"> </textarea>
             </div>
         </div>
     </div>
@@ -47,63 +47,56 @@
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label">TYÖKALURYHMÄ</label>
                 <!-- <input class="form-control" type="text" name="item_type"> -->
-                {{form.cat_name}}
+                <!-- {{form.cat_name}} -->
             </div>
         </div>
         <div class="div2" style="display: flex; justify-content: center;"> 
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> NIMI</label>
                 <!-- <input class="form-control" type="text"> -->
-                {{form.item_name}}
+                <!-- {{form.item_name}} -->
             </div>
         </div>
         <div class="div3" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> MERKKI</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.brand}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div4" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> MALLI</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.model}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div5" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> TYYPPI</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.item_type}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div6" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;"> 
                 <label class="form-label"> KOKO</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.size}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div7" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> PAKKAUS</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.package}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div8" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> KAPPALEMÄÄRÄ</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.quantity}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div9" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> TEKNISET TIEDOT</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.parameters}}
+                <input class="form-control" type="text">
             </div>
         </div>
     </div>
@@ -111,29 +104,25 @@
         <div class="div10" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> LASKUN NUMERO</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.invoice_number}}
+                <input class="form-control" type="text">
             </div> 
         </div>
         <div class="div11" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> HANKINTAPAIKKA</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.purchase_place}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div12" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> HANKINTAHINTA</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.purchase_price}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div13" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
-                <label class="form-label"> HANKINTA PÄIVÄMÄÄRÄ</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.purchase_data}}
+                <label class="form-label"> HANKINTAVUOSI</label>
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div14" style="display: flex; justify-content: center;">
@@ -145,15 +134,13 @@
         <div class="div15" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> KUSTANNUSPAIKKA</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.cost_centre}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <div class="div16" style="display: flex; justify-content: center;">
             <div style="display: flex; flex-direction: column; text-align: left; width: 80%;">
                 <label class="form-label"> REKISTERINUMERO</label>
-                <!-- <input class="form-control" type="text"> -->
-                {{form.reg_number}}
+                <input class="form-control" type="text">
             </div>
         </div>
         <!-- <div class="new_button_bottom" style="justify-content: center; margin-top: 1.5em;">
