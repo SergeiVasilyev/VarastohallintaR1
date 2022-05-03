@@ -171,5 +171,8 @@ def inventory(request):
 def report(request):
     return render(request, 'varasto/report.html')
 
+def new_user(request):
+    return render(request, 'varasto/new_user.html')
+
 
 
