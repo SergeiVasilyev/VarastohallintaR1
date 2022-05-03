@@ -43,4 +43,5 @@ urlpatterns = [
     path('inventory/', views.inventory, name='inventory'),
     path('report/', views.report, name='report'),
     path('new_user/', views.new_user, name='new_user'),
+    path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
 ]

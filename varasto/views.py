@@ -174,5 +174,9 @@ def report(request):
 def new_user(request):
     return render(request, 'varasto/new_user.html')
 
+def grant_permissions(request):
+    return render(request, 'varasto/grant_permissions.html')
+
+
 
 

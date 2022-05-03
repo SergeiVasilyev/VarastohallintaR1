@@ -1,0 +1,61 @@
+/* ITEM LIST */
+
+.list__item {
+    display: grid;
+    grid-template-columns: 60px minmax(14em, 1fr) repeat(5, minmax(6em, 0.5fr));
+    padding: 5px; 
+    /* border: 1px solid blue; */
+}
+
+.brd_top {
+    padding-top: 1em;
+    border-top: 1px solid #E2E8F0;
+}
+
+
+.list__item > div {
+    /* !!!!!!!!!!!!!!!!!!!!!!!!!! */
+    /* border: 1px solid red;  */
+    place-self: center stretch;
+}
+
+.list__item_photo > div{
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    
+}
+.list__item_photo img {
+    width: 50px;
+    height: 50px;
+    object-fit:cover;
+    /* object-position: -38px 10%; */
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+
+.list__item_student, .list__item_group, .dropdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.list__item_student span {
+    padding-left: 1em;
+    text-align: left;
+}
+
+.list__item_group span {
+    text-align: center;
+}
+.list__item_student span:nth-child(1), .list__item_group span:nth-child(1){
+    font-size: 1em;
+    font-weight: 500;
+    color: #2D3748;
+}
+.list__item_student span:nth-child(2), .list__item_group span:nth-child(2){
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #718096;
+}
