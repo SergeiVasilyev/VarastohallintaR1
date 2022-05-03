@@ -175,8 +175,9 @@ def report(request):
 def new_item(request):
     submitted = False
     if request.method == "POST":
-        form = AddItemForm(request.POST,request.FILES)
-        print (request.POST.get("item_name"))
+        form = AddItemForm(request.POST, request.FILES)
+        print('request.POST ', request.POST)
+        print('PIC ', request.POST.get("picture"))
         if form.is_valid():
             print ("blablalba")
             form.save()

@@ -15,7 +15,7 @@
 {% block title %}NEW ITEM{% endblock %}
 
 {% block main_content %}
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 {% csrf_token %}
 <div class="new">
     <div class="new_img_desc">
@@ -25,11 +25,15 @@
 
         <div class="new_button_top">
             <div class="new_button_take">
-                <button type="take" class="btn btn-primary1" style="color: white">Take</button>
+                <button type="take" class="btn btn-primary1">Take</button>
             </div>
             <div class="divider"></div>
             <div class="new_button_browse">
-                <button type="browse" class="btn btn-primary1" style="color: white">Browse</button>
+                <div class="btn btn-primary1 btn-file">
+                    {{ form.picture }}
+                    UPLOAD
+                </div>
+                {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
             </div>
         </div>
 
