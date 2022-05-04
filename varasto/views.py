@@ -72,43 +72,56 @@ def renter(request, idx):
 
 @login_required()
 def new_event(request):
+    changed_user = None
+    changed_item = None
+    
+    if request.GET.get('add_user'):
+        print('add_user: ', request.GET.get('add_user'))
+        try:
+            changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
+        except:
+            error = "User ei löyty"
+    if request.GET.get('add_item'):
+        print('add_item: ', request.GET.get('add_item'))
+        try:
+            changed_item = Goods.objects.get(id=request.GET.get('add_item'))
+        except:
+            error = "User ei löyty"
+
+
+    print(changed_item)
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
+        'changed_user': changed_user,
+        'changed_item': changed_item,
         'datenow': datenow,
         'user': request.user
     }
     return render(request, 'varasto/new_event.html', context)
 
-def add_user_to_event(request):
-    changed_user = None
-    error = None
-    if request.method == 'GET':
-        print('add_user: ', request.GET.get('add_user'))
-        if request.GET.get('add_user'):
-            try:
-                changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
-            except:
-                error = "User ei löyty"
+# def add_user_to_event(request):
+#     changed_user = None
+#     error = None
+#     if request.method == 'GET':
+#         print('add_user: ', request.GET.get('add_user'))
+#         if request.GET.get('add_user'):
+#             try:
+#                 changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
+#             except:
+#                 error = "User ei löyty"
 
-        print(changed_user, error)
-    context = {
-        'changed_user': changed_user,
-        'error': error
-    }
-    return render(request, 'varasto/new_event.html', context)
+#         print(changed_user, error)
+#     context = {
+#         'changed_user': changed_user,
+#         'error': error
+#     }
+#     return redirect(f'../?add_user={changed_user}')
 
 def remove_user_from_event(request):
     if request.method == 'GET':
-        print('added_user: ', request.GET.get('added_user'))
-        if request.GET.get('added_user'):
-            changed_user = None
+        return redirect("new_event")
 
-        print(changed_user)
-    context = {
-        'changed_user': changed_user,
-    }
-    return render(request, 'varasto/new_event.html', context)
 
 def login_view(request):
     if not request.user.is_authenticated:

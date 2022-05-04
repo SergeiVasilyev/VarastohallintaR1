@@ -33,9 +33,9 @@ urlpatterns = [
     path('renter/<int:idx>/', views.renter, name='renter'),
 
     path('new_event/', views.new_event, name='new_event'),
-    path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
+    # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
     # re_path(r'.*/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
-    path('new_event/add_user_to_event/remove_user_from_event/', views.remove_user_from_event, name='remove_user_from_event'),
+    path('new_event/remove_user_from_event/', views.remove_user_from_event, name='remove_user_from_event'),
     path('person/', views.person_view, name='person'),
     path('inventaario_side_window/', views.inventaario_side_window, name='inventaario_side_window'),
     path('recovery/', views.user_recovery, name='recovery'),

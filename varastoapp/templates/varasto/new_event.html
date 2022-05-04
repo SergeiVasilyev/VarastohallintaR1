@@ -18,14 +18,16 @@
         <div class="d-flex flex-column align-items-end w-50">
             <div class="row g-3 w-100">
                 <div class="col-auto w-100">
-                    <form method="get" action="add_user_to_event/">
+                    <form method="get" action="">
+                    {% comment %} {% csrf_token %} {% endcomment %}
                     <div class="d-flex align-items-end">
                         <div class="mb-3 me-3 w-100">
+                            <input type="hidden" name="add_item" value="{{changed_item.id}}">
                             <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa käsin opiskelijanumero.</label>
                             <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa opiskelijanumero tai hänen nimi">
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="list__button list__button_bg_green btn_strech">
+                            <button name="_add_item" type="submit" class="list__button list__button_bg_green btn_strech">
                                 <span class="bi bi-plus font-size"></span>
                             </button>
                         </div>
@@ -42,7 +44,7 @@
                                 <p>{{changed_user.email}}</p>
                             </div>
                             <div class="mb-3 d-flex">
-                                <button type="submit" class="list__button list__button_bg_red btn_strech">
+                                <button name="_remove_item" type="submit" class="list__button list__button_bg_red btn_strech">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
                             </div>
@@ -51,7 +53,7 @@
                 </div>
             </div>
 
-            <form class="row g-3 mt-3 w-100">
+            <form class="row g-3 mt-3 w-100" method="get" action="">
                 <div class="col-auto w-100">
                     <div class="d-flex align-items-end">
                         <div class="mb-3 me-3">
@@ -60,11 +62,12 @@
                             </button>
                         </div>
                         <div class="mb-3 me-3 w-100">
+                            <input type="hidden" name="add_user" value="{{changed_user}}">
                             <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero tai tuotenimi">
+                            <input name="add_item" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
                         </div>
                         <div class="mb-3">
-                            <button type="button" class="list__button list__button_bg_green btn_strech">
+                            <button type="submit" class="list__button list__button_bg_green btn_strech">
                                 <span class="bi bi-plus font-size"></span>
                             </button>
                         </div>
@@ -74,24 +77,11 @@
 
             <div class="added_items row mt-5" >
                 <form>
-                    <div class="col-auto">
+                    <div class="col-auto" style="{% if changed_item %}display: block{%else%}display: none{%endif%};">
                         <div class="d-flex flex-row justify-content-between px-2" >
                             <div class="mb-3 me-3">
-                                <h4>Yleisruuvi PROF</h4>
-                                <p>M18 FHIWF 12</p>
-                            </div>
-                            <div class="mb-3 d-flex">
-                                <button type="button" class="list__button list__button_bg_red btn_strech">
-                                    <span class="bi bi-dash font-size"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="d-flex flex-row justify-content-between px-2" >
-                            <div class="mb-3 me-3">
-                                <h4>Yleisruuviswwww PROF</h4>
-                                <p>M18 FHIWFsdbsdsd 12</p>
+                                <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
+                                <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
                             </div>
                             <div class="mb-3 d-flex">
                                 <button type="button" class="list__button list__button_bg_red btn_strech">
@@ -110,7 +100,7 @@
     <div class="main_buttons right pb-2 pe-2">
         <div>
             <form action="" method="post">
-                <input type="hidden" name="user" value="{{changed_user}}">
+                <input type="hidden" name="changed_user" value="{{changed_user.id}}">
                 <input type="hidden" name="item" value="{{changed_user}}">
                 <button type="button" class="button_s me-5">
                     <span class="button_s__text">PERUUTA</span>
