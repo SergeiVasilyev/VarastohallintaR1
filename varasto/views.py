@@ -1,4 +1,5 @@
 import operator
+import re
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -73,28 +74,61 @@ def renter(request, idx):
 @login_required()
 def new_event(request):
     changed_user = None
-    changed_item = None
+    changed_items = []
+    r = re.compile("add_item")
+    add_items = list(filter(r.match, request.GET))
+    print(list(filter(r.match, request.GET)))
+
+    if '_add_user' or '_add_item' in request.GET:
+        if request.GET.get('add_user'):
+            print('add_user: ', request.GET.get('add_user'))
+            try:
+                changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
+            except:
+                error = "User ei löyty"
+        if add_items:
+            for add_item in add_items:
+                print(add_item, ' ', request.GET.get(add_item))
+                try:
+                    changed_items.append(Goods.objects.get(id=request.GET.get(add_item)))
+                except:
+                    error = "User ei löyty"
+
+    if '_remove_user' in request.GET:
+        changed_user = None
+        print('changed_user cleared')
+
+    if '_remove_item' in request.GET:
+        print(request.GET.get('_remove_item'))
+        changed_items.pop(int(request.GET.get('_remove_item')))
+
+    # items = Goods.objects.filter(pk__in=[x.id for x in changed_items])
+    # item = Goods.objects.get(id=changed_items[1].id)
     
-    if request.GET.get('add_user'):
-        print('add_user: ', request.GET.get('add_user'))
-        try:
-            changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
-        except:
-            error = "User ei löyty"
-    if request.GET.get('add_item'):
-        print('add_item: ', request.GET.get('add_item'))
-        try:
-            changed_item = Goods.objects.get(id=request.GET.get('add_item'))
-        except:
-            error = "User ei löyty"
+    # print('items', items, 'renter', renter, 'staff', staff)
+    # if request.method == 'POST':
+    #     rental = Rental_event(item=item)
+    #     rental.save()
+    if request.method == 'POST':
+        renter = CustomUser.objects.get(id=changed_user.id)
+        staff = CustomUser.objects.get(id=request.user.id)
+        if request.GET.get('add_user') and add_items:
+            items = Goods.objects.filter(pk__in=[x.id for x in changed_items])
+            for item in items:
+                rental = Rental_event(item=item, 
+                            renter=renter, 
+                            staff=staff,
+                            start_date='2022-05-04',
+                            estimated_date='2022-05-10')
+                print(rental)
+                rental.save()
 
-
-    print(changed_item)
+    print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
     datenow = now.strftime("%d.%m.%Y")
     context = {
         'changed_user': changed_user,
-        'changed_item': changed_item,
+        'changed_items': changed_items,
         'datenow': datenow,
         'user': request.user
     }
@@ -119,8 +153,9 @@ def new_event(request):
 #     return redirect(f'../?add_user={changed_user}')
 
 def remove_user_from_event(request):
-    if request.method == 'GET':
-        return redirect("new_event")
+    pass
+    # if request.method == 'GET':
+    #     return redirect("new_event")
 
 
 def login_view(request):
