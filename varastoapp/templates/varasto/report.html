@@ -34,8 +34,8 @@
             <span class="bold">Vuokraaja:</span>
             <span class="">{{renter.first_name}} {{renter.last_name}}</span>
             <span class="">{{renter.group}}</span>
-            <span class="">+358443565631</span>
-            <span class="">alexaLiras@raseko.fi</span>
+            <span class="">{{renter.phone}}</span>
+            <span class="">{{renter.email}}</span>
         </div>
     </div>
 
@@ -60,9 +60,9 @@
     <div class="row01">
         <div class="renter_information">
             <span class="bold">Vastuuopettaja:</span>
-            <span class="">Pekka Pirinen</span>
-            <span class="">+3581234576</span>
-            <span class="">pekka.pirinen@raseko.fi</span>
+            <span class="">{{renter.responsible_teacher}}</span>
+            <span class="">{{renter.phone}}</span>
+            <span class="">{{renter.email}}</span>
         </div>
     </div>
 
@@ -128,19 +128,19 @@
 
     <div class="row01">
         <div class="">
-            <span class="">1 kpl</span>
+            <span class="">{{rental_event.package}}</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <span class="">30.03. - 15.04.2022</span>
+            <span class="">{{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="interval">
-            <span class="">Juha Lindström</span>
+            <span class="">{{rental_event.staff}}</span>
             <span class="">varastontyöntekijä</span>
         </div>
     </div>
