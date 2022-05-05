@@ -122,6 +122,8 @@ def new_event(request):
                             estimated_date='2022-05-10')
                 print(rental)
                 rental.save()
+        changed_user = None
+        changed_items = []
 
     print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
