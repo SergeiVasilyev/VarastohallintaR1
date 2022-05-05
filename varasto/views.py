@@ -16,7 +16,7 @@ from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staf
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
-
+from .test_Anna__views import report
 
 
 def new_item(request):
@@ -168,8 +168,8 @@ def new_event_goods(request):
 def inventory(request):
     return render(request, 'varasto/inventory.html')
 
-def report(request):
-    return render(request, 'varasto/report.html')
+# def report(request):
+#     return render(request, 'varasto/report.html')
 
 def new_user(request):
     return render(request, 'varasto/new_user.html')
