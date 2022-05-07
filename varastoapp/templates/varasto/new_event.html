@@ -24,11 +24,11 @@
                         
                         <div class="d-flex align-items-end">
                             <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa käsin opiskelijanumero.</label>
+                                <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
                                 {% if not changed_user %}
                                 <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa opiskelijanumero tai hänen nimi">
                                 {% else %}
-                                <input name="add_user" value="{{changed_user}}" type="text" class="form-control" id="exampleFormControlInput1" >
+                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="exampleFormControlInput1" >
                                 {% endif %}
                             </div>
                             <div class="mb-3">
