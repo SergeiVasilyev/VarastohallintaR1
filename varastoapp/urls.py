@@ -45,5 +45,10 @@ urlpatterns = [
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),
     path('report/', views.report, name='report'),
+
     path('test/', views.test, name='test'),
+
+    path('new_user/', views.new_user, name='new_user'),
+    path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
+
 ]
