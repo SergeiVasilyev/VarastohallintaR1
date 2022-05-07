@@ -130,6 +130,14 @@
 
 /* ITEM LIST */
 
+.list a {
+    color: inherit;
+    text-decoration: none;
+}
+.list a:hover {
+    color:#325288;
+}
+
 .sublist_warp {
     width: 100%;
 }

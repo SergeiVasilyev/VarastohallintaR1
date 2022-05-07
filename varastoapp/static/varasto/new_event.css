@@ -11,8 +11,14 @@
     font-size: 1em;
     font-weight: 400;
     cursor: pointer;
-    justify-content: center;
+    justify-content: center; 
 }
+    .btn-small{
+        min-width: 8em;
+    }
+    .btn-sq{
+
+    }
     .btn_strech {
         place-self: center stretch;
     }
@@ -56,13 +62,19 @@
 
 
 /* CONTENT */
-
+.w-50{
+    width: 50% !important;
+}
 .new_event_warp{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 100%;
     /* border: 1px solid red; */
+}
+.new_event_warp input {
+    display: block;
+    /* min-width: 60em; */
 }
 .main_buttons {
     /* flex: 1 1 auto; */
@@ -73,8 +85,6 @@
 .main_buttons div {
     /* border: 1px solid red; */
     display: flex;
-    
-    
 }
 .added_items {
     width: 100%;
@@ -87,6 +97,13 @@
 
 form {
     padding: 0 !important;
+}
+.new_event_warp h4{
+    color: #2D3748;
+}
+
+.new_event_warp p{
+    color: #718096
 }
 
 /* / CONTENT */
@@ -123,13 +140,7 @@ form {
 
 /* / MAIN BUTTONS */
 
-h4{
-    color: #2D3748;
-}
 
-p{
-    color: #718096
-}
 
 
 

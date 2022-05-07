@@ -16,9 +16,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, inventaario_side_window, person_view, rental_events, inventory
 from varasto import views
+from django.urls import include, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +35,8 @@ urlpatterns = [
     path('renter/<int:idx>/', views.renter, name='renter'),
 
     path('new_event/', views.new_event, name='new_event'),
+    # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
+    # re_path(r'.*/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
 
     path('person/', views.person_view, name='person'),
     path('inventaario_side_window/', views.inventaario_side_window, name='inventaario_side_window'),
@@ -42,6 +47,11 @@ urlpatterns = [
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),
     path('report/', views.report, name='report'),
+
+    path('test/', views.test, name='test'),
+
     path('new_user/', views.new_user, name='new_user'),
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

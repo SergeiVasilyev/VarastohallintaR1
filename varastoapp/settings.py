@@ -140,4 +140,5 @@ LOGIN_URL = '/login/'
 
 # MEDIA_ROOT =  '/varastoapp/static/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'varastoapp/static/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 MEDIA_URL = '/images/'
