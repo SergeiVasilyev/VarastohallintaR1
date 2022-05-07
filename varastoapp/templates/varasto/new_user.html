@@ -1,0 +1,64 @@
+{% extends "varasto/base_main.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/new_user.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}New event{% endblock %}
+
+{% block main_content %}
+
+<div class="new_user_warp">
+    
+    <div class="d-flex">
+    <div class="mb-3 me-3">
+        <span class="form-label">Lisätä valokuva</span>
+    </div>
+    <div class="mb-3">
+        <button type="button" class="list__button list__button_bg_green btn_strech">
+            <span class="bi bi-plus font-size"></span>
+        </button>
+    </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Etunimi</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Sukunimi</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Ryhmä</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Sähköposti</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Puhelin</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Vastuopettaja</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+    </div>
+
+    <div class="main_buttons">
+        <button type="button" class="button_s">
+            <span class="button_s__text">TALLENNA</span>  
+        </button>
+    </div>
+</div>
+{% endblock %}
