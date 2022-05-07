@@ -22,8 +22,7 @@ from .test_views import test
 from .test_Anna__views import report
 
 
-def new_item(request):
-    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
+
 
 def inventaario_side_window(request):
     return render(request, 'varasto/inventaario_side_window.html')
