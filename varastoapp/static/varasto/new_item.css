@@ -240,6 +240,7 @@
 
 .btn-primary1, .btn-primary1:active, .btn-primary1:visited {
     text-transform: uppercase;
+    color: white !important;
     background-color: #325288 !important;
     /* border: #28314B !important; */
     padding: 0.7em 3em !important;
@@ -270,3 +271,33 @@
     text-align: center;
 }
 
+
+
+
+.file-input {
+    border: 1px solid red;
+    /* width: 230px; */
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .btn-file input {
+    position: absolute;
+    max-width: 100%;
+    min-height: 100%;
+    margin: 0;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    transform: translate(-100%, 0) scale(3);
+    direction: ltr;
+    cursor: pointer;
+  }
+  
+  /* Hack for forcing webkit to show a cursor all the time */
+  .btn-file input::-webkit-file-upload-button {
+    cursor: pointer;
+  }
