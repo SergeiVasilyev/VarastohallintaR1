@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
 from django.db.models import Count
-from django.db.models.functions import TruncMonth, Trunc
+
 from django.db.models import Min, Max
 from .test_views import test
 from .test_Anna__views import report
