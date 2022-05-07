@@ -4,11 +4,12 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
+    HttpResponseRedirect,
 )
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm
+from .forms import CustomUserForm, AddItemForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -22,7 +23,7 @@ from .test_Anna__views import report
 
 
 def new_item(request):
-    return render(request, 'varasto/new_item.html')
+    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
 
 def inventaario_side_window(request):
     return render(request, 'varasto/inventaario_side_window.html')
@@ -237,5 +238,19 @@ def grant_permissions(request):
     return render(request, 'varasto/grant_permissions.html')
 
 
-
+def new_item(request):
+    submitted = False
+    if request.method == "POST":
+        form = AddItemForm(request.POST, request.FILES)
+        print('request.POST ', request.POST)
+        print('PIC ', request.POST.get("picture"))
+        if form.is_valid():
+            print ("blablalba")
+            form.save()
+            return HttpResponseRedirect('/new_item?submitted=True')
+    else:
+        form = AddItemForm()
+        if 'submitted' in request.GET: 
+            submitted=True
+    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
 
