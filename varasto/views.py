@@ -17,6 +17,7 @@ from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staf
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
+from .test_views import test
 
 
 
@@ -75,46 +76,39 @@ def renter(request, idx):
 def new_event(request):
     changed_user = None
     changed_items = []
-    r = re.compile("add_item")
-    add_items = list(filter(r.match, request.GET))
+    r = re.compile("add_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
+    add_items = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
     print(list(filter(r.match, request.GET)))
 
-    if '_add_user' or '_add_item' in request.GET:
-        if request.GET.get('add_user'):
+    if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
+        if request.GET.get('add_user'): # jos user code on kirjoitettiin
             print('add_user: ', request.GET.get('add_user'))
             try:
-                changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
+                changed_user = CustomUser.objects.get(code=request.GET.get('add_user')) # saadan user
             except:
                 error = "User ei löyty"
-        if add_items:
+        if add_items: # jos item codes kirjoitettiin
             for add_item in add_items:
                 print(add_item, ' ', request.GET.get(add_item))
                 try:
-                    changed_items.append(Goods.objects.get(id=request.GET.get(add_item)))
+                    changed_items.append(Goods.objects.get(id=request.GET.get(add_item))) # saadan kaikki Iteemit changed_items muuttujaan
                 except:
                     error = "User ei löyty"
 
-    if '_remove_user' in request.GET:
+    if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
         print('changed_user cleared')
 
-    if '_remove_item' in request.GET:
+    if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
         print(request.GET.get('_remove_item'))
         changed_items.pop(int(request.GET.get('_remove_item')))
 
-    # items = Goods.objects.filter(pk__in=[x.id for x in changed_items])
-    # item = Goods.objects.get(id=changed_items[1].id)
-    
-    # print('items', items, 'renter', renter, 'staff', staff)
-    # if request.method == 'POST':
-    #     rental = Rental_event(item=item)
-    #     rental.save()
-    if request.method == 'POST':
-        renter = CustomUser.objects.get(id=changed_user.id)
-        staff = CustomUser.objects.get(id=request.user.id)
-        if request.GET.get('add_user') and add_items:
-            items = Goods.objects.filter(pk__in=[x.id for x in changed_items])
-            for item in items:
+    if request.method == 'POST': # Jos painettiin Talenna nappi
+        renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
+        staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
+        if request.GET.get('add_user') and add_items: # tarkistetaan että kaikki kentät oli täytetty
+            items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
+            for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
                 rental = Rental_event(item=item, 
                             renter=renter, 
                             staff=staff,
@@ -136,28 +130,7 @@ def new_event(request):
     }
     return render(request, 'varasto/new_event.html', context)
 
-# def add_user_to_event(request):
-#     changed_user = None
-#     error = None
-#     if request.method == 'GET':
-#         print('add_user: ', request.GET.get('add_user'))
-#         if request.GET.get('add_user'):
-#             try:
-#                 changed_user = CustomUser.objects.get(username=request.GET.get('add_user'))
-#             except:
-#                 error = "User ei löyty"
 
-#         print(changed_user, error)
-#     context = {
-#         'changed_user': changed_user,
-#         'error': error
-#     }
-#     return redirect(f'../?add_user={changed_user}')
-
-def remove_user_from_event(request):
-    pass
-    # if request.method == 'GET':
-    #     return redirect("new_event")
 
 
 def login_view(request):
