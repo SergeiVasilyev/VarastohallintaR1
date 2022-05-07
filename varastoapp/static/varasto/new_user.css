@@ -1,4 +1,4 @@
-/* BUTTONS IN CONTENT */
+/* BUTTON */
 .list__button {
     display: inline-flex;
     height: 39px;
@@ -11,14 +11,8 @@
     font-size: 1em;
     font-weight: 400;
     cursor: pointer;
-    justify-content: center; 
+    justify-content: center;
 }
-    .btn-small{
-        min-width: 8em;
-    }
-    .btn-sq{
-
-    }
     .btn_strech {
         place-self: center stretch;
     }
@@ -26,23 +20,7 @@
         color: white;
         background: #24A19C;
     }
-    .list__button_bg_white {
-        background: white;
-    }
-    .list__button_bg_red {
-        color: white;
-        background: #D96098;
-    }
-    .list__collapse button div {
-        display: inline-flex;
-        align-items: center;
-        padding: 0 24px;
-        height: 100%;
-    }
 
-    .list__button__text{
-        padding: 0 1.2em;
-    }
     .list__button span {
         display: inline-flex;
         align-items: center;
@@ -54,63 +32,26 @@
         padding: 0 0.6em;
     }
 
-    .form-label{
-        font-size: 0.875em;
-    }
-    
-/* / BUTTONS IN CONTENT */
+/* / BUTTON*/
 
-
-/* CONTENT */
-.w-50{
-    width: 50% !important;
-}
-.new_event_warp{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100%;
-    /* border: 1px solid red; */
-}
-.new_event_warp input {
-    display: block;
-    /* min-width: 60em; */
-}
-.main_buttons {
-    /* flex: 1 1 auto; */
-    display: flex;
-    align-items: flex-end;
-    justify-content: end;
-}
-.main_buttons div {
-    /* border: 1px solid red; */
-    display: flex;
-}
-.added_items {
-    width: 100%;
-}
-
-.row {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-form {
-    padding: 0 !important;
-}
-.new_event_warp h4{
+.form-label{
+    font-size: 1.25em;
+    font-weight: 500;
     color: #2D3748;
 }
 
-.new_event_warp p{
-    color: #718096
+.new_user_warp{
+    display: flex;
+    flex-direction: column;
+
+    /* border: 1px solid red; */
 }
 
-/* / CONTENT */
-
-
-
 /* MAIN BUTTONS */
+.main_buttons div {
+    /* border: 1px solid red; */
+    display: flex;   
+}
 
 .button_s {
     display: inline-flex;
@@ -139,8 +80,3 @@ form {
 }
 
 /* / MAIN BUTTONS */
-
-
-
-
-

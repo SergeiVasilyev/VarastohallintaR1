@@ -48,6 +48,7 @@ class CustomUserForm(ModelForm):
 
         }
 
+
 class AddItemForm(ModelForm):
     class Meta:
         model = Goods
@@ -119,4 +120,5 @@ class AddItemForm(ModelForm):
 
         
         }
+
 
