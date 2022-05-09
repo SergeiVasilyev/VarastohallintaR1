@@ -1,5 +1,6 @@
 import operator
 import re
+from django.forms import inlineformset_factory, modelformset_factory
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -9,7 +10,7 @@ from django.http import (
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm, AddItemForm
+from .forms import CustomUserForm, GoodsForm, Staff_eventForm, Staff_eventForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -62,7 +63,7 @@ def renter(request, idx):
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
-    datenow = datenow.strftime("%d.%m.%Y")
+    # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'rental_events': rental_events,
         'selected_user': selected_user,
@@ -113,7 +114,7 @@ def new_event(request):
                             renter=renter, 
                             staff=staff,
                             start_date='2022-05-04',
-                            estimated_date='2022-05-10')
+                            estimated_date='2022-05-10') # !!!!!!!!!!!!!!!!!!!!!!!!
                 print(rental)
                 rental.save()
         changed_user = None
@@ -121,7 +122,8 @@ def new_event(request):
 
     print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
@@ -182,7 +184,8 @@ def user_recovery(request):
 
 def base_main(request):
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'datenow': datenow,
         'user': request.user
@@ -209,7 +212,8 @@ def rental_events(request):
     #     print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'grouped_events': grouped_events,
         'events': events,
@@ -238,12 +242,27 @@ def grant_permissions(request):
 
 
 def new_item(request):
+    # Staff_eventFormSet = inlineformset_factory(Goods, Staff_event, fields="__all__", extra=1)
+    Staff_eventFormSet = modelformset_factory(Staff_event, form=Staff_eventForm)
     if request.method == "POST":
-        form = AddItemForm(request.POST, request.FILES)
+        form = GoodsForm(request.POST, request.FILES)
+        x = Staff_eventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
     else:
-        form = AddItemForm()
+        form = GoodsForm()
+        x = Staff_eventForm()
+        formset = Staff_eventFormSet(prefix='staff_event')
 
-    return render(request, 'varasto/new_item.html', {'form':form})
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = datenow.strftime("%d.%m.%Y")
+    context = {
+        'form': form,
+        'x': x, 
+        'formset': formset,
+        'datenow': datenow
+    }
+    return render(request, 'varasto/new_item.html', context)
 

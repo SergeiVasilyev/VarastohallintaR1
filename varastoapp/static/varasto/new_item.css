@@ -1,5 +1,13 @@
+.item_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
 .new {
     padding: 0.5em;
+    height: 100%;
     /* border: 1px solid blue; */
 }
 
@@ -34,22 +42,17 @@
     /* border: 1px solid black; */
 }
 
-.new_button_top {
-    
-}
 
 .divider {
     height: 10px;
 }
 
-.form-controlli {
-    height: 95%;
-}
+
 
 .new_middle {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 22px;
     /* grid-row-gap: 18px; */
     /* border: 1px solid purple; */
@@ -58,7 +61,6 @@
     color: #2D3748;
     font-size: 0.75em;
     font-weight: 600;
-    margin-top: 20px;
 }
 
 .new_middle > div{
@@ -71,13 +73,6 @@
     text-align: left; 
     width: 95%;
 }
-
-.tyokaluryhma_container, .nimi_container, .merkki_container, .malli_container, .tyyppi_container, .koko_container, .tptt_container, .pakkaus_container, .kplmaara_container {
-    height: 50%;
-    width: 80%;
-    align-self: center;
-}
-
 
 .new_bottom {
     display: grid;
@@ -97,18 +92,15 @@
     /* border: 1px solid red; */
 }
 
-.laskunr_container, .hankintapaikka_container, .hankintahinta_container, .hankintavuosi_container, .varastopaikka_container, .kustannuspaikka_container, .reknro_container {
-    height: 50%;
-    width: 80%;
-    align-self: center;
-
-}
-
 
 .new_button_bottom {
-    /* display: inline-block; */
-    float: right;
-    padding-right: 5px;
+    display: flex;
+    justify-content: end;
+    /* border: 1px solid red; */
+}
+.new_button_bottom > div{
+    display: flex;
+    /* border: 3px solid blue; */
 }
 
 .btn-primary1, .btn-primary1:active, .btn-primary1:visited {
