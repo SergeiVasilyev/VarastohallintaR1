@@ -34,6 +34,23 @@ class CustomUser(AbstractUser):
 
 
 
+# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
+# Нужно добавить Foreign key на Storage в Goods
+class Storage_place(models.Model):
+    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
+    shelf = models.CharField(max_length=20, blank=True, null=True)
+    place = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
+
+class Storage_name(models.Model):
+    name = models.CharField(max_length=30)
+    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+
 class Category(models.Model):
     cat_name = models.CharField(max_length=20)
 
@@ -42,7 +59,7 @@ class Category(models.Model):
 
 class Goods(models.Model):
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
-    item_name = models.CharField(max_length=150)
+    item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)
     model = models.CharField(max_length=150, blank=True, null=True)
     item_type = models.CharField(max_length=100, blank=True, null=True)
@@ -57,6 +74,8 @@ class Goods(models.Model):
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -65,25 +84,7 @@ class Goods(models.Model):
         # self.item_description, self.cost_centre, self.reg_number, self.purchase_data, self.purchase_price, self.purchase_place, self.invoice_number)
 
 
-class Storage_name(models.Model):
-    name = models.CharField(max_length=30)
 
-    def __str__(self):
-        return '%s' % (self.name)
-
-
-# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
-# Нужно добавить Foreign key на Storage в Goods
-class Storage_place(models.Model):
-    item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
-    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
-    shelf = models.CharField(max_length=20, blank=True, null=True)
-    place = models.CharField(max_length=20, blank=True, null=True)
-    amount = models.CharField(max_length=30)
-    storage_name = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-
-    def __str__(self):
-        return '%s %s %s %s %s %s' % (self.item, self.rack, self.shelf, self.place, self.amount, self.storage_name)
 
 
 class Rental_event(models.Model):
@@ -145,14 +146,14 @@ class Staff_event(models.Model):
     staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     item = models.ForeignKey(Goods,  on_delete=models.PROTECT)
     # We need to use related_name if we have 2 ForegnKey to same table.
-    from_storage = models.ForeignKey(Storage_place, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
-    to_storage = models.ForeignKey(Storage_place, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
-    date = datetime.now()
+    from_storage = models.ForeignKey(Storage_name, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
+    to_storage = models.ForeignKey(Storage_name, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
+    event_date = models.DateTimeField(blank=True, null=True)
     amount = models.IntegerField(default=1)
     remarks = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
          return '%s %s %s %s %s %s %s' % (self.staff, self.item, self.from_storage,
-         self.to_storage, self.date, self.amount, self.remarks)
+         self.to_storage, self.event_date, self.amount, self.remarks)
 
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods
-from django.forms import ModelForm, widgets, TextInput, CheckboxInput
+from .models import CustomUser, Category, Goods, Staff_event
+from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -49,18 +49,20 @@ class CustomUserForm(ModelForm):
         }
 
 
-class AddItemForm(ModelForm):
+class GoodsForm(ModelForm):
     class Meta:
         model = Goods
-        fields =['cat_name', 'item_name', 'brand', 'model', 'item_type', 'size', 'parameters', 'package', 'picture', 'item_description', 'cost_centre', 'reg_number', 'purchase_data', 'purchase_price', 'purchase_place', 'invoice_number']
+        fields =['storage', 'cat_name', 'item_name', 'brand', 'model', 'item_type', 'size', 'parameters', 'package', 'picture', 'item_description', 'cost_centre', 'reg_number', 'purchase_data', 'purchase_price', 'purchase_place', 'invoice_number']
         widgets ={
+            'storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
             'item_name': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Syötä nimi',
             }),
             'cat_name': widgets.Select(attrs={
                 'class': 'form-select',
-                'placeholder': 'Syötä nimi',
             }),
             'picture': widgets.FileInput(attrs={
                 'class': '',
@@ -122,4 +124,33 @@ class AddItemForm(ModelForm):
         
         }
 
+class Staff_eventForm(ModelForm):
+    class Meta:
+        model = Staff_event
+        fields = ['staff', 'item', 'from_storage', 'to_storage', 'event_date', 'amount', 'remarks']
+        widgets = {
+            'staff': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'item': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'from_storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'to_storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'event_date': DateInput(attrs={
+                'class': 'datepicker_input form-control',
+                'type': 'date',
+            }),
+            'amount': NumberInput(attrs={
+
+            }),
+            'remarks': TextInput(attrs={
+                'class': 'form-control',
+            }),
+
+        }
 
