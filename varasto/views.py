@@ -238,18 +238,12 @@ def grant_permissions(request):
 
 
 def new_item(request):
-    submitted = False
     if request.method == "POST":
         form = AddItemForm(request.POST, request.FILES)
-        print('request.POST ', request.POST)
-        print('PIC ', request.POST.get("picture"))
         if form.is_valid():
-            print ("blablalba")
             form.save()
-            return HttpResponseRedirect('/new_item?submitted=True')
     else:
         form = AddItemForm()
-        if 'submitted' in request.GET: 
-            submitted=True
-    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
+
+    return render(request, 'varasto/new_item.html', {'form':form})
 

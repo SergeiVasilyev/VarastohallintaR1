@@ -42,7 +42,7 @@ class Category(models.Model):
 
 class Goods(models.Model):
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
-    item_name = models.CharField(max_length=150, blank=True, null=True)
+    item_name = models.CharField(max_length=150)
     brand = models.CharField(max_length=150, blank=True, null=True)
     model = models.CharField(max_length=150, blank=True, null=True)
     item_type = models.CharField(max_length=100, blank=True, null=True)

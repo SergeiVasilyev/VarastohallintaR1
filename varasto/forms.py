@@ -64,6 +64,7 @@ class AddItemForm(ModelForm):
             }),
             'picture': widgets.FileInput(attrs={
                 'class': '',
+                'onchange': 'showPreview(event);'
             }),
             'purchase_data': TextInput(attrs={
                 'class': 'datepicker_input form-control',
