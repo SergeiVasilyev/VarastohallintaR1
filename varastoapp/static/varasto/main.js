@@ -6,8 +6,8 @@ $(document).ready(function() {
         $(this).find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
-
-    
+    // NUMBER SPINNER
+    $("input[type='number']").inputSpinner()
 
     
     
