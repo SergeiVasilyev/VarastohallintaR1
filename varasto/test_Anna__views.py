@@ -18,13 +18,13 @@ from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
 
 def report(request):
-    rental_events = Rental_event.objects.filter(renter_id=9)
+    rental_events = Rental_event.objects.filter(renter_id=9).order_by("-""start_date")
     renter = rental_events[0].renter
     print(rental_events)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
-    datenow = datenow.strftime("%d.%m.%Y")
+    
 
     context = {
         'rental_events': rental_events,
