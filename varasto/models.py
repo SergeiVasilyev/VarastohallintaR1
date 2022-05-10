@@ -58,6 +58,11 @@ class Category(models.Model):
         return '%s' % (self.cat_name)
 
 class Goods(models.Model):
+    UNITS = [
+        ("unit", _("kpl")),
+        ("litre", _("l")),
+
+    ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)
@@ -65,11 +70,14 @@ class Goods(models.Model):
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    package = models.CharField(max_length=50, blank=True, null=True)
+    pack = models.CharField(max_length=50, blank=True, null=True) # 
+    amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
     item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
+    ean = models.CharField(max_length=50, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
-    reg_number = models.CharField(max_length=50, blank=True, null=True) # ???
+    reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
@@ -143,17 +151,16 @@ class Rental_event(models.Model):
 
 
 class Staff_event(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
-    item = models.ForeignKey(Goods,  on_delete=models.PROTECT)
+    staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)
+    item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
     # We need to use related_name if we have 2 ForegnKey to same table.
     from_storage = models.ForeignKey(Storage_name, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
     to_storage = models.ForeignKey(Storage_name, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
     event_date = models.DateTimeField(blank=True, null=True)
-    amount = models.IntegerField(default=1)
     remarks = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-         return '%s %s %s %s %s %s %s' % (self.staff, self.item, self.from_storage,
-         self.to_storage, self.event_date, self.amount, self.remarks)
+         return '%s %s %s %s %s %s' % (self.staff, self.item, self.from_storage,
+         self.to_storage, self.event_date, self.remarks)
 
 
