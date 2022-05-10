@@ -70,7 +70,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: 100%;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 .new_event_warp input {
     display: block;

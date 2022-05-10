@@ -7,6 +7,7 @@ $(document).ready(function() {
     })
 
     // NUMBER SPINNER
+    // https://shaack.com/projekte/bootstrap-input-spinner/
     $("input[type='number']").inputSpinner()
 
     

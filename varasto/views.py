@@ -243,25 +243,42 @@ def grant_permissions(request):
 
 def new_item(request):
     # Staff_eventFormSet = inlineformset_factory(Goods, Staff_event, fields="__all__", extra=1)
-    Staff_eventFormSet = modelformset_factory(Staff_event, form=Staff_eventForm)
+    # KORJATA. When user loged out request.user is None
+    staff = CustomUser.objects.get(id=request.user.id)
+    print(staff)
+    # Staff_eventFormSet = modelformset_factory(Staff_event, form=Staff_eventForm, extra=0)
     if request.method == "POST":
+        print('request.POST')
         form = GoodsForm(request.POST, request.FILES)
-        x = Staff_eventForm(request.POST, request.FILES)
+        staff_event_form = Staff_eventForm(request.POST, request.FILES)
+        # formset = Staff_eventFormSet(request.POST, request.FILES)
         if form.is_valid():
+            item = form.save(commit=False)
+            item.save()
+            print('saved')
             form.save()
+            # return redirect('new_item')
+        if staff_event_form.is_valid():
+            print('staff saved')
+            staff_event = staff_event_form.save(commit=False)
+            staff_event.item = item
+            staff_event.staff = staff
+            staff_event.save()
+        # if formset.is_valid():
+        #     print('formset saved')
+        #     x = Staff_event(staff=staff, item=item)
     else:
         form = GoodsForm()
-        x = Staff_eventForm()
-        formset = Staff_eventFormSet(prefix='staff_event')
-
+        staff_event_form = Staff_eventForm()
+        
+    # formset = Staff_eventFormSet(prefix='staff_event')
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'form': form,
-        'x': x, 
-        'formset': formset,
+        'staff': staff_event_form,
         'datenow': datenow
     }
     return render(request, 'varasto/new_item.html', context)
