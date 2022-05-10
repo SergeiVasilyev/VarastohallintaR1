@@ -22,10 +22,15 @@ def report(request):
     renter = rental_events[0].renter
     print(rental_events)
 
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    datenow = datenow.strftime("%d.%m.%Y")
+
     context = {
         'rental_events': rental_events,
         'renter': renter,
         'user': request.user,
+        'datenow': datenow,
     }
 
 
