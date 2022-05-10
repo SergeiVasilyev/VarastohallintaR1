@@ -24,7 +24,8 @@ def report(request):
 
     context = {
         'rental_events': rental_events,
-        'renter': renter
+        'renter': renter,
+        'user': request.user,
     }
 
 
