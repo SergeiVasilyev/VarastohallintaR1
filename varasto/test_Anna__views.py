@@ -18,7 +18,7 @@ from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
 
 def report(request):
-    rental_events = Rental_event.objects.filter(renter_id=9).order_by("-""start_date")
+    rental_events = Rental_event.objects.filter(renter_id=9).order_by("-start_date")
     renter = rental_events[0].renter
     print(rental_events)
 
@@ -35,3 +35,18 @@ def report(request):
 
 
     return render(request, 'varasto/report.html', context)
+
+def new_event_goods(request):
+    rental_events = Rental_event.objects.all()
+    items = Goods.objects.all()
+
+    for item in items:
+        for rental_event in rental_events:
+            if rental_event.item == item:
+                item.rented = rental_event.estimated_date
+                print(item)
+            else:
+                item.rented = False
+
+
+    return render(request, 'varasto/new_event_goods.html', {'items': items})
