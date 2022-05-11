@@ -160,8 +160,9 @@ class Staff_eventForm(ModelForm):
                 'class': 'datepicker_input form-control',
                 'type': 'date',
             }),
-            'remarks': TextInput(attrs={
+            'remarks': widgets.Textarea(attrs={
                 'class': 'form-control',
+                'rows': '6',
             }),
 
         }

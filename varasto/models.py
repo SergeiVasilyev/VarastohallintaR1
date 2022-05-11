@@ -52,7 +52,7 @@ class Storage_name(models.Model):
 
 
 class Category(models.Model):
-    cat_name = models.CharField(max_length=20)
+    cat_name = models.CharField(max_length=100)
 
     def __str__(self):
         return '%s' % (self.cat_name)
@@ -61,7 +61,7 @@ class Goods(models.Model):
     UNITS = [
         ("unit", _("kpl")),
         ("litre", _("l")),
-
+        ("kilogram", _("kg")),
     ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
