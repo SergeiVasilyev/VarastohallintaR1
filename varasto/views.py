@@ -242,40 +242,43 @@ def grant_permissions(request):
 
 
 def new_item(request):
-    # Staff_eventFormSet = inlineformset_factory(Goods, Staff_event, fields="__all__", extra=1)
     # KORJATA. When user loged out request.user is None
-    staff = CustomUser.objects.get(id=request.user.id)
+    try:
+        staff = CustomUser.objects.get(id=request.user.id)
+    except:
+        staff = None
     print(staff)
-    # Staff_eventFormSet = modelformset_factory(Staff_event, form=Staff_eventForm, extra=0)
+    l = []
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
     if request.method == "POST":
         print('request.POST')
         form = GoodsForm(request.POST, request.FILES)
         staff_event_form = Staff_eventForm(request.POST, request.FILES)
-        # formset = Staff_eventFormSet(request.POST, request.FILES)
         if form.is_valid():
             item = form.save(commit=False)
-            item.save()
-            print('saved')
-            form.save()
+            if not item.cat_name.id == 1:
+                l += item.amount * [item] # создаем повторяющийся список из введенного количества товаров
+                Goods.objects.bulk_create(l)
+            else:
+                item.save()
+                form.save()
+
             # return redirect('new_item')
         if staff_event_form.is_valid():
             print('staff saved')
             staff_event = staff_event_form.save(commit=False)
             staff_event.item = item
             staff_event.staff = staff
+            staff_event.to_storage = item.storage
+            staff_event.event_date = datenow
             staff_event.save()
-        # if formset.is_valid():
-        #     print('formset saved')
-        #     x = Staff_event(staff=staff, item=item)
     else:
         form = GoodsForm()
         staff_event_form = Staff_eventForm()
-        
-    # formset = Staff_eventFormSet(prefix='staff_event')
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
-    # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'form': form,
         'staff': staff_event_form,

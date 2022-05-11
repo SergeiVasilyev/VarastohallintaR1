@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    // RENTAL EVENTS PAGE
+    // Show / hide accordion list
     $('.list__collapse button').click(function(){
         var userid = $(this).attr('userid')
         // alert($(`.sublist_warp[userid='${userid}']`).attr('class'))
@@ -10,9 +12,16 @@ $(document).ready(function() {
     // https://shaack.com/projekte/bootstrap-input-spinner/
     $("input[type='number']").inputSpinner()
 
-    
-    
+    // NEW ITEM PAGE
+    // Alerts
+    $('#id_cat_name').change(function(){
+        $('.alert').show('fast')
+    })
      
+
+
+
+
     // SCROLLBAR
     // (function($) {
     //     $.fn.hasScrollBar = function() {
