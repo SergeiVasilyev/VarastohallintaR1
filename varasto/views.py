@@ -9,7 +9,7 @@ from django.http import (
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm, AddItemForm
+from .forms import CustomUserForm, GoodsForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
