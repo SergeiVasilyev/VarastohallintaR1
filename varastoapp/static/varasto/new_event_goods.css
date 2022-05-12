@@ -12,9 +12,15 @@
     font-weight: 500;
 }
 
-/* .columns_name div, .new_event_wrap div{
-    border: 1px solid red;
-} */
+.columns_name div, .new_event_wrap div{
+    /* border: 1px solid blue; */
+}
+
+.est_date{
+    display: flex;
+    justify-content: center;
+    min-width: 5.5em;
+}
 
 .new_event_wrap{
     display: grid;

@@ -64,9 +64,9 @@
 
     <div class="row02">
         <div class="item_name">
-            <span class="header">{{forloop.counter}} {{item.item_name}} {{item.brand}}</span>
+            <span class="header">{{item.item_name}} {{item.brand}}</span>
             <span class="paragraph">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
-            
+            {% comment %} {{forloop.counter}} {% endcomment %}
         </div>
     </div>
 
@@ -78,7 +78,7 @@
 
     <div class="row01">
         <div class="">
-            <span class="EAN_number">{{item.id}}</span>
+            <span class="EAN_number">{{item.ean}}</span>
         </div>
     </div>
 
@@ -94,12 +94,12 @@
 
     <div class="row01">
         <div class="">
-            <span class="">31.02.2015</span>
+            <span class="est_date">{% if item.rented  %}{{ item.rented|date:'d.m.Y' }}{% endif %}</span>
         </div>
     </div>
 
     <div class="row01">
-        <button type="button" class="button_props button_active">
+        <button type="button" class="button_props {% if not item.rented  %}button_active{% else %}button_inactive{% endif %}">
             <span class="button__text">Valitse</span>
         </button>
     </div>
