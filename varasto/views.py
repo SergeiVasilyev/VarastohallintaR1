@@ -6,6 +6,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseRedirect,
+    StreamingHttpResponse,
 )
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
@@ -21,6 +22,7 @@ from django.db.models import Count
 from django.db.models import Min, Max
 from .test_views import test
 from .test_Anna__views import report
+from .capture_picture import VideoCamera
 
 
 
@@ -242,7 +244,6 @@ def grant_permissions(request):
 
 
 def new_item(request):
-    # KORJATA. When user loged out request.user is None
     try:
         staff = CustomUser.objects.get(id=request.user.id)
     except:
@@ -275,8 +276,15 @@ def new_item(request):
             staff_event.save()
         return redirect('new_item')
     else:
-        form = GoodsForm()
-        staff_event_form = Staff_eventForm()
+        form = GoodsForm(use_required_attribute=False)
+        staff_event_form = Staff_eventForm(use_required_attribute=False)
+
+    if request.method == "GET":
+        print('GET')
+        if '_take_picture' in request.GET:
+            pic = VideoCamera().take()
+            print('pic', VideoCamera().take())
+
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -287,3 +295,18 @@ def new_item(request):
     }
     return render(request, 'varasto/new_item.html', context)
 
+
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+def video_stream(request):
+    return StreamingHttpResponse(gen(VideoCamera()),
+                    content_type='multipart/x-mixed-replace; boundary=frame')
+
+def take_pacture(request):
+    pic = VideoCamera().take()
+    return HttpResponse(pic)

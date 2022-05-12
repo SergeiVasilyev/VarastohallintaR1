@@ -53,5 +53,8 @@ urlpatterns = [
     path('new_user/', views.new_user, name='new_user'),
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
 
+    path('video_stream', views.video_stream, name='video_stream'),
+    path('take_pacture', views.take_pacture, name='take_pacture'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

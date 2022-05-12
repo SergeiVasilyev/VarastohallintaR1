@@ -30,6 +30,7 @@
 
 
 {% block main_content %}
+<img src = "{% url 'video_stream' %}">
 <form class="new_item_wrap" method="post" enctype="multipart/form-data">
     <!-- <form class="item_form" method="post" enctype="multipart/form-data"> -->
     {% csrf_token %}
@@ -41,10 +42,10 @@
                 <div class="new_product_img">
                     <div><img id="preview_pic" src="{% static 'varasto/pics/tools.png' %}" alt="Tuotekuva"></div>
                 </div>
-
                 <div class="new_button_top">
                     <div class="new_button_take">
-                        <button type="take" class="btn btn-primary1">Take</button>
+                        <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a>
+                        <!-- <button name="_take_picture" type="submit" class="btn btn-primary1">Ota kuva</button> -->
                     </div>
                     <div class="divider"></div>
                     <div class="new_button_browse">
