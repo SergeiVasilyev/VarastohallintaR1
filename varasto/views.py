@@ -257,14 +257,14 @@ def new_item(request):
         staff_event_form = Staff_eventForm(request.POST, request.FILES)
         if form.is_valid():
             item = form.save(commit=False)
-            if not item.cat_name.id == 1:
-                l += item.amount * [item] # создаем повторяющийся список из введенного количества товаров
-                Goods.objects.bulk_create(l)
+            if not item.cat_name.id == 1: # Jos kategoria on Kulutusmateriaali lähetetään kaikki kappalet eri kentään
+                l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
+                item.amount = 1 # Nollataan amount
+                Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
             else:
-                item.save()
+                item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
                 form.save()
 
-            # return redirect('new_item')
         if staff_event_form.is_valid():
             print('staff saved')
             staff_event = staff_event_form.save(commit=False)
@@ -273,6 +273,7 @@ def new_item(request):
             staff_event.to_storage = item.storage
             staff_event.event_date = datenow
             staff_event.save()
+        return redirect('new_item')
     else:
         form = GoodsForm()
         staff_event_form = Staff_eventForm()
