@@ -23,6 +23,7 @@ from django.db.models import Min, Max
 from .test_views import test
 from .test_Anna__views import report
 from .capture_picture import VideoCamera
+from django.db.models import Q
 
 
 
@@ -200,18 +201,21 @@ def update_rental_status(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date'))
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date')).order_by('renter')
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
-    grouped_events = Rental_event.objects.filter(returned_date__isnull=True).filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date').distinct('start_date')
+    grouped_events1 = Rental_event.objects.filter(returned_date__isnull=True).filter(Q(start_date__in=renters_by_min_startdate.values('mindate')) & Q(renter__in=renters_by_min_startdate.values('renter'))).order_by('renter').distinct('renter')
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'))
 
-    # for i in grouped_events: 
-    #     print(i)
+    for i in renters_by_min_startdate:
+        print(i)
+    for i in events: 
+        print(i.item, i.renter.id)
 
-    # for i in grouped_events: 
-    #     # print(i)
-    #     # print(i['renter'])
-    #     print(i.renter_id, i.item, i.start_date)
+    for i in grouped_events: 
+        # print(i)
+        # print(i['renter'])
+        print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
