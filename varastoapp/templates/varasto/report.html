@@ -60,17 +60,17 @@
     <div class="row01">
         <div class="renter_information">
             <span class="bold">Vastuuopettaja:</span>
-            <span class="">{{renter.responsible_teacher}}</span>
-            <span class="">{{renter.phone}}</span>
-            <span class="">{{renter.email}}</span>
+            <span class="">{{renter.responsible_teacher.first_name}} {{renter.responsible_teacher.last_name}}</span>
+            <span class="">{{renter.responsible_teacher.phone}}</span>
+            <span class="">{{renter.responsible_teacher.email}}</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="renter_information">
             <span class="bold">Raportti otettu:</span>
-            <span class="">Erik Nieminen</span>
-            <span class="">26.04.2022</span>
+            <span class="">{{user.first_name }} {{user.last_name }}</span>
+            <span class="">{{datenow|date:'d.m.Y'}}</span>
         </div>
     </div>
 
@@ -104,7 +104,7 @@
     
     <div class="row01">
         <div class="">
-            <span class="">Tavarav vuokrannut henkilö</span>
+            <span class="">Tavaran vuokrannut henkilö</span>
         </div>
     </div>
 </div>
@@ -114,8 +114,8 @@
 
     <div class="row01">
         <div class="item_name">
-            <span class="header">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
-            <span class="paragraph">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}} {{rental_event.item.package|default_if_none:""}}</span>
+            <span class="name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>
+            <span class="model">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}} {{rental_event.item.package|default_if_none:""}}</span>
             
         </div>
     </div>
@@ -140,8 +140,8 @@
 
     <div class="row01">
         <div class="interval">
-            <span class="">{{rental_event.staff}}</span>
-            <span class="">varastontyöntekijä</span>
+            <span class="">{{rental_event.staff.first_name}} {{rental_event.staff.last_name}}</span>
+            <span class="">{{rental_event.staff.role}}</span>
         </div>
     </div>
 

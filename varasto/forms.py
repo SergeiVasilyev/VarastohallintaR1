@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods
-from django.forms import ModelForm, widgets, TextInput, CheckboxInput
+from .models import CustomUser, Category, Goods, Staff_event
+from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -49,21 +49,32 @@ class CustomUserForm(ModelForm):
         }
 
 
-class AddItemForm(ModelForm):
+class GoodsForm(ModelForm):
     class Meta:
         model = Goods
-        fields =['cat_name', 'item_name', 'brand', 'model', 'item_type', 'size', 'parameters', 'package', 'picture', 'item_description', 'cost_centre', 'reg_number', 'purchase_data', 'purchase_price', 'purchase_place', 'invoice_number']
+        fields =['ean','storage', 'cat_name', 'item_name', 'brand', 
+                'model', 'item_type', 'size', 'parameters', 'pack', 
+                'picture', 'item_description', 'cost_centre', 'reg_number', 
+                'purchase_data', 'purchase_price', 'purchase_place', 
+                'invoice_number', 'amount', 'units']
         widgets ={
+            'ean': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+            }),
+            'storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
             'item_name': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä nimi',
+                'placeholder': '',
             }),
             'cat_name': widgets.Select(attrs={
                 'class': 'form-select',
-                'placeholder': 'Syötä nimi',
             }),
             'picture': widgets.FileInput(attrs={
                 'class': '',
+                'onchange': 'showPreview(event);'
             }),
             'purchase_data': TextInput(attrs={
                 'class': 'datepicker_input form-control',
@@ -71,54 +82,88 @@ class AddItemForm(ModelForm):
             }),
             'brand': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä merkki',
+                'placeholder': '',
             }),
             'model': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä malli',
+                'placeholder': '',
             }),
             'item_type': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä tyyppi',
+                'placeholder': '',
             }),
             'size': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä koko',
+                'placeholder': '',
             }),
-            'package': TextInput(attrs={
+            'pack': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä pakkaus',
+                'placeholder': '',
             }),
             'parameters': TextInput(attrs={
                 'class': 'form-control ',
-                'placeholder': 'Syötä tekniset parametrit/tiedot',
+                'placeholder': '',
             }),
             'item_description': widgets.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä lisätiedot',
+                'placeholder': '',
+                'rows': '6',
             }),
             'cost_centre': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä kustannuspaikka',
+                'placeholder': '',
             }),
             'reg_number': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä rekisterinumero',
+                'placeholder': '',
             }),
             'purchase_price': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä hankintahinta',
+                'placeholder': '',
             }),
             'purchase_place': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä hankintapaikka',
+                'placeholder': '',
             }),
             'invoice_number': TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Syötä laskunr',
+                'placeholder': '',
             }),
-
+            'amount': NumberInput(attrs={
+                'min': 1,
+                'max': 100,
+            }),
+            'units': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
         
         }
 
+class Staff_eventForm(ModelForm):
+    class Meta:
+        model = Staff_event
+        fields = ['staff', 'item', 'from_storage', 'to_storage', 'event_date', 'remarks']
+        widgets = {
+            'staff': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'item': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'from_storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'to_storage': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
+            'event_date': DateInput(attrs={
+                'class': 'datepicker_input form-control',
+                'type': 'date',
+            }),
+            'remarks': widgets.Textarea(attrs={
+                'class': 'form-control',
+                'rows': '6',
+            }),
+
+        }
 

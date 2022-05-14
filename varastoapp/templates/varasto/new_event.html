@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
-{% block title %}New event{% endblock %}
-{% block path %}New event{% endblock %}
-{% block page %}New event{% endblock %}
+{% block title %}Uusi tapahtuma{% endblock %}
+{% block path %}Uusi tapahtuma{% endblock %}
+{% block page %}Uusi tapahtuma{% endblock %}
 
 {% block main_content %}
 
@@ -57,14 +57,15 @@
                 <div class="row g-3 mt-3 w-100 mb-4">
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
+                            
+                            <div class="mb-3 me-3 w-100">
+                                <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
+                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
+                            </div>
                             <div class="mb-3 me-3">
                                 <button type="button" class="list__button list__button_bg_green btn_strech btn-small">
                                     <span class="list__button__text">Lisää tuote</span>
                                 </button>
-                            </div>
-                            <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
-                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
                             </div>
                             <div class="mb-3">
                                 <button type="submit" class="list__button list__button_bg_green btn_strech">
