@@ -82,7 +82,7 @@
                         {% if not rental_event.returned_date %}
                         {{rental_event.start_date|date:'d.m.Y'}} - {{rental_event.estimated_date|date:'d.m.Y'}}
                         {% else %}
-                        {{ rental_event.returned_date|date:'d.m.Y' }}
+                        {{rental_event.start_date|date:'d.m.Y'}} - {{ rental_event.returned_date|date:'d.m.Y' }}
                         {% endif %}
                     </span>
                     {% if not rental_event.returned_date and rental_event.is_past_due %}

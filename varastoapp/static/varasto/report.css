@@ -114,11 +114,18 @@
     align-items: center; 
 }
 
-.line_content div span{
+.line_content{
     font-weight: 400;
     font-size: 1em;
     color: #2D3748;
 }
+
+.name{
+    font-weight: 500;
+    font-size: 1em;
+    color: #2D3748; 
+}
+
 .line_content:nth-child(even){
     background-color: #F1F5F9;
 }
