@@ -28,6 +28,8 @@ from django.db.models import Q
 
 
 
+
+
 def inventaario_side_window(request):
     return render(request, 'varasto/inventaario_side_window.html')
 
