@@ -1,15 +1,17 @@
 import operator
 import re
+from django.forms import inlineformset_factory, modelformset_factory
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseRedirect,
+    StreamingHttpResponse,
 )
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm, AddItemForm
+from .forms import CustomUserForm, GoodsForm, Staff_eventForm, Staff_eventForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -20,6 +22,10 @@ from django.db.models import Count
 from django.db.models import Min, Max
 from .test_views import test
 from .test_Anna__views import report
+from .capture_picture import VideoCamera
+from django.db.models import Q
+
+
 
 
 
@@ -62,7 +68,7 @@ def renter(request, idx):
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
-    datenow = datenow.strftime("%d.%m.%Y")
+    # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'rental_events': rental_events,
         'selected_user': selected_user,
@@ -113,7 +119,7 @@ def new_event(request):
                             renter=renter, 
                             staff=staff,
                             start_date='2022-05-04',
-                            estimated_date='2022-05-10')
+                            estimated_date='2022-05-10') # !!!!!!!!!!!!!!!!!!!!!!!!
                 print(rental)
                 rental.save()
         changed_user = None
@@ -121,7 +127,8 @@ def new_event(request):
 
     print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
@@ -182,7 +189,8 @@ def user_recovery(request):
 
 def base_main(request):
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'datenow': datenow,
         'user': request.user
@@ -195,21 +203,25 @@ def update_rental_status(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date'))
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date')).order_by('renter')
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
-    grouped_events = Rental_event.objects.filter(returned_date__isnull=True).filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date').distinct('start_date')
+    grouped_events1 = Rental_event.objects.filter(returned_date__isnull=True).filter(Q(start_date__in=renters_by_min_startdate.values('mindate')) & Q(renter__in=renters_by_min_startdate.values('renter'))).order_by('renter').distinct('renter')
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'))
 
-    # for i in grouped_events: 
-    #     print(i)
+    for i in renters_by_min_startdate:
+        print(i)
+    for i in events: 
+        print(i.item, i.renter.id)
 
-    # for i in grouped_events: 
-    #     # print(i)
-    #     # print(i['renter'])
-    #     print(i.renter_id, i.item, i.start_date)
+    for i in grouped_events: 
+        # print(i)
+        # print(i['renter'])
+        print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
-    datenow = now.strftime("%d.%m.%Y")
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'grouped_events': grouped_events,
         'events': events,
@@ -238,18 +250,69 @@ def grant_permissions(request):
 
 
 def new_item(request):
-    submitted = False
+    try:
+        staff = CustomUser.objects.get(id=request.user.id)
+    except:
+        staff = None
+    print(staff)
+    l = []
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
     if request.method == "POST":
-        form = AddItemForm(request.POST, request.FILES)
-        print('request.POST ', request.POST)
-        print('PIC ', request.POST.get("picture"))
+        print('request.POST')
+        form = GoodsForm(request.POST, request.FILES)
+        staff_event_form = Staff_eventForm(request.POST, request.FILES)
         if form.is_valid():
-            print ("blablalba")
-            form.save()
-            return HttpResponseRedirect('/new_item?submitted=True')
-    else:
-        form = AddItemForm()
-        if 'submitted' in request.GET: 
-            submitted=True
-    return render(request, 'varasto/new_item.html', {'form':form, 'submitted':submitted})
+            item = form.save(commit=False)
+            if not item.cat_name.id == 1: # Jos kategoria on Kulutusmateriaali lähetetään kaikki kappalet eri kentään
+                l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
+                item.amount = 1 # Nollataan amount
+                Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
+            else:
+                item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
+                form.save()
 
+        if staff_event_form.is_valid():
+            print('staff saved')
+            staff_event = staff_event_form.save(commit=False)
+            staff_event.item = item
+            staff_event.staff = staff
+            staff_event.to_storage = item.storage
+            staff_event.event_date = datenow
+            staff_event.save()
+        return redirect('new_item')
+    else:
+        form = GoodsForm(use_required_attribute=False)
+        staff_event_form = Staff_eventForm(use_required_attribute=False)
+
+    if request.method == "GET":
+        print('GET')
+        if '_take_picture' in request.GET:
+            pic = VideoCamera().take()
+            print('pic', VideoCamera().take())
+
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    context = {
+        'form': form,
+        'staff': staff_event_form,
+        'datenow': datenow
+    }
+    return render(request, 'varasto/new_item.html', context)
+
+
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+def video_stream(request):
+    return StreamingHttpResponse(gen(VideoCamera()),
+                    content_type='multipart/x-mixed-replace; boundary=frame')
+
+def take_pacture(request):
+    pic = VideoCamera().take()
+    return HttpResponse(pic)

@@ -55,7 +55,11 @@
     }
 
     .form-label{
-        font-size: 0.875em;
+        /* font-size: 0.875em; */
+        color: #2D3748;
+        text-transform: uppercase;
+        font-size: 0.75em;
+        font-weight: 600;
     }
     
 /* / BUTTONS IN CONTENT */
