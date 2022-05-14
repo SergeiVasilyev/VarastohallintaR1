@@ -45,6 +45,7 @@
     main .white_background {
         /* overflow-y: scroll; */
         overflow-y: auto;
+        overflow-x: auto;
         scrollbar-gutter: stable;
     }
 
@@ -198,6 +199,7 @@ aside {
 /* scrolbar */
 #wb::-webkit-scrollbar {
     width: 0.4em;
+    height: 0.4em;
     cursor: pointer;
   }
    
