@@ -209,7 +209,7 @@ def rental_events(request):
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
     grouped_events1 = Rental_event.objects.filter(returned_date__isnull=True).filter(Q(start_date__in=renters_by_min_startdate.values('mindate')) & Q(renter__in=renters_by_min_startdate.values('renter'))).order_by('renter').distinct('renter')
-    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'))
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
     for i in renters_by_min_startdate:
         print(i)

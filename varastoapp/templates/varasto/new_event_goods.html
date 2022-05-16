@@ -84,7 +84,7 @@
 
     <div class="row01">
         <div class="item_status">
-            {% if item.rented  %}
+            {% if item.item_status != 'available'  %}
             <span class="status_red">Ei saatavilla</span>
             {% else %}
             <span class="status_green">Saatavilla</span>
@@ -94,12 +94,12 @@
 
     <div class="row01">
         <div class="">
-            <span class="est_date">{% if item.rented  %}{{ item.rented|date:'d.m.Y' }}{% endif %}</span>
+            <span class="est_date">{% if rental_event.item == item %}{{ rental_event.start_date|date:'d.m.Y' }}{% endif %}</span>
         </div>
     </div>
 
     <div class="row01">
-        <button type="button" class="button_props {% if not item.rented  %}button_active{% else %}button_inactive{% endif %}">
+        <button type="button" class="button_props {% if item.item_status == 'available' %}button_active{% else %}button_inactive{% endif %}">
             <span class="button__text">Valitse</span>
         </button>
     </div>

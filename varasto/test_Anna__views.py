@@ -39,21 +39,50 @@ def report(request):
 # Добавить доступность товара или его местоположение в Goods
 # Переименовать test_Anna__views & new_event_goods
 def new_event_goods(request):
-    rental_events = Rental_event.objects.all().order_by("id")
     items = Goods.objects.all().order_by("id")
+    notavailable_items = Goods.objects.filter(item_status='not_available').order_by("id")
+    rental_events = Rental_event.objects.filter(item__in=notavailable_items).order_by("item_id")
+    print(rental_events)
 
-    for item in items:
-        item.rented = False
-        # print(item, ' ', item.id)
-        for rental_event in rental_events:
-            if not item == rental_event.item and not item.rented:
-                item.rented = False
-                print(item.id, rental_event.id, 'False')
-            else:
-                item.rented = rental_event.estimated_date
-                print(item.id, rental_event.id, 'True')
+
+
+
+
+
+    # rental_events = Rental_event.objects.all().order_by("id")
+    # items = Goods.objects.all().order_by("id")
+
+    # for item in items:
+    #     item.rented = False
+    #     # print(item, ' ', item.id)
+    #     for rental_event in rental_events:
+    #         if not item == rental_event.item and not item.rented:
+    #             item.rented = False
+    #             # print(item.id, rental_event.id, 'False')
+    #         else:
+    #             item.rented = rental_event.estimated_date
+    #             # print(item.id, rental_event.id, 'True')
                 
-        # print(item.id, ' ', item.rented)
+    #     # print(item.id, ' ', item.rented)
 
+    # rental_events_repeat = Rental_event.objects.all().order_by("item") # Delete duplicated rental event items, becose 1 product can rent just one time in same time
+    # for i, item in enumerate(rental_events_repeat):
+    #     print(rental_events_repeat[i].id, rental_events_repeat[i].item_id, rental_events_repeat[i].item)
+    #     if i != 0 and item.item == rental_events_repeat[i-1].item:
+    #         del_item = Rental_event.objects.get(id=item.id)
+    #         print(del_item.id)
+    #         del_item.delete()
 
-    return render(request, 'varasto/new_event_goods.html', {'items': items})
+    # for item in items: # Code saves in Goods item_status = 'not_available' when the Items is present in the Rent event
+    #     # item.rented = False
+    #     # print(item, ' ', item.id)
+    #     upd_item = Goods.objects.get(id=item.id)
+    #     for rental_event in rental_events:
+    #         if item != rental_event.item and upd_item.item_status != 'not_available':
+    #             print(item.id, item)
+    #             upd_item.item_status = 'available'
+    #         else:
+    #             upd_item.item_status = 'not_available'
+    #         upd_item.save()
+                
+    return render(request, 'varasto/new_event_goods.html', {'items': items, 'rental_events': rental_events})
