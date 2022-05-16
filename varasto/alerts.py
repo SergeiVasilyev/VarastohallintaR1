@@ -1,7 +1,10 @@
 from email.message import EmailMessage
 import smtplib
 from datetime import datetime
-from .models import User, Rental_event
+from django.db import models
+
+
+
 
 def email_alert(subject, body, to):
     msg = EmailMessage()
@@ -9,15 +12,17 @@ def email_alert(subject, body, to):
     msg['subject'] = subject
     msg['to'] = to
 
-    user = "muistutus.varasto@gmail.com (tämä sähköposti on vain esimerkki)"
-    password ="salasana (jos käyttää gmail niin pitää setup 2-step verification ensin että saa salasanan sitä varten että third party sovellus pystyy lähettämään sähköpostin kautta)" 
+    user = "info.varasto@gmail.com"
+    msg['from'] = user
+    password ="mbmxdxuhmjkojukb" 
 
-    server = smtplib.SMTB("smtp.gmail.com", 587)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
     server.login(user, password)
+    server.send_message(msg)
 
     server.quit()
 
     "Tähän lisätään funktio mikä triggeröi muistutuksen"
-    if ("estimated_date") == datetime.today().date():
-        email_alert("Automaattinen muistutus!", "Sinulla on lainassa (tähän työkalun nimi) joka on erääntynyt", "(tähän laitetaan käyttäjän sähköposti")
+if datetime.today().date() == datetime.today().date():
+    email_alert("Automaattinen muistutus!", "Sinulla on lainassa (tähän työkalun nimi) joka on erääntynyt", "tino.cederholm@gmail.com")
