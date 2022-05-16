@@ -36,6 +36,8 @@ def report(request):
 
     return render(request, 'varasto/report.html', context)
 
+# Добавить доступность товара или его местоположение в Goods
+# Переименовать test_Anna__views & new_event_goods
 def new_event_goods(request):
     rental_events = Rental_event.objects.all().order_by("id")
     items = Goods.objects.all().order_by("id")
