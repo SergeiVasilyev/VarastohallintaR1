@@ -12,260 +12,99 @@
 
 {% block main_content %}
 
-<div class="new_event_wrap">
+<div class="columns_name">
 
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
+    <div class="row02">
+        <div class="">
+            <span class="">Tuote</span>
+        </div>
     </div>
-
+    
     <div class="row01">
-        <div class="item_name">
-            <span class="header">Makita Screwdriver</span>
-            <span class="paragraph">OST-25</span>
-            
+        <div class="">
+            <span class="">ID / Tuotenumero</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">EAN</span>
+        </div>
+    </div>
+    
+    <div class="row01">
+        <div class="">
+            <span class="">Saatavuus</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <span class="code_number">945738</span>
+            <span class="">Arvioitu Paluupäivä</span>
         </div>
     </div>
-
+    
     <div class="row01">
-        <div class="item_status">
-            <span class="status">Saatavilla</span>
-
-            
+        <div class="">
+            <span class=""></span>
         </div>
     </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_active">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
+    
 </div>
 
+{% for item in items %}
+
 <div class="new_event_wrap">
+
     <div class="row01">
         <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
           </div>
     </div>
 
-    <div class="row01">
+    <div class="row02">
         <div class="item_name">
-            <span class="header">SPX YLEISKÄYTTÖINEN TIMANTTILAIKKA</span>
-            <span class="paragraph">HILTI 125mm 22.23</span>
-            
+            <span class="header">{{item.item_name}} {{item.brand}}</span>
+            <span class="paragraph">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
+            {% comment %} {{forloop.counter}} {% endcomment %}
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <span class="code_number">673738</span>
+            <span class="code_number">{{item.id}}</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="EAN_number">{{item.ean}}</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="item_status">
+            {% if item.rented  %}
             <span class="status_red">Ei saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_inactive">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
-</div>
-
-<div class="new_event_wrap">
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">Hiuslakka Schwarzkopf</span>
-            <span class="paragraph">OSIS+ 300ml</span>
-            
+            {% else %}
+            <span class="status_green">Saatavilla</span>
+            {% endif %} 
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <span class="code_number">349862</span>
+            <span class="est_date">{% if item.rented  %}{{ item.rented|date:'d.m.Y' }}{% endif %}</span>
         </div>
     </div>
 
     <div class="row01">
-        <div class="item_status">
-            <span class="status">Saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_active">
+        <button type="button" class="button_props {% if not item.rented  %}button_active{% else %}button_inactive{% endif %}">
             <span class="button__text">Valitse</span>
         </button>
     </div>
 </div>
 
-<div class="new_event_wrap">
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">Porakone Bosh</span>
-            <span class="paragraph">GSR 12V</span>
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="code_number">293745</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_status">
-            <span class="status">Saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_active">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
-</div>
-
-<div class="new_event_wrap">
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">Pulttipyssy Milwaukee</span>
-            <span class="paragraph">M18 FHIWF 12</span>
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="code_number">993848</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_status">
-            <span class="status_red">Ei saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_inactive">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
-</div>
-
-<div class="new_event_wrap">
-
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">Makita Screwdriver</span>
-            <span class="paragraph">OST-25</span>
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="code_number">945738</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_status">
-            <span class="status">Saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_active">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
-</div>
-
-<div class="new_event_wrap">
-
-    <div class="row01">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">SPX YLEISKÄYTTÖINEN TIMANTTILAIKKA</span>
-            <span class="paragraph">HILTI 125mm 22.23</span>
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="code_number">673738</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_status">
-            <span class="status_red">Ei saatavilla</span>
-
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <button type="button" class="button_props button_inactive">
-            <span class="button__text">Valitse</span>
-        </button>
-    </div>
-</div>
-
+{% endfor %}
 
 {% endblock %}

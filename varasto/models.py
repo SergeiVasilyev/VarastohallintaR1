@@ -63,6 +63,11 @@ class Goods(models.Model):
         ("litre", _("l")),
         ("kilogram", _("kg")),
     ]
+    ITEM_STATUS = [
+        ("available", _("saatavilla")),
+        ("not_available", _("ei saatavilla")),
+        ("under_repair", _("korjaamassa")),
+    ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)
@@ -83,6 +88,7 @@ class Goods(models.Model):
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
 
 
     def __str__(self):

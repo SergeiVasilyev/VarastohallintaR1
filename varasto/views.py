@@ -21,7 +21,9 @@ from django.db.models import Count
 
 from django.db.models import Min, Max
 from .test_views import test
-from .test_Anna__views import report
+
+from .test_Anna__views import report, new_event_goods
+
 from .capture_picture import VideoCamera
 from django.db.models import Q
 
@@ -233,8 +235,8 @@ def rental_events(request):
 
 
 
-def new_event_goods(request):
-    return render(request, 'varasto/new_event_goods.html')
+# def new_event_goods(request):
+#     return render(request, 'varasto/new_event_goods.html')
 
 def inventory(request):
     return render(request, 'varasto/inventory.html')
