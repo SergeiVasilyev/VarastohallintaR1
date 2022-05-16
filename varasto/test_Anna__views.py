@@ -39,31 +39,31 @@ def report(request):
 # Добавить доступность товара или его местоположение в Goods
 # Переименовать test_Anna__views & new_event_goods
 def new_event_goods(request):
-    items = Goods.objects.all().order_by("id")
-    notavailable_items = Goods.objects.filter(item_status='not_available').order_by("id")
-    rental_events = Rental_event.objects.filter(item__in=notavailable_items).order_by("item_id")
-    print(rental_events)
-
-
-
-
-
-
-    # rental_events = Rental_event.objects.all().order_by("id")
     # items = Goods.objects.all().order_by("id")
+    # notavailable_items = Goods.objects.filter(item_status='not_available').order_by("id")
+    # rental_events = Rental_event.objects.filter(item__in=notavailable_items).order_by("item_id")
+    # print(rental_events)
 
-    # for item in items:
-    #     item.rented = False
-    #     # print(item, ' ', item.id)
-    #     for rental_event in rental_events:
-    #         if not item == rental_event.item and not item.rented:
-    #             item.rented = False
-    #             # print(item.id, rental_event.id, 'False')
-    #         else:
-    #             item.rented = rental_event.estimated_date
-    #             # print(item.id, rental_event.id, 'True')
+
+
+
+
+
+    rental_events = Rental_event.objects.all().order_by("id")
+    items = Goods.objects.all().order_by("id")
+
+    for item in items:
+        item.rented = False
+        # print(item, ' ', item.id)
+        for rental_event in rental_events:
+            if not item == rental_event.item and not item.rented:
+                item.rented = False
+                # print(item.id, rental_event.id, 'False')
+            else:
+                item.rented = rental_event.estimated_date
+                # print(item.id, rental_event.id, 'True')
                 
-    #     # print(item.id, ' ', item.rented)
+        # print(item.id, ' ', item.rented)
 
     # rental_events_repeat = Rental_event.objects.all().order_by("item") # Delete duplicated rental event items, becose 1 product can rent just one time in same time
     # for i, item in enumerate(rental_events_repeat):
