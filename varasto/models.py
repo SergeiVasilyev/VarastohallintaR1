@@ -10,12 +10,12 @@ from django.template.defaulttags import register
 class CustomUser(AbstractUser):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
-        ("student", _("Student")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
-        ("student_ext", _("Student extended")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
-        ("storage_employee", _("Storage employee")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
-        ("management", _("Management")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
-        ("teacher", _("Teacher")),
-        ("super", _("Super")),
+        ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
+        ("student_ext", _("Oppilas laajennetut oikeudet")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
+        ("storage_employee", _("Varastotyöntekijä")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
+        ("management", _("Hallinto")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
+        ("teacher", _("Opettaja")),
+        ("super", _("Super user")),
     ]
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
