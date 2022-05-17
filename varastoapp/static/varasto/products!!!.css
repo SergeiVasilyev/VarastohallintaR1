@@ -1,0 +1,121 @@
+.columns_name{
+    display: grid;
+    grid-template-columns: minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    margin-left: 50px;
+    align-items: center;
+    text-transform: uppercase;
+    color: #A0AEC0;
+}
+
+.columns_name div span{
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.columns_name div, .new_event_wrap div{
+    /* border: 1px solid blue; */
+}
+
+.est_date{
+    display: flex;
+    justify-content: center;
+    min-width: 5.5em;
+}
+
+.new_event_wrap{
+    display: grid;
+    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    border-top: 1px solid #E2E8F0;
+    align-items: center;
+}
+
+.row01 {
+    /* border: 1px solid red; */
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+}
+
+.row02{
+    padding: 1em;
+}
+
+.item_name span{
+    display: block;
+}
+
+.header{
+    font-size: 1em;
+    font-weight: 600;
+    color: #2D3748;
+
+}
+
+.paragraph{
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #718096;
+}
+
+.code_number{
+    font-weight: 400;
+    color: #2D3748;
+}
+
+.item_status > span{
+    display: block;
+    width: 8.3em;
+    padding: 0 1.2em;
+    height: 1.5em;
+    border-radius: 0.5em;
+    text-align: center;
+    /* border: 1px solid red; */
+    font-size: 1em;
+    font-weight: 500;
+}
+.status_green {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: white;
+}
+
+.status_red{
+    background-color: #D96098;
+    border: 1px solid #D96098;
+    color: white;  
+    /* border: 1px solid red; */
+}
+
+.button_props{
+    display: inline-flex;
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.button_active{
+    color: #FFFFFF;
+    background: #325288;
+}
+
+.button_inactive{
+    color: #889EAF;
+    background: #E1E5EA;
+}
+
