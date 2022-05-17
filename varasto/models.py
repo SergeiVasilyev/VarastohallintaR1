@@ -90,6 +90,16 @@ class Goods(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
 
+    @property
+    def rentable_at(self):
+        rental_events = Rental_event.objects.all().order_by("item")
+        event = rental_events.filter(item=self).first()
+        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # print(self.id, event)
+        if event:
+            return event.estimated_date
+        return None
+
 
     def __str__(self):
         return '%s' % (self.item_name)

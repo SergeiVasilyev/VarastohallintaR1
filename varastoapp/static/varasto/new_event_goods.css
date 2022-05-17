@@ -28,7 +28,9 @@
     border-top: 1px solid #E2E8F0;
     align-items: center;
 }
-
+.new_event_wrap:nth-child(odd) {
+    background-color: #f8fbff;
+}
 .row01 {
     /* border: 1px solid red; */
     padding: 1em;
@@ -40,7 +42,7 @@
     padding: 1em;
 }
 
-.item_name span{
+.item_name span, .item_name label{
     display: block;
 }
 
