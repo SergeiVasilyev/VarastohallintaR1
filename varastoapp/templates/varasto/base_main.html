@@ -63,13 +63,15 @@
                 </a>
                 {% comment %} {% endif %} {% endcomment %}
                 <a class="nodecor" href="{% url 'rental_events' %}">
-                    <button type="button" class="button button_bg_gray resize mb-2">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/rental_events/' or '/renter/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize">Vuokratapahtumat</span>
                     </button>
                 </a>
-                <button type="button" class="button button_bg_white resize mb-2">
-                    <span class="button__text resize">Tavarat</span>
-                </button>
+                <a class="nodecor" href="{% url 'products' %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/products/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                        <span class="button__text resize">Tavarat</span>
+                    </button>
+                </a>
                 <button type="button" class="button button_bg_white resize mb-2">
                     <span class="button__text resize">Asetukset</span>
                 </button>

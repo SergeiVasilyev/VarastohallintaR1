@@ -130,7 +130,13 @@ form {
 }
 
 
-
+.modal-dialog {
+    /* border: 1px solid blue; */
+    max-width: 680px !important;
+}
+.modal-body img{
+    max-width: 640px;
+}
 .modal-footer {
     text-align: center;
 }

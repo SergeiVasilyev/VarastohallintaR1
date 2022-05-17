@@ -27,7 +27,7 @@
                             <div class="mb-3 me-3 w-100">
                                 <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
                                 {% if not changed_user %}
-                                <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa opiskelijanumero tai hänen nimi">
+                                <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita opiskelijanumero tai nimi">
                                 {% else %}
                                 <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="exampleFormControlInput1" >
                                 {% endif %}
@@ -60,7 +60,7 @@
                         <div class="d-flex align-items-end">
                             <div class="mb-3 me-3 w-100">
                                 <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
-                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
+                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
                             </div>
                             <div class="mb-3 me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
@@ -120,7 +120,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Valitse tuoteita</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Valitse tuotteita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
