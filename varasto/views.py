@@ -8,6 +8,7 @@ from django.http import (
     HttpResponseRedirect,
     StreamingHttpResponse,
 )
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
@@ -45,13 +46,13 @@ def renter(request, idx):
     # При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!!
     if request.method == 'POST':
         # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
-        print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
+        # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
         item = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
         if request.POST.get('rental_close'):
             sended_date = request.POST.get('rental_close') 
             date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
             date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
-            print(item.item.item_name, date_localized)
+            # print(item.item.item_name, date_localized)
             item.estimated_date = date_localized # Save new estimated date into database
             item.save()
         if request.POST.getlist('set_end_date'):
@@ -60,13 +61,13 @@ def renter(request, idx):
             item.returned_date = datenow # Save new estimated date into database
             item.save()
         if request.POST.getlist('set_problem'):
-            print('PROBLEM')
+            # print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
 
     selected_user = CustomUser.objects.get(id=idx)
     rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
-    print(selected_user)
+    # print(selected_user)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -86,18 +87,18 @@ def new_event(request):
     changed_items = []
     r = re.compile("add_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
     add_items = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
-    print(list(filter(r.match, request.GET)))
+    # print(list(filter(r.match, request.GET)))
 
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
-            print('add_user: ', request.GET.get('add_user'))
+            # print('add_user: ', request.GET.get('add_user'))
             try:
                 changed_user = CustomUser.objects.get(code=request.GET.get('add_user')) # saadan user
             except:
                 error = "User ei löyty"
         if add_items: # jos item codes kirjoitettiin
             for add_item in add_items:
-                print(add_item, ' ', request.GET.get(add_item))
+                # print(add_item, ' ', request.GET.get(add_item))
                 try:
                     changed_items.append(Goods.objects.get(id=request.GET.get(add_item))) # saadan kaikki Iteemit changed_items muuttujaan
                 except:
@@ -105,10 +106,10 @@ def new_event(request):
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
-        print('changed_user cleared')
+        # print('changed_user cleared')
 
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
-        print(request.GET.get('_remove_item'))
+        # print(request.GET.get('_remove_item'))
         changed_items.pop(int(request.GET.get('_remove_item')))
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
@@ -122,14 +123,14 @@ def new_event(request):
                             staff=staff,
                             start_date='2022-05-04',
                             estimated_date='2022-05-10') # !!!!!!!!!!!!!!!!!!!!!!!!
-                print(rental)
+                # print(rental)
                 rental.save()
         changed_user = None
         changed_items = []
 
     items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
 
-    print(changed_user, changed_items, request.GET.get('_remove_user'))
+    # print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     # datenow = now.strftime("%d.%m.%Y")
@@ -153,7 +154,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                print('sucsess')
+                # print('sucsess')
                 if user_check(user) and is_not_student(user):
                     return redirect('rental_events')
                 else:
@@ -214,15 +215,15 @@ def rental_events(request):
     grouped_events1 = Rental_event.objects.filter(returned_date__isnull=True).filter(Q(start_date__in=renters_by_min_startdate.values('mindate')) & Q(renter__in=renters_by_min_startdate.values('renter'))).order_by('renter').distinct('renter')
     grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
-    for i in renters_by_min_startdate:
-        print(i)
-    for i in events: 
-        print(i.item, i.renter.id)
+    # for i in renters_by_min_startdate:
+    #     print(i)
+    # for i in events: 
+    #     print(i.item, i.renter.id)
 
-    for i in grouped_events: 
-        # print(i)
-        # print(i['renter'])
-        print(i.renter_id, i.item, i.start_date)
+    # for i in grouped_events: 
+    #     # print(i)
+    #     # print(i['renter'])
+    #     print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -259,12 +260,12 @@ def new_item(request):
         staff = CustomUser.objects.get(id=request.user.id)
     except:
         staff = None
-    print(staff)
+    # print(staff)
     l = []
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     if request.method == "POST":
-        print('request.POST')
+        # print('request.POST')
         form = GoodsForm(request.POST, request.FILES)
         staff_event_form = Staff_eventForm(request.POST, request.FILES)
         if form.is_valid():
@@ -278,7 +279,7 @@ def new_item(request):
                 form.save()
 
         if staff_event_form.is_valid():
-            print('staff saved')
+            # print('staff saved')
             staff_event = staff_event_form.save(commit=False)
             staff_event.item = item
             staff_event.staff = staff
@@ -291,10 +292,10 @@ def new_item(request):
         staff_event_form = Staff_eventForm(use_required_attribute=False)
 
     if request.method == "GET":
-        print('GET')
+        # print('GET')
         if '_take_picture' in request.GET:
             pic = VideoCamera().take()
-            print('pic', VideoCamera().take())
+            # print('pic', VideoCamera().take())
 
     
     now = datetime.now()
@@ -321,3 +322,13 @@ def video_stream(request):
 def take_pacture(request):
     pic = VideoCamera().take()
     return HttpResponse(pic)
+
+
+def products(request):
+    items = Goods.objects.all().order_by("id")
+    paginator = Paginator(items, 20)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'varasto/products.html', {'items': page_obj})
+
