@@ -5,6 +5,7 @@
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/new_event.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/new_event_goods.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
@@ -57,13 +58,12 @@
                 <div class="row g-3 mt-3 w-100 mb-4">
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
-                            
                             <div class="mb-3 me-3 w-100">
                                 <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
                                 <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
                             </div>
                             <div class="mb-3 me-3">
-                                <button type="button" class="list__button list__button_bg_green btn_strech btn-small">
+                                <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
                                     <span class="list__button__text">Lisää tuote</span>
                                 </button>
                             </div>
@@ -111,6 +111,27 @@
                     <span class="button_s__text">TALLENNA</span>  
                 </button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1-->
+<div class="modal fade" id="goods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Valitse tuoteita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                {% include 'varasto/new_event_goods.html' with items=items %}
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+            </div>
         </div>
     </div>
 </div>

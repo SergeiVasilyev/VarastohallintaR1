@@ -127,6 +127,8 @@ def new_event(request):
         changed_user = None
         changed_items = []
 
+    items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
+
     print(changed_user, changed_items, request.GET.get('_remove_user'))
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -135,7 +137,8 @@ def new_event(request):
         'changed_user': changed_user,
         'changed_items': changed_items,
         'datenow': datenow,
-        'user': request.user
+        'user': request.user,
+        'items': items
     }
     return render(request, 'varasto/new_event.html', context)
 
@@ -293,7 +296,7 @@ def new_item(request):
             pic = VideoCamera().take()
             print('pic', VideoCamera().take())
 
-
+    
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     context = {
