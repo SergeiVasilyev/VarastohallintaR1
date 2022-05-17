@@ -19,7 +19,16 @@ $(document).ready(function() {
     })
      
 
-
+    // $('#add_product').click(function(){
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: "/new_event_goods",
+    //         dataType: "json",
+    //         success: (data) => {
+    //             console.log(data);
+    //         },
+    //     })
+    // })
 
 
     // SCROLLBAR
