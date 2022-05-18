@@ -11,9 +11,11 @@
     /* min-height: 100%; */
     /* border: 1px solid blueviolet; */
 }
+
 form {
     padding: 0 !important;
 }
+
 .new_img_desc {
     display: grid;
     grid-template-columns: 250px 0.6fr 2fr 2fr;
@@ -128,6 +130,113 @@ form {
     color: white !important;
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
+
+/* BUTTONS IN CONTENT */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1.2em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center; 
+    text-transform: uppercase;
+}
+    .btn-small{
+        min-width: 8em;
+    }
+    .btn-sq{
+
+    }
+    .btn_strech {
+        place-self: center stretch;
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #24A19C;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__button_bg_red {
+        color: white;
+        background: #D96098;
+    }
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+    .list__button__text{
+        padding: 0 1.2em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }
+    .list__button, .list__button:hover, .list__button:visited {
+        text-decoration: none;
+        color: white;
+    }
+
+    
+/* / BUTTONS IN CONTENT */
+
+/* MAIN BUTTONS */
+.button_s {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_s__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    /* border: 1px solid red; */
+}
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
+.btn-success, .btn-success:active, .btn-success:visited {
+    text-transform: uppercase;
+    background-color: #24A19C !important;
+    border: #24A19C !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
+
+/* / MAIN BUTTONS */
+
 
 
 .modal-dialog {

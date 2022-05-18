@@ -145,8 +145,39 @@ form {
     height: 100%;
     /* border: 1px solid red; */
 }
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
 
 /* / MAIN BUTTONS */
+
+
+/* Date */
+.new_event_warp div div div div {
+    /* border: 1px solid green; */
+}
+
+.dates_choice {
+    display: flex;
+    justify-content: center;
+}
+
+.dates > div{
+    width: 10em;
+}
+
+.dates {
+    gap: 3em;
+}
+
+
+
+/* // Date */
+
 
 
 

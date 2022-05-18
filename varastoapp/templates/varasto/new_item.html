@@ -45,13 +45,16 @@
                 <div class="new_button_top">
                     <div class="new_button_take">
                         {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
-                        <button type="button" class="btn btn-primary1" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button>
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
+                        <button type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
+                            <span class="list__button__text">Ota kuva</span>
+                        </button>
                     </div>
                     <div class="divider"></div>
                     <div class="new_button_browse">
-                        <div class="btn btn-primary1 btn-file">
+                        <div class="list__button list__button_bg_blue btn_strech btn-small btn-file">
                             {{ form.picture }}
-                            Valitse kuva
+                            <span class="list__button__text">Valitse kuva</span>
                         </div>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
                     </div>
@@ -231,10 +234,10 @@
             
         </div>
     
-    <div class="new_button_bottom">
+    <div class="new_button_bottom pb-2 pe-2">
         <div>
-            <button type="button" class="btn btn-primary1 me-2" data-bs-toggle="modal" data-bs-target="#exampleModal"  style="color: white">PERUUTA</button>
-            <button type="submit" class="btn btn-primary1" style="color: white">TALLENNA</button>
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color: white"><span class="button_s__text">PERUUTA</span></button>
+            <button type="submit" class="btn btn-primary" style="color: white"><span class="button_s__text">TALLENNA</span></button>
         </div>
     </div>
 </form> 
@@ -273,9 +276,9 @@
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">OTA KUVA</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">SULJE</button>
-                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+                <button type="button" class="btn btn-success">OTA KUVA</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SULJE</button>
+                <button type="submit" class="btn btn-primary">TALLENNA</button>
             </div>
         </div>
     </div>

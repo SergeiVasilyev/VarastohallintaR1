@@ -67,7 +67,9 @@
                         <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                     </div>
                     <div class="item_info_place">
-                        <span class="item_num">{{rental_event.storage.rack}} - {{rental_event.storage.shelf}} - {{rental_event.storage.place}}</span>
+                        <span class="item_num">
+                            {{rental_event.storage.rack}} - {{rental_event.storage.shelf}} - {{rental_event.storage.place}}
+                        </span>
                     </div>
                     <span class="item_num_name">Tuotekoodi</span>
                     <span class="item_num">{{rental_event.id_start_null}}</span>
