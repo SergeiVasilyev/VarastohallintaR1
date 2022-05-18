@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
         ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
-        ("student_ext", _("Oppilas laajennetut oikeudet")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
+        ("student_extended", _("Oppilas laajennetut oikeudet")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
         ("storage_employee", _("Varastotyöntekijä")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
         ("management", _("Hallinto")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
         ("teacher", _("Opettaja")),
@@ -32,7 +32,8 @@ class CustomUser(AbstractUser):
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
 
-
+# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
+# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
 # Нужно добавить Foreign key на Storage в Goods
