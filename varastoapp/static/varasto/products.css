@@ -36,6 +36,7 @@
     padding: 1em;
     display: flex;
     justify-content: center;
+    text-align: center;
 }
 
 .row02{
@@ -124,7 +125,101 @@
 
 
 
-/*PAGINATION*/
+/* PAGINATION */
 .pagination{
-    
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
+    /* border: 1px solid red; */
 }
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/
+
+
+/* BUTTONS IN CONTENT */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center; 
+}
+    .btn-small{
+        min-width: 8em;
+    }
+    .btn-sq{
+
+    }
+    .btn_strech {
+        place-self: center stretch;
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #24A19C;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__button_bg_red {
+        color: white;
+        background: #D96098;
+    }
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+    .list__button__text{
+        padding: 0 1.2em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }
+    .list__button, .list__button:hover, .list__button:visited {
+        text-decoration: none;
+        color: white;
+    }
+
+    .font-size{
+        font-size: 1em;
+        padding: 0 0.9em;
+    }
+
+    .form-label{
+        /* font-size: 0.875em; */
+        color: #2D3748;
+        text-transform: uppercase;
+        font-size: 0.75em;
+        font-weight: 600;
+    }
+    
+/* / BUTTONS IN CONTENT */

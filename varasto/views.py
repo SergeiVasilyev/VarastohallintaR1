@@ -83,6 +83,9 @@ def renter(request, idx):
 
 @login_required()
 def new_event(request):
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     changed_user = None
     changed_items = []
     r = re.compile("add_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
@@ -113,6 +116,10 @@ def new_event(request):
         changed_items.pop(int(request.GET.get('_remove_item')))
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
+        get_estimated_date = request.GET.get('estimated_date')
+        date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
+        estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
+
         renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
         staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
         if request.GET.get('add_user') and add_items: # tarkistetaan että kaikki kentät oli täytetty
@@ -121,19 +128,18 @@ def new_event(request):
                 rental = Rental_event(item=item, 
                             renter=renter, 
                             staff=staff,
-                            start_date='2022-05-04',
-                            estimated_date='2022-05-10') # !!!!!!!!!!!!!!!!!!!!!!!!
+                            start_date=datenow,
+                            estimated_date=estimated_date) # !!!!!!!!!!!!!!!!!!!!!!!!
                 # print(rental)
                 rental.save()
         changed_user = None
         changed_items = []
+        return redirect('new_event')
 
     items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
 
     # print(changed_user, changed_items, request.GET.get('_remove_user'))
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
+    
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
@@ -330,5 +336,12 @@ def products(request):
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'varasto/products.html', {'items': page_obj})
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    context = {
+        'items': page_obj,
+        'datenow': datenow
+    }
+    return render(request, 'varasto/products.html', context)
 
