@@ -146,6 +146,8 @@ form {
     cursor: pointer;
     justify-content: center; 
     text-transform: uppercase;
+    
+    width: 10em;
 }
     .btn-small{
         min-width: 8em;
