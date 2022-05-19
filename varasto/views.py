@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 import pytz
 from .forms import CustomUserForm, GoodsForm, Staff_eventForm, Staff_eventForm
 from .checkUser import *
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
@@ -27,6 +28,7 @@ from .anna__views import report, new_event_goods
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
+
 
 
 
@@ -249,16 +251,37 @@ def rental_events(request):
 #     return render(request, 'varasto/new_event_goods.html')
 
 def inventory(request):
-    return render(request, 'varasto/inventory.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/inventory.html', context)
 
 # def report(request):
 #     return render(request, 'varasto/report.html')
 
 def new_user(request):
-    return render(request, 'varasto/new_user.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/new_user.html', context)
 
 def grant_permissions(request):
-    return render(request, 'varasto/grant_permissions.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/grant_permissions.html', context)
 
 
 def new_item(request):
@@ -301,7 +324,7 @@ def new_item(request):
         # print('GET')
         if '_take_picture' in request.GET:
             pic = VideoCamera().take()
-            # print('pic', VideoCamera().take())
+            # print('pic', VideoCamera().take()) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     
     now = datetime.now()
@@ -325,14 +348,17 @@ def video_stream(request):
     return StreamingHttpResponse(gen(VideoCamera()),
                     content_type='multipart/x-mixed-replace; boundary=frame')
 
+@csrf_exempt
 def take_pacture(request):
+    print('is_ajax')
     pic = VideoCamera().take()
+    
     return HttpResponse(pic)
 
 
 def products(request):
     items = Goods.objects.all().order_by("id")
-    paginator = Paginator(items, 20)
+    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

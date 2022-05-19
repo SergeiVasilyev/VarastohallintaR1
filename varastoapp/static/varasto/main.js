@@ -17,7 +17,45 @@ $(document).ready(function() {
     $('#id_cat_name').change(function(){
         $('.alert').show('fast')
     })
-     
+    
+
+    
+    
+    $('#take_picture').click(function(){
+        var origin = window.location.origin
+        var myModalEl = document.getElementById('cam')
+        var modal = bootstrap.Modal.getInstance(myModalEl)
+        // modal.hide()
+    $.get('take_pacture', function (data, status) {
+        console.log(origin)
+        console.log(data)
+
+        var preview = document.getElementById("preview_pic")
+        preview.style.opacity = "1";
+        preview.style.maxWidth = "250px";
+        preview.style.height = "250px";
+        preview.src = origin + data
+        // $('#preview_pic').attr('src', origin + data)
+        })
+    })
+
+
+
+    // $('#take_picture').click(function(){
+    //     alert('1111')
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "take_pacture",
+    //         mimeType:"multipart/form-data",
+    //         success: (data) => {
+    //             console.log(data);
+    //         },
+    //     })
+    // })
+
+
+
+
 
     // $('#add_product').click(function(){
     //     $.ajax({
