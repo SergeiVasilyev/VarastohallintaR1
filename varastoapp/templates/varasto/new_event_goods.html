@@ -96,7 +96,7 @@
             <span class="est_date">{{ item.rentable_at|date:'d.m.Y' }}</span>
         </div>
     </div>
-
+    {% comment %} !!!!!!!!!!!!!!!!!!!! item.item_status исправить на rentable_at {% endcomment %}
     <div class="row01">
         <button type="button" class="button_props {% if item.item_status == 'available' %}button_active{% else %}button_inactive{% endif %}">
             <span class="button__text">Valitse</span>
