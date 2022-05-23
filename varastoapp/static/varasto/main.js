@@ -41,6 +41,12 @@ $(document).ready(function() {
 
 
 
+
+
+
+    // data {csrfmiddlewaretoken: csrf}....
+
+
     // $('#take_picture').click(function(){
     //     alert('1111')
     //     $.ajax({
