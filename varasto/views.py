@@ -28,6 +28,7 @@ from .anna__views import report, new_event_goods
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
+from .alerts import email_alert
 
 
 
@@ -66,6 +67,21 @@ def renter(request, idx):
             # print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
+        if request.POST.getlist('send_email_to_teacher'):
+            subject = "Automaattinen muistutus!"
+            text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
+            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
+            to = item.renter.responsible_teacher.email
+            print(subject, text + body, to)
+            email_alert(subject, text + body, 'tino.cederholm@gmail.com')
+        if request.POST.getlist('send_email_item_is_damaged'):
+            subject = "Automaattinen muistutus!"
+            text = f"henkilö {item.renter.first_name} {item.renter.last_name} on paluttanut varioittuneen tuotteen: <br>"
+            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
+            remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
+            to = item.renter.responsible_teacher.email
+            print(subject, text + body + remarks, to)
+            email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
     rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
@@ -217,10 +233,29 @@ def update_rental_status(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
+    # INNER JOIN
+    # Rental_event.objects.filter(renter__first_name="Sergey")
+
+    # SUBQUERY
+    # SELECT renter_id FROM public.varasto_rental_event WHERE renter_id in (
+    # SELECT id from varasto_customuser WHERE last_name = 'Virtanen'
+    # ) 
+    # subquery = CustomUser.objects.filter(last_name="Virtanen")
+    # Rental_event.objects.filter(renter__in=subquery)
+
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date')).order_by('renter')
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
-    grouped_events1 = Rental_event.objects.filter(returned_date__isnull=True).filter(Q(start_date__in=renters_by_min_startdate.values('mindate')) & Q(renter__in=renters_by_min_startdate.values('renter'))).order_by('renter').distinct('renter')
+    grouped_events1 = (
+        Rental_event.objects
+        .filter(returned_date__isnull=True)
+        .filter(
+            Q(start_date__in=renters_by_min_startdate.values('mindate')) & 
+            Q(renter__in=renters_by_min_startdate.values('renter'))
+        )
+        .order_by('renter')
+        .distinct('renter')
+    )
     grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
     # for i in renters_by_min_startdate:
@@ -228,7 +263,7 @@ def rental_events(request):
     # for i in events: 
     #     print(i.item, i.renter.id)
 
-    # for i in grouped_events: 
+    # for i in grouped_events1: 
     #     # print(i)
     #     # print(i['renter'])
     #     print(i.renter_id, i.item, i.start_date)
