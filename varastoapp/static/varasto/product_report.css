@@ -1,0 +1,13 @@
+.logo_header{
+    display: grid;
+    /* border: 1px solid blue; */
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 1.5em 0 0 0 ;
+}
+
+.logo_header > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
