@@ -24,7 +24,7 @@ from django.db.models import Count
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods
+from .anna__views import report, new_event_goods, product_report
 
 from .capture_picture import VideoCamera
 from django.db.models import Q

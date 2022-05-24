@@ -40,3 +40,7 @@ def report(request):
 def new_event_goods(request):
     items = Goods.objects.all().order_by("id")
     return render(request, 'varasto/new_event_goods.html', {'items': items})
+
+def product_report(request):
+    items = Goods.objects.all().order_by("id")
+    return render(request, 'varasto/product_report.html')
