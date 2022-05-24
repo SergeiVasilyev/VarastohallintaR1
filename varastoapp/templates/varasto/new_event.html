@@ -74,7 +74,7 @@
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
                             <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">Skannaa tuote, kirjoittaa käsin tuotenumero tai lisää napilla.</label>
+                                <label for="exampleFormControlInput1" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
                                 <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
                             </div>
                             <div class="mb-3 me-3">
@@ -95,7 +95,7 @@
                 <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
                     <div class="d-flex flex-row justify-content-between px-2" >
                         <div class="mb-3 me-3">
-                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
+                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
                             <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
                             <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
                         </div>
@@ -118,7 +118,7 @@
                     {% csrf_token %}
                     <input name="add_user" value="{{changed_user}}" type="hidden" class="form-control" id="exampleFormControlInput1" >
                     {% for changed_item in changed_items %}
-                    <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoittaa tuotenumero">
+                    <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
                     {% endfor %}
                     <button type="button" class="btn btn-primary me-2">
                         <span class="button_s__text">PERUUTA</span>

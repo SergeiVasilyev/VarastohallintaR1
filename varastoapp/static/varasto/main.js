@@ -8,6 +8,12 @@ $(document).ready(function() {
         $(this).find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
+    $('#chk-05').click(function(){
+        $(`.sublist_warp`).slideToggle('fast')
+        $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
+    })
+
+
     // NUMBER SPINNER
     // https://shaack.com/projekte/bootstrap-input-spinner/
     $("input[type='number']").inputSpinner()
