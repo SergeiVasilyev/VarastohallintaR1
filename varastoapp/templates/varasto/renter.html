@@ -29,7 +29,7 @@
                 <span class="personal_field_data">{{ selected_user.code|default:"-" }}</span>
                 <span class="personal_field_name">Sähköposti</span>
                 <span class="personal_field_data">{{ selected_user.email|default:"-" }}</span>
-                <span class="personal_field_name">Vastuopettaja</span>
+                <span class="personal_field_name">Vastuuopettaja</span>
                 <span class="personal_field_data">{{ selected_user.responsible_teacher.first_name|default:"-" }} {{ selected_user.responsible_teacher.last_name|default_if_none:"" }}</span>
             </div>
             <div class="new_rental">
