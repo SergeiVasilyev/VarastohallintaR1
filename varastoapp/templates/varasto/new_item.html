@@ -30,7 +30,7 @@
 
 
 {% block main_content %}
-<img src = "{% url 'video_stream' %}">
+
 <form class="new_item_wrap" method="post" enctype="multipart/form-data">
     <!-- <form class="item_form" method="post" enctype="multipart/form-data"> -->
     {% csrf_token %}
@@ -44,14 +44,17 @@
                 </div>
                 <div class="new_button_top">
                     <div class="new_button_take">
-                        <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a>
-                        <!-- <button name="_take_picture" type="submit" class="btn btn-primary1">Ota kuva</button> -->
+                        {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
+                        <button type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
+                            <span class="list__button__text">Ota kuva</span>
+                        </button>
                     </div>
                     <div class="divider"></div>
                     <div class="new_button_browse">
-                        <div class="btn btn-primary1 btn-file">
+                        <div class="list__button list__button_bg_blue btn_strech btn-small btn-file">
                             {{ form.picture }}
-                            UPLOAD
+                            <span class="list__button__text">Valitse kuva</span>
                         </div>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
                     </div>
@@ -66,7 +69,7 @@
                 </div>
                 <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
-                        <label class="form-label">Remarks</label>
+                        <label class="form-label">HUOMAUTUKSET</label>
                         <!-- <textarea class="form-controlli" type="text"> </textarea> -->
                         {{staff.remarks}}
                     </div>
@@ -118,7 +121,7 @@
                     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                     Muista, että kun valitset <strong>kulutusmateriaali</strong> työkaluryhmän, 
                     tuotteille annetaan yksi tuotekoodi, 
-                    kaikilla muilla työkaluryhmilla kaikille tuotteille annetaan oma yksilöllinen tuotekoodi.
+                    muiden työkaluryhmien tuotteille annetaan yksilöllinen tuotekoodi.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <!-- // ALERTS -->
@@ -231,10 +234,10 @@
             
         </div>
     
-    <div class="new_button_bottom">
+    <div class="new_button_bottom pb-2 pe-2">
         <div>
-            <button type="button" class="btn btn-primary1 me-2" data-bs-toggle="modal" data-bs-target="#exampleModal"  style="color: white">PERUUTA</button>
-            <button type="submit" class="btn btn-primary1" style="color: white">TALLENNA</button>
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color: white"><span class="button_s__text">PERUUTA</span></button>
+            <button type="submit" class="btn btn-primary" style="color: white"><span class="button_s__text">TALLENNA</span></button>
         </div>
     </div>
 </form> 
@@ -258,7 +261,28 @@
         </div>
     </div>
 </div>
-    
+
+<!-- Modal 2-->
+<div class="modal fade" id="cam" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ota kuva</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <img src = "{% url 'video_stream' %}">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="take_picture">OTA KUVA</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SULJE</button>
+                <button type="submit" class="btn btn-primary">TALLENNA</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}

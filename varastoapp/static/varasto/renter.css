@@ -268,11 +268,11 @@
     height: 200px !important;
 }
 
-.btn-secondary, .btn-secondary:active, .btn-secondary:visited {
+.btn-primary, .btn-primary:active, .btn-primary:visited {
     text-transform: uppercase;
-    background-color: #28314B !important;
-    border: #28314B !important;
-    padding: 0.7em 3em !important;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
     transition-duration: 0,4s;
 }
 

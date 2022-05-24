@@ -1,4 +1,5 @@
 {% extends "varasto/base_main.html" %}
+{% load i18n %}
 
 {% load static %}
 
@@ -47,7 +48,7 @@
         <div class="checkbox_filters px-3">
             <div class="form-check me-4">
                 <input class="form-check-input" type="checkbox" value="" id="chk-01">
-                <label class="form-check-label" for="chk-01">Lainalla</label>
+                <label class="form-check-label" for="chk-01">Lainassa</label>
             </div>
             <div class="form-check me-4">
                 <input class="form-check-input" type="checkbox" value="" id="chk-02">
@@ -65,12 +66,12 @@
     </div>
 
     <div class="column_names">
-        <div class="column"><span>lainanottaja</span></div>
-        <div class="column"><span>KUOLUN RYHMÄ</span></div>
+        <div class="column"><span>lainaaja</span></div>
+        <div class="column"><span>Koulun RYHMÄ</span></div>
         <div class="column"><span>STATUS</span></div>
         <div class="column"><span>alkamispäivä</span></div>
-        <div class="column"><span>arvioitu paluupäivä</span></div>
-        <div class="column"><span>päättymispäivä</span></div>
+        <div class="column"><span>arvioitu palautuspäivä</span></div>
+        <div class="column"><span></span></div>
     </div>
 
     <div class="list">
@@ -86,7 +87,9 @@
                     <span><a href="{% url 'renter' grouped_event.renter_id %}">{{grouped_event.renter.email|default_if_none:""}}</a></span>
                 </div>
                 <div class="list__item_group">
-                    <span>{{grouped_event.renter.role|default_if_none:""}}</span>
+                    {% translate grouped_event.renter.role as role %}
+                    {% comment %} {{grouped_event.renter.role|default_if_none:""}} {% endcomment %}
+                    <span>{{ role }}</span>
                     <span>{{grouped_event.renter.group|default_if_none:""}}</span>
                 </div>
                 <div class="list__item_status {% if not grouped_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
@@ -100,7 +103,7 @@
                     <!-- <span>15.02.2022</span> -->
                     <a class="button_link" href="{% url 'renter' grouped_event.renter_id %}">
                         <button type="button" class="list__button list__button_bg_green btn_strech">
-                            <span class="list__button__text ">Muokata</span>
+                            <span class="list__button__text ">Muokkaa</span>
                         </button>
                     </a>
                 </div>
@@ -128,7 +131,7 @@
                             </div>
                             {% if not event.returned_date and event.is_past_due %}
                             <div class="list__rented_item_status status_green">
-                                <span>Lainalla</span>
+                                <span>Lainassa</span>
                             </div>
                             {% else %}{% if not event.returned_date and not event.is_past_due %}
                             <div class="list__rented_item_status status_red">

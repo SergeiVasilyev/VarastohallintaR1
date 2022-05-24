@@ -79,6 +79,7 @@ DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.postgresql',
          'HOST': 'localhost',
+         'PORT': 5432,
          'USER': 'postgres',
          'PASSWORD': 'Q2werty',
          'NAME': 'varasto2',
@@ -116,6 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'fi'
 
 TIME_ZONE = 'UTC'
 
