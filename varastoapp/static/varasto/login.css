@@ -6,15 +6,6 @@ h1 {
     /* font-family: 'rubik'; */
 }
 
-html, body {
-    height: 100%;
-    margin: 0;  
-}
-
-body * {
-    font-family: 'rubik';
-    
-}
 
 .warp {
     /* align-items: center; */

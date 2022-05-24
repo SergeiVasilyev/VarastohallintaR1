@@ -63,13 +63,30 @@
                 </a>
                 {% comment %} {% endif %} {% endcomment %}
                 <a class="nodecor" href="{% url 'rental_events' %}">
-                    <button type="button" class="button button_bg_gray resize mb-2">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/rental_events/' or '/renter/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize">Vuokratapahtumat</span>
                     </button>
                 </a>
-                <button type="button" class="button button_bg_white resize mb-2">
-                    <span class="button__text resize">Tavarat</span>
-                </button>
+                <a class="nodecor" href="{% url 'products' %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/products/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                        <span class="button__text resize">Tavarat</span>
+                    </button>
+                </a>
+                <a class="nodecor" href="{% url 'new_user' %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/new_user/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                        <span class="button__text resize">Uusi käyttäjä</span>
+                    </button>
+                </a>
+                <a class="nodecor" href="{% url 'grant_permissions' %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/grant_permissions/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                        <span class="button__text resize">Oikeuksija</span>
+                    </button>
+                </a>
+                <a class="nodecor" href="{% url 'inventory' %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/inventory/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                        <span class="button__text resize">Inventaario</span>
+                    </button>
+                </a>
                 <button type="button" class="button button_bg_white resize mb-2">
                     <span class="button__text resize">Asetukset</span>
                 </button>
