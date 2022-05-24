@@ -4,11 +4,11 @@ from datetime import datetime
 from django.db import models
 
 
-
+# https://betterdatascience.com/send-emails-with-python/
 
 def email_alert(subject, body, to):
     msg = EmailMessage()
-    msg.set_content(body)
+    msg.set_content(body, subtype='html')
     msg['subject'] = subject
     msg['to'] = to
 
@@ -24,5 +24,5 @@ def email_alert(subject, body, to):
     server.quit()
 
     "Tähän lisätään funktio mikä triggeröi muistutuksen"
-if datetime.today().date() == datetime.today().date():
-    email_alert("Automaattinen muistutus!", "Sinulla on lainassa (tähän työkalun nimi) joka on erääntynyt", "tino.cederholm@gmail.com")
+# if datetime.today().date() == datetime.today().date():
+#     email_alert("Automaattinen muistutus!", "Sinulla on lainassa (tähän työkalun nimi) joka on erääntynyt", "tino.cederholm@gmail.com")

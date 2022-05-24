@@ -36,24 +36,11 @@ def report(request):
 
     return render(request, 'varasto/report.html', context)
 
-# Добавить доступность товара или его местоположение в Goods
-# Переименовать test_Anna__views & new_event_goods
+
 def new_event_goods(request):
-    rental_events = Rental_event.objects.all().order_by("id")
     items = Goods.objects.all().order_by("id")
-
-    for item in items:
-        item.rented = False
-        # print(item, ' ', item.id)
-        for rental_event in rental_events:
-            if not item == rental_event.item and not item.rented:
-                item.rented = False
-                print(item.id, rental_event.id, 'False')
-            else:
-                item.rented = rental_event.estimated_date
-                print(item.id, rental_event.id, 'True')
-                
-        # print(item.id, ' ', item.rented)
-
-
     return render(request, 'varasto/new_event_goods.html', {'items': items})
+
+def product_report(request):
+    items = Goods.objects.all().order_by("id")
+    return render(request, 'varasto/product_report.html')
