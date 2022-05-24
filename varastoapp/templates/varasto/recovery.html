@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/login.css' %}">
+{% endblock stylesheet %}
+
 {% block title %}Varasto{% endblock %}
 
 {% block content %}

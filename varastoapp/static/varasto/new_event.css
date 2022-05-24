@@ -48,6 +48,10 @@
         align-items: center;
         height: 100%;
     }
+    .list__button, .list__button:hover, .list__button:visited {
+        text-decoration: none;
+        color: white;
+    }
 
     .font-size{
         font-size: 1.5em;
@@ -141,9 +145,95 @@ form {
     height: 100%;
     /* border: 1px solid red; */
 }
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
 
 /* / MAIN BUTTONS */
 
+
+/* Date */
+.new_event_warp div div div div {
+    /* border: 1px solid green; */
+}
+
+.dates_choice {
+    display: flex;
+    justify-content: center;
+}
+
+.dates > div{
+    width: 10em;
+}
+
+.dates {
+    gap: 3em;
+}
+
+
+
+/* // Date */
+
+
+
+
+/* MODAL */
+.modal {
+    /* max-width: 100% !important;  */
+    /* height: 80% !important; */
+    /* overflow-y: auto !important;
+    overflow-x: auto !important;
+    scrollbar-gutter: stable; */
+}
+.modal-body{
+    /* overflow-y: auto !important;
+    overflow-x: auto !important;
+    scrollbar-gutter: stable; */
+}
+.modal-dialog {
+    /* border: 1px solid red; */
+    max-width: 80% !important;
+    /* height: 50% !important; */
+}
+
+/* .btn-secondary, .btn-secondary:active, .btn-secondary:visited {
+    text-transform: uppercase;
+    background-color: #28314B !important;
+    border: #28314B !important;
+    padding: 0.7em 3em !important;
+    transition-duration: 0,4s;
+} */
+
+
+/* scrolbar */
+.modal-body::-webkit-scrollbar {
+    width: 0.4em !important;
+    height: 0.4em !important;
+    cursor: pointer !important;
+  }
+   
+    .modal-body::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3) !important;
+        border-radius: 1em !important;
+        /* background-color:#CBD5E0; */
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        border-radius: 1em !important;
+        background-color: darkgrey !important;
+        /* outline: 1px solid slategrey; */
+    }
+    .modal-body:hover::-webkit-scrollbar-thumb {
+        /* background-color: blue; */
+        cursor: pointer !important;
+    }
+
+
+/* // MODAL */
 
 
 

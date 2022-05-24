@@ -8,6 +8,12 @@ $(document).ready(function() {
         $(this).find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
+    $('#chk-05').click(function(){
+        $(`.sublist_warp`).slideToggle('fast')
+        $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
+    })
+
+
     // NUMBER SPINNER
     // https://shaack.com/projekte/bootstrap-input-spinner/
     $("input[type='number']").inputSpinner()
@@ -17,9 +23,56 @@ $(document).ready(function() {
     $('#id_cat_name').change(function(){
         $('.alert').show('fast')
     })
-     
+    
+
+    
+    // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!
+    $('#take_picture').click(function(){
+        var origin = window.location.origin
+        var myModalEl = document.getElementById('cam')
+        var modal = bootstrap.Modal.getInstance(myModalEl)
+        // modal.hide()
+        $.get('take_pacture', function (data, status) {
+            console.log(origin)
+            console.log(data)
+
+            var preview = document.getElementById("preview_pic")
+            preview.style.opacity = "1";
+            preview.style.maxWidth = "250px";
+            preview.style.height = "250px";
+            preview.src = origin + data
+            // $('#preview_pic').attr('src', origin + data)
+            })
+    })
+
+    // data {csrfmiddlewaretoken: csrf}....
+
+    // $('#take_picture').click(function(){
+    //     alert('1111')
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "take_pacture",
+    //         mimeType:"multipart/form-data",
+    //         success: (data) => {
+    //             console.log(data);
+    //         },
+    //     })
+    // })
 
 
+
+
+
+    // $('#add_product').click(function(){
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: "/new_event_goods",
+    //         dataType: "json",
+    //         success: (data) => {
+    //             console.log(data);
+    //         },
+    //     })
+    // })
 
 
     // SCROLLBAR

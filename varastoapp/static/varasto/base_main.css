@@ -197,24 +197,24 @@ aside {
 /* ----MAIN---- */
 
 /* scrolbar */
-#wb::-webkit-scrollbar {
+#wb::-webkit-scrollbar, body::-webkit-scrollbar {
     width: 0.4em;
     height: 0.4em;
     cursor: pointer;
   }
    
-    #wb::-webkit-scrollbar-track {
+    #wb::-webkit-scrollbar-track, body::-webkit-scrollbar-track {
         box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
         border-radius: 1em;
         /* background-color:#CBD5E0; */
     }
 
-    #wb::-webkit-scrollbar-thumb {
+    #wb::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb{
         border-radius: 1em;
         background-color: darkgrey;
         /* outline: 1px solid slategrey; */
     }
-    #wb:hover::-webkit-scrollbar-thumb {
+    #wb:hover::-webkit-scrollbar-thumb, main:hover::-webkit-scrollbar-thumb {
         /* background-color: blue; */
         cursor: pointer;
     }

@@ -10,12 +10,12 @@ from django.template.defaulttags import register
 class CustomUser(AbstractUser):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
-        ("student", _("Student")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
-        ("student_ext", _("Student extended")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
-        ("storage_employee", _("Storage employee")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
-        ("management", _("Management")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
-        ("teacher", _("Teacher")),
-        ("super", _("Super")),
+        ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
+        ("student_extended", _("Oppilas laajennetut oikeudet")), # Okeus, joka antaa opiskelioille päästä Varasto palveluun ja hän voi alkaa ja päättää vuokra tapahtuma.
+        ("storage_employee", _("Varastotyöntekijä")), # Varasto työntekiä ei voi lisätä, muokata ja posta tavaraa, voi alkaa ja päättää vuokra tapahtuma, antaa oikeuksia opiskelioille
+        ("management", _("Hallinto")), # Taloushallinto ei voi lainata tavara, mutta voi antaa oikeuksia. Voi katsoa tapahtumat.
+        ("teacher", _("Opettaja")),
+        ("super", _("Super user")),
     ]
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
@@ -32,7 +32,8 @@ class CustomUser(AbstractUser):
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
 
-
+# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
+# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
 # Нужно добавить Foreign key на Storage в Goods
@@ -89,6 +90,16 @@ class Goods(models.Model):
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
+
+    @property
+    def rentable_at(self):
+        rental_events = Rental_event.objects.all().order_by("item")
+        event = rental_events.filter(item=self).first()
+        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # print(self.id, event)
+        if event:
+            return event.estimated_date
+        return None
 
 
     def __str__(self):

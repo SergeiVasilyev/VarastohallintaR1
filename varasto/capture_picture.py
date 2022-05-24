@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import os
+from pathlib import Path
 class VideoCamera(object):
     def __init__(self):
         self.cap = cv2.VideoCapture(0)
@@ -12,9 +14,11 @@ class VideoCamera(object):
         return frame.tobytes()
 
     def take(self):
+        path = './varastoapp/static/images/'
+        print(path)
         ret, frame = self.cap.read()
-        cv2.imwrite("NewPicture5.jpg", frame)
-        return "NewPicture6.jpg"
+        cv2.imwrite(f"{path}NewPicture6.jpg", frame)
+        return f"/varastoapp/static/images/NewPicture6.jpg"
 
 
 # videoStreamObject = cv2.VideoCapture(0)
