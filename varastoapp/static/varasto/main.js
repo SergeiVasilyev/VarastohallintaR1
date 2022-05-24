@@ -20,32 +20,26 @@ $(document).ready(function() {
     
 
     
-    
+    // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!
     $('#take_picture').click(function(){
         var origin = window.location.origin
         var myModalEl = document.getElementById('cam')
         var modal = bootstrap.Modal.getInstance(myModalEl)
         // modal.hide()
-    $.get('take_pacture', function (data, status) {
-        console.log(origin)
-        console.log(data)
+        $.get('take_pacture', function (data, status) {
+            console.log(origin)
+            console.log(data)
 
-        var preview = document.getElementById("preview_pic")
-        preview.style.opacity = "1";
-        preview.style.maxWidth = "250px";
-        preview.style.height = "250px";
-        preview.src = origin + data
-        // $('#preview_pic').attr('src', origin + data)
-        })
+            var preview = document.getElementById("preview_pic")
+            preview.style.opacity = "1";
+            preview.style.maxWidth = "250px";
+            preview.style.height = "250px";
+            preview.src = origin + data
+            // $('#preview_pic').attr('src', origin + data)
+            })
     })
 
-
-
-
-
-
     // data {csrfmiddlewaretoken: csrf}....
-
 
     // $('#take_picture').click(function(){
     //     alert('1111')
