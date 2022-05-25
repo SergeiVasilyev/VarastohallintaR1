@@ -13,10 +13,23 @@
 {% block path %}Uusi tapahtuma{% endblock %}
 {% block page %}Uusi tapahtuma{% endblock %}
 
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        // function setFocus(){
+        //     document.getElementById("barcode").focus()
+        //     alert('1123231')
+        // }
+        
+    })
+</script>
+{% endblock %}
+
 {% block main_content %}
 
-<div class="new_event_warp">
+<div class="new_event_warp" onload="setFocus()">
     <form method="get" action="">
+        <input name="barcode" id="barcode" type="" />
         <div class="d-flex justify-content-center pt-5" style="">
             <div class="d-flex flex-column align-items-end w-50">
                 <div class="row g-3 w-100">
@@ -40,11 +53,11 @@
                         {% comment %} {% csrf_token %} {% endcomment %}
                         <div class="d-flex align-items-end">
                             <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
+                                <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
                                 {% if not changed_user %}
-                                <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita opiskelijanumero tai nimi">
+                                <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi">
                                 {% else %}
-                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="exampleFormControlInput1" >
+                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="add_user" >
                                 {% endif %}
                             </div>
                             <div class="mb-3">
@@ -74,8 +87,8 @@
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
                             <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
-                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                                <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
+                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
                             </div>
                             <div class="mb-3 me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >

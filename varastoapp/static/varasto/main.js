@@ -45,6 +45,56 @@ $(document).ready(function() {
             })
     })
 
+    
+    
+
+    console.log(window.location.pathname)
+    var location = window.location.search.replace('?','')
+    console.log(location)
+    if (window.location.pathname=='/new_event/') {
+        let textUserQuestion = document.getElementById('barcode')
+        textUserQuestion.focus()
+        // $("#barcode").val('saasa')
+        // проверить если ни один инпут не выделен, 
+
+        // if ($("#add_user").is(":focus")) {
+        //     alert('123')
+        // }
+        $('input').on("focus", function(){
+            // console.log($('input').value())
+        });
+        
+        $("#barcode").focus(function() {
+            console.log($("#barcode").val())
+        })
+
+        var params = window
+        .location
+        .search
+        .replace('?','')
+        .split('&')
+        .reduce(
+            function(p,e){
+                var a = e.split('=');
+                p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
+                return p;
+            },
+            {}
+        );
+        console.log(params['add_user']);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
     // data {csrfmiddlewaretoken: csrf}....
 
     // $('#take_picture').click(function(){
