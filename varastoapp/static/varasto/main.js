@@ -45,9 +45,14 @@ $(document).ready(function() {
             })
     })
 
-    
-    
 
+
+    //https://answacode.com/questions/21633537/javascript-kak-luchshe-vsego-chitat-ruchnoj-skaner-shtrih-koda
+    //https://ru.stackoverflow.com/questions/657764/Сканер-штрих-кодов-веб-приложение
+    //https://ru.stackoverflow.com/questions/453355/javascript-получить-get-параметр
+    //https://qna.habr.com/q/173607
+    //https://ru.stackoverflow.com/questions/690628/jquery-перехват-submit
+    //https://overcoder.net/q/2773/использование-jquery-для-проверки-фокусировки-ввода
     console.log(window.location.pathname)
     var location = window.location.search.replace('?','')
     console.log(location)
