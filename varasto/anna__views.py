@@ -42,5 +42,19 @@ def new_event_goods(request):
     return render(request, 'varasto/new_event_goods.html', {'items': items})
 
 def product_report(request):
-    items = Goods.objects.all().order_by("id")
+    rental_events = Rental_event.objects.filter(renter_id=9).order_by("-start_date")
+    renter = rental_events[0].renter
+    print(rental_events)
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    
+
+    context = {
+        'rental_events': rental_events,
+        'renter': renter,
+        'user': request.user,
+        'datenow': datenow,
+    }
+    
     return render(request, 'varasto/product_report.html')

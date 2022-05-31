@@ -11,3 +11,157 @@
     justify-content: center;
     /* border: 1px solid red; */
 }
+
+.report_logo img{
+    max-width: 150px;
+}
+
+.center{
+    font-weight: 700;
+    font-size: 1.625em;
+    color: #2D3748;
+}
+
+.left{
+    justify-self: start;
+    font-weight: 400;
+    font-size: 1em;
+    color: #2D3748;
+}
+
+.right{
+    justify-self: end;
+    font-weight: 400;
+    font-size: 0.875em;
+    color: #2D3748;
+}
+
+.button_right{
+    justify-self: end;
+}
+
+.subhead{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    margin-top: 1.5em;
+    /* border: 1px solid green; */
+} 
+
+
+/* BUTTON */
+.button_props{
+    display: inline-flex;
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.button_active{
+    color: #FFFFFF;
+    background: #325288;
+}
+
+.logo_header, .subhead, .subhead01{
+    justify-content:space-between;
+}
+
+.column_name{
+    display: grid;
+    grid-template-columns: minmax(16em, 1.5fr) repeat(3, 1fr);
+    align-items: center;
+    background-color:#325288;
+    color: #FFFFFF;
+    height: 3em;
+    margin-top: 1em;
+}
+
+.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
+    display: flex;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
+
+.column_name div span{
+    font-size: 1,25em;
+    font-weight: 700;  
+}
+
+.column_name > div, .line_content > div{
+    padding: 0 0.2em;
+}
+
+.remarks{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.line_content{
+    display: grid;
+    grid-template-columns:minmax(16em, 1.5fr) repeat(3, 1fr);
+    align-items: center; 
+    /* border: 1px solid blue; */
+}
+
+.line_content{
+    font-weight: 400;
+    font-size: 1em;
+    color: #2D3748;
+}
+
+.name{
+    font-weight: 500;
+    font-size: 1em;
+    color: #2D3748; 
+}
+
+.line_content:nth-child(even){
+    background-color: #F1F5F9;
+}
+
+.row01 {
+    /* border: 1px solid red; */
+    padding: 1.5em 0 0 0 ;
+}
+
+.item_name span, .renter_information span, .interval span{
+    display: block;
+}
+
+.renter_information{
+    font-weight: 400;
+    font-size: 0.875em;
+    color: #2D3748;
+}
+
+.renter_img{
+    overflow: hidden;
+    width: 240px;
+    height: 250px;
+    border-radius: 0.7em; 
+}
+.renter_img img{
+    width: 240px;
+    height: 250px;
+    object-fit:cover;
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+.bold{
+    font-weight: 700;
+}
