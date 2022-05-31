@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
-{% block title %}Raportti{% endblock %}
+{% block title %}Vuokraus raportointi{% endblock %}
 
 {% block main_content %}
 
@@ -110,9 +110,9 @@
 <div class="line_content">
 
     <div class="row01">
-        <div class="item_name">
-            <span class="name">Jani Virtanen</span>
-            <span class="model">Tivi20oa</span>
+        <div class="renter_name">
+            <span class="name">{{renter.first_name}} {{renter.last_name}}</span>
+            <span class="group">{{renter.group}}</span>
             
         </div>
     </div>
