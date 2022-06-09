@@ -53,50 +53,60 @@ $(document).ready(function() {
     //https://qna.habr.com/q/173607
     //https://ru.stackoverflow.com/questions/690628/jquery-перехват-submit
     //https://overcoder.net/q/2773/использование-jquery-для-проверки-фокусировки-ввода
-    console.log(window.location.pathname)
-    var location = window.location.search.replace('?','')
-    console.log(location)
-    if (window.location.pathname=='/new_event/') {
-        let textUserQuestion = document.getElementById('barcode')
-        textUserQuestion.focus()
-        // $("#barcode").val('saasa')
-        // проверить если ни один инпут не выделен, 
+    // console.log(window.location.pathname)
+    // var location = window.location.search.replace('?','')
+    // console.log(location)
+    // if (window.location.pathname=='/new_event/') {
 
-        // if ($("#add_user").is(":focus")) {
-        //     alert('123')
-        // }
-        $('input').on("focus", function(){
-            // console.log($('input').value())
-        });
+    //     let textUserQuestion = document.getElementById('barcode')
+    //     textUserQuestion.focus()
+    //     // $("#barcode").val('saasa')
+    //     // проверить если ни один инпут не выделен, 
+
+    //     // if ($("#add_user").is(":focus")) {
+    //     //     alert('123')
+    //     // }
+    //     $('input').on("focus", function(){
+    //         // console.log($('input').value())
+    //     });
         
-        $("#barcode").focus(function() {
-            console.log($("#barcode").val())
-        })
+    //     $("#barcode").focus(function() {
+    //         console.log($("#barcode").val())
+    //     })
 
-        var params = window
-        .location
-        .search
-        .replace('?','')
-        .split('&')
-        .reduce(
-            function(p,e){
-                var a = e.split('=');
-                p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
-                return p;
-            },
-            {}
-        );
-        console.log(params['add_user']);
+    //     var params = window
+    //     .location
+    //     .search
+    //     .replace('?','')
+    //     .split('&')
+    //     .reduce(
+    //         function(p,e){
+    //             var a = e.split('=');
+    //             p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
+    //             return p;
+    //         },
+    //         {}
+    //     );
+    //     console.log(params['add_user']);
 
-    }
-
-
+    // }
 
 
 
 
 
 
+
+    // const el = document.activeElement
+    // console.log(el)
+    // const barcode2 = document.querySelector('#barcode');
+    // const add_user = document.querySelector('.aq');
+    // add_user.addEventListener('focus', (event) => {
+    // event.target.style.background = 'pink';
+    // }, true);
+    // add_user.addEventListener('blur', (event) => {
+    // event.target.style.background = '';
+    // }, true);
 
 
 
