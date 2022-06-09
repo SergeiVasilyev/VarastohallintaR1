@@ -15,7 +15,36 @@
 
 {% block script %}
 <script type="text/javascript">
-
+$(document).ready(function() {
+    var barcode = ''
+    var interval
+    document.addEventListener('keydown', function(e) {
+        if (interval){
+            clearInterval(interval)
+        }
+        if (e.keyCode == 13){
+            if (barcode) {
+                printBarcode(barcode)
+                checkBarcode(barcode)
+            }
+            barcode = ''
+            document.querySelector("button[name=_add_user]").click()
+            return
+        }
+        if (e.key != 'Shift')
+            barcode += e.key
+        interval = setInterval(() => barcode = '', 20)
+    })
+    function checkBarcode(scanned_barcode){
+        if (parseInt(scanned_barcode, 10))
+            document.querySelector('#add_user').value = scanned_barcode
+        else
+            document.querySelector('#add_item').value = scanned_barcode.slice(1)
+    }
+    function printBarcode(scanned_barcode){
+        console.log('scanned_barcode ' + scanned_barcode)
+    }
+});
 </script>
 {% endblock %}
 
@@ -23,7 +52,8 @@
 
 <div class="new_event_warp">
     <form method="get" action="">
-        <input name="barcode" id="barcode" type="" />
+        <input name="barcode" id="barcode" type="hidden" class="aq" />
+        <input name="barcode1" id="barcode1" type="hidden" class="aq" />
         <div class="d-flex justify-content-center pt-5" style="">
             <div class="d-flex flex-column align-items-end w-50">
                 <div class="row g-3 w-100">
@@ -55,7 +85,7 @@
                                 {% endif %}
                             </div>
                             <div class="mb-3">
-                                <button name="_add_user" type="submit" class="list__button list__button_bg_green btn_strech">
+                                <button name="_add_user" type="submit" class="list__button list__button_bg_green btn_strech" id="_add_user">
                                     <span class="bi bi-plus font-size"></span>
                                 </button>
                             </div>
@@ -159,5 +189,13 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+// const elem = document.querySelector('input');
+// if (elem === document.activeElement) {
+//     console.log('Element has focus!');
+// } else {
+//     console.log(`Element is not focused.`);
+// }
 
+</script>
 {% endblock %}
