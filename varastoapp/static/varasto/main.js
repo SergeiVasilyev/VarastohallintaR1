@@ -46,6 +46,11 @@ $(document).ready(function() {
     })
 
 
+    $('#estimated_date').change(function(){
+        document.querySelector("button[name=_add_user]").click()
+    })
+
+
 
     //https://answacode.com/questions/21633537/javascript-kak-luchshe-vsego-chitat-ruchnoj-skaner-shtrih-koda
     //https://ru.stackoverflow.com/questions/657764/Сканер-штрих-кодов-веб-приложение

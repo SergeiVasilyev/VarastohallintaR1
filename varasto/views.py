@@ -84,7 +84,8 @@ def renter(request, idx):
             email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
-    rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
+    user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
+    rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
     # print(selected_user)
 
     now = datetime.now()
@@ -101,6 +102,7 @@ def renter(request, idx):
 
 @login_required()
 def new_event(request):
+    feedback_status = True
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     # datenow = now.strftime("%d.%m.%Y")
@@ -110,20 +112,27 @@ def new_event(request):
     add_items = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
     # print(list(filter(r.match, request.GET)))
 
+    staff = CustomUser.objects.get(id=request.user.id)
+    storage_id = staff.storage_id
+
+    
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
             # print('add_user: ', request.GET.get('add_user'))
             try:
-                changed_user = CustomUser.objects.get(code=request.GET.get('add_user')) # saadan user
+                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) # saadan user, jolla on sama storage id kuin staffilla
             except:
                 error = "User ei löyty"
-        if add_items: # jos item codes kirjoitettiin
+        if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
                 # print(add_item, ' ', request.GET.get(add_item))
                 try:
-                    changed_items.append(Goods.objects.get(id=request.GET.get(add_item))) # saadan kaikki Iteemit changed_items muuttujaan
+                    new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
+                    if new_item not in changed_items: # Onko lisättävä tavara jo lisätty?
+                        changed_items.append(new_item) # Lisätään jos ei
+                    # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
-                    error = "User ei löyty"
+                    error = "Item ei löyty"
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
@@ -134,36 +143,48 @@ def new_event(request):
         changed_items.pop(int(request.GET.get('_remove_item')))
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
-        get_estimated_date = request.GET.get('estimated_date')
+        # print(request.POST['add_user'])
+        # print(request.POST['estimated_date'])
+        # print(request.GET.get('estimated_date'))
+        get_estimated_date = request.GET.get('estimated_date') # !!!!!!!! Ei toimi, jos valitaan päivämäärä lopussa!!!!!!!!!! Koska otetaan GET request!!!!
         date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
         estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
 
         renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
         staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
-        if request.GET.get('add_user') and add_items: # tarkistetaan että kaikki kentät oli täytetty
+        if request.POST['add_user'] and add_items and request.POST['estimated_date']=="": # tarkistetaan että kaikki kentät oli täytetty
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
                 rental = Rental_event(item=item, 
                             renter=renter, 
                             staff=staff,
                             start_date=datenow,
+                            storage_id = staff.storage_id,
                             estimated_date=estimated_date) # !!!!!!!!!!!!!!!!!!!!!!!!
                 # print(rental)
                 rental.save()
-        changed_user = None
-        changed_items = []
-        return redirect('new_event')
+            changed_user = None
+            changed_items = []
+            return redirect('new_event')
+        else:
+            feedback_status = False
 
     items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
+    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+    # PAGINATION ei toimi, koska kun vaihdat sivu se päivittää koko ikkuna
+    # Pitää rakentaa AJAX:n kautta 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     # print(changed_user, changed_items, request.GET.get('_remove_user'))
-    
+    # if not changed_user: changed_user = None
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
         'datenow': datenow,
         'user': request.user,
-        'items': items
+        'items': page_obj,
+        'feedback_status': feedback_status
     }
     return render(request, 'varasto/new_event.html', context)
 
@@ -242,10 +263,10 @@ def rental_events(request):
     # ) 
     # subquery = CustomUser.objects.filter(last_name="Virtanen")
     # Rental_event.objects.filter(renter__in=subquery)
-
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Min('start_date')).order_by('renter')
+    user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Max('start_date')).order_by('renter')
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
-    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', 'start_date')
+    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', '-start_date')
     grouped_events1 = (
         Rental_event.objects
         .filter(returned_date__isnull=True)
@@ -405,4 +426,7 @@ def products(request):
         'datenow': datenow
     }
     return render(request, 'varasto/products.html', context)
+
+
+
 
