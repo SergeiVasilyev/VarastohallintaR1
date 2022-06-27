@@ -16,6 +16,7 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
+    // Barcode reader
     var barcode = ''
     var interval
     document.addEventListener('keydown', function(e) {
@@ -44,6 +45,29 @@ $(document).ready(function() {
     function printBarcode(scanned_barcode){
         console.log('scanned_barcode ' + scanned_barcode)
     }
+    // --Barcode reader
+
+    // Errors
+    var estimated_date = "{{estimated_date}}"
+    var feedback_status = "{{feedback_status}}"
+    var estimated_date_issmall = "{{estimated_date_issmall}}"
+    console.log(estimated_date, feedback_status, estimated_date_issmall)
+    // if ((!estimated_date && !feedback_status) || (estimated_date && estimated_date_issmall)){
+    if ((estimated_date=="None" && feedback_status=="False") || (estimated_date!="None" && estimated_date_issmall=="True")){
+        $('#estimated_date').toggleClass('is-invalid')
+    }
+    var changed_user = "{{changed_user}}"
+    console.log(changed_user, feedback_status)
+    if (changed_user=="None" && feedback_status=="False"){
+        $('#add_user').toggleClass('is-invalid')
+    }
+    var changed_items = "{{changed_items}}"
+    console.log(changed_items, feedback_status)
+    if (changed_items=="[]" && feedback_status=="False"){
+        $('#add_item').toggleClass('is-invalid')
+    }
+    // --Errors
+
 });
 </script>
 {% endblock %}
@@ -68,8 +92,11 @@ $(document).ready(function() {
                             <div>
                                 <span class="small">Päättymisaika</span>
                                 <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
-                                <div class="feedback-invalid show">
+                                <div class="feedback-invalid {% if not estimated_date and not feedback_status %}show{% else %}hide{% endif %}">
                                     Kenttä on pakollinen
+                                </div>
+                                <div class="feedback-invalid {% if estimated_date and estimated_date_issmall %}show{% else %}hide{% endif %}">
+                                    Valittu liian lyhyt ajanjakso
                                 </div>
                                 {% comment %} {{request.GET.estimated_date}} {% endcomment %}
                             </div>
@@ -95,7 +122,7 @@ $(document).ready(function() {
                                 </button>
                             </div>
                         </div>
-                        <div class="feedback-invalid show">
+                        <div class="feedback-invalid {% if not changed_user and not feedback_status %}show{% else %}hide{% endif %}">
                             Kenttä on pakollinen
                         </div>
                     </div>
@@ -133,7 +160,7 @@ $(document).ready(function() {
                                 </button>
                             </div>
                         </div>
-                        <div class="feedback-invalid {% if not feedback_status %}show{% else %}hide{% endif %}">
+                        <div class="feedback-invalid {% if not changed_items and not feedback_status %}show{% else %}hide{% endif %}">
                             Kenttä on pakollinen
                         </div>
                     </div>
@@ -197,7 +224,7 @@ $(document).ready(function() {
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">SULJE</button>
                 <button type="submit" class="btn btn-secondary">TALLENNA</button>
             </div>
         </div>

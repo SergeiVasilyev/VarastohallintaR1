@@ -102,15 +102,18 @@ def renter(request, idx):
 
 @login_required()
 def new_event(request):
-    feedback_status = True
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     # datenow = now.strftime("%d.%m.%Y")
+
+    feedback_status = True
+    estimated_date = None
+    estimated_date_issmall = False
     changed_user = None
     changed_items = []
+    
     r = re.compile("add_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
     add_items = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
-    # print(list(filter(r.match, request.GET)))
 
     staff = CustomUser.objects.get(id=request.user.id)
     storage_id = staff.storage_id
@@ -122,7 +125,7 @@ def new_event(request):
             try:
                 changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) # saadan user, jolla on sama storage id kuin staffilla
             except:
-                error = "User ei löyty"
+                error = "User ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
                 # print(add_item, ' ', request.GET.get(add_item))
@@ -132,27 +135,24 @@ def new_event(request):
                         changed_items.append(new_item) # Lisätään jos ei
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
-                    error = "Item ei löyty"
+                    error = "Item ei löydetty"
+        if request.GET.get('estimated_date'):
+            get_estimated_date = request.GET.get('estimated_date') # !!!!!!!! Ei toimi, jos valitaan päivämäärä lopussa!!!!!!!!!! Koska otetaan GET request!!!!
+            date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
+            estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
+            if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
+                estimated_date_issmall = True
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
-        # print('changed_user cleared')
 
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
-        # print(request.GET.get('_remove_item'))
         changed_items.pop(int(request.GET.get('_remove_item')))
 
-    if request.method == 'POST': # Jos painettiin Talenna nappi
-        # print(request.POST['add_user'])
-        # print(request.POST['estimated_date'])
-        # print(request.GET.get('estimated_date'))
-        get_estimated_date = request.GET.get('estimated_date') # !!!!!!!! Ei toimi, jos valitaan päivämäärä lopussa!!!!!!!!!! Koska otetaan GET request!!!!
-        date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
-        estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
-
-        renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
-        staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
-        if request.POST['add_user'] and add_items and request.POST['estimated_date']=="": # tarkistetaan että kaikki kentät oli täytetty
+    if request.method == 'POST': # Jos painettiin Talenna nappi      
+        if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
+            renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
+            staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
                 rental = Rental_event(item=item, 
@@ -160,7 +160,7 @@ def new_event(request):
                             staff=staff,
                             start_date=datenow,
                             storage_id = staff.storage_id,
-                            estimated_date=estimated_date) # !!!!!!!!!!!!!!!!!!!!!!!!
+                            estimated_date=estimated_date)
                 # print(rental)
                 rental.save()
             changed_user = None
@@ -176,11 +176,11 @@ def new_event(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # print(changed_user, changed_items, request.GET.get('_remove_user'))
-    # if not changed_user: changed_user = None
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
+        'estimated_date': estimated_date,
+        'estimated_date_issmall': estimated_date_issmall,
         'datenow': datenow,
         'user': request.user,
         'items': page_obj,
