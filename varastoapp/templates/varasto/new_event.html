@@ -68,7 +68,96 @@ $(document).ready(function() {
     }
     // --Errors
 
+    // AJAX modal-body add_product
+    // const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    const getProducts = () => {
+        $.ajax({
+            type: 'GET',
+            url: '/get_products/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                // 'csrfmiddlewaretoken': csrf,
+            },
+            success: (response)=> {
+                printItems(response.items)
+                console.log(response.items[0].item_name)
+            }
+        })
+    }
+    
+    function printItems(items){
+        $('#modal-body').html('') // очистка
+        items.forEach(item => {
+            // $('#modal-body').append(item.id + ' ' + item.item_name + '<br>')
+            itemhtml(item)
+        });
+        
+    }
+
+
+    $('#add_product').click(function(){
+        getProducts()
+    })
+    
+    function itemhtml (item) {
+        const d = new Date(item.rentable_at)
+        let rentable_at = d.getDate() + d.getMonth() + d.getYear()
+        console.log(rentable_at)
+        $('#modal-body').append(
+            `
+            <div class="new_event_wrap">
+            <div class="row01">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="chekbox`+item.id+`}}" {% if item.rentable_at %}disabled{% endif %}>
+                </div>
+            </div>
+
+            <div class="row02">
+                <div class="item_name">
+                    <label class="header" for="chekbox`+item.id+`">`+ item.item_name + ` ` +item.brand + `</label>
+                    <label class="paragraph" for="chekbox`+item.id+`">`+item.model+` `+item.item_type+` `+item.parameters+` `+item.size+` `+item.package+`</label>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div>
+                    <span class="code_number">`+item.id+`</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div>
+                    <span class="EAN_number">`+item.ean+`</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="item_status">
+                    {% if item.rentable_at %}
+                    <span class="status_red">Ei saatavilla</span>
+                    {% else %}
+                    <span class="status_green">Saatavilla</span>
+                    {% endif %} 
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="est_date">`+item.rentable_at+`</span>
+                </div>
+            </div>
+            <div class="row01">
+                <button type="button" class="button_props {% if item.item_status == 'available' %}button_active{% else %}button_inactive{% endif %}">
+                    <span class="button__text">Valitse</span>
+                </button>
+            </div>
+            </div>
+            `
+        )
+    }
+
 });
+
 </script>
 {% endblock %}
 
@@ -209,7 +298,7 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
+<div id="test">111</div>
 <!-- Modal 1-->
 <div class="modal fade" id="goods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -218,9 +307,9 @@ $(document).ready(function() {
                 <h5 class="modal-title" id="exampleModalLabel">Valitse tuotteita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modal-body">
 
-                {% include 'varasto/new_event_goods.html' with items=items %}
+                {% comment %} {% include 'varasto/new_event_goods.html' with items=items %} {% endcomment %}
                 
             </div>
             <div class="modal-footer">

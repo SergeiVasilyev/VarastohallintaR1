@@ -6,6 +6,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseRedirect,
+    JsonResponse,
     StreamingHttpResponse,
 )
 from django.core.paginator import Paginator
@@ -188,7 +189,43 @@ def new_event(request):
     }
     return render(request, 'varasto/new_event.html', context)
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+def getProducts(request):
+    print('TEST')
+    data = []
+    if is_ajax(request=request):
+        print('TEST2')
+        items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
+        paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        for obj in page_obj:
+            item = {
+                'id': obj.id,
+                'item_name': obj.item_name,
+                'brand': obj.brand,
+                'model': obj.model,
+                'item_type': obj.item_type,
+                'parameters': obj.parameters,
+                'size': obj.size,
+                'package': obj.pack,
+                'ean': obj.ean,
+                'rentable_at': obj.rentable_at,
+            }
+            data.append(item)
+    
+    return JsonResponse({'items': data, })
+
+# 'has_previous': page_obj.has_previous,
+# 'previous_page_number': page_obj.previous_page_number,
+#                 'number': page_obj.number,
+#                 'num_pages': page_obj.paginator.num_pages,
+#                 'has_next': page_obj.has_next,
+#                 'next_page_number': page_obj.next_page_number,
+#                 'rentable_at': obj.rentable_at,
 
 
 def login_view(request):
