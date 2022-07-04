@@ -68,6 +68,7 @@ $(document).ready(function() {
     }
     // --Errors
 
+
     // AJAX modal-body add_product
     // const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     const getProducts = () => {
@@ -100,15 +101,30 @@ $(document).ready(function() {
     })
     
     function itemhtml (item) {
-        const d = new Date(item.rentable_at)
-        let rentable_at = d.getDate() + d.getMonth() + d.getYear()
+        let rentable_at = ''
+        let disabled = ''
+        let status = '<span class="status_green">Saatavilla</span>'
+        let btn_class = 'button_active'
+        if (item.rentable_at){
+            const d = new Date(item.rentable_at)
+            let date = d.getDate()
+            let month = d.getMonth()
+            if (d.getDate() < 10) date = '0' + d.getDate()
+            if (d.getMonth() < 10) month = '0' + d.getMonth()
+            rentable_at = date + '.' + month + '.' + d.getFullYear()
+
+            disabled = 'disabled'
+            status = '<span class="status_red">Ei saatavilla</span>'
+            btn_class = 'button_inactive'
+        }
+        
         console.log(rentable_at)
         $('#modal-body').append(
             `
             <div class="new_event_wrap">
             <div class="row01">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="chekbox`+item.id+`}}" {% if item.rentable_at %}disabled{% endif %}>
+                    <input class="form-check-input" type="checkbox" value="`+item.id+`" id="chekbox`+item.id+`" `+disabled+`>
                 </div>
             </div>
 
@@ -133,21 +149,17 @@ $(document).ready(function() {
 
             <div class="row01">
                 <div class="item_status">
-                    {% if item.rentable_at %}
-                    <span class="status_red">Ei saatavilla</span>
-                    {% else %}
-                    <span class="status_green">Saatavilla</span>
-                    {% endif %} 
+                    `+status+`
                 </div>
             </div>
 
             <div class="row01">
                 <div class="">
-                    <span class="est_date">`+item.rentable_at+`</span>
+                    <span class="est_date">`+rentable_at+`</span>
                 </div>
             </div>
             <div class="row01">
-                <button type="button" class="button_props {% if item.item_status == 'available' %}button_active{% else %}button_inactive{% endif %}">
+                <button id="btn`+item.id+`" onclick="selectItem(`+item.id+`)" type="button" class="button_props `+btn_class+`">
                     <span class="button__text">Valitse</span>
                 </button>
             </div>
@@ -314,12 +326,71 @@ $(document).ready(function() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">SULJE</button>
-                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+                <button type="submit" class="btn btn-secondary" onclick="selectMultItem()">TALLENNA</button>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+
+// Select from list
+function selectItem(id){
+    // lisätään tavara Inputiin
+    $('#add_item').val(id)
+
+    // Suljetaan ikkuna
+    var myModalEl = document.getElementById('goods');
+    var modal = bootstrap.Modal.getInstance(myModalEl)
+    modal.hide();
+
+    // painetaan nappi
+    document.querySelector("button[name=_add_user]").click()
+}
+//--Select from list
+
+
+// Select multiple items
+function selectMultItem(){
+    // Getting all checkboxes in val
+    var val = {}
+    $(':checkbox:checked').each(function(i){
+        val['add_item'+i] = $(this).val()
+        console.log('val '+val['add_item'+i])
+    })
+
+    // creating URL with new params
+    var url = window.location.href;    
+    if (url.indexOf('?') > -1){
+        $.each( val, function( key, value ) {
+            url += '&'+key+'='+value
+            console.log( key + ": " + value );
+        });
+        // url += '&param=1'
+    }else{
+        url += '?add_item0='+val['add_item'+0]
+        $.each( val, function( key, value ) {
+            if (key != 'add_item0') {
+                url += '&'+key+'='+value
+                console.log( key + ": " + value );
+            }
+        });
+        // url += '?param=1'
+    }
+    window.location.href = url;
+}
+// --Select multiple items
+
+
+
+
+
+// var val = {};
+//     $(':checkbox:checked').each(function(i){
+//         val['add_item'+i] = $(this).val();
+//         console.log('val '+val['add_item'+i])
+//     });
+//     $.get( "", val )
+
 // const elem = document.querySelector('input');
 // if (elem === document.activeElement) {
 //     console.log('Element has focus!');
