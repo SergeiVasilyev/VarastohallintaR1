@@ -248,7 +248,7 @@ $(document).ready(function() {
                         <div class="d-flex align-items-end">
                             <div class="me-3 w-100">
                                 <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
-                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
+                                <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
                             </div>
                             <div class="me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
@@ -351,11 +351,23 @@ function selectItem(id){
 
 // Select multiple items
 function selectMultItem(){
+    // Getting all url params
+    var url = document.location.href;
+    var qs = url.substring(url.indexOf('?') + 1).split('&');
+    for(var i = 0, url_params = {}; i < qs.length; i++){
+        qs[i] = qs[i].split('=');
+        url_params[qs[i][0]] = decodeURIComponent(qs[i][1]);
+    }
+    console.log(url_params)
+    
+    // проверить наличие только в add_item[X] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Getting all checkboxes in val
     var val = {}
     $(':checkbox:checked').each(function(i){
-        val['add_item'+i] = $(this).val()
-        console.log('val '+val['add_item'+i])
+        if (Object.values(url_params).includes($(this).val()) == false){ // if new item not exist in URL
+            val['add_item'+i] = $(this).val()
+            console.log('val '+val['add_item'+i])
+        }
     })
 
     // creating URL with new params

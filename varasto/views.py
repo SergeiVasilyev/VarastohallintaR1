@@ -120,6 +120,8 @@ def new_event(request):
     storage_id = staff.storage_id
 
     print('add_items ', add_items)
+
+    
     
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
@@ -133,7 +135,8 @@ def new_event(request):
                 # print(add_item, ' ', request.GET.get(add_item))
                 try:
                     new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
-                    if new_item not in changed_items: # Onko lisättävä tavara jo lisätty?
+                    # if new_item.rentable_at: print(new_item, ' rented')
+                    if new_item not in changed_items and not new_item.rentable_at: # Onko lisättävä tavara jo lisätty?
                         changed_items.append(new_item) # Lisätään jos ei
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
