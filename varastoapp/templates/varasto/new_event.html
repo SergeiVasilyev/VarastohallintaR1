@@ -271,7 +271,7 @@ $(document).ready(function() {
                 <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
                     <div class="d-flex flex-row justify-content-between px-2" >
                         <div class="mb-3 me-3">
-                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
                             <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
                             <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
                         </div>

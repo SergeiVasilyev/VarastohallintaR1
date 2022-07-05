@@ -119,6 +119,7 @@ def new_event(request):
     staff = CustomUser.objects.get(id=request.user.id)
     storage_id = staff.storage_id
 
+    print('add_items ', add_items)
     
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
@@ -143,6 +144,7 @@ def new_event(request):
             estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
                 estimated_date_issmall = True
+        print('changed_items ', changed_items)
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
