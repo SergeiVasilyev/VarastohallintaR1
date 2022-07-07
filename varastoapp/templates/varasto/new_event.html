@@ -311,7 +311,7 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-<div id="test">111</div>
+<!-- <div id="test">111</div> -->
 <!-- Modal 1-->
 <div class="modal fade" id="goods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -358,15 +358,16 @@ function selectMultItem(){
     console.log('qs ' + qs)
     for(var i = 0, url_params = {}; i < qs.length; i++){
         qs[i] = qs[i].split('=');
-        console.log('qsX ' + qs[i][0])
+        console.log('KEY ' + qs[i][0])
         if (qs[i][0].indexOf('add_item') != -1) { // Get items wich has 'add_item' lable
             url_params[qs[i][0]] = decodeURIComponent(qs[i][1]); // Write to url_params key and value as object
         }  
-        // console.log('qsY ' + url_params[i])
+        // console.log('VALUE ' + url_params[i])
     }
     console.log(url_params)
     
-    // проверить наличие только в add_item[X] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // проверить наличие только в add_item[X] - tehty!
+    
     // Getting all checkboxes in val
     var val = {}
     $(':checkbox:checked').each(function(i){
@@ -375,16 +376,23 @@ function selectMultItem(){
             console.log('val '+val['add_item'+i])
         }
     })
-
+    
+    console.log('changed_items length ' + '{{changed_items|length}}')
+    last_item = parseInt('{{changed_items|length}}')
     // creating URL with new params
-    var url = window.location.href;    
+    var url = window.location.href;  
     if (url.indexOf('?') > -1){
-        $.each( val, function( key, value ) {
-            url += '&'+key+'='+value
+        console.log('if url has params')
+        $.each( val, function( key, value ) { // key начинается с нуля - исправить
+            url += '&add_item'+last_item+'='+value
+            last_item += 1
+            console.log( url )
             console.log( key + ": " + value );
         });
         // url += '&param=1'
+        console.log('new url if had params ' + url)
     }else{
+        console.log('if url not has params')
         url += '?add_item0='+val['add_item'+0]
         $.each( val, function( key, value ) {
             if (key != 'add_item0') {
@@ -392,9 +400,12 @@ function selectMultItem(){
                 console.log( key + ": " + value );
             }
         });
+        console.log("new url if hadn't params " + url)
         // url += '?param=1'
     }
-    window.location.href = url;
+
+    setTimeout(() => {  window.location.href = url; }, 3000)
+    // window.location.href = url;
 }
 // --Select multiple items
 
