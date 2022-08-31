@@ -89,19 +89,19 @@
 }
 
 .button_props{
-    display: inline-flex;
-    width: 100px;
-    height: 30px;
-    padding: 0;
-    
-    border: none;
-    outline: none;
-    border-radius: 2px;
-    overflow: hidden;
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-    justify-content:center ;
+        display: inline-flex;
+        width: 100px;
+        height: 30px;
+        padding: 0;
+        
+        border: none;
+        outline: none;
+        border-radius: 2px;
+        overflow: hidden;
+        font-size: 1em;
+        font-weight: 500;
+        cursor: help;
+        justify-content:center ;
 }
 
 .button__text{
@@ -114,10 +114,12 @@
 .button_active{
     color: #FFFFFF;
     background: #325288;
+    cursor: pointer;
 }
 
 .button_inactive{
     color: #889EAF;
     background: #E1E5EA;
+    cursor: auto !important;
 }
 

@@ -57,6 +57,7 @@ urlpatterns = [
     path('video_stream', views.video_stream, name='video_stream'),
     path('new_item/take_pacture', views.take_pacture, name='take_pacture'),
     path('products/', views.products, name='products'),
+    path('get_products/', views.getProducts, name='getProducts'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

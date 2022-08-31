@@ -173,12 +173,18 @@ form {
 .dates {
     gap: 3em;
 }
-
-
-
 /* // Date */
 
-
+.feedback-invalid{
+    color: #D96098;
+    font-size: 0.875em;
+}
+.show{
+    display: block;
+}
+.hide{
+    display: none;
+}
 
 
 /* MODAL */
