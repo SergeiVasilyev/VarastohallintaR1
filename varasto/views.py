@@ -147,7 +147,6 @@ def new_event(request):
             estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
                 estimated_date_issmall = True
-        print('changed_items ', changed_items)
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
@@ -175,6 +174,9 @@ def new_event(request):
         else:
             feedback_status = False
 
+    print('changed_user ', changed_user)
+    print('changed_items ', changed_items)
+
     items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
     # PAGINATION ei toimi, koska kun vaihdat sivu se päivittää koko ikkuna
@@ -198,10 +200,8 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def getProducts(request):
-    print('TEST')
     data = []
     if is_ajax(request=request):
-        print('TEST2')
         items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 

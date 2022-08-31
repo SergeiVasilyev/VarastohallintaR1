@@ -236,7 +236,7 @@ $(document).ready(function() {
                                 <p>{{changed_user.email}}</p>
                             </div>
                             <div class="mb-3 d-flex">
-                                <button name="_remove_user" type="submit" class="list__button list__button_bg_red btn_strech">
+                                <button name="_remove_user" type="button" class="list__button list__button_bg_red btn_strech" value="{{changed_user.code}}">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
                             </div>
@@ -404,12 +404,57 @@ function selectMultItem(){
         // url += '?param=1'
     }
 
-    setTimeout(() => {  window.location.href = url; }, 3000)
+    setTimeout(() => {  window.location.href = url; }, 10) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
     // window.location.href = url;
 }
 // --Select multiple items
 
 
+// remove user function
+    function getUrlParams(key){ // входное значение ИМЯ КЛЮЧА
+        var url = document.location.href;
+        var qs = url.substring(url.indexOf('?') + 1).split('&')
+        // console.log('request ' + qs)
+        other_url_params = {}
+
+        for(var i = 0, url_params = {}; i < qs.length; i++){
+            qs[i] = qs[i].split('=');
+            // console.log('KEY ' + qs[i][0])
+
+            if (qs[i][0].indexOf(key) != -1 || key === 'all') {
+                url_params[qs[i][0]] = decodeURIComponent(qs[i][1])
+            }else{
+                other_url_params[qs[i][0]] = decodeURIComponent(qs[i][1])
+            }
+            // console.log('other_url_params ' + other_url_params)
+        }
+        return {url_params, other_url_params}
+    }
+    function deleteParams(paramsObj) {
+        var url = location.protocol + '//' + location.host + location.pathname + '?'
+        var i = 0
+        Object.entries(paramsObj).forEach(([key, value]) => { // key начинается с нуля - исправить
+            console.log(key, ' - ', value)
+            console.log(window.location.href)
+            url = window.location.href
+            let new_url = url.split(key+'='+value).join('') //находим и удаляем из строки
+            console.log(new_url)
+            
+        })
+        return new_url
+    }
+
+    $("button[name=_remove_user]").click(function(){
+        let key_name = 'add_user'
+        var url_params = getUrlParams(key_name)['url_params']
+        const picked = (({ add_user }) => ({ add_user }))(url_params) // Обрезаем объект до указанных параметров
+        var updated_url = deleteParams(picked)
+        console.log(updated_url)
+        // var value = $(this).attr('value')
+        // var url = updated_url.split('_remove_user='+value).join('')
+        // console.log(url)
+    })
+// --remove user function
 
 
 
