@@ -1,4 +1,6 @@
+from asyncio.windows_events import NULL
 from datetime import datetime
+from pickle import NONE
 from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.utils.translation import gettext as _
@@ -93,16 +95,29 @@ class Goods(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
 
+    # @property
+    # def rentable_at(self):
+    #     rental_events = Rental_event.objects.all().order_by("item")
+    #     event = rental_events.filter(item=self).first()
+    #     # event = Rental_event.objects.filter(item=self).order_by("id").first()
+    #     print(self.id, event)
+    #     if event:
+    #         return event.estimated_date
+    #     return None
+
+    
     @property
     def rentable_at(self):
-        rental_events = Rental_event.objects.all().order_by("item")
-        event = rental_events.filter(item=self).first()
-        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # rental_events = Rental_event.objects.all().order_by("item")
+        # event = rental_events.filter(item=self).first()
+        
+        # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         # print(self.id, event)
         if event:
+            # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
-
 
     def __str__(self):
         return '%s' % (self.item_name)

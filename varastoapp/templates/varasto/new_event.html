@@ -72,13 +72,13 @@ $(document).ready(function() {
 
     // AJAX modal-body add_product
     // const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    const getProducts = () => {
+    const getProducts = (page) => {
         $.ajax({
             type: 'GET',
             url: '/get_products/',
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'page': 1,
+                'page': page,
                 // 'csrfmiddlewaretoken': csrf,
             },
             success: (response)=> {
@@ -99,7 +99,8 @@ $(document).ready(function() {
 
 
     $('#add_product').click(function(){
-        getProducts()
+        getProducts(1)
+        setPage()
     })
     
     function itemhtml (item) {
@@ -169,6 +170,42 @@ $(document).ready(function() {
             `
         )
     }
+
+    // Select page function
+    function setPage() {
+        $('#page').html($('.pagination').attr('page'))
+        $('#pageLength').html('{{ items.paginator.num_pages }}')
+    }
+
+    $('#page_first').click(function(){
+        $('.pagination').attr('page', 1)
+        getProducts(1)
+        setPage()
+    })
+    $('#page_plus').click(function(){
+        var num_pages = '{{ items.paginator.num_pages }}'
+        var last_page = parseInt($('.pagination').attr('page'))
+        if (num_pages >= (last_page+1)) {
+            $('.pagination').attr('page', last_page+1)
+            getProducts(last_page+1)
+        }
+        setPage()
+    })
+    $('#page_minus').click(function(){
+        var last_page = parseInt($('.pagination').attr('page'))
+        if (last_page > 1) {
+            $('.pagination').attr('page', last_page-1)
+            getProducts(last_page-1)
+        }
+        setPage()
+    })
+    $('#page_last').click(function(){
+        $('.pagination').attr('page', '{{ items.paginator.num_pages }}')
+        getProducts('{{ items.paginator.num_pages }}')
+        setPage()
+    })
+
+
 
 });
 
@@ -325,17 +362,17 @@ $(document).ready(function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <div class="pagination mt-3">
+            <div class="pagination mt-3" page="1">
                 <span class="step-links">
-                    <button onclick="select_page(1)" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button>
-                    <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+                    <button id="page_first" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button>
+                    <button id="page_minus" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button>
                     
                     <span class="current">
-                        Sivu {{ items.number }} / {{ items.paginator.num_pages }}
+                        Sivu <span id="page"></span> / <span id="pageLength"></span>
                     </span>
 
-                    <a href="{% if items.has_next %}?page={{ items.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
-                    <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+                    <button id="page_plus" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button>
+                    <button id="page_last" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button>
                 </span>
             </div>
 
@@ -352,6 +389,8 @@ $(document).ready(function() {
     </div>
 </div>
 <script type="text/javascript">
+
+
 
 // Select from list
 function selectItem(id){
