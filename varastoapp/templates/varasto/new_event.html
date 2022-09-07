@@ -78,6 +78,7 @@ $(document).ready(function() {
             url: '/get_products/',
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'page': 1,
                 // 'csrfmiddlewaretoken': csrf,
             },
             success: (response)=> {
@@ -251,6 +252,9 @@ $(document).ready(function() {
                                 <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
                                 <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
                             </div>
+                            <!-- Сделать по нажатию кнопки "добавить" проверку на JS и затем добавить новый товар в неотображаемый input ниже, а затем сделать уже Get запрос
+                            Таким образом сможем сохранить правильный порядок добавляемых товаров -->
+                            <!-- можно задать для инпутов разные имена и прибавлять из нескрытого инпута данные в скрытый -->
                             <div class="me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
                                     <span class="list__button__text">Lisää tuote</span>
@@ -320,6 +324,21 @@ $(document).ready(function() {
                 <h5 class="modal-title" id="exampleModalLabel">Valitse tuotteita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            
+            <div class="pagination mt-3">
+                <span class="step-links">
+                    <button onclick="select_page(1)" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button>
+                    <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+                    
+                    <span class="current">
+                        Sivu {{ items.number }} / {{ items.paginator.num_pages }}
+                    </span>
+
+                    <a href="{% if items.has_next %}?page={{ items.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+                    <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+                </span>
+            </div>
+
             <div class="modal-body" id="modal-body">
 
                 {% comment %} {% include 'varasto/new_event_goods.html' with items=items %} {% endcomment %}
@@ -356,6 +375,7 @@ function selectMultItem(){
     var url = document.location.href;
     var qs = url.substring(url.indexOf('?') + 1).split('&');
     console.log('qs ' + qs)
+
     for(var i = 0, url_params = {}; i < qs.length; i++){
         qs[i] = qs[i].split('=');
         console.log('KEY ' + qs[i][0])
@@ -380,7 +400,10 @@ function selectMultItem(){
     console.log('changed_items length ' + '{{changed_items|length}}')
     last_item = parseInt('{{changed_items|length}}')
     // creating URL with new params
-    var url = window.location.href;  
+    var url = window.location.href;
+    url = url.replace(/_remove_item=\d+/, ''); // Etsitään _remove_item parametri url:ssa ja poistetaan, koska jos jäädä sen niin ei ole mahdollista lisätä uusi itemi
+    console.log('updated_url ' + url)
+
     if (url.indexOf('?') > -1){
         console.log('if url has params')
         $.each( val, function( key, value ) { // key начинается с нуля - исправить
@@ -404,7 +427,7 @@ function selectMultItem(){
         // url += '?param=1'
     }
 
-    setTimeout(() => {  window.location.href = url; }, 10) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
+    setTimeout(() => {  window.location.href = url; }, 200) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
     // window.location.href = url;
 }
 // --Select multiple items

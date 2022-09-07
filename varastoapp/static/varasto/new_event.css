@@ -239,6 +239,35 @@ form {
     }
 
 
+    /* PAGINATION */
+    .pagination{
+        display: flex;
+        justify-content: center;
+        color: #2D3748;
+        /* border: 1px solid red; */
+    }
+    .pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+        text-decoration: none;
+        color: #FFFFFF;
+    }
+    .step-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.875em;
+    }
+    .current {
+        width: 10em;
+        text-align: center;
+        /* border: 1px solid red; */
+    }
+
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    /* // PAGINATION*/
+
 /* // MODAL */
 
 
