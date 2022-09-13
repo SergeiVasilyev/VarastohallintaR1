@@ -93,7 +93,8 @@ class Goods(models.Model):
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
+    storage_place = models.CharField(max_length=5, blank=True, null=True)
+    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
 
     # @property
     # def rentable_at(self):
@@ -108,9 +109,6 @@ class Goods(models.Model):
     
     @property
     def rentable_at(self):
-        # rental_events = Rental_event.objects.all().order_by("item")
-        # event = rental_events.filter(item=self).first()
-        
         # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
         event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         # print(self.id, event)
