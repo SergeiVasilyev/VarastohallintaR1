@@ -132,7 +132,7 @@ def new_event(request):
                 error = "User ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
-                # print(add_item, ' ', request.GET.get(add_item))
+                print(add_item, ' ', request.GET.get(add_item))
                 try:
                     new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
                     # if new_item.rentable_at: print(new_item, ' rented')
@@ -170,7 +170,8 @@ def new_event(request):
                 rental.save()
             changed_user = None
             changed_items = []
-            return redirect('new_event')
+            # return redirect('new_event')
+            return redirect('renter', idx=renter.id)
         else:
             feedback_status = False
 
@@ -219,6 +220,7 @@ def getProducts(request):
                 'package': obj.pack,
                 'ean': obj.ean,
                 'rentable_at': obj.rentable_at,
+                'storage_place': obj.storage_place,
             }
             data.append(item)
     
@@ -469,6 +471,33 @@ def products(request):
     }
     return render(request, 'varasto/products.html', context)
 
+# storage_place sarakkeen täyttäminen
+def filling_storage_place(request):
+    items = Goods.objects.all().order_by("ean")
+    rack = ['A', 'B', 'C']
+    rackid = 0
+    unit = 1
+    shelf = 0
 
+    for item in items:
+        if shelf < 9:
+            shelf += 1
+        elif unit < 9:
+            unit += 1
+            shelf = 1
+        elif rackid < 3:
+            rackid += 1
+            unit = 1
+            shelf = 1
+        else:
+            rackid = 1
+            unit = 1
+            shelf = 1
 
+        print(rack[rackid]+str(unit)+str(shelf))
+        item.storage_place = rack[rackid]+str(unit)+str(shelf)
+        item.save()
+    
+    return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
+    
 
