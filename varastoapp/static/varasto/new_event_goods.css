@@ -1,6 +1,6 @@
 .columns_name{
     display: grid;
-    grid-template-columns: minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    grid-template-columns: minmax(16em, 2fr) 1fr 1fr 1fr 1fr 1fr 150px;
     margin-left: 50px;
     align-items: center;
     text-transform: uppercase;
@@ -24,7 +24,7 @@
 
 .new_event_wrap{
     display: grid;
-    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 1fr 1fr 1fr 150px;
     border-top: 1px solid #E2E8F0;
     align-items: center;
 }
