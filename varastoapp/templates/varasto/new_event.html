@@ -13,10 +13,224 @@
 {% block path %}Uusi tapahtuma{% endblock %}
 {% block page %}Uusi tapahtuma{% endblock %}
 
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    // Barcode reader
+    var barcode = ''
+    var interval
+    document.addEventListener('keydown', function(e) {
+        if (interval){
+            clearInterval(interval)
+        }
+        if (e.keyCode == 13){
+            if (barcode) {
+                printBarcode(barcode)
+                checkBarcode(barcode)
+            }
+            barcode = ''
+            document.querySelector("button[name=_add_user]").click()
+            return
+        }
+        if (e.key != 'Shift')
+            barcode += e.key // Tarkista, että barcode on ainakin 3 kirjainta (Letter, num, chr13)
+        interval = setInterval(() => barcode = '', 20) // interval min 20ms
+    })
+    function checkBarcode(scanned_barcode){
+        if (parseInt(scanned_barcode, 10))
+            document.querySelector('#add_user').value = scanned_barcode
+        else if (scanned_barcode[0]=='{{ user.storage.storage_code }}') // first Letter in a barcodes
+            document.querySelector('#add_item').value = scanned_barcode.slice(1)
+        // console.log('{{ user.storage.storage_code }}')
+    }
+    function printBarcode(scanned_barcode){
+        console.log('scanned_barcode ' + scanned_barcode)
+    }
+    // --Barcode reader
+
+    // Errors
+    var estimated_date = "{{estimated_date}}"
+    var feedback_status = "{{feedback_status}}"
+    var estimated_date_issmall = "{{estimated_date_issmall}}"
+    console.log(estimated_date, feedback_status, estimated_date_issmall)
+    // if ((!estimated_date && !feedback_status) || (estimated_date && estimated_date_issmall)){
+    if ((estimated_date=="None" && feedback_status=="False") || (estimated_date!="None" && estimated_date_issmall=="True")){
+        $('#estimated_date').toggleClass('is-invalid')
+    }
+    var changed_user = "{{changed_user}}"
+    console.log(changed_user, feedback_status)
+    if (changed_user=="None" && feedback_status=="False"){
+        $('#add_user').toggleClass('is-invalid')
+    }
+    var changed_items = "{{changed_items}}"
+    console.log(changed_items, feedback_status)
+    if (changed_items=="[]" && feedback_status=="False"){
+        $('#add_item').toggleClass('is-invalid')
+    }
+    // --Errors
+
+
+    // AJAX modal-body add_product
+    // const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    const getProducts = (page) => {
+        $.ajax({
+            type: 'GET',
+            url: '/get_products/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'page': page,
+                // 'csrfmiddlewaretoken': csrf,
+            },
+            success: (response)=> {
+                printItems(response.items)
+                console.log(response.items[0].item_name)
+            }
+        })
+    }
+    
+    function printItems(items){
+        $('#modal-body').html('') // очистка
+        items.forEach(item => {
+            // $('#modal-body').append(item.id + ' ' + item.item_name + '<br>')
+            itemhtml(item)
+        });
+        
+    }
+
+
+    $('#add_product').click(function(){
+        getProducts(1)
+        setPage()
+    })
+    
+    function itemhtml (item) {
+        let rentable_at = ''
+        let disabled = ''
+        let status = '<span class="status_green">Saatavilla</span>'
+        let btn_class = 'button_active'
+        let btnonclick = "selectItem("+item.id+")"
+        if (item.rentable_at){
+            const d = new Date(item.rentable_at)
+            let date = d.getDate()
+            let month = d.getMonth()
+            if (d.getDate() < 10) date = '0' + d.getDate()
+            if (d.getMonth() < 10) month = '0' + d.getMonth()
+            rentable_at = date + '.' + month + '.' + d.getFullYear()
+
+            disabled = 'disabled'
+            status = '<span class="status_red">Ei saatavilla</span>'
+            btn_class = 'button_inactive'
+            btnonclick = ""
+        }
+        
+        console.log(rentable_at)
+        $('#modal-body').append(
+            `
+            <div class="new_event_wrap">
+            <div class="row01">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="`+item.id+`" id="chekbox`+item.id+`" `+disabled+`>
+                </div>
+            </div>
+
+            <div class="list__item_photo">
+                <div><img src="`+item.picture+`" alt="`+item.picture+`"></div>
+            </div>
+
+            <div class="row02">
+                <div class="item_name">
+                    <label class="header" for="chekbox`+item.id+`">`+ item.item_name + ` ` +item.brand + `</label>
+                    <label class="paragraph" for="chekbox`+item.id+`">`+item.model+` `+item.item_type+` `+item.parameters+` `+item.size+` `+item.package+`</label>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div>
+                    <span class="code_number">`+item.id+`</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="d-flex flex-column">
+                    <span class="code_number">`+item.storage_name+`</span>
+                    <span class="code_number">`+item.storage_place+`</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div>
+                    <span class="EAN_number">`+item.ean+`</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="item_status">
+                    `+status+`
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="est_date">`+rentable_at+`</span>
+                </div>
+            </div>
+            <div class="row01">
+                <button id="btn`+item.id+`" onclick="`+btnonclick+`" type="button" class="button_props `+btn_class+`">
+                    <span class="button__text">Valitse</span>
+                </button>
+            </div>
+            </div>
+            `
+        )
+    }
+
+    // Select page function
+    function setPage() {
+        $('#page').html($('.pagination').attr('page'))
+        $('#pageLength').html('{{ items.paginator.num_pages }}')
+    }
+
+    $('#page_first').click(function(){
+        $('.pagination').attr('page', 1)
+        getProducts(1)
+        setPage()
+    })
+    $('#page_plus').click(function(){
+        var num_pages = '{{ items.paginator.num_pages }}'
+        var last_page = parseInt($('.pagination').attr('page'))
+        if (num_pages >= (last_page+1)) {
+            $('.pagination').attr('page', last_page+1)
+            getProducts(last_page+1)
+        }
+        setPage()
+    })
+    $('#page_minus').click(function(){
+        var last_page = parseInt($('.pagination').attr('page'))
+        if (last_page > 1) {
+            $('.pagination').attr('page', last_page-1)
+            getProducts(last_page-1)
+        }
+        setPage()
+    })
+    $('#page_last').click(function(){
+        $('.pagination').attr('page', '{{ items.paginator.num_pages }}')
+        getProducts('{{ items.paginator.num_pages }}')
+        setPage()
+    })
+
+
+
+});
+
+</script>
+{% endblock %}
+
 {% block main_content %}
 
 <div class="new_event_warp">
     <form method="get" action="">
+        {% comment %} <input name="barcode" id="barcode" type="hidden" class="aq" />
+        <input name="barcode1" id="barcode1" type="hidden" class="aq" /> {% endcomment %}
         <div class="d-flex justify-content-center pt-5" style="">
             <div class="d-flex flex-column align-items-end w-50">
                 <div class="row g-3 w-100">
@@ -30,7 +244,13 @@
                             </div>
                             <div>
                                 <span class="small">Päättymisaika</span>
-                                <input name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{request.GET.estimated_date}}"  style="" />
+                                <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
+                                <div class="feedback-invalid {% if not estimated_date and not feedback_status %}show{% else %}hide{% endif %}">
+                                    Kenttä on pakollinen
+                                </div>
+                                <div class="feedback-invalid {% if estimated_date and estimated_date_issmall %}show{% else %}hide{% endif %}">
+                                    Valittu liian lyhyt ajanjakso
+                                </div>
                                 {% comment %} {{request.GET.estimated_date}} {% endcomment %}
                             </div>
                         </div>
@@ -38,20 +258,25 @@
 
                     <div class="col-auto w-100">
                         {% comment %} {% csrf_token %} {% endcomment %}
-                        <div class="d-flex align-items-end">
-                            <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
+                        <!-- style="border: 1px solid red;" -->
+                        <div class="d-flex align-items-end" >
+                            <div class="me-3 w-100">
+                                <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
                                 {% if not changed_user %}
-                                <input name="add_user" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita opiskelijanumero tai nimi">
+                                <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi">
                                 {% else %}
-                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="exampleFormControlInput1" >
+                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="add_user" >
                                 {% endif %}
+                                
                             </div>
-                            <div class="mb-3">
-                                <button name="_add_user" type="submit" class="list__button list__button_bg_green btn_strech">
+                            <div class="">
+                                <button name="_add_user" type="submit" class="list__button list__button_bg_green btn_strech" id="_add_user">
                                     <span class="bi bi-plus font-size"></span>
                                 </button>
                             </div>
+                        </div>
+                        <div class="feedback-invalid {% if not changed_user and not feedback_status %}show{% else %}hide{% endif %}">
+                            Kenttä on pakollinen
                         </div>
                     </div>
                     
@@ -62,7 +287,7 @@
                                 <p>{{changed_user.email}}</p>
                             </div>
                             <div class="mb-3 d-flex">
-                                <button name="_remove_user" type="submit" class="list__button list__button_bg_red btn_strech">
+                                <button name="_remove_user" type="button" class="list__button list__button_bg_red btn_strech" value="{{changed_user.code}}">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
                             </div>
@@ -73,20 +298,26 @@
                 <div class="row g-3 mt-3 w-100 mb-4">
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
-                            <div class="mb-3 me-3 w-100">
-                                <label for="exampleFormControlInput1" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
-                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                            <div class="me-3 w-100">
+                                <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
+                                <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
                             </div>
-                            <div class="mb-3 me-3">
+                            <!-- Сделать по нажатию кнопки "добавить" проверку на JS и затем добавить новый товар в неотображаемый input ниже, а затем сделать уже Get запрос
+                            Таким образом сможем сохранить правильный порядок добавляемых товаров -->
+                            <!-- можно задать для инпутов разные имена и прибавлять из нескрытого инпута данные в скрытый -->
+                            <div class="me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
                                     <span class="list__button__text">Lisää tuote</span>
                                 </button>
                             </div>
-                            <div class="mb-3">
+                            <div class="">
                                 <button type="submit" class="list__button list__button_bg_green btn_strech">
                                     <span class="bi bi-plus font-size"></span>
                                 </button>
                             </div>
+                        </div>
+                        <div class="feedback-invalid {% if not changed_items and not feedback_status %}show{% else %}hide{% endif %}">
+                            Kenttä on pakollinen
                         </div>
                     </div>
                 </div>
@@ -95,7 +326,7 @@
                 <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
                     <div class="d-flex flex-row justify-content-between px-2" >
                         <div class="mb-3 me-3">
-                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
                             <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
                             <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
                         </div>
@@ -116,10 +347,13 @@
             <form action="" method="post">
                 <div>
                     {% csrf_token %}
-                    <input name="add_user" value="{{changed_user}}" type="hidden" class="form-control" id="exampleFormControlInput1" >
-                    {% for changed_item in changed_items %}
-                    <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
-                    {% endfor %}
+                    {% if estimated_date %}<input name="estimated_date" value="{{request.GET.estimated_date}}" type="hidden" >{% endif %}
+                    {% if changed_user %}<input name="add_user" value="{{changed_user}}" type="hidden">{% endif %}
+                    {% if changed_items %}
+                        {% for changed_item in changed_items %}
+                        <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden">
+                        {% endfor %}
+                    {% endif %}
                     <button type="button" class="btn btn-primary me-2">
                         <span class="button_s__text">PERUUTA</span>
                     </button> 
@@ -131,7 +365,7 @@
         </div>
     </div>
 </div>
-
+<!-- <div id="test">111</div> -->
 <!-- Modal 1-->
 <div class="modal fade" id="goods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -140,17 +374,178 @@
                 <h5 class="modal-title" id="exampleModalLabel">Valitse tuotteita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            
+            <div class="pagination mt-3 mb-3" page="1">
+                <span class="step-links">
+                    <button id="page_first" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button>
+                    <button id="page_minus" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button>
+                    
+                    <span class="current">
+                        Sivu <span id="page"></span> / <span id="pageLength"></span>
+                    </span>
 
-                {% include 'varasto/new_event_goods.html' with items=items %}
+                    <button id="page_plus" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button>
+                    <button id="page_last" class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button>
+                </span>
+            </div>
+
+            <div class="modal-body" id="modal-body">
+
+                {% comment %} {% include 'varasto/new_event_goods.html' with items=items %} {% endcomment %}
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
-                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">SULJE</button>
+                <button type="submit" class="btn btn-secondary" onclick="selectMultItem()">TALLENNA</button>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
 
+
+
+// Select from list
+function selectItem(id){
+    // lisätään tavara Inputiin
+    $('#add_item').val(id)
+
+    // Suljetaan ikkuna
+    var myModalEl = document.getElementById('goods');
+    var modal = bootstrap.Modal.getInstance(myModalEl)
+    modal.hide();
+
+    // painetaan nappi
+    document.querySelector("button[name=_add_user]").click()
+}
+//--Select from list
+
+
+// Select multiple items
+function selectMultItem(){
+    // Getting all url params
+    var url = document.location.href;
+    var qs = url.substring(url.indexOf('?') + 1).split('&');
+    console.log('qs ' + qs)
+
+    for(var i = 0, url_params = {}; i < qs.length; i++){
+        qs[i] = qs[i].split('=');
+        console.log('KEY ' + qs[i][0])
+        if (qs[i][0].indexOf('add_item') != -1) { // Get items wich has 'add_item' lable
+            url_params[qs[i][0]] = decodeURIComponent(qs[i][1]); // Write to url_params key and value as object
+        }  
+        // console.log('VALUE ' + url_params[i])
+    }
+    console.log(url_params)
+    
+    // проверить наличие только в add_item[X] - tehty!
+    
+    // Getting all checkboxes in val
+    var val = {}
+    $(':checkbox:checked').each(function(i){
+        if (Object.values(url_params).includes($(this).val()) == false){ // if new item not exist in URL
+            val['add_item'+i] = $(this).val()
+            console.log('val '+val['add_item'+i])
+        }
+    })
+    
+    console.log('changed_items length ' + '{{changed_items|length}}')
+    last_item = parseInt('{{changed_items|length}}')
+    // creating URL with new params
+    var url = window.location.href;
+    url = url.replace(/_remove_item=\d+/, ''); // Etsitään _remove_item parametri url:ssa ja poistetaan, koska jos jäädä sen niin ei ole mahdollista lisätä uusi itemi
+    console.log('updated_url ' + url)
+
+    if (url.indexOf('?') > -1){
+        console.log('if url has params')
+        $.each( val, function( key, value ) { // key начинается с нуля - исправить
+            url += '&add_item'+last_item+'='+value
+            last_item += 1
+            console.log( url )
+            console.log( key + ": " + value );
+        });
+        // url += '&param=1'
+        console.log('new url if had params ' + url)
+    }else{
+        console.log('if url not has params')
+        url += '?add_item0='+val['add_item'+0]
+        $.each( val, function( key, value ) {
+            if (key != 'add_item0') {
+                url += '&'+key+'='+value
+                console.log( key + ": " + value );
+            }
+        });
+        console.log("new url if hadn't params " + url)
+        // url += '?param=1'
+    }
+
+    setTimeout(() => {  window.location.href = url; }, 200) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
+    // window.location.href = url;
+}
+// --Select multiple items
+
+
+// remove user function
+    function getUrlParams(key){ // входное значение ИМЯ КЛЮЧА
+        var url = document.location.href;
+        var qs = url.substring(url.indexOf('?') + 1).split('&')
+        // console.log('request ' + qs)
+        other_url_params = {}
+
+        for(var i = 0, url_params = {}; i < qs.length; i++){
+            qs[i] = qs[i].split('=');
+            // console.log('KEY ' + qs[i][0])
+
+            if (qs[i][0].indexOf(key) != -1 || key === 'all') {
+                url_params[qs[i][0]] = decodeURIComponent(qs[i][1])
+            }else{
+                other_url_params[qs[i][0]] = decodeURIComponent(qs[i][1])
+            }
+            // console.log('other_url_params ' + other_url_params)
+        }
+        return {url_params, other_url_params}
+    }
+    function deleteParams(paramsObj) {
+        var url = location.protocol + '//' + location.host + location.pathname + '?'
+        var i = 0
+        Object.entries(paramsObj).forEach(([key, value]) => { // key начинается с нуля - исправить
+            console.log(key, ' - ', value)
+            console.log(window.location.href)
+            url = window.location.href
+            let new_url = url.split(key+'='+value).join('') //находим и удаляем из строки
+            console.log(new_url)
+            
+        })
+        return new_url
+    }
+
+    $("button[name=_remove_user]").click(function(){
+        let key_name = 'add_user'
+        var url_params = getUrlParams(key_name)['url_params']
+        const picked = (({ add_user }) => ({ add_user }))(url_params) // Обрезаем объект до указанных параметров
+        var updated_url = deleteParams(picked)
+        console.log(updated_url)
+        // var value = $(this).attr('value')
+        // var url = updated_url.split('_remove_user='+value).join('')
+        // console.log(url)
+    })
+// --remove user function
+
+
+
+// var val = {};
+//     $(':checkbox:checked').each(function(i){
+//         val['add_item'+i] = $(this).val();
+//         console.log('val '+val['add_item'+i])
+//     });
+//     $.get( "", val )
+
+// const elem = document.querySelector('input');
+// if (elem === document.activeElement) {
+//     console.log('Element has focus!');
+// } else {
+//     console.log(`Element is not focused.`);
+// }
+
+</script>
 {% endblock %}

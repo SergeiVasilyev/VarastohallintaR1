@@ -11,6 +11,21 @@
         <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
     </span>
 </div> {% endcomment %}
+
+<div class="pagination">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ items.number }} / {{ items.paginator.num_pages }}
+        </span>
+
+        <a href="{% if items.has_next %}?page={{ items.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
+
 <div class="columns_name">
 
     <div class="row02">
@@ -22,6 +37,12 @@
     <div class="row01">
         <div>
             <span>ID / Tuotenumero</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div>
+            <span>Tuotepaikka</span>
         </div>
     </div>
     
@@ -60,10 +81,12 @@
           </div>
     </div>
 
+    
+
     <div class="row02">
         <div class="item_name">
-            <label class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</label>
-            <label class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</label>
+            <span class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</span>
+            <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
             {% comment %} {{forloop.counter}} {% endcomment %}
         </div>
     </div>
@@ -71,6 +94,12 @@
     <div class="row01">
         <div class="">
             <span class="code_number">{{item.id}}</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="code_number">{{item.storage_place}}</span>
         </div>
     </div>
 
@@ -104,6 +133,22 @@
     </div>
 </div>
 {% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ items.number }} / {{ items.paginator.num_pages }}
+        </span>
+
+        <a href="{% if items.has_next %}?page={{ items.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
+
+
 {% comment %} <div class="pagination">
     <span class="step-links">
         <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>

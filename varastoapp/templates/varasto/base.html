@@ -20,6 +20,19 @@
     <script src="{% static 'varasto/htmx.js' %}"></script>
     <title>{% block title %}{% endblock %}</title>
 
+    <script type="text/javascript">
+        $(document).ready( function(){
+            // Function Back to the same position after go back
+            var selector = '#wb'
+            $(selector).on('scroll', function(){
+                sessionStorage['scrollTop'] = $(selector).scrollTop();
+            });
+            $(selector).scrollTop(sessionStorage['scrollTop']);
+            // -- Function Back to the same position after go back
+        });
+
+    </script>
+
     {% block script %}{% endblock %}
 
 </head>

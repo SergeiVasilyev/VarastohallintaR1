@@ -1,4 +1,6 @@
+from asyncio.windows_events import NULL
 from datetime import datetime
+from pickle import NONE
 from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.utils.translation import gettext as _
@@ -6,6 +8,25 @@ import pytz
 from django.template.defaulttags import register
 
 
+# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
+# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
+# Нужно добавить Foreign key на Storage в Goods
+class Storage_place(models.Model):
+    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
+    shelf = models.CharField(max_length=20, blank=True, null=True)
+    place = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
+
+class Storage_name(models.Model):
+    name = models.CharField(max_length=30)
+    storage_code = models.CharField(max_length=2, blank=True, null=True)
+    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % (self.name)
 
 class CustomUser(AbstractUser):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
@@ -24,7 +45,7 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
-
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
@@ -32,24 +53,7 @@ class CustomUser(AbstractUser):
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
 
-# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
-# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
-# Нужно добавить Foreign key на Storage в Goods
-class Storage_place(models.Model):
-    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
-    shelf = models.CharField(max_length=20, blank=True, null=True)
-    place = models.CharField(max_length=20, blank=True, null=True)
-    def __str__(self):
-        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
-
-class Storage_name(models.Model):
-    name = models.CharField(max_length=30)
-    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
-
-    def __str__(self):
-        return '%s' % (self.name)
 
 
 class Category(models.Model):
@@ -80,7 +84,7 @@ class Goods(models.Model):
     amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
-    item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
+    item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=50, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
@@ -89,18 +93,29 @@ class Goods(models.Model):
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
+    storage_place = models.CharField(max_length=5, blank=True, null=True)
+    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
 
+    # @property
+    # def rentable_at(self):
+    #     rental_events = Rental_event.objects.all().order_by("item")
+    #     event = rental_events.filter(item=self).first()
+    #     # event = Rental_event.objects.filter(item=self).order_by("id").first()
+    #     print(self.id, event)
+    #     if event:
+    #         return event.estimated_date
+    #     return None
+
+    
     @property
     def rentable_at(self):
-        rental_events = Rental_event.objects.all().order_by("item")
-        event = rental_events.filter(item=self).first()
-        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         # print(self.id, event)
         if event:
+            # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
-
 
     def __str__(self):
         return '%s' % (self.item_name)
