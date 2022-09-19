@@ -124,7 +124,9 @@
                     <div class="sublist_warp" userid="{{grouped_event.renter.id}}" style="display: none;">
                         <div class="list__rented_item">
                             <div class="list__nameof_rented_item brd_left">
-                                <span>{{event.item.item_name|default_if_none:""}} {{event.item.brand|default_if_none:""}}</span>
+                                <a href="{% url 'product' event.item.id %}" class="nodecor item_info">
+                                    <span>{{event.item.item_name|default_if_none:""}} {{event.item.brand|default_if_none:""}}</span>
+                                </a>
                                 <span>
                                     {{event.item.model|default_if_none:""}} 
                                     {{event.item.item_type|default_if_none:""}} 
