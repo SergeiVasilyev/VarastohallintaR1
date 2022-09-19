@@ -86,6 +86,9 @@ def renter(request, idx):
 
     selected_user = CustomUser.objects.get(id=idx)
     user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
+    
+    # TAVARAA EI OLE NÄKYVISSÄ, JOS ADMIN ON KIRJAUTUNUT SISÄÄN
+    # Kannattaa tehdä tarkistus, jos kirjautunut Admin tai Hallinto, tai Opettaja
     rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
     # print(selected_user)
 
@@ -211,6 +214,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
+                'picture': str(obj.picture),
                 'item_name': obj.item_name,
                 'brand': obj.brand,
                 'model': obj.model,
@@ -221,6 +225,7 @@ def getProducts(request):
                 'ean': obj.ean,
                 'rentable_at': obj.rentable_at,
                 'storage_place': obj.storage_place,
+                'storage_name': obj.storage.name,
             }
             data.append(item)
     
@@ -470,6 +475,29 @@ def products(request):
         'datenow': datenow
     }
     return render(request, 'varasto/products.html', context)
+
+
+def product(request, idx):
+    selected_item = Goods.objects.get(id=idx)
+    rental_events = Rental_event.objects.filter(item=selected_item)
+    if rental_events:
+        print(rental_events)
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+
+    context = {
+        'rental_events': rental_events,
+        'selected_item': selected_item,
+        'user': request.user,
+        'idx': idx,
+        'datenow': datenow,
+    }
+    return render(request, 'varasto/product.html', context)
+
+
+
+
 
 # storage_place sarakkeen täyttäminen
 def filling_storage_place(request):
