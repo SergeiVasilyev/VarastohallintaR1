@@ -16,6 +16,21 @@
     /* border: 1px solid blue; */
 }
 
+.list__item_photo > div{
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    margin-left: 0.5em;
+}
+.list__item_photo img {
+    width: 50px;
+    height: 50px;
+    object-fit:cover;
+    /* object-position: -38px 10%; */
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
 .est_date{
     display: flex;
     justify-content: center;
@@ -60,7 +75,7 @@
     color: #718096;
 }
 
-.code_number{
+.code_number, .EAN_number{
     font-weight: 400;
     color: #2D3748;
 }
