@@ -300,6 +300,20 @@ def base_main(request):
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
+def rental_events_goods(request):
+    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('-start_date', 'renter')
+
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    context = {
+        'events': events,
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/rental_events_goods.html', context)
+
+
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
@@ -523,9 +537,30 @@ def filling_storage_place(request):
             shelf = 1
 
         print(rack[rackid]+str(unit)+str(shelf))
-        item.storage_place = rack[rackid]+str(unit)+str(shelf)
-        item.save()
+        # item.storage_place = rack[rackid]+str(unit)+str(shelf)
+        # item.save()
     
+    return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
+    
+ # Adding description to products from 2-12 fields
+def filling_goods_description(request):
+    items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
+    # for item in items:
+    #     print(item.id)
+    #     print(item.item_description)
+
+    n = 0
+    new_items = Goods.objects.all().order_by("id")
+    for new_item in new_items:
+        if new_item.id > 12:
+            # new_item.item_description = items[n].item_description
+            # new_item.save()
+            print(items[n].item_description)
+        if n < 10:
+            n += 1
+        else:
+            n = 0
+
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
     
 

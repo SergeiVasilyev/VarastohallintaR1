@@ -30,6 +30,7 @@ urlpatterns = [
     path('logout/', logout_view, name="logout"),
     path('recovery/', recovery_view, name="recovery"),
     path('rental_events/', views.rental_events, name='rental_events'),
+    path('rental_events_goods/', views.rental_events_goods, name='rental_events_goods'),
     path('base_main/', views.base_main, name='base_main'),
 
     path('renter/<int:idx>/', views.renter, name='renter'),
@@ -60,7 +61,7 @@ urlpatterns = [
     path('products/', views.products, name='products'),
     path('get_products/', views.getProducts, name='getProducts'),
 
-    path('filling_storage_place/', views.filling_storage_place, name='filling_storage_place'),
+    path('filling_goods_description/', views.filling_goods_description, name='filling_goods_description'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
