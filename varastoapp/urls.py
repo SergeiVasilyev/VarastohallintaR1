@@ -33,6 +33,7 @@ urlpatterns = [
     path('base_main/', views.base_main, name='base_main'),
 
     path('renter/<int:idx>/', views.renter, name='renter'),
+    path('product/<int:idx>/', views.product, name='product'),
 
     path('new_event/', views.new_event, name='new_event'),
     # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),

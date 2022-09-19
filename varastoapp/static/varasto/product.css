@@ -1,0 +1,306 @@
+/* * {
+    padding: 0 !important;
+    margin: 0 !important;
+} */
+
+/* ---person_info--- */
+
+.person_info {
+    display: grid;
+    grid-template-columns: auto auto auto 3fr 1fr; 
+    /* align-items: center; */
+    /* border: 1px solid green; */
+}
+.information {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 1.1;
+    color: #2D3748;
+    padding-right: 7em;
+    /* height: 100%; */
+}
+.person_info div:nth-last-child(2) {
+    /* border: 1px solid green; */
+    padding-right: 1em;
+}
+.information span:nth-child(2n+3) {
+    margin-top: 1em;
+}
+.information span {
+    /* height: 100%; */
+    /* border: 1px solid green; */
+}
+.person_info div {
+    /* border: 1px solid green; */
+}
+
+.valign_end {
+   /* align-items: flex-end;  */
+   justify-content: end;
+}
+
+.student_name {
+    font-size: 1.5em;
+    font-weight: 600;
+}
+.student_group, .personal_field_data {
+    font-size: 1.25em;
+}
+.personal_field_name {
+    font-size: 0.875em;
+    color: #718096;
+}
+.photo > div{
+    overflow: hidden;
+    width: 240px;
+    height: 250px;
+    border-radius: 0.7em; 
+}
+.photo > div img {
+    width: 240px;
+    height: 250px;
+    object-fit:cover;
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+.new_rental {
+    align-self: end;
+    display: flex;
+    justify-content: center;
+
+}
+.new_rental button {
+    min-width: 15em;
+}
+/* /---person_info--- */
+
+
+/* ---history--- */
+.history_header_wrap{
+    padding-top: 2em;
+}
+
+.column_names div{
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid green; */
+}
+.column_names div:nth-child(2) span {
+    text-align: left;
+}
+.column_names div span {
+    font-size: 0.75em;
+    text-align: center;
+    color: #A0AEC0;
+    text-transform: uppercase;
+}
+
+.history {
+    padding-top: 0.5em;
+    line-height: 1.1;
+}
+.history_list:nth-child(odd) {
+    background-color: #f8fbff;
+}
+.history_list, .column_names {
+    display: grid;
+    /* grid-template-columns: 170px repeat(3, minmax(6em, 1fr)); */
+    grid-template-columns: 170px minmax(17em, 1fr) minmax(14em, 1fr) minmax(18em, 1fr)
+}
+.history_list div {
+    /* border: 1px solid green; */
+}
+.history_photo {
+    padding: 0.5em 0.625em;
+}
+.history_photo > div{
+    overflow: hidden;
+    width: 130px;
+    height: 120px;
+    border-radius: 0.7em;
+    border: 0.5px solid #7897AB;
+    /* padding: 0em; */
+}
+.history_photo > div img {
+    width: 130px;
+    height: 120px;
+    object-fit: cover;
+    object-position: 50% 50%; /* kuva keskellä */
+    /* border: 0.5px solid red; */
+}
+
+
+.item_info, .remarks {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 0.6em 0.5em;
+}
+.item_info > div {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    /* border: 0.5px solid red; */
+}
+.item_info_place {
+    justify-content: center;
+}
+.item_name {
+    color: #2D3748;
+    font-size: 1.125em;
+    font-weight: 600;
+}
+.item_props {
+    color: #718096;
+    font-size: 1em;
+    font-weight: 400;
+}
+.item_num_name {
+    color: #718096;
+    font-size: 0.875em;
+    font-weight: 400;
+}
+/* !!!!!!!!!!! */
+.item_num {
+    color: #2D3748;
+    font-size: 1.125em;
+    font-weight: 400;
+}
+
+
+.rental_period{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em;
+    /* border: 1px solid red; */
+}
+.rental_period_date{
+    color: #2D3748;
+    font-size: 1em;
+    font-weight: 500;
+    margin-bottom: 1em;
+}
+.list__rented_item_status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid red; */
+}
+.list__rented_item_status > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 7.5em;
+    height: 1.5em;
+    border-radius: 0.8em;
+    text-align: center;
+    padding: 0.8em;
+    /* border: 1px solid green; */
+}
+.round {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 7em;
+    border-radius: 0.5em;
+}
+.status_green {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: white;
+}
+.status_gray {
+    background-color: #CBD5E0;
+    border: 1px solid #CBD5E0;
+    color: #7897AB;
+} 
+.status_red {
+    background-color: #D96098;
+    border: 1px solid #D96098;
+    color: white;
+} 
+
+
+.update_event {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5em; 
+}
+
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center;
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    margin: 0.2em; 
+}
+.button_link, .button_link:hover, .button_link:visited {
+    text-decoration: none;
+}
+.list__button__text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+    /* border: 1px solid blue; */
+}
+.btn_strech {
+    place-self: center stretch;
+}
+.list__button_bg_blue {
+    color: white;
+    background: #325288;
+}
+.list__button_inactive, .list__button_inactive:hover {
+    pointer-events: none;
+    color:#7897AB;
+    background:#CBD5E0;
+}
+
+.disable {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: black;
+}
+
+/* /---history--- */
+
+
+
+/* MODAL */
+
+.modal-dialog {
+    /* border: 1px solid red; */
+    max-width: 650px !important; /* New width for default modal */
+    height: 200px !important;
+}
+
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
+
+
+
+
+
+/* // MODAL */
