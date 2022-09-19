@@ -32,7 +32,7 @@ from django.db.models import Q
 from .alerts import email_alert
 
 
-
+STATIC_URL = '/varastoapp/static/'
 
 
 
@@ -214,7 +214,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': str(obj.picture),
+                'picture': STATIC_URL + str(obj.picture),
                 'item_name': obj.item_name,
                 'brand': obj.brand,
                 'model': obj.model,
