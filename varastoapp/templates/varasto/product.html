@@ -67,9 +67,14 @@
                     </button>
                 </a>
             </div>
-
         </div>
-        - Lisätä description <br>
+
+        <div class="product_description mt-3 mb-3">
+            <div>
+                {{ selected_item.item_description|default:"-" }}
+            </div>
+        </div>
+        
         <div class="history_header_wrap">
             <div class="column_names">
                 <div><span>Valokuva</span></div>

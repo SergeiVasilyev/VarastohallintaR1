@@ -72,6 +72,19 @@
 .new_rental button {
     min-width: 15em;
 }
+
+.product_description {
+    padding: 1em;
+    border: 1px solid gainsboro;
+    max-width: 45em;
+    color: #718096;
+}
+
+.product_description div{
+    
+}
+
+
 /* /---person_info--- */
 
 
