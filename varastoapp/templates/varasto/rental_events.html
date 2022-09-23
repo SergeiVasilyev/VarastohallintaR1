@@ -13,7 +13,32 @@
 {% block path %}Vuokratapahtumat{% endblock %}
 {% block page %}Vuokratapahtumat{% endblock %}
 
-{% block main_content %}
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    const setRentalView = (page) => {
+        $.ajax({
+            type: 'POST',
+            url: '/set_rental_event_view/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'page': page,
+            },
+            success: (response)=> {
+                // console.log(response)
+            }
+        })
+    }
+
+    $('#rental_view_switch').click(function(){
+        setRentalView('rental_events_goods')
+    })
+
+})
+</script>
+{% endblock %}
+
+{% block main_content %}{{ say_hello }}
     <div class="filter_panel">
         <div class="sorting">
             <div class="btn-group"> <!--  bi-sort-alpha-up-alt -->
@@ -34,7 +59,7 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <a href="{% url 'rental_events_goods' %}" class="nodecor">
+                <a href="{% url 'rental_events_goods' %}" class="nodecor" id="rental_view_switch">
                 <button type="button" class="btn btn-secondary">
                     Tavarat ensin
                 </button>

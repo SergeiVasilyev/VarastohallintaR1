@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings
 from django.db.models import Count
 
 from django.db.models import Min, Max
@@ -239,6 +239,10 @@ def getProducts(request):
 #                 'next_page_number': page_obj.next_page_number,
 #                 'rentable_at': obj.rentable_at,
 
+def get_rental_events_page():
+    page = Settings.objects.get(set_name='rental_page_view')
+    return page.set_value
+
 
 def login_view(request):
     if not request.user.is_authenticated:
@@ -250,7 +254,8 @@ def login_view(request):
                 login(request, user)
                 # print('sucsess')
                 if user_check(user) and is_not_student(user):
-                    return redirect('rental_events')
+                    return redirect(get_rental_events_page())
+                    # return redirect('rental_events')
                 else:
                     return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
@@ -259,11 +264,15 @@ def login_view(request):
                 # return HttpResponse("<html><body><h1>error</h1></body></html>")
         else:
             form = CustomUserForm()
-            context = {'form': form}
+            context = {
+                'form': form,
+                'get_rental_events_page': get_rental_events_page()
+                }
             return render(request, 'varasto/login.html', context)
     else:
         if user_check(request.user) and is_not_student(request.user):
-            return redirect('rental_events')
+            return redirect(get_rental_events_page())
+            # return redirect('rental_events')
         else:
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
@@ -309,9 +318,11 @@ def rental_events_goods(request):
     context = {
         'events': events,
         'datenow': datenow,
-        'user': request.user
+        'user': request.user,
+        'get_rental_events_page': get_rental_events_page()
     }
     return render(request, 'varasto/rental_events_goods.html', context)
+
 
 
 @login_required()
@@ -359,7 +370,8 @@ def rental_events(request):
         'grouped_events': grouped_events,
         'events': events,
         'datenow': datenow,
-        'user': request.user
+        'user': request.user,
+        'get_rental_events_page': get_rental_events_page()
     }
 
     return render(request, 'varasto/rental_events.html', context)
@@ -508,6 +520,14 @@ def product(request, idx):
         'datenow': datenow,
     }
     return render(request, 'varasto/product.html', context)
+
+
+def set_rental_event_view(request):
+    set = Settings.objects.get(set_name='rental_page_view')
+    set.set_value = request.POST.get('page')
+    set.save()
+
+    return JsonResponse({'data': request.POST.get('page'), })
 
 
 

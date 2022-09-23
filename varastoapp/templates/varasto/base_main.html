@@ -66,8 +66,9 @@
                     </button>
                 </a>
                 {% comment %} {% endif %} {% endcomment %}
+                {% comment %} <a class="nodecor" href="{% if get_rental_events_page %}{% url get_rental_events_page %}{% else %}{% url 'rental_events' %}{% endif %}"> {% endcomment %}
                 <a class="nodecor" href="{% url 'rental_events' %}">
-                    <button type="button" class="button resize mb-2 {% if request.path == '/rental_events/' or '/renter/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                    <button type="button" class="button resize mb-2 {% if request.path == '/rental_events/' or '/renter/' or '/rental_events_goods/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize">Vuokratapahtumat</span>
                     </button>
                 </a>
