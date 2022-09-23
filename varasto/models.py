@@ -196,3 +196,8 @@ class Staff_event(models.Model):
          self.to_storage, self.event_date, self.remarks)
 
 
+class Settings(models.Model):
+    set_name = models.CharField(max_length=50, blank=True, null=True)
+    set_value = models.CharField(max_length=50, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.set_name)
