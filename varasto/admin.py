@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Category
 
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, Settings
 
 from .models import CustomUser
 
@@ -67,6 +67,9 @@ class Staff_eventAdmin(admin.ModelAdmin):
     list_display = ['staff', 'item', 'from_storage',
          'to_storage', 'event_date', 'remarks']
 
+@admin.register(Settings)
+class Storage_nameAdmin(admin.ModelAdmin):
+    list_display = ['set_name', 'set_value']
 
 # admin.site.register(CustomUser)
 admin.site.register(CustomUser, CustomUserAdmin)
