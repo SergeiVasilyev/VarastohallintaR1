@@ -73,7 +73,7 @@ def renter(request, idx):
             text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
             to = item.renter.responsible_teacher.email
-            print(subject, text + body, to)
+            # print(subject, text + body, to)
             email_alert(subject, text + body, 'tino.cederholm@gmail.com')
         if request.POST.getlist('send_email_item_is_damaged'):
             subject = "Automaattinen muistutus!"
@@ -81,7 +81,7 @@ def renter(request, idx):
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
             remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
             to = item.renter.responsible_teacher.email
-            print(subject, text + body + remarks, to)
+            # print(subject, text + body + remarks, to)
             email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
@@ -116,7 +116,7 @@ def new_event(request):
     staff = CustomUser.objects.get(id=request.user.id)
     storage_id = staff.storage_id
 
-    print('add_items ', add_items)
+    # print('add_items ', add_items)
 
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
@@ -127,7 +127,7 @@ def new_event(request):
                 error = "User ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
-                print(add_item, ' ', request.GET.get(add_item))
+                # print(add_item, ' ', request.GET.get(add_item))
                 try:
                     new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
                     # if new_item.rentable_at: print(new_item, ' rented')
@@ -170,8 +170,8 @@ def new_event(request):
         else:
             feedback_status = False
 
-    print('changed_user ', changed_user)
-    print('changed_items ', changed_items)
+    # print('changed_user ', changed_user)
+    # print('changed_items ', changed_items)
 
     items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -397,7 +397,7 @@ def video_stream(request):
 
 @csrf_exempt
 def take_pacture(request):
-    print('is_ajax')
+    # print('is_ajax')
     pic = VideoCamera().take()
     
     return HttpResponse(pic)
@@ -419,8 +419,8 @@ def products(request):
 def product(request, idx):
     selected_item = Goods.objects.get(id=idx)
     rental_events = Rental_event.objects.filter(item=selected_item)
-    if rental_events:
-        print(rental_events)
+    # if rental_events:
+    #     print(rental_events)
 
     context = {
         'rental_events': rental_events,
@@ -431,8 +431,8 @@ def product(request, idx):
 
 
 def set_rental_event_view(request):
-    if 'name' in request.GET:
-        print('request.GET name =', request.GET.get('name'))
+    # if 'name' in request.GET:
+    #     print('request.GET name =', request.GET.get('name'))
 
     set = Settings.objects.get(set_name='rental_page_view')
     set.set_value = request.GET.get('name')
