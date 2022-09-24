@@ -92,15 +92,10 @@ def renter(request, idx):
     rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
     # print(selected_user)
 
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'rental_events': rental_events,
         'selected_user': selected_user,
-        'user': request.user,
         'idx': idx,
-        'datenow': datenow,
     }
     return render(request, 'varasto/renter.html', context)
 
@@ -108,7 +103,6 @@ def renter(request, idx):
 def new_event(request):
     now = datetime.now()
     datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
 
     feedback_status = True
     estimated_date = None
@@ -124,8 +118,6 @@ def new_event(request):
 
     print('add_items ', add_items)
 
-    
-    
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
             # print('add_user: ', request.GET.get('add_user'))
@@ -193,8 +185,6 @@ def new_event(request):
         'changed_items': changed_items,
         'estimated_date': estimated_date,
         'estimated_date_issmall': estimated_date_issmall,
-        'datenow': datenow,
-        'user': request.user,
         'items': page_obj,
         'feedback_status': feedback_status
     }
@@ -231,13 +221,6 @@ def getProducts(request):
     
     return JsonResponse({'items': data, })
 
-# 'has_previous': page_obj.has_previous,
-# 'previous_page_number': page_obj.previous_page_number,
-#                 'number': page_obj.number,
-#                 'num_pages': page_obj.paginator.num_pages,
-#                 'has_next': page_obj.has_next,
-#                 'next_page_number': page_obj.next_page_number,
-#                 'rentable_at': obj.rentable_at,
 
 def get_rental_events_page():
     page = Settings.objects.get(set_name='rental_page_view')
@@ -287,23 +270,12 @@ def recovery_view(request):
 
 def index(request):
     return redirect('login')
-    # if not request.user.is_authenticated:
-    #     return redirect('login')
-    # return render(request, 'varasto/index.html')
 
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
 
-
 def base_main(request):
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
-    context = {
-        'datenow': datenow,
-        'user': request.user
-    }
-    return render(request, 'varasto/base_main.html', context)
+    return render(request, 'varasto/base_main.html')
 
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
@@ -311,14 +283,8 @@ def update_rental_status(request):
 def rental_events_goods(request):
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('-start_date', 'renter')
 
-    
-
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
     context = {
         'events': events,
-        'datenow': datenow,
-        'user': request.user,
     }
     return render(request, 'varasto/rental_events_goods.html', context)
 
@@ -344,15 +310,9 @@ def rental_events(request):
     )
     grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
-
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'grouped_events': grouped_events,
         'events': events,
-        'datenow': datenow,
-        'user': request.user,
     }
 
     return render(request, 'varasto/rental_events.html', context)
@@ -363,37 +323,16 @@ def rental_events(request):
 #     return render(request, 'varasto/new_event_goods.html')
 
 def inventory(request):
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
-    context = {
-        'datenow': datenow,
-        'user': request.user
-    }
-    return render(request, 'varasto/inventory.html', context)
+    return render(request, 'varasto/inventory.html')
 
 # def report(request):
 #     return render(request, 'varasto/report.html')
 
 def new_user(request):
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
-    context = {
-        'datenow': datenow,
-        'user': request.user
-    }
-    return render(request, 'varasto/new_user.html', context)
+    return render(request, 'varasto/new_user.html')
 
 def grant_permissions(request):
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    # datenow = now.strftime("%d.%m.%Y")
-    context = {
-        'datenow': datenow,
-        'user': request.user
-    }
-    return render(request, 'varasto/grant_permissions.html', context)
+    return render(request, 'varasto/grant_permissions.html')
 
 
 def new_item(request):
@@ -438,13 +377,9 @@ def new_item(request):
             pic = VideoCamera().take()
             # print('pic', VideoCamera().take()) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
     context = {
         'form': form,
         'staff': staff_event_form,
-        'datenow': datenow
     }
     return render(request, 'varasto/new_item.html', context)
 
@@ -475,11 +410,8 @@ def products(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
     context = {
         'items': page_obj,
-        'datenow': datenow
     }
     return render(request, 'varasto/products.html', context)
 
@@ -490,22 +422,17 @@ def product(request, idx):
     if rental_events:
         print(rental_events)
 
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-
     context = {
         'rental_events': rental_events,
         'selected_item': selected_item,
-        'user': request.user,
         'idx': idx,
-        'datenow': datenow,
     }
     return render(request, 'varasto/product.html', context)
 
 
 def set_rental_event_view(request):
     if 'name' in request.GET:
-        print('GET rental_events')
+        print('request.GET name =', request.GET.get('name'))
 
     set = Settings.objects.get(set_name='rental_page_view')
     set.set_value = request.GET.get('name')
