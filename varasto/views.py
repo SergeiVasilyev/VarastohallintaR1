@@ -266,7 +266,6 @@ def login_view(request):
             form = CustomUserForm()
             context = {
                 'form': form,
-                'get_rental_events_page': get_rental_events_page()
                 }
             return render(request, 'varasto/login.html', context)
     else:
@@ -312,6 +311,7 @@ def update_rental_status(request):
 def rental_events_goods(request):
     events = Rental_event.objects.filter(returned_date__isnull=True).order_by('-start_date', 'renter')
 
+    
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -319,7 +319,6 @@ def rental_events_goods(request):
         'events': events,
         'datenow': datenow,
         'user': request.user,
-        'get_rental_events_page': get_rental_events_page()
     }
     return render(request, 'varasto/rental_events_goods.html', context)
 
@@ -328,15 +327,7 @@ def rental_events_goods(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def rental_events(request):
-    # INNER JOIN
-    # Rental_event.objects.filter(renter__first_name="Sergey")
-
-    # SUBQUERY
-    # SELECT renter_id FROM public.varasto_rental_event WHERE renter_id in (
-    # SELECT id from varasto_customuser WHERE last_name = 'Virtanen'
-    # ) 
-    # subquery = CustomUser.objects.filter(last_name="Virtanen")
-    # Rental_event.objects.filter(renter__in=subquery)
+    # Rental events page
     user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Max('start_date')).order_by('renter')
     # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
@@ -353,15 +344,6 @@ def rental_events(request):
     )
     grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
-    # for i in renters_by_min_startdate:
-    #     print(i)
-    # for i in events: 
-    #     print(i.item, i.renter.id)
-
-    # for i in grouped_events1: 
-    #     # print(i)
-    #     # print(i['renter'])
-    #     print(i.renter_id, i.item, i.start_date)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -371,7 +353,6 @@ def rental_events(request):
         'events': events,
         'datenow': datenow,
         'user': request.user,
-        'get_rental_events_page': get_rental_events_page()
     }
 
     return render(request, 'varasto/rental_events.html', context)
@@ -523,11 +504,14 @@ def product(request, idx):
 
 
 def set_rental_event_view(request):
+    if 'name' in request.GET:
+        print('GET rental_events')
+
     set = Settings.objects.get(set_name='rental_page_view')
-    set.set_value = request.POST.get('page')
+    set.set_value = request.GET.get('name')
     set.save()
 
-    return JsonResponse({'data': request.POST.get('page'), })
+    return redirect (request.GET.get('name'))
 
 
 
