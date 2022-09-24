@@ -64,7 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "varasto.context_processors.say_hello",
+                "varasto.context_processors.get_rental_events_page",
             ],
         },
     },

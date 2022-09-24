@@ -16,24 +16,25 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
-    const setRentalView = (page) => {
-        $.ajax({
-            type: 'POST',
-            url: '/set_rental_event_view/',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'page': page,
-            },
-            success: (response)=> {
-                // console.log(response)
-            }
-        })
-    }
+    // const setRentalView = (page) => {
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/set_rental_event_view/',
+    //         data: {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'page': page,
+    //         },
+    //         success: (response)=> {
+    //             console.log(window.location.hostname)
+    //             // window.location.href = page
+    //             window.location.replace(window.location.hostname + '/' + page)
+    //         }
+    //     })
+    // }
 
-    $('#rental_view_switch').click(function(){
-        setRentalView('rental_events')
-    })
-
+    // $('#rental_view_switch').click(function(){
+    //     setRentalView('rental_events')
+    // })
 })
 </script>
 {% endblock %}
@@ -58,8 +59,8 @@ $(document).ready(function() {
                     <li><a class="dropdown-item" href="#">Tavara</a></li>
                 </ul>
             </div>
-            <div class="btn-group"> <!--  bi-sort-alpha-up-alt -->
-                <a href="{% url 'rental_events' %}" class="nodecor" id="rental_view_switch">
+            <div class="btn-group">
+                <a href="{% url 'set_rental_event_view' %}?name=rental_events" class="nodecor" id="rental_view_switch" name="rental_events">
                     <button type="button" class="btn btn-secondary">
                         Vuokrajat ensin
                     </button>
