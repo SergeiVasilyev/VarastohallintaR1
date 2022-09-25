@@ -47,7 +47,7 @@ def person_view(request):
 @login_required()
 @user_passes_test(is_not_student, redirect_field_name=None)
 def renter(request, idx):
-    # При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!!
+    # on välttämätöntä kieltää edellisen päivämäärän valitseminen!!
     if request.method == 'POST':
         # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
         # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
@@ -90,7 +90,6 @@ def renter(request, idx):
     # TAVARAA EI OLE NÄKYVISSÄ, JOS ADMIN ON KIRJAUTUNUT SISÄÄN
     # Kannattaa tehdä tarkistus, jos kirjautunut Admin tai Hallinto, tai Opettaja
     rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
-    # print(selected_user)
 
     context = {
         'rental_events': rental_events,
@@ -137,7 +136,7 @@ def new_event(request):
                 except:
                     error = "Item ei löydetty"
         if request.GET.get('estimated_date'):
-            get_estimated_date = request.GET.get('estimated_date') # !!!!!!!! Ei toimi, jos valitaan päivämäärä lopussa!!!!!!!!!! Koska otetaan GET request!!!!
+            get_estimated_date = request.GET.get('estimated_date')
             date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
             estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
@@ -161,7 +160,6 @@ def new_event(request):
                             start_date=datenow,
                             storage_id = staff.storage_id,
                             estimated_date=estimated_date)
-                # print(rental)
                 rental.save()
             changed_user = None
             changed_items = []
@@ -173,10 +171,9 @@ def new_event(request):
     # print('changed_user ', changed_user)
     # print('changed_items ', changed_items)
 
-    items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
+    items = Goods.objects.all().order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
-    # PAGINATION ei toimi, koska kun vaihdat sivu se päivittää koko ikkuna
-    # Pitää rakentaa AJAX:n kautta 
+
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -196,7 +193,7 @@ def is_ajax(request):
 def getProducts(request):
     data = []
     if is_ajax(request=request):
-        items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
+        items = Goods.objects.all().order_by("id")
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
@@ -235,7 +232,6 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                # print('sucsess')
                 if user_check(user) and is_not_student(user):
                     return redirect(get_rental_events_page())
                     # return redirect('rental_events')
@@ -314,7 +310,6 @@ def rental_events(request):
         'grouped_events': grouped_events,
         'events': events,
     }
-
     return render(request, 'varasto/rental_events.html', context)
 
 
@@ -340,7 +335,6 @@ def new_item(request):
         staff = CustomUser.objects.get(id=request.user.id)
     except:
         staff = None
-    # print(staff)
     l = []
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -359,7 +353,6 @@ def new_item(request):
                 form.save()
 
         if staff_event_form.is_valid():
-            # print('staff saved')
             staff_event = staff_event_form.save(commit=False)
             staff_event.item = item
             staff_event.staff = staff
@@ -372,7 +365,6 @@ def new_item(request):
         staff_event_form = Staff_eventForm(use_required_attribute=False)
 
     if request.method == "GET":
-        # print('GET')
         if '_take_picture' in request.GET:
             pic = VideoCamera().take()
             # print('pic', VideoCamera().take()) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -382,8 +374,6 @@ def new_item(request):
         'staff': staff_event_form,
     }
     return render(request, 'varasto/new_item.html', context)
-
-
 
 
 def gen(camera):
@@ -397,7 +387,6 @@ def video_stream(request):
 
 @csrf_exempt
 def take_pacture(request):
-    # print('is_ajax')
     pic = VideoCamera().take()
     
     return HttpResponse(pic)
