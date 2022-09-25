@@ -18,7 +18,7 @@ class Storage_place(models.Model):
     shelf = models.CharField(max_length=20, blank=True, null=True)
     place = models.CharField(max_length=20, blank=True, null=True)
     def __str__(self):
-        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
+        return '%s %s %s' % (self.rack, self.shelf, self.place)
 
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
@@ -132,8 +132,8 @@ class Rental_event(models.Model):
     storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
-    amount = models.IntegerField # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
-    start_date = models.DateTimeField(datetime.now(), blank=True, null=True)
+    amount = models.IntegerField(default=1, blank=True, null=True) # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
+    start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
