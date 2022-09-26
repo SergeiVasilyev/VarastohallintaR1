@@ -14,17 +14,17 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', )
+    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', 'storage')
     list_filter = ('is_staff', 'is_active',)
     fieldsets = (
-        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group')}),
+        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group', 'storage')}),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         ('Main information', {
             'classes': ('wide', ),
-            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group')}
+            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group', 'storage')}
         ),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
