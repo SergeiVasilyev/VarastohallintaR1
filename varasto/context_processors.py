@@ -18,8 +18,8 @@ def get_rental_events_page(request):
     datenow = pytz.utc.localize(now)
     # datenow = now.strftime("%d.%m.%Y")
 
-    user = CustomUser.objects.get(username=request.user)
-    print(user.get_user_permissions())
+    # user = CustomUser.objects.get(username=request.user)
+    # print(user.get_user_permissions())
 
     context = {
         'rental_events_page': page.set_value,
