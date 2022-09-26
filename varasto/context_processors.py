@@ -1,7 +1,7 @@
 import pytz
 
 from multiprocessing import context
-from .models import Settings
+from .models import Settings, CustomUser
 from datetime import datetime
 
 
@@ -17,6 +17,9 @@ def get_rental_events_page(request):
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     # datenow = now.strftime("%d.%m.%Y")
+
+    user = CustomUser.objects.get(username=request.user)
+    print(user.get_user_permissions())
 
     context = {
         'rental_events_page': page.set_value,
