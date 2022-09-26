@@ -45,7 +45,8 @@ def person_view(request):
 
 
 @login_required()
-@user_passes_test(is_not_student, redirect_field_name=None)
+# @user_passes_test(is_not_student, redirect_field_name=None)
+@user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
     # on välttämätöntä kieltää edellisen päivämäärän valitseminen!!
     if request.method == 'POST':
@@ -89,7 +90,10 @@ def renter(request, idx):
     
     # TAVARAA EI OLE NÄKYVISSÄ, JOS ADMIN ON KIRJAUTUNUT SISÄÄN
     # Kannattaa tehdä tarkistus, jos kirjautunut Admin tai Hallinto, tai Opettaja
-    rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
+    if user.role == 'super':
+        rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
+    else:
+        rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
 
     context = {
         'rental_events': rental_events,
@@ -99,6 +103,7 @@ def renter(request, idx):
     return render(request, 'varasto/renter.html', context)
 
 @login_required()
+@user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -231,11 +236,12 @@ def login_view(request):
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user)
+                login(request, user) # не логинить, если не прошел проверку
                 if user_check(user) and is_not_student(user):
                     return redirect(get_rental_events_page())
                     # return redirect('rental_events')
                 else:
+                    # return redirect('logout')
                     return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
                 # Pitää rakentaa frontendilla vastaus, että kirjoitettu salasana tai tunnus oli väärin
@@ -252,6 +258,7 @@ def login_view(request):
             return redirect(get_rental_events_page())
             # return redirect('rental_events')
         else:
+            # return redirect('logout')
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
 
@@ -285,9 +292,9 @@ def rental_events_goods(request):
     return render(request, 'varasto/rental_events_goods.html', context)
 
 
-
+# @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
-@user_passes_test(is_not_student, redirect_field_name=None)
+@user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
 def rental_events(request):
     # Rental events page
     user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
@@ -329,8 +336,15 @@ def new_user(request):
 def grant_permissions(request):
     return render(request, 'varasto/grant_permissions.html')
 
-
+@login_required()
+@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
+    # Permission test
+    user = CustomUser.objects.get(id=request.user.id)
+    print(user.has_perms(user.get_group_permissions()))
+    print(user.get_group_permissions())
+    # -------
+
     try:
         staff = CustomUser.objects.get(id=request.user.id)
     except:
@@ -391,7 +405,7 @@ def take_pacture(request):
     
     return HttpResponse(pic)
 
-
+@login_required()
 def products(request):
     items = Goods.objects.all().order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -404,10 +418,14 @@ def products(request):
     }
     return render(request, 'varasto/products.html', context)
 
-
+@login_required()
 def product(request, idx):
+    user = request.user
+    rental_events = None
     selected_item = Goods.objects.get(id=idx)
-    rental_events = Rental_event.objects.filter(item=selected_item)
+    if user.has_perm('varasto.view_customuser'):
+        rental_events = Rental_event.objects.filter(item=selected_item)
+
     # if rental_events:
     #     print(rental_events)
 
@@ -418,7 +436,7 @@ def product(request, idx):
     }
     return render(request, 'varasto/product.html', context)
 
-
+@login_required()
 def set_rental_event_view(request):
     # if 'name' in request.GET:
     #     print('request.GET name =', request.GET.get('name'))
