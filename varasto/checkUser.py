@@ -13,7 +13,7 @@ def is_not_student(user):
         return True
 
 def is_menegement(user):
-    if user.is_authenticated and (user.role == 'menegement'):
+    if user.is_authenticated and (user.role == 'management'):
         return True
     else:
         return False
@@ -26,6 +26,12 @@ def is_storage_employee(user):
 
 def is_student_ext(user):
     if user.is_authenticated and (user.role == 'student_ext'):
+        return True
+    else:
+        return False
+
+def is_super_user(user):
+    if user.is_authenticated and (user.role == 'super'):
         return True
     else:
         return False
