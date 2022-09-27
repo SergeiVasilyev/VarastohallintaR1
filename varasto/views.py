@@ -126,14 +126,16 @@ def new_event(request):
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
             # print('add_user: ', request.GET.get('add_user'))
             try:
-                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) # saadan user, jolla on sama storage id kuin staffilla
+                 # saadan user, jolla on sama storage id kuin staffilla. Jos storage_id on NULL niin ei tarkistetaan storage_id (Adminilla ei ole storage_id)
+                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) if storage_id else CustomUser.objects.get(code=request.GET.get('add_user'))
             except:
                 error = "User ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
                 # print(add_item, ' ', request.GET.get(add_item))
                 try:
-                    new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
+                    # Jos storage_id on NULL niin etsitaan tavaraa koko tietokannassa (Adminilla ei ole storage_id)
+                    new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id)) if storage_id else Goods.objects.get(id=request.GET.get(add_item))
                     # if new_item.rentable_at: print(new_item, ' rented')
                     if new_item not in changed_items and not new_item.rentable_at: # Onko lisättävä tavara jo lisätty?
                         changed_items.append(new_item) # Lisätään jos ei
