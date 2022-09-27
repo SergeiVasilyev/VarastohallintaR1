@@ -124,7 +124,8 @@ $(document).ready(function() {
                 <div class="list__item_group">
                     {% translate grouped_event.renter.role as role %}
                     {% comment %} {{grouped_event.renter.role|default_if_none:""}} {% endcomment %}
-                    <span>{{ role }}</span>
+                    {% comment %} <span>{{ role }}</span> {% endcomment %}
+                    <span>{{ grouped_event.renter.get_group_permission }}</span>
                     <span>{{grouped_event.renter.group|default_if_none:""}}</span>
                 </div>
                 <div class="list__item_status {% if not grouped_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
