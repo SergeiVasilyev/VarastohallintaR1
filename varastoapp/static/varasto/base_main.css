@@ -157,6 +157,10 @@ aside {
         color: white;
         background: #24A19C;
     }
+    .button_bg_light_green {
+        color: 2D3748;
+        background: #E4E4E4;
+    }
     .button_bg_gray { /* active button*/
         color: #2D3748 !important;
         background: #E4E4E4 !important;
