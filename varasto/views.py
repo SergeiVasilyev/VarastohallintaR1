@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import operator
 import re
 from django.forms import inlineformset_factory, modelformset_factory
@@ -209,14 +210,14 @@ def getProducts(request):
             item = {
                 'id': obj.id,
                 'picture': STATIC_URL + str(obj.picture),
-                'item_name': obj.item_name,
-                'brand': obj.brand,
-                'model': obj.model,
-                'item_type': obj.item_type,
-                'parameters': obj.parameters,
-                'size': obj.size,
-                'package': obj.pack,
-                'ean': obj.ean,
+                'item_name': obj.item_name if obj.item_name else '',
+                'brand': obj.brand if obj.brand else '',
+                'model': obj.model if obj.model else '',
+                'item_type': obj.item_type if obj.item_type else '',
+                'parameters': obj.parameters if obj.parameters else '',
+                'size': obj.size if obj.size else '',
+                'package': obj.pack if obj.pack else '',
+                'ean': obj.ean if obj.ean else '',
                 'rentable_at': obj.rentable_at,
                 'storage_place': obj.storage_place,
                 'storage_name': obj.storage.name,
@@ -342,9 +343,9 @@ def grant_permissions(request):
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
     # Permission test
-    user = CustomUser.objects.get(id=request.user.id)
-    print(user.has_perms(user.get_group_permissions()))
-    print(user.get_group_permissions())
+    # user = CustomUser.objects.get(id=request.user.id)
+    # print(user.has_perms(user.get_group_permissions()))
+    # print(user.get_group_permissions())
     # -------
 
     try:
