@@ -39,7 +39,8 @@ $(document).ready(function() {
     function checkBarcode(scanned_barcode){
         if (parseInt(scanned_barcode, 10))
             document.querySelector('#add_user').value = scanned_barcode
-        else if (scanned_barcode[0]=='{{ user.storage.storage_code }}') // first Letter in a barcodes
+        //else if (scanned_barcode[0]=='{{ user.storage.storage_code }}') // first Letter in a barcodes
+        else if (scanned_barcode[0]=='a') // first Letter in a barcodes
             document.querySelector('#add_item').value = scanned_barcode.slice(1)
         // console.log('{{ user.storage.storage_code }}')
     }
