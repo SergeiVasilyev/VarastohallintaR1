@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from datetime import datetime
 from pickle import NONE
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext as _
 import pytz
@@ -28,7 +28,7 @@ class Storage_name(models.Model):
     def __str__(self):
         return '%s' % (self.name)
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser, PermissionsMixin):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
         ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
