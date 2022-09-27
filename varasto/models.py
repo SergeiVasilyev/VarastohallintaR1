@@ -52,6 +52,10 @@ class CustomUser(AbstractUser, PermissionsMixin):
         return '%s' % (self.username,)
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
+    
+    def get_group_permission(self):
+        user = CustomUser.objects.get(username=self)
+        return user.groups.get()
 
 
 
