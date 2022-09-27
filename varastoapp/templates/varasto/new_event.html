@@ -141,7 +141,7 @@ $(document).ready(function() {
             <div class="row02">
                 <div class="item_name">
                     <label class="header" for="chekbox`+item.id+`">`+ item.item_name + ` ` +item.brand + `</label>
-                    <label class="paragraph" for="chekbox`+item.id+`">`+item.model+` `+item.item_type+` `+item.parameters+` `+item.size+` `+item.package+`</label>
+                    <label class="paragraph" for="chekbox`+item.id+`">`+item.model+` `+item.item_type+` `+item.parameters+` `+item.size+`</label>
                 </div>
             </div>
 
@@ -329,7 +329,7 @@ $(document).ready(function() {
                         <div class="mb-3 me-3">
                             <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
                             <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
-                            <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
+                            <p>{{changed_item.item_type|default:""}} {{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                         </div>
                         <div class="mb-3 d-flex">
                             <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
