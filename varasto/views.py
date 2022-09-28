@@ -74,7 +74,7 @@ def renter(request, idx):
             subject = "Automaattinen muistutus!"
             text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
-            to = item.renter.responsible_teacher.email
+            # to = item.renter.responsible_teacher.email
             # print(subject, text + body, to)
             email_alert(subject, text + body, 'tino.cederholm@gmail.com')
         if request.POST.getlist('send_email_item_is_damaged'):
@@ -82,8 +82,8 @@ def renter(request, idx):
             text = f"henkilö {item.renter.first_name} {item.renter.last_name} on paluttanut varioittuneen tuotteen: <br>"
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
             remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
-            to = item.renter.responsible_teacher.email
-            # print(subject, text + body + remarks, to)
+            # to = item.renter.responsible_teacher.email
+            print(subject, text + body + remarks)
             email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
