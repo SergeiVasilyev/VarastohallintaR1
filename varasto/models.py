@@ -133,7 +133,7 @@ class Goods(models.Model):
 
 class Rental_event(models.Model):
     item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
-    storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
     amount = models.IntegerField(default=1, blank=True, null=True) # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
