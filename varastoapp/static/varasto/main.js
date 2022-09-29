@@ -9,8 +9,18 @@ $(document).ready(function() {
     })
 
     $('#chk-05').click(function(){
-        $(`.sublist_warp`).slideToggle('fast')
-        $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
+        if ($("#chk-05").is(':checked')) {
+            $(".sublist_warp").slideDown('fast')  // checked
+            $('.list__collapse').find('.bi').addClass('bi-caret-down')
+            $('.list__collapse').find('.bi').removeClass('bi-caret-left')
+        }
+        else {
+            $(".sublist_warp").slideUp('fast')  // unchecked
+            $('.list__collapse').find('.bi').addClass('bi-caret-left')
+            $('.list__collapse').find('.bi').removeClass('bi-caret-down')
+        }
+        // $(`.sublist_warp`).slideToggle('fast')
+        // $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
 
