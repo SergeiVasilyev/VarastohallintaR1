@@ -31,7 +31,7 @@ def is_student_ext(user):
         return False
 
 def is_super_user(user):
-    if user.is_authenticated and (user.role == 'super'):
+    if user.is_authenticated and user.is_superuser:
         return True
     else:
         return False
