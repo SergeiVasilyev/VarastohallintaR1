@@ -287,7 +287,12 @@ def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
 def rental_events_goods(request):
-    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('-start_date', 'renter')
+    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
+    d = {}
+    if not request.user.is_superuser:
+        d = { 'storage_id' : request.user.storage_id}
+
+    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**d).order_by('-start_date', 'renter')
 
     context = {
         'events': events,
@@ -299,14 +304,17 @@ def rental_events_goods(request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
 def rental_events(request):
-    # Rental events page
-    user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Max('start_date')).order_by('renter')
-    # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
-    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', '-start_date')
+    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
+    d = {}
+    if not request.user.is_superuser:
+        d = { 'storage_id' : request.user.storage_id}
+
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**d).annotate(mindate=Max('start_date')).order_by('renter')
+    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**d).order_by('renter', '-start_date')
     grouped_events1 = (
         Rental_event.objects
         .filter(returned_date__isnull=True)
+        .filter(**d)
         .filter(
             Q(start_date__in=renters_by_min_startdate.values('mindate')) & 
             Q(renter__in=renters_by_min_startdate.values('renter'))
