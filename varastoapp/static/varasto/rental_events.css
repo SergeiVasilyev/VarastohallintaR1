@@ -33,10 +33,12 @@
         font-size: 0.875em;
     }
     /* Date */
-    .date_selection {
+    .date_selection form{
         display: flex;
         justify-content: center;
         align-items: center;
+        max-width: 19rem;
+        /* border: 1px solid blue; */
     }
     .date_selection button {
         background-color: white !important;

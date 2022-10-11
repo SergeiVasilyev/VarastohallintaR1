@@ -69,13 +69,12 @@ $(document).ready(function() {
         </div>
 
         <div class="date_selection">
-            <button type="button" class="btn btn-secondary">
-                01.02.2022
-            </button>
-            <span class="ms-2 me-2"> - </span>
-            <button type="button" class="btn btn-secondary">
-                25.02.2022
-            </button>
+            <form action="" method="get">
+                <input name="rental_start" id="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_first_date|date:'Y-m-d'}}" />
+                <span class="ms-2 me-2"> - </span>
+                <input name="rental_end" id="rental_end" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_last_date|date:'Y-m-d'}}" />
+                <button type="submit" id="date_submit" class="btn btn-secondary" hidden></button>
+            </form>
         </div>
 
         <div class="checkbox_filters px-3">
