@@ -32,6 +32,7 @@ urlpatterns = [
     path('rental_events/', views.rental_events, name='rental_events'),
     path('rental_events_goods/', views.rental_events_goods, name='rental_events_goods'),
     path('set_rental_event_view/', views.set_rental_event_view, name='set_rental_event_view'),
+    path('set_ordering/', views.set_ordering, name='set_ordering'),
 
     path('base_main/', views.base_main, name='base_main'),
 

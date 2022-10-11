@@ -9,6 +9,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
     StreamingHttpResponse,
+    HttpRequest
 )
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -310,16 +311,21 @@ def start_date_filter(start, end):
         start_date_range = {} # start_date range is empty if request.GET is empty
     return start_date_range
 
+def order_filter_switch():
+    get_ordering = Settings.objects.get(set_name='rental_page_ordering')
+    return int(get_ordering.set_value)
+
 def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    order_filter = ['-start_date', 'renter']
+    order_filter = ['-start_date', 'renter'] if order_filter_switch() else ['start_date', 'renter']
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
     context = {
         'events': events,
+        'order_switcher': order_filter_switch(),
     }
     return render(request, 'varasto/rental_events_goods.html', context)
 
@@ -345,11 +351,12 @@ def rental_events(request):
         .order_by('renter')
         .distinct('renter')
     )
-    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     
     context = {
         'grouped_events': grouped_events,
         'events': events,
+        'order_switcher': order_filter_switch(),
     }
     return render(request, 'varasto/rental_events.html', context)
 
@@ -481,7 +488,15 @@ def set_rental_event_view(request):
 
     return redirect (request.GET.get('name'))
 
+@login_required()
+def set_ordering(request):
+    set = Settings.objects.get(set_name='rental_page_ordering')
+    order = 0 if int(set.set_value) else 1
+    set.set_value = order
+    set.save()
 
+    page = Settings.objects.get(set_name='rental_page_view')
+    return redirect (page.set_value)
 
 
 

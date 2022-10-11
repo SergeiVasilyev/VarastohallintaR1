@@ -41,8 +41,9 @@ $(document).ready(function() {
     <div class="filter_panel">
         <div class="sorting">
             <div class="btn-group"> <!--  bi-sort-alpha-up-alt -->
-                <button type="button" class="btn btn-secondary bi-sort-alpha-down">
-                </button>
+                <a href="{% url 'set_ordering' %}">
+                    <button type="button" class="btn btn-secondary {% if order_switcher %}bi-sort-alpha-up{% else %}bi-sort-alpha-down{% endif %}"></button>
+                </a>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
