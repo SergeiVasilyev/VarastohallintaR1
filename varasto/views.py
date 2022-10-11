@@ -19,7 +19,7 @@ from .checkUser import *
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-from datetime import datetime
+from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings
 from django.db.models import Count
 
@@ -286,13 +286,37 @@ def base_main(request):
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
+def storage_f(user):
+    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
+    storage_filter = {}
+    try:
+        user_group = str(user.groups.get())
+    except:
+        user_group = ''
+
+    if not user.is_superuser and user_group != 'management':
+        storage_filter = { 'storage_id' : user.storage_id }
+    return storage_filter
+
+def start_date_filter(start, end):
+    if bool(start) & bool(end): # if rental_start and rental_end not NULL
+        date_formated = datetime.strptime(start, '%Y-%m-%d') # Make format stringed date to datetime format
+        start_date = pytz.utc.localize(date_formated) # Add localize into datetime date
+
+        date_formated = datetime.strptime(end, '%Y-%m-%d') # Make format stringed date to datetime format
+        end_date = pytz.utc.localize(date_formated) + timedelta(days=1) # Add 1 day to include this all last day to the list
+        start_date_range = { 'start_date__range' : [start_date, end_date] }
+    else:
+        start_date_range = {} # start_date range is empty if request.GET is empty
+    return start_date_range
+
 def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
-    d = {}
-    if not request.user.is_superuser:
-        d = { 'storage_id' : request.user.storage_id}
+    storage_filter = storage_f(request.user)
+    start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
+    order_filter = ['-start_date', 'renter']
 
-    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**d).order_by('-start_date', 'renter')
+    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
     context = {
         'events': events,
@@ -304,17 +328,16 @@ def rental_events_goods(request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
 def rental_events(request):
-    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
-    d = {}
-    if not request.user.is_superuser:
-        d = { 'storage_id' : request.user.storage_id}
+    storage_filter = storage_f(request.user)
+    start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
 
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**d).annotate(mindate=Max('start_date')).order_by('renter')
-    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**d).order_by('renter', '-start_date')
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).annotate(mindate=Max('start_date')).order_by('renter')
+    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by('renter', '-start_date')
     grouped_events1 = (
         Rental_event.objects
         .filter(returned_date__isnull=True)
-        .filter(**d)
+        .filter(**storage_filter)
+        .filter(**start_date_range)
         .filter(
             Q(start_date__in=renters_by_min_startdate.values('mindate')) & 
             Q(renter__in=renters_by_min_startdate.values('renter'))
@@ -323,7 +346,7 @@ def rental_events(request):
         .distinct('renter')
     )
     grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
-
+    
     context = {
         'grouped_events': grouped_events,
         'events': events,
