@@ -32,6 +32,7 @@ from .anna__views import report, new_event_goods, product_report
 from .capture_picture import VideoCamera
 from django.db.models import Q
 from .alerts import email_alert
+from .storage_settings import *
 
 
 STATIC_URL = '/varastoapp/static/'
@@ -315,17 +316,24 @@ def order_filter_switch():
     get_ordering = Settings.objects.get(set_name='rental_page_ordering')
     return int(get_ordering.set_value)
 
+def order_field():
+    get_order_field = Settings.objects.get(set_name='rental_page_field_ordering')
+    order_field_key = list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[list(RENTAL_PAGE_ORDERING_FIELDS_D.values()).index(get_order_field.set_value)]
+    return [order_field_key, RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]]
+
 def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    order_filter = ['-start_date', 'renter'] if order_filter_switch() else ['start_date', 'renter']
+    order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
     context = {
         'events': events,
         'order_switcher': order_filter_switch(),
+        'order_field': order_field()[1],
+        'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
     }
     return render(request, 'varasto/rental_events_goods.html', context)
 
@@ -336,6 +344,10 @@ def rental_events_goods(request):
 def rental_events(request):
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
+    select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin 
+    all_order_fields_nolast = RENTAL_PAGE_ORDERING_FIELDS_D.copy() # Kloonataan dictionary
+    all_order_fields_nolast.pop(list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[-1]) # Poistetaan viimeinen elementti sanakirjasta (item__brand). Koska emme voi lajitella groupiroitu lista brandin kentän mukaan
+    # print(RENTAL_PAGE_ORDERING_FIELDS_D)
 
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).annotate(mindate=Max('start_date')).order_by('renter')
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by('renter', '-start_date')
@@ -351,12 +363,16 @@ def rental_events(request):
         .order_by('renter')
         .distinct('renter')
     )
-    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
+    # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
+
     
     context = {
         'grouped_events': grouped_events,
         'events': events,
         'order_switcher': order_filter_switch(),
+        'order_field': order_field()[1],
+        'all_order_fields': all_order_fields_nolast,
     }
     return render(request, 'varasto/rental_events.html', context)
 
@@ -498,6 +514,14 @@ def set_ordering(request):
     page = Settings.objects.get(set_name='rental_page_view')
     return redirect (page.set_value)
 
+@login_required()
+def set_order_field(request):
+    set = Settings.objects.get(set_name='rental_page_field_ordering')
+    set.set_value = request.GET.get('order')
+    set.save()
+
+    page = Settings.objects.get(set_name='rental_page_view')
+    return redirect (page.set_value)
 
 
 # storage_place sarakkeen täyttäminen

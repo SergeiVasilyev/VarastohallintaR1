@@ -47,15 +47,13 @@ $(document).ready(function() {
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Alkamispäivä
+                    {{ order_field }}
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Alkamispäivä</a></li>
-                    <li><a class="dropdown-item" href="#">Päättymispäivä</a></li>
-                    <li><a class="dropdown-item" href="#">Status</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Nimi</a></li>
-                    <li><a class="dropdown-item" href="#">Tavara</a></li>
+                    {% for key, order in all_order_fields.items %}
+                        <li><a class="dropdown-item" href="{% url 'set_order_field' %}?order={{ order }}">{{ order }}</a></li>
+                        {% if forloop.counter == 2 %}<li><hr class="dropdown-divider"></li>{% endif %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="btn-group">
