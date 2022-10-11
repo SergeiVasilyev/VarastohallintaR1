@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 import pytz
 from django.template.defaulttags import register
+import operator
 
 
 # Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
@@ -151,6 +152,24 @@ class Rental_event(models.Model):
     def get_item(dictionary, key):
         # return dictionary.get(key)
         return dictionary[key]
+
+    @register.filter
+    def get_first_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            first_date = sorted_events[0].start_date
+        else:
+            first_date = ''
+        return first_date
+
+    @register.filter
+    def get_last_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            last_date = sorted_events[-1].start_date
+        else:
+            last_date = ''
+        return last_date
 
     @property
     def is_past_due(self):
