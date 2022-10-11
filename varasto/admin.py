@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Category
 
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, Settings
 
 from .models import CustomUser
 
@@ -14,17 +14,17 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', )
+    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', 'storage')
     list_filter = ('is_staff', 'is_active',)
     fieldsets = (
-        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group')}),
+        ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group', 'storage')}),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         ('Main information', {
             'classes': ('wide', ),
-            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group')}
+            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group', 'storage')}
         ),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
@@ -67,6 +67,9 @@ class Staff_eventAdmin(admin.ModelAdmin):
     list_display = ['staff', 'item', 'from_storage',
          'to_storage', 'event_date', 'remarks']
 
+@admin.register(Settings)
+class Storage_nameAdmin(admin.ModelAdmin):
+    list_display = ['set_name', 'set_value']
 
 # admin.site.register(CustomUser)
 admin.site.register(CustomUser, CustomUserAdmin)
