@@ -63,4 +63,12 @@ $(document).ready(function() {
         document.querySelector("button[name=_add_user]").click()
     })
 
+    $('#rental_start').change(function(){
+        document.querySelector("#date_submit").click()
+    })
+
+    $('#rental_end').change(function(){
+        document.querySelector("#date_submit").click()
+    })
+
 })
