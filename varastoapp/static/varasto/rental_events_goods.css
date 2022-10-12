@@ -28,7 +28,7 @@
     /* Checkbox filters */
     .checkbox_filters {
         display: flex;
-        justify-content: center;
+        justify-content: end;
         align-items: center;
         font-size: 0.875em;
     }
