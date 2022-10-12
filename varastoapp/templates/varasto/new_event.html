@@ -224,7 +224,10 @@ $(document).ready(function() {
         setPage()
     })
 
-
+    // $('.datepicker_input').datepicker({ 
+    //     startDate: new Date(),
+    //     'format': 'dd.mm.yyyy',
+    // });
 
 });
 
@@ -248,9 +251,9 @@ $(document).ready(function() {
                                 <input name="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{datenow|date:'Y-m-d'}}" style="" disabled />
                                 {% comment %} {{datenow|date:'Y-m-d'}} {% endcomment %}
                             </div>
-                            <div>
+                            <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
                                 <span class="small">Päättymisaika</span>
-                                <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
+                                <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" min="{{datenow|date:'Y-m-d'}}" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
                                 <div class="feedback-invalid {% if not estimated_date and not feedback_status %}show{% else %}hide{% endif %}">
                                     Kenttä on pakollinen
                                 </div>
