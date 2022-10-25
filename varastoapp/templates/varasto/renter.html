@@ -38,6 +38,13 @@
                 <span class="personal_field_data">{{ selected_user.responsible_teacher.first_name|default:"-" }} {{ selected_user.responsible_teacher.last_name|default_if_none:"" }}</span>
             </div>
             <div class="new_rental">
+                <a class="nodecor pb-3" href="{% url 'report' selected_user.id %}">
+                    <button type="submit" class="button button_bg_blue resize">
+                        <span class="button__text resize">Raportti</span>
+                        <span class="button__icon"><i class="bi bi-printer"></i>
+                        </span>
+                    </button>
+                </a>
                 <a class="nodecor" href="{% url 'new_event' %}?add_user={{ selected_user.code }}">
                     <button type="submit" class="button button_bg_green resize">
                         <span class="button__text resize">Lisää tavara</span>

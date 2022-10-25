@@ -157,6 +157,10 @@ aside {
         color: white;
         background: #24A19C;
     }
+    .button_bg_blue {
+        color: white;
+        background: #325288;
+    }
     .button_bg_light_green {
         color: 2D3748;
         background: #E4E4E4;
@@ -185,6 +189,9 @@ aside {
     .button__icon{
         font-size: 1.5em;
         background: rgba(0, 0, 0, 0.08);
+    }
+    .button__icon i {
+        font-size: 1rem;
     }
     .resize {
         width: 100%;

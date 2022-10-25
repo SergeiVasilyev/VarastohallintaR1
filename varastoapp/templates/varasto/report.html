@@ -1,4 +1,4 @@
-{% extends "varasto/base_main.html" %}
+{% extends "varasto/base.html" %}
 
 {% load static %}
 
@@ -10,7 +10,9 @@
 
 {% block title %}Raportti{% endblock %}
 
-{% block main_content %}
+{% block content %}
+
+<div class="px-5">
 
 <div class="logo_header">
     <div class="left">
@@ -153,5 +155,5 @@
 </div> -->
 {% endfor %}
 
-
+</div>
 {% endblock %}
