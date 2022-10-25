@@ -1,4 +1,4 @@
-{% extends "varasto/base_main.html" %}
+{% extends "varasto/base.html" %}
 
 {% load static %}
 
@@ -10,7 +10,9 @@
 
 {% block title %}Vuokraus raportointi{% endblock %}
 
-{% block main_content %}
+{% block content %}
+
+<div class="px-5">
 
 <div class="logo_header">
     <div class="left">
@@ -30,7 +32,7 @@
     </div>
 
 </div>
-
+{% if item %}
 <div class="subhead">
     <div>
         <div class="renter_img">
@@ -40,13 +42,13 @@
 
     <div>
         <div class="renter_information">
-            <span class="bold">Tuotteen tiedot::</span>
-            <span class="">Alkkuporakone Milwaukee</span>
-            <span class="">M18 CBLDD</span>
+            <span class="bold">Tuotteen tiedot:</span>
+            <span class="">{{item.item_name}} {{item.brand}} {{item.model|default_if_none:""}}</span>
+            <span class="">{{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
             <span class="">ID/Tuotenumero</span>
-            <span class="">00003232</span>
-            <span class="">EAN-kood</span>
-            <span class="">4059952563855</span>
+            <span class="">{{item.id}}</span>
+            <span class="">EAN-koodi</span>
+            <span class="">{{item.ean}}</span>
         </div>
     </div>
 
@@ -105,21 +107,21 @@
     </div>
     
 </div>
-
-
+{% if rental_events %}
+{% for rental_event in rental_events %}
 <div class="line_content">
 
     <div class="row01">
         <div class="renter_name">
-            <span class="name">{{renter.first_name}} {{renter.last_name}}</span>
-            <span class="group">{{renter.group}}</span>
+            <span class="name">{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
+            <span class="group">{{rental_event.renter.group}}</span>
             
         </div>
     </div>
 
     <div class="row01">
         <div class="date">
-            <span class="">12.04.2022 - 22.04.2022</span>
+            <span class="">{{rental_event.start_date|date:"d.m.Y"}} - {% if rental_event.returned_date %}{{rental_event.returned_date|date:"d.m.Y"}}{% else %}Vuokrattavissa{% endif %}</span>
         </div>
     </div>
 
@@ -137,6 +139,10 @@
     </div>
 
 </div>
-
-
+{% endfor %}
+{% endif %}
+{% else %}
+Tuotetta ei löydy
+{% endif %}
+</div>
 {% endblock %}

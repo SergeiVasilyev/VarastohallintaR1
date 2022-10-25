@@ -87,7 +87,12 @@
     margin-top: 1em;
 }
 
-.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
+/* .column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
+    display: flex;
+    justify-content: center;
+    border: 1px solid red;
+} */
+.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1), :last-child){
     display: flex;
     justify-content: center;
     /* border: 1px solid red; */
@@ -131,7 +136,7 @@
 }
 
 .row01 {
-    /* border: 1px solid red; */
+    /*border: 1px solid red;*/
     padding: 1.5em 0 0 0 ;
 }
 

@@ -42,8 +42,14 @@ def new_event_goods(request):
     return render(request, 'varasto/new_event_goods.html', {'items': items})
 
 def product_report(request, idx):
-    rental_events = Rental_event.objects.filter(renter_id=9).order_by("-start_date")
-    renter = rental_events[0].renter
+    try:
+        item = Goods.objects.get(id=idx)
+    except:
+        item = None
+    rental_events = {}
+    if item:
+        rental_events = Rental_event.objects.filter(item=item).order_by("-start_date")
+
     print(rental_events)
 
     now = datetime.now()
@@ -52,9 +58,9 @@ def product_report(request, idx):
 
     context = {
         'rental_events': rental_events,
-        'renter': renter,
+        'item': item,
         'user': request.user,
         'datenow': datenow,
     }
     
-    return render(request, 'varasto/product_report.html')
+    return render(request, 'varasto/product_report.html', context)
