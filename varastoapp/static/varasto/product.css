@@ -7,15 +7,21 @@
 
 .person_info {
     display: grid;
-    grid-template-columns: auto 3fr 1fr; 
+    grid-template-columns: auto auto auto 3fr 1fr; 
     /* align-items: center; */
+    /* border: 1px solid green; */
 }
 .information {
     display: inline-flex;
     flex-direction: column;
     line-height: 1.1;
     color: #2D3748;
+    padding-right: 7em;
     /* height: 100%; */
+}
+.person_info div:nth-last-child(2) {
+    /* border: 1px solid green; */
+    padding-right: 1em;
 }
 .information span:nth-child(2n+3) {
     margin-top: 1em;
@@ -27,6 +33,12 @@
 .person_info div {
     /* border: 1px solid green; */
 }
+
+.valign_end {
+   /* align-items: flex-end;  */
+   justify-content: end;
+}
+
 .student_name {
     font-size: 1.5em;
     font-weight: 600;
@@ -60,6 +72,19 @@
 .new_rental button {
     min-width: 15em;
 }
+
+.product_description {
+    padding: 1em;
+    border: 1px solid gainsboro;
+    max-width: 45em;
+    color: #718096;
+}
+
+.product_description div{
+    
+}
+
+
 /* /---person_info--- */
 
 
@@ -93,7 +118,7 @@
 .history_list, .column_names {
     display: grid;
     /* grid-template-columns: 170px repeat(3, minmax(6em, 1fr)); */
-    grid-template-columns: 170px minmax(17em, 1fr) minmax(14em, 1fr) minmax(14em, 1fr) minmax(18em, 0.5fr)
+    grid-template-columns: 170px minmax(17em, 1fr) minmax(14em, 1fr) minmax(18em, 1fr)
 }
 .history_list div {
     /* border: 1px solid green; */
@@ -121,14 +146,12 @@
 .item_info, .remarks {
     display: inline-flex;
     flex-direction: column;
-    /* padding: 0.6em 0.5em; */
-    padding: 0.2em 0.5em;
+    padding: 0.6em 0.5em;
 }
-.item_info div {
+.item_info > div {
     display: inline-flex;
     flex-direction: column;
     height: 100%;
-    margin-top: 0.4em;
     /* border: 0.5px solid red; */
 }
 .item_info_place {
@@ -188,7 +211,13 @@
     padding: 0.8em;
     /* border: 1px solid green; */
 }
-
+.round {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 7em;
+    border-radius: 0.5em;
+}
 .status_green {
     background-color: #24A19C;
     border: 1px solid #24A19C;
@@ -256,7 +285,12 @@
     background:#CBD5E0;
 }
 
-
+.disable {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: black;
+}
 
 /* /---history--- */
 

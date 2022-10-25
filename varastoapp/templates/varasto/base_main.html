@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block script %}
+
+{% endblock %}
+
 {% block content %}
 
 <div class="main_container">
@@ -49,26 +53,27 @@
         <div class="white_background">
             <nav>
                 <a class="nodecor" href="{% url 'new_event' %}">
-                    <button type="button" class="button button_bg_green resize mb-2">
+                    <button type="button" class="button resize mb-2 {% if '/new_event/' in request.path %}button_bg_light_green{% else %}button_bg_green{% endif %}">
                         <span class="button__text resize">Uusi tapahtuma</span>
                         <span class="button__icon">+</span>
                     </button>
                 </a>
                 {% comment %} {% if user.role == 'management' %} {% endcomment %}
                 <a class="nodecor" href="{% url 'new_item' %}">
-                    <button type="button" class="button button_bg_green resize mb-2">
+                    <button type="button" class="button resize mb-2 {% if '/new_item/' in request.path %}button_bg_light_green{% else %}button_bg_green{% endif %}">
                         <span class="button__text resize">Uusi tavara</span>
                         <span class="button__icon">+</span>
                     </button>
                 </a>
                 {% comment %} {% endif %} {% endcomment %}
-                <a class="nodecor" href="{% url 'rental_events' %}">
-                    <button type="button" class="button resize mb-2 {% if request.path == '/rental_events/' or '/renter/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                {% comment %} <a class="nodecor" href="{% if get_rental_events_page %}{% url get_rental_events_page %}{% else %}{% url 'rental_events' %}{% endif %}"> {% endcomment %}
+                <a class="nodecor" href="{% url rental_events_page %}">
+                    <button type="button" class="button resize mb-2 {% if '/rental_events_goods/' in request.path or '/rental_events/' in request.path or '/renter/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize">Vuokratapahtumat</span>
                     </button>
                 </a>
                 <a class="nodecor" href="{% url 'products' %}">
-                    <button type="button" class="button resize mb-2 {% if request.path == '/products/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
+                    <button type="button" class="button resize mb-2 {% if '/products/' in request.path or '/product/' in request.path %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize">Tavarat</span>
                     </button>
                 </a>

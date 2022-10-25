@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import operator
 import re
 from django.forms import inlineformset_factory, modelformset_factory
@@ -9,7 +8,6 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
     StreamingHttpResponse,
-    HttpRequest
 )
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -20,7 +18,7 @@ from .checkUser import *
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-from datetime import datetime, timedelta
+from datetime import datetime
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings
 from django.db.models import Count
 
@@ -32,7 +30,6 @@ from .anna__views import report, new_event_goods, product_report
 from .capture_picture import VideoCamera
 from django.db.models import Q
 from .alerts import email_alert
-from .storage_settings import *
 
 
 STATIC_URL = '/varastoapp/static/'
@@ -48,10 +45,9 @@ def person_view(request):
 
 
 @login_required()
-# @user_passes_test(is_not_student, redirect_field_name=None)
-@user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
+@user_passes_test(is_not_student, redirect_field_name=None)
 def renter(request, idx):
-    # on välttämätöntä kieltää edellisen päivämäärän valitseminen!!
+    # При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!!
     if request.method == 'POST':
         # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
         # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
@@ -76,16 +72,16 @@ def renter(request, idx):
             subject = "Automaattinen muistutus!"
             text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
-            # to = item.renter.responsible_teacher.email
-            # print(subject, text + body, to)
+            to = item.renter.responsible_teacher.email
+            print(subject, text + body, to)
             email_alert(subject, text + body, 'tino.cederholm@gmail.com')
         if request.POST.getlist('send_email_item_is_damaged'):
             subject = "Automaattinen muistutus!"
             text = f"henkilö {item.renter.first_name} {item.renter.last_name} on paluttanut varioittuneen tuotteen: <br>"
             body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
             remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
-            # to = item.renter.responsible_teacher.email
-            print(subject, text + body + remarks)
+            to = item.renter.responsible_teacher.email
+            print(subject, text + body + remarks, to)
             email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
@@ -93,23 +89,26 @@ def renter(request, idx):
     
     # TAVARAA EI OLE NÄKYVISSÄ, JOS ADMIN ON KIRJAUTUNUT SISÄÄN
     # Kannattaa tehdä tarkistus, jos kirjautunut Admin tai Hallinto, tai Opettaja
-    if user.role == 'super':
-        rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
-    else:
-        rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
+    rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
+    # print(selected_user)
 
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = datenow.strftime("%d.%m.%Y")
     context = {
         'rental_events': rental_events,
         'selected_user': selected_user,
+        'user': request.user,
         'idx': idx,
+        'datenow': datenow,
     }
     return render(request, 'varasto/renter.html', context)
 
 @login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
     now = datetime.now()
     datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
 
     feedback_status = True
     estimated_date = None
@@ -123,22 +122,22 @@ def new_event(request):
     staff = CustomUser.objects.get(id=request.user.id)
     storage_id = staff.storage_id
 
-    # print('add_items ', add_items)
+    print('add_items ', add_items)
 
+    
+    
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
             # print('add_user: ', request.GET.get('add_user'))
             try:
-                 # saadan user, jolla on sama storage id kuin staffilla. Jos storage_id on NULL niin ei tarkistetaan storage_id (Adminilla ei ole storage_id)
-                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) if storage_id else CustomUser.objects.get(code=request.GET.get('add_user'))
+                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) # saadan user, jolla on sama storage id kuin staffilla
             except:
                 error = "User ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
-                # print(add_item, ' ', request.GET.get(add_item))
+                print(add_item, ' ', request.GET.get(add_item))
                 try:
-                    # Jos storage_id on NULL niin etsitaan tavaraa koko tietokannassa (Adminilla ei ole storage_id)
-                    new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id)) if storage_id else Goods.objects.get(id=request.GET.get(add_item))
+                    new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))
                     # if new_item.rentable_at: print(new_item, ' rented')
                     if new_item not in changed_items and not new_item.rentable_at: # Onko lisättävä tavara jo lisätty?
                         changed_items.append(new_item) # Lisätään jos ei
@@ -146,7 +145,7 @@ def new_event(request):
                 except:
                     error = "Item ei löydetty"
         if request.GET.get('estimated_date'):
-            get_estimated_date = request.GET.get('estimated_date')
+            get_estimated_date = request.GET.get('estimated_date') # !!!!!!!! Ei toimi, jos valitaan päivämäärä lopussa!!!!!!!!!! Koska otetaan GET request!!!!
             date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
             estimated_date = pytz.utc.localize(date_formated) # Add localize into datetime date
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
@@ -170,6 +169,7 @@ def new_event(request):
                             start_date=datenow,
                             storage_id = staff.storage_id,
                             estimated_date=estimated_date)
+                # print(rental)
                 rental.save()
             changed_user = None
             changed_items = []
@@ -178,12 +178,13 @@ def new_event(request):
         else:
             feedback_status = False
 
-    # print('changed_user ', changed_user)
-    # print('changed_items ', changed_items)
+    print('changed_user ', changed_user)
+    print('changed_items ', changed_items)
 
-    items = Goods.objects.all().order_by("id")
+    items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
-
+    # PAGINATION ei toimi, koska kun vaihdat sivu se päivittää koko ikkuna
+    # Pitää rakentaa AJAX:n kautta 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -192,6 +193,8 @@ def new_event(request):
         'changed_items': changed_items,
         'estimated_date': estimated_date,
         'estimated_date_issmall': estimated_date_issmall,
+        'datenow': datenow,
+        'user': request.user,
         'items': page_obj,
         'feedback_status': feedback_status
     }
@@ -203,7 +206,7 @@ def is_ajax(request):
 def getProducts(request):
     data = []
     if is_ajax(request=request):
-        items = Goods.objects.all().order_by("id")
+        items = Goods.objects.all().order_by("id") # Попробовать передать с помощью AJAX или только после нажатия Lisää tuote
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
@@ -212,14 +215,14 @@ def getProducts(request):
             item = {
                 'id': obj.id,
                 'picture': STATIC_URL + str(obj.picture),
-                'item_name': obj.item_name if obj.item_name else '',
-                'brand': obj.brand if obj.brand else '',
-                'model': obj.model if obj.model else '',
-                'item_type': obj.item_type if obj.item_type else '',
-                'parameters': obj.parameters if obj.parameters else '',
-                'size': obj.size if obj.size else '',
-                'package': obj.pack if obj.pack else '',
-                'ean': obj.ean if obj.ean else '',
+                'item_name': obj.item_name,
+                'brand': obj.brand,
+                'model': obj.model,
+                'item_type': obj.item_type,
+                'parameters': obj.parameters,
+                'size': obj.size,
+                'package': obj.pack,
+                'ean': obj.ean,
                 'rentable_at': obj.rentable_at,
                 'storage_place': obj.storage_place,
                 'storage_name': obj.storage.name,
@@ -228,6 +231,13 @@ def getProducts(request):
     
     return JsonResponse({'items': data, })
 
+# 'has_previous': page_obj.has_previous,
+# 'previous_page_number': page_obj.previous_page_number,
+#                 'number': page_obj.number,
+#                 'num_pages': page_obj.paginator.num_pages,
+#                 'has_next': page_obj.has_next,
+#                 'next_page_number': page_obj.next_page_number,
+#                 'rentable_at': obj.rentable_at,
 
 def get_rental_events_page():
     page = Settings.objects.get(set_name='rental_page_view')
@@ -241,12 +251,12 @@ def login_view(request):
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user) # не логинить, если не прошел проверку
+                login(request, user)
+                # print('sucsess')
                 if user_check(user) and is_not_student(user):
                     return redirect(get_rental_events_page())
                     # return redirect('rental_events')
                 else:
-                    # return redirect('logout')
                     return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
                 # Pitää rakentaa frontendilla vastaus, että kirjoitettu salasana tai tunnus oli väärin
@@ -263,7 +273,6 @@ def login_view(request):
             return redirect(get_rental_events_page())
             # return redirect('rental_events')
         else:
-            # return redirect('logout')
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
 
@@ -278,84 +287,61 @@ def recovery_view(request):
 
 def index(request):
     return redirect('login')
+    # if not request.user.is_authenticated:
+    #     return redirect('login')
+    # return render(request, 'varasto/index.html')
 
 def user_recovery(request):
     return render(request, 'varasto/recovery.html')
 
+
 def base_main(request):
-    return render(request, 'varasto/base_main.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/base_main.html', context)
 
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
-def storage_f(user):
-    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
-    storage_filter = {}
-    try:
-        user_group = str(user.groups.get())
-    except:
-        user_group = ''
-
-    if not user.is_superuser and user_group != 'management':
-        storage_filter = { 'storage_id' : user.storage_id }
-    return storage_filter
-
-def start_date_filter(start, end):
-    if bool(start) & bool(end): # if rental_start and rental_end not NULL
-        date_formated = datetime.strptime(start, '%Y-%m-%d') # Make format stringed date to datetime format
-        start_date = pytz.utc.localize(date_formated) # Add localize into datetime date
-
-        date_formated = datetime.strptime(end, '%Y-%m-%d') # Make format stringed date to datetime format
-        end_date = pytz.utc.localize(date_formated) + timedelta(days=1) # Add 1 day to include this all last day to the list
-        start_date_range = { 'start_date__range' : [start_date, end_date] }
-    else:
-        start_date_range = {} # start_date range is empty if request.GET is empty
-    return start_date_range
-
-def order_filter_switch():
-    get_ordering = Settings.objects.get(set_name='rental_page_ordering')
-    return int(get_ordering.set_value)
-
-def order_field():
-    get_order_field = Settings.objects.get(set_name='rental_page_field_ordering')
-    order_field_key = list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[list(RENTAL_PAGE_ORDERING_FIELDS_D.values()).index(get_order_field.set_value)]
-    return [order_field_key, RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]]
-
 def rental_events_goods(request):
-    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
-    storage_filter = storage_f(request.user)
-    start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
+    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('-start_date', 'renter')
 
-    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
     context = {
         'events': events,
-        'order_switcher': order_filter_switch(),
-        'order_field': order_field()[1],
-        'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
+        'datenow': datenow,
+        'user': request.user,
     }
     return render(request, 'varasto/rental_events_goods.html', context)
 
 
-# @user_passes_test(is_not_student, redirect_field_name=None)
-@login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
-def rental_events(request):
-    storage_filter = storage_f(request.user)
-    start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin 
-    all_order_fields_nolast = RENTAL_PAGE_ORDERING_FIELDS_D.copy() # Kloonataan dictionary
-    all_order_fields_nolast.pop(list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[-1]) # Poistetaan viimeinen elementti sanakirjasta (item__brand). Koska emme voi lajitella groupiroitu lista brandin kentän mukaan
-    # print(RENTAL_PAGE_ORDERING_FIELDS_D)
 
-    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).annotate(mindate=Max('start_date')).order_by('renter')
-    events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by('renter', '-start_date')
+@login_required()
+@user_passes_test(is_not_student, redirect_field_name=None)
+def rental_events(request):
+    # INNER JOIN
+    # Rental_event.objects.filter(renter__first_name="Sergey")
+
+    # SUBQUERY
+    # SELECT renter_id FROM public.varasto_rental_event WHERE renter_id in (
+    # SELECT id from varasto_customuser WHERE last_name = 'Virtanen'
+    # ) 
+    # subquery = CustomUser.objects.filter(last_name="Virtanen")
+    # Rental_event.objects.filter(renter__in=subquery)
+    user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
+    renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).annotate(mindate=Max('start_date')).order_by('renter')
+    # grouped_events1 = renters_by_min_startdate.filter(start_date__in=renters_by_min_startdate.values('mindate')).order_by('start_date')
+    events = Rental_event.objects.filter(returned_date__isnull=True).order_by('renter', '-start_date')
     grouped_events1 = (
         Rental_event.objects
         .filter(returned_date__isnull=True)
-        .filter(**storage_filter)
-        .filter(**start_date_range)
         .filter(
             Q(start_date__in=renters_by_min_startdate.values('mindate')) & 
             Q(renter__in=renters_by_min_startdate.values('renter'))
@@ -363,17 +349,28 @@ def rental_events(request):
         .order_by('renter')
         .distinct('renter')
     )
-    # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
-    grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=True)
 
-    
+    # for i in renters_by_min_startdate:
+    #     print(i)
+    # for i in events: 
+    #     print(i.item, i.renter.id)
+
+    # for i in grouped_events1: 
+    #     # print(i)
+    #     # print(i['renter'])
+    #     print(i.renter_id, i.item, i.start_date)
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
     context = {
         'grouped_events': grouped_events,
         'events': events,
-        'order_switcher': order_filter_switch(),
-        'order_field': order_field()[1],
-        'all_order_fields': all_order_fields_nolast,
+        'datenow': datenow,
+        'user': request.user,
     }
+
     return render(request, 'varasto/rental_events.html', context)
 
 
@@ -382,30 +379,45 @@ def rental_events(request):
 #     return render(request, 'varasto/new_event_goods.html')
 
 def inventory(request):
-    return render(request, 'varasto/inventory.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/inventory.html', context)
 
 # def report(request):
 #     return render(request, 'varasto/report.html')
 
 def new_user(request):
-    return render(request, 'varasto/new_user.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/new_user.html', context)
 
 def grant_permissions(request):
-    return render(request, 'varasto/grant_permissions.html')
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    # datenow = now.strftime("%d.%m.%Y")
+    context = {
+        'datenow': datenow,
+        'user': request.user
+    }
+    return render(request, 'varasto/grant_permissions.html', context)
 
-@login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
+
 def new_item(request):
-    # Permission test
-    # user = CustomUser.objects.get(id=request.user.id)
-    # print(user.has_perms(user.get_group_permissions()))
-    # print(user.get_group_permissions())
-    # -------
-
     try:
         staff = CustomUser.objects.get(id=request.user.id)
     except:
         staff = None
+    # print(staff)
     l = []
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -424,6 +436,7 @@ def new_item(request):
                 form.save()
 
         if staff_event_form.is_valid():
+            # print('staff saved')
             staff_event = staff_event_form.save(commit=False)
             staff_event.item = item
             staff_event.staff = staff
@@ -436,15 +449,22 @@ def new_item(request):
         staff_event_form = Staff_eventForm(use_required_attribute=False)
 
     if request.method == "GET":
+        # print('GET')
         if '_take_picture' in request.GET:
             pic = VideoCamera().take()
             # print('pic', VideoCamera().take()) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
     context = {
         'form': form,
         'staff': staff_event_form,
+        'datenow': datenow
     }
     return render(request, 'varasto/new_item.html', context)
+
+
 
 
 def gen(camera):
@@ -458,11 +478,12 @@ def video_stream(request):
 
 @csrf_exempt
 def take_pacture(request):
+    print('is_ajax')
     pic = VideoCamera().take()
     
     return HttpResponse(pic)
 
-@login_required()
+
 def products(request):
     items = Goods.objects.all().order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -470,58 +491,45 @@ def products(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
     context = {
         'items': page_obj,
+        'datenow': datenow
     }
     return render(request, 'varasto/products.html', context)
 
-@login_required()
-def product(request, idx):
-    user = request.user
-    rental_events = None
-    selected_item = Goods.objects.get(id=idx)
-    if user.has_perm('varasto.view_customuser'):
-        rental_events = Rental_event.objects.filter(item=selected_item)
 
-    # if rental_events:
-    #     print(rental_events)
+def product(request, idx):
+    selected_item = Goods.objects.get(id=idx)
+    rental_events = Rental_event.objects.filter(item=selected_item)
+    if rental_events:
+        print(rental_events)
+
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
 
     context = {
         'rental_events': rental_events,
         'selected_item': selected_item,
+        'user': request.user,
         'idx': idx,
+        'datenow': datenow,
     }
     return render(request, 'varasto/product.html', context)
 
-@login_required()
+
 def set_rental_event_view(request):
-    # if 'name' in request.GET:
-    #     print('request.GET name =', request.GET.get('name'))
-
     set = Settings.objects.get(set_name='rental_page_view')
-    set.set_value = request.GET.get('name')
+    # set.set_value = request.POST.get('page')
+    set.set_value = 'rental_events_goods'
     set.save()
 
-    return redirect (request.GET.get('name'))
+    # return JsonResponse({'data': request.POST.get('page'), })
+    return rental_events_goods(request)
 
-@login_required()
-def set_ordering(request):
-    set = Settings.objects.get(set_name='rental_page_ordering')
-    order = 0 if int(set.set_value) else 1
-    set.set_value = order
-    set.save()
 
-    page = Settings.objects.get(set_name='rental_page_view')
-    return redirect (page.set_value)
 
-@login_required()
-def set_order_field(request):
-    set = Settings.objects.get(set_name='rental_page_field_ordering')
-    set.set_value = request.GET.get('order')
-    set.save()
-
-    page = Settings.objects.get(set_name='rental_page_view')
-    return redirect (page.set_value)
 
 
 # storage_place sarakkeen täyttäminen

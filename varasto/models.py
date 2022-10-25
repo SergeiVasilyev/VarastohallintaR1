@@ -1,9 +1,12 @@
+from asyncio.windows_events import NULL
 from datetime import datetime
-from django.contrib.auth.models import AbstractUser, User
+from pickle import NONE
+from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext as _
 import pytz
 from django.template.defaulttags import register
+import operator
 
 
 # Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
@@ -16,7 +19,7 @@ class Storage_place(models.Model):
     shelf = models.CharField(max_length=20, blank=True, null=True)
     place = models.CharField(max_length=20, blank=True, null=True)
     def __str__(self):
-        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
+        return '%s %s %s' % (self.rack, self.shelf, self.place)
 
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
@@ -26,7 +29,7 @@ class Storage_name(models.Model):
     def __str__(self):
         return '%s' % (self.name)
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser, PermissionsMixin):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
         ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
@@ -50,6 +53,10 @@ class CustomUser(AbstractUser):
         return '%s' % (self.username,)
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
+    
+    def get_group_permission(self):
+        user = CustomUser.objects.get(username=self)
+        return user.groups.get()
 
 
 
@@ -82,7 +89,7 @@ class Goods(models.Model):
     amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
-    item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
+    item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=50, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
@@ -91,18 +98,29 @@ class Goods(models.Model):
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
+    storage_place = models.CharField(max_length=5, blank=True, null=True)
+    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
 
+    # @property
+    # def rentable_at(self):
+    #     rental_events = Rental_event.objects.all().order_by("item")
+    #     event = rental_events.filter(item=self).first()
+    #     # event = Rental_event.objects.filter(item=self).order_by("id").first()
+    #     print(self.id, event)
+    #     if event:
+    #         return event.estimated_date
+    #     return None
+
+    
     @property
     def rentable_at(self):
-        rental_events = Rental_event.objects.all().order_by("item")
-        event = rental_events.filter(item=self).first()
-        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         # print(self.id, event)
         if event:
+            # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
-
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -116,11 +134,11 @@ class Goods(models.Model):
 
 class Rental_event(models.Model):
     item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
-    storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
-    amount = models.IntegerField # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
-    start_date = models.DateTimeField(datetime.now(), blank=True, null=True)
+    amount = models.IntegerField(default=1, blank=True, null=True) # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
+    start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
@@ -134,6 +152,24 @@ class Rental_event(models.Model):
     def get_item(dictionary, key):
         # return dictionary.get(key)
         return dictionary[key]
+
+    @register.filter
+    def get_first_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            first_date = sorted_events[0].start_date
+        else:
+            first_date = ''
+        return first_date
+
+    @register.filter
+    def get_last_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            last_date = sorted_events[-1].start_date
+        else:
+            last_date = ''
+        return last_date
 
     @property
     def is_past_due(self):
@@ -183,3 +219,8 @@ class Staff_event(models.Model):
          self.to_storage, self.event_date, self.remarks)
 
 
+class Settings(models.Model):
+    set_name = models.CharField(max_length=50, blank=True, null=True)
+    set_value = models.CharField(max_length=50, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.set_name)

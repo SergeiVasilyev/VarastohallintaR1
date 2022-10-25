@@ -14,10 +14,11 @@
                 {{rental_event.item.package|default_if_none:""}}
             </span>
             <!-- <span class="middle_medium">Tuotetiedot</span> -->
+            {% comment %} {{rental_event.id_start_null}} {% endcomment %}
             <span class="small mt-3">Tuotenumero</span>
-            <span class="middle">{{rental_event.id_start_null}}</span>
+            <span class="middle">{{rental_event.item.id}}</span>
             <span class="small mt-3">Tuotepaikka</span>
-            <span class="middle">{{rental_event.storage.rack}} - {{rental_event.storage.shelf}} - {{rental_event.storage.place}}</span>
+            <span class="middle">{{rental_event.item.storage_place}}</span>
         </div>
     </div>
 

@@ -39,6 +39,12 @@
             <span>ID / Tuotenumero</span>
         </div>
     </div>
+
+    <div class="row01">
+        <div>
+            <span>Tuotepaikka</span>
+        </div>
+    </div>
     
     <div class="row01">
         <div>
@@ -75,10 +81,12 @@
           </div>
     </div>
 
+    
+
     <div class="row02">
         <div class="item_name">
-            <label class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</label>
-            <label class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</label>
+            <span class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</span>
+            <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
             {% comment %} {{forloop.counter}} {% endcomment %}
         </div>
     </div>
@@ -86,6 +94,12 @@
     <div class="row01">
         <div class="">
             <span class="code_number">{{item.id}}</span>
+        </div>
+    </div>
+
+    <div class="row01">
+        <div class="">
+            <span class="code_number">{{item.storage_place}}</span>
         </div>
     </div>
 

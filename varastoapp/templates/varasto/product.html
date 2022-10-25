@@ -1,0 +1,163 @@
+{% extends "varasto/base_main.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/product.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/vuokraus_tilanne.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}{{ selected_item.item_name }} {{ selected_item.brand }} {{ selected_item.model }}{% endblock %}
+{% block path %}Kaikki tavarat / {{ selected_item.item_name }} {{ selected_item.brand }} {{ selected_item.model }}{% endblock %}
+{% block page %}Tavara {{ selected_item.item_name }} {{ selected_item.brand }}{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+</script>
+{% endblock %}
+
+{% block main_content %}
+    <div class="main_warp">
+        <div class="person_info">
+            <div class="photo">
+                <!-- <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div> -->
+                <div><img src="{% static selected_item.picture %}" alt="{{selected_item.picture}}"></div>
+            </div>
+            
+            <div class="information ps-3">
+                <span class="student_name">{{ selected_item.item_name }} {{ selected_item.brand }} </span>
+                <span class="student_group">{{ selected_item.model|default:" " }} {{ selected_item.parameters|default:" " }}</span>
+                <span class="personal_field_name">tyyppi</span>
+                <span class="personal_field_data">{{ selected_item.item_type|default:"-" }}</span>
+                <span class="personal_field_name">EAN</span>
+                <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
+                <span class="personal_field_name">saatavuus</span>
+                <span class="personal_field_data ">{% if selected_item.rentable_at %}<span class="status_red round">Ei saatavilla</span>{% else %}<span class="status_green round">Saatavilla</span>{% endif %}</span>
+                <span class="personal_field_name">tuotekoodi</span>
+                <span class="personal_field_data">{{ selected_item.id|default:"-" }}</span>
+                
+            </div>
+
+            <div class="information ps-3 valign_end">
+                <span class="personal_field_name">varasto</span>
+                <span class="personal_field_data">{{ selected_item.storage|default:"-" }}</span>
+                <span class="personal_field_name">tuotepaikka</span>
+                <span class="personal_field_data">{{ selected_item.storage_place|default:"-" }}</span>
+                <span class="personal_field_name">paketissa</span>
+                <span class="personal_field_data">{{ selected_item.pack|default:"-" }} kpl</span>
+                <span class="personal_field_name">määrä varastossa</span>
+                <span class="personal_field_data">{{ selected_item.amount|default:"-" }} {{ selected_item.units|default:"-" }}</span>
+                <span class="personal_field_name">kustannuspaikka</span>
+                <span class="personal_field_data">{{ selected_item.cost_centre|default:"-" }}</span>
+            </div>
+            <div class="information ps-3 valign_end">
+                <span class="personal_field_name">rekisterinumero</span>
+                <span class="personal_field_data">{{ selected_item.reg_number|default:"-" }}</span>
+                <span class="personal_field_name">ostopäivämäärä</span>
+                <span class="personal_field_data">{{ selected_item.purchase_data|date:'d.m.Y' }}</span>
+                <span class="personal_field_name">ostohinta</span>
+                <span class="personal_field_data">{{ selected_item.purchase_price|default:"-" }} euro</span>
+                <span class="personal_field_name">ostopaikka</span>
+                <span class="personal_field_data">{{ selected_item.purchase_place|default:"-" }}</span>
+                <span class="personal_field_name">laskun numero</span>
+                <span class="personal_field_data">{{ selected_item.invoice_number|default:"-" }}</span>
+            </div>
+            <div class="new_rental">
+                <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if not selected_item.rentable_at %} class="button button_bg_green resize" {% else %} class="button button_bg_gray resize" {% endif %}> 
+                        <span class="button__text resize">Lisää tavara</span>
+                        <span class="button__icon">+</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <div class="product_description mt-3 mb-3">
+            <div>
+                {{ selected_item.item_description|default:"-" }}
+            </div>
+        </div>
+        
+        <div class="history_header_wrap">
+            <div class="column_names">
+                <div><span>Valokuva</span></div>
+                <div><span>Vuokrajan tiedot</span></div>
+                <div><span>Vuokra-aika</span></div>
+                <!-- <div><span>Vastuulinen henkilö</span></div> -->
+                <div><span>Kommentit</span></div>
+                
+            </div>
+        </div>
+
+
+        <div class="history">
+            {% for rental_event in rental_events %}
+            <div class="history_list">
+                <div class="history_photo">
+                    <div><img src="{% static rental_event.renter.photo %}" alt="{{rental_event.renter.photo}}"></div>
+                </div>
+                
+                <div class="item_info">
+                    <div>
+                        <a href="{% url 'renter' rental_event.renter.id %}" class="nodecor">
+                            <span class="item_name">{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
+                        </a>
+                        <a href="{% url 'renter' rental_event.renter.id %}" class="nodecor">
+                            <span class="item_props">{{rental_event.renter.email}}</span>
+                        </a>
+                    </div>
+                    <div class="item_info_place">
+                        <span class="item_num_name">Phone</span>
+                        <span class="item_num">
+                            {{rental_event.renter.phone}}
+                        </span>
+                    </div>
+                    <span class="item_num_name">Opiskelijakoodi</span>
+                    <!-- <span class="item_num">{{rental_event.id_start_null}}</span> -->
+                    <span class="item_num">{{rental_event.renter.code}}</span>
+                </div>
+
+                <div class="rental_period">
+                    <!-- Если аренда закончина, написать дату возврата, вместо начала и предполагаемой даты -->
+                    <span class="rental_period_date">
+                        {% if not rental_event.returned_date %}
+                        {{rental_event.start_date|date:'d.m.Y'}} - Ei vielä palautettu
+                        {% else %}
+                        {{rental_event.start_date|date:'d.m.Y'}} - {{ rental_event.returned_date|date:'d.m.Y' }}
+                        {% endif %}
+                    </span>
+                    {% if not rental_event.returned_date and rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_green"><span>Lainassa</span></div>
+                        </div>
+                        {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
+                        <div class="list__rented_item_status">
+                            <div class="status_red"><span>Erääntynyt</span></div>
+                        </div>
+                        {% else %}{% if rental_event.returned_date %}
+                        <div class="list__rented_item_status">
+                            <div class="status_gray"><span>Palautettu</span></div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+                
+                <!-- <div class="update_event">
+
+                </div> -->
+                <div class="remarks">{{rental_event.remarks|default_if_none:""}}</div>
+            </div>
+
+            {% endfor %}
+
+        </div>
+        
+
+        
+    
+    </div>
+
+{% endblock %}
