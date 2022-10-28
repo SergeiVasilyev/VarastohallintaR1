@@ -408,72 +408,43 @@ def get_photo(request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
-    # https://docs.djangoproject.com/en/4.1/ref/request-response/
-    # https://docs.djangoproject.com/en/1.11/_modules/django/middleware/csrf/
-    # print(get_token(request)) # ????
-    # print(request.COOKIES[settings.CSRF_COOKIE_NAME])
-    # print(list(request.POST.items()))
-    # print(request.POST.get('csrfmiddlewaretoken'))
-    if request.method == 'POST':
-        print('POST')
-        # for key, val in request.POST.items():
-        #     print(key, val)
+    l = []
+    error_massage = ''
+    camera_picture = request.POST.get('canvasData')
 
-        camera_picture = request.POST.get('canvasData')
-        try:
-            upload_picture = request.FILES['picture']
-        except:
-            upload_picture = None
+    if request.method == "POST":
+        print('request.POST')
+        form = GoodsForm(request.POST, request.FILES)
+        if form.is_valid():
+            print('FORM is VALID')
+            item = form.save(commit=False)
+            if not item.picture:
+                new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+            else:
+                new_picture = request.FILES['picture']
 
-        if camera_picture:
-            img = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
-        elif upload_picture:
-            img = upload_picture
-        else:
-            img = None
-        print('img', img)
-
-        # purchase_price kentä pitää tehdä pakkolisena
-        purchase_price_dec = int(request.POST.get('purchase_price')) if request.POST.get('purchase_price') != '' else None
-
-        try:
-            get_purchase_data = request.POST.get('purchase_data')
-            date_formated = datetime.strptime(get_purchase_data, '%Y-%m-%d')
-            purchase_data_localized = pytz.utc.localize(date_formated)
-        except:
-            purchase_data_localized = None
-
-        rental = Goods(
-                picture = img,
-                # cat_name = request.POST.get('cat_name'),
-                item_name = request.POST.get('item_name') or None,
-                brand = request.POST.get('brand') or None,
-                model = request.POST.get('model') or None,
-                item_type = request.POST.get('item_type') or None,
-                size = request.POST.get('size') or None,
-                parameters = request.POST.get('parameters') or None,
-                pack = request.POST.get('pack') or None,
-                amount = request.POST.get('amount') or None,
-                units = request.POST.get('units') or None,
-                item_description = request.POST.get('item_description') or None,
-                ean = request.POST.get('ean') or None,
-                cost_centre = request.POST.get('cost_centre') or None,
-                reg_number = request.POST.get('reg_number') or None,
-                purchase_data = purchase_data_localized or None,
-                purchase_price = purchase_price_dec or None,
-                purchase_place = request.POST.get('purchase_place') or None,
-                invoice_number = request.POST.get('invoice_number') or None,
-                # storage = request.POST.get('storage'),
-                )
-        rental.save()
+            if item.cat_name:
+                if not item.cat_name.id == CATEGORY_CONSUMABLES_ID: # Jos kategoria on Kulutusmateriaali lähetetään kaikki kappalet eri kentään
+                    l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
+                    item.amount = 1 # Nollataan amount
+                    item.picture = new_picture
+                    Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
+                else:
+                    item.picture = new_picture
+                    item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
+                    form.save()
+            else:
+                error_massage = "Ei valittu kategoriaa"
         
-            
-    context = {
+        return redirect('new_item')
+    else:
+        form = GoodsForm(use_required_attribute=False)
 
+    context = {
+        'form': form,
+        'error_massage': error_massage
     }
     return render(request, 'varasto/new_item.html', context)
-
-
 
 
 @csrf_exempt

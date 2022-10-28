@@ -114,7 +114,7 @@
 <form class="new_item_wrap" method="post" enctype="multipart/form-data">
     <!-- <form class="item_form" method="post" enctype="multipart/form-data"> -->
     {% csrf_token %}
-    <!-- {{ formset.management_form }} -->
+    {{ formset.management_form }}
 
     {% comment %} {{ x.item }} {% endcomment %}
         <div class="new">
@@ -145,15 +145,17 @@
                 <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
                         <label class="form-label">Kuvaus</label>
-                        <textarea name="item_description" cols="40" rows="6" class="form-control" placeholder="" id="id_item_description"></textarea>
+                        <!-- <textarea class="form-controlli" type="text"> </textarea> -->
+                        {{form.item_description}}
                     </div>
                 </div>
-                <div class="new_product_desc" style="display: flex; justify-content: center;">
+                {% comment %} <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
                         <label class="form-label">HUOMAUTUKSET</label>
-                        <textarea name="remarks" cols="40" rows="6" class="form-control" maxlength="100" id="id_remarks"></textarea>
+                        <!-- <textarea class="form-controlli" type="text"> </textarea> -->
+                        {{staff.remarks}}
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
 
             
@@ -164,39 +166,29 @@
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">TYÖKALURYHMÄ</label>
-                            <select name="cat_name" class="form-select" id="id_cat_name">
-                                <option value="" selected="">---------</option>
-                                <option value="2">Työkalut</option>
-                                <option value="3">Sähkötyökalut</option>
-                                <option value="1">Kulutusmateriaali (ruuvit, maalit, johdot)</option>
-                            </select>
-                            <!-- {{form.cat_name}} -->
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.cat_name}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">EAN</label>
-                            <input type="text" name="ean" class="form-control" placeholder="" maxlength="50" id="id_ean">
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.ean}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">KAPPALEMÄÄRÄ</label>
-                            <div class="input-group">
-                                <input type="number" value="1" min="1" max="100" step="1" class="form-control"/>
-                            </div>
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.amount}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">YKSIKKÖ</label>
-                            <select name="units" class="form-select" id="id_units">
-                                <option value="">---------</option>
-                                <option value="unit" selected="">kpl</option>
-                                <option value="litre">l</option>
-                                <option value="kilogram">kg</option>
-                              </select>
-                            <!-- {{form.units}} -->
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.units}}
                         </div>
                     </div>
                 </div>
@@ -220,50 +212,50 @@
                     <div class="div2" style="display: flex; justify-content: center;"> 
                         <div>
                             <label class="form-label"> NIMI</label>
-                            <input type="text" name="item_name" class="form-control" placeholder="" maxlength="150" id="id_item_name">
-                            <!-- {{form.item_name}} -->
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.item_name}}
                         </div>
                     </div>
                     <div class="div3" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> MERKKI</label>
-                            <input type="text" name="brand" class="form-control" placeholder="" maxlength="150" id="id_brand">
-                            <!-- {{form.brand}} -->
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.brand}}
                         </div>
                     </div>
                     <div class="div4" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">MALLI</label>
-                            <input type="text" name="model" class="form-control" placeholder="" maxlength="150" id="id_model">
-                            <!-- {{form.model}} -->
+                            <label class="form-label"> MALLI</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.model}}
                         </div>
                     </div>
                     <div class="div5" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">TYYPPI</label>
-                            <input type="text" name="item_type" class="form-control" placeholder="" maxlength="100" id="id_item_type">
-                            <!-- {{form.item_type}} -->
+                            <label class="form-label"> TYYPPI</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.item_type}}
                         </div>
                     </div>
                     <div class="div6" style="display: flex; justify-content: center;">
                         <div> 
-                            <label class="form-label">KOKO</label>
-                            <input type="text" name="size" class="form-control" placeholder="" maxlength="50" id="id_size">
-                            <!-- {{form.size}} -->
+                            <label class="form-label"> KOKO</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.size}}
                         </div>
                     </div>
                     <div class="div7" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">PAKKAUS</label>
-                            <input type="text" name="pack" class="form-control" placeholder="" maxlength="50" id="id_pack">
-                            <!-- {{form.pack}} -->
+                            <label class="form-label"> PAKKAUS</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.pack}}
                         </div>
                     </div>
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">TEKNISET TIEDOT</label>
-                            <input type="text" name="parameters" class="form-control " placeholder="" maxlength="100" id="id_parameters">
-                            <!-- {{form.parameters}} -->
+                            <label class="form-label"> TEKNISET TIEDOT</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.parameters}}
                         </div>
                     </div>
                 </div>
@@ -272,59 +264,51 @@
                 <div class="new_bottom">
                     <div class="div10" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">LASKUN NUMERO</label>
-                            <input type="text" name="invoice_number" class="form-control" placeholder="" maxlength="50" id="id_invoice_number">
-                            <!-- {{form.invoice_number}} -->
+                            <label class="form-label"> LASKUN NUMERO</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.invoice_number}}
                         </div> 
                     </div>
                     <div class="div11" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">HANKINTAPAIKKA</label>
-                            <input type="text" name="purchase_place" class="form-control" placeholder="" maxlength="50" id="id_purchase_place">
-                            <!-- {{form.purchase_place}} -->
+                            <label class="form-label"> HANKINTAPAIKKA</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.purchase_place}}
                         </div>
                     </div>
                     <div class="div12" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">HANKINTAHINTA</label>
-                            <input type="text" name="purchase_price" class="form-control" placeholder="" id="id_purchase_price">
-                            <!-- {{form.purchase_price}} -->
+                            <label class="form-label"> HANKINTAHINTA</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.purchase_price}}
                         </div>
                     </div>
                     <div class="div13" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">HANKINTA PÄIVÄMÄÄRÄ</label>
-                            <input type="date" name="purchase_data" class="datepicker_input form-control" id="id_purchase_data">
-                            <!-- {{form.purchase_data}} -->
+                            <label class="form-label"> HANKINTA PÄIVÄMÄÄRÄ</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.purchase_data}}
                         </div>
                     </div>
                     <div class="div15" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">KUSTANNUSPAIKKA</label>
-                            <input type="text" name="cost_centre" class="form-control" placeholder="" maxlength="100" id="id_cost_centre">
-                            <!-- {{form.cost_centre}} -->
+                            <label class="form-label"> KUSTANNUSPAIKKA</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.cost_centre}}
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">REKISTERINUMERO</label>
-                            <input type="text" name="reg_number" class="form-control" placeholder="" maxlength="50" id="id_reg_number">
-                            <!-- {{form.reg_number}} -->
+                            <label class="form-label"> REKISTERINUMERO</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.reg_number}}
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> VARASTO</label>
-                            <select name="storage" class="form-select" id="id_storage">
-                                <option value="" selected="">---------</option>
-                                <option value="1">Auto-osasto</option>
-                                <option value="2">Rakennusala</option>
-                                <option value="3">Sähkö- ja automaatioala</option>
-                                <option value="4">Hius- ja kauneudenhoitoala</option>
-                                <option value="5">Kone- ja tuotantotekniikaala</option>
-                                <option value="6">Logistiikka ala</option>
-                              </select>
-                            <!-- {{form.storage}} -->
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.storage}}
                         </div>
                     </div>
                 </div>
