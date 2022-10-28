@@ -86,7 +86,7 @@
         
         <div class="item_name">
             <a href="{% url 'product' item.id %}" class="nodecor">
-                <span class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</span>
+                <span class="header" for="chekbox{{item.id}}">{{item.item_name|default_if_none:""}} {{item.brand|default_if_none:""}}</span>
                 <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
                 {% comment %} {{forloop.counter}} {% endcomment %}
             </a>
