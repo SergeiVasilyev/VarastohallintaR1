@@ -9,7 +9,8 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
     StreamingHttpResponse,
-    HttpRequest
+    HttpRequest,
+    QueryDict
 )
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -33,7 +34,12 @@ from .capture_picture import VideoCamera
 from django.db.models import Q
 from .alerts import email_alert
 from .storage_settings import *
-
+from .services import _save_image
+import PIL.Image as Image
+import io
+import base64
+from django.middleware.csrf import get_token
+from django.conf import settings
 
 STATIC_URL = '/varastoapp/static/'
 
@@ -393,68 +399,82 @@ def new_user(request):
 def grant_permissions(request):
     return render(request, 'varasto/grant_permissions.html')
 
+def get_photo(request):
+    picData = request.POST.get('picData')
+    img = _save_image(picData)
+    print(img)
+    return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
+
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
-    # Permission test
-    # user = CustomUser.objects.get(id=request.user.id)
-    # print(user.has_perms(user.get_group_permissions()))
-    # print(user.get_group_permissions())
-    # -------
+    # https://docs.djangoproject.com/en/4.1/ref/request-response/
+    # https://docs.djangoproject.com/en/1.11/_modules/django/middleware/csrf/
+    # print(get_token(request)) # ????
+    # print(request.COOKIES[settings.CSRF_COOKIE_NAME])
+    # print(list(request.POST.items()))
+    # print(request.POST.get('csrfmiddlewaretoken'))
+    if request.method == 'POST':
+        print('POST')
+        # for key, val in request.POST.items():
+        #     print(key, val)
 
-    try:
-        staff = CustomUser.objects.get(id=request.user.id)
-    except:
-        staff = None
-    l = []
-    now = datetime.now()
-    datenow = pytz.utc.localize(now)
-    if request.method == "POST":
-        # print('request.POST')
-        form = GoodsForm(request.POST, request.FILES)
-        staff_event_form = Staff_eventForm(request.POST, request.FILES)
-        if form.is_valid():
-            item = form.save(commit=False)
-            if not item.cat_name.id == 1: # Jos kategoria on Kulutusmateriaali lähetetään kaikki kappalet eri kentään
-                l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
-                item.amount = 1 # Nollataan amount
-                Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
-            else:
-                item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
-                form.save()
+        camera_picture = request.POST.get('canvasData')
+        try:
+            upload_picture = request.FILES['picture']
+        except:
+            upload_picture = None
 
-        if staff_event_form.is_valid():
-            staff_event = staff_event_form.save(commit=False)
-            staff_event.item = item
-            staff_event.staff = staff
-            staff_event.to_storage = item.storage
-            staff_event.event_date = datenow
-            staff_event.save()
-        return redirect('new_item')
-    else:
-        form = GoodsForm(use_required_attribute=False)
-        staff_event_form = Staff_eventForm(use_required_attribute=False)
+        if camera_picture:
+            img = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+        elif upload_picture:
+            img = upload_picture
+        else:
+            img = None
+        print('img', img)
 
-    if request.method == "GET":
-        if '_take_picture' in request.GET:
-            pic = VideoCamera().take()
-            # print('pic', VideoCamera().take()) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # purchase_price kentä pitää tehdä pakkolisena
+        purchase_price_dec = int(request.POST.get('purchase_price')) if request.POST.get('purchase_price') != '' else None
 
+        try:
+            get_purchase_data = request.POST.get('purchase_data')
+            date_formated = datetime.strptime(get_purchase_data, '%Y-%m-%d')
+            purchase_data_localized = pytz.utc.localize(date_formated)
+        except:
+            purchase_data_localized = None
+
+        rental = Goods(
+                picture = img,
+                # cat_name = request.POST.get('cat_name'),
+                item_name = request.POST.get('item_name') or None,
+                brand = request.POST.get('brand') or None,
+                model = request.POST.get('model') or None,
+                item_type = request.POST.get('item_type') or None,
+                size = request.POST.get('size') or None,
+                parameters = request.POST.get('parameters') or None,
+                pack = request.POST.get('pack') or None,
+                amount = request.POST.get('amount') or None,
+                units = request.POST.get('units') or None,
+                item_description = request.POST.get('item_description') or None,
+                ean = request.POST.get('ean') or None,
+                cost_centre = request.POST.get('cost_centre') or None,
+                reg_number = request.POST.get('reg_number') or None,
+                purchase_data = purchase_data_localized or None,
+                purchase_price = purchase_price_dec or None,
+                purchase_place = request.POST.get('purchase_place') or None,
+                invoice_number = request.POST.get('invoice_number') or None,
+                # storage = request.POST.get('storage'),
+                )
+        rental.save()
+        
+            
     context = {
-        'form': form,
-        'staff': staff_event_form,
+
     }
     return render(request, 'varasto/new_item.html', context)
 
 
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-def video_stream(request):
-    return StreamingHttpResponse(gen(VideoCamera()),
-                    content_type='multipart/x-mixed-replace; boundary=frame')
+
 
 @csrf_exempt
 def take_pacture(request):
