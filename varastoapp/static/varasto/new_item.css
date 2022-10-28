@@ -18,7 +18,7 @@ form {
 
 .new_img_desc {
     display: grid;
-    grid-template-columns: 250px 0.6fr 2fr 2fr;
+    grid-template-columns: 333px 0.6fr 2fr 2fr;
     grid-column-gap: 10px;
     
     color: #2D3748;
@@ -35,6 +35,7 @@ form {
     justify-content: center;
     align-items: center;
     /* max-width: 250px; */
+    width: 333px;
     height: 250px;
     object-fit: cover;
     border: 1px solid #cecece;
@@ -233,8 +234,17 @@ form {
     text-transform: uppercase;
     background-color: #24A19C !important;
     border: #24A19C !important;
-    padding: 0.7em 1em !important;
-    transition-duration: 0,4s;
+    /* padding: 0.7em 1em !important; */
+    width: 8rem;
+    height: 2.9rem;
+    transition-duration: 0.4s;
+}
+.btn-danger, .btn-danger:active, .btn-danger:visited {
+    text-transform: uppercase;
+    /* padding: 0.7em 1em !important; */
+    width: 8rem;
+    height: 2.9rem;
+    transition-duration: 0.4s;
 }
 
 /* / MAIN BUTTONS */

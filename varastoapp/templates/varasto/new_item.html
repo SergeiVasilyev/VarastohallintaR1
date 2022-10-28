@@ -9,7 +9,7 @@
 {% endblock stylesheet %}
 
 {% block script %}
-<script>
+<script type="text/javascript">
     // PICTURE PREVIEW
     function showPreview(event){
         if(event.target.files.length > 0){
@@ -21,6 +21,86 @@
             preview.style.height = "250px";
         }
     }
+
+    $(document).ready(function() {
+        console.log('{{ csrf_token }}')
+        let camera_button = document.querySelector("#start_cam")
+        let video = document.querySelector("#video")
+        let take_picture = document.querySelector("#take_picture")
+        let canvas = document.querySelector("#canvas")
+        let save_btn = document.querySelector("#save")
+
+        camera_button.addEventListener('click', async function() {
+            let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            video.srcObject = stream
+        });
+
+        take_picture.addEventListener('click', function() {
+            canvas.getContext('2d').fillStyle = "rgb(250,250,250)"
+            canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height) // Flash
+
+            setTimeout(() => {  
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); 
+                let image_data_url = canvas.toDataURL('image/jpeg')
+
+                // console.log(image_data_url)
+                let file = null;
+                let blob = canvas.toBlob(function(blob) {
+                    file = new File([blob], 'test.jpg', { type: 'image/jpeg' });
+                }, 'image/jpeg');
+                
+                
+            }, 100)
+            
+
+            $('#video').toggle()
+            $('#canvas').toggle()
+            if ($(this).val() == "OTA KUVA") {
+                $(this).val("CAMERA")
+                $(this).addClass('btn-success')
+                $(this).removeClass('btn-danger')
+            } else {
+                $(this).val("OTA KUVA")
+                $(this).removeClass('btn-success')
+                $(this).addClass('btn-danger')
+            }
+
+        })
+
+        save_btn.addEventListener('click', function() {
+            const sendPic = (dataURI) => {
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_photo/',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'picData': dataURI,
+                    },
+                    
+                })
+            }
+            // .replace(/^data:image\/jpeg;base64,/, "")
+            var myModalEl = document.getElementById('cam')
+            var modal = bootstrap.Modal.getInstance(myModalEl)
+            modal.hide()
+
+            let preview = document.getElementById("preview_pic")
+            const mycanvas = document.querySelector("#canvas")
+            const ctx = canvas.getContext("2d")
+            let dataURI1 = mycanvas.toDataURL()
+            preview.src = dataURI1
+            preview.style.opacity = "1";
+            preview.style.maxWidth = "333px";
+            preview.style.height = "250px";
+            
+            let dataURI = mycanvas.toDataURL().replace(/^data:image\/png;base64/, "")
+            console.log(dataURI)
+
+            // sendPic(dataURI)
+            
+            $('#canvasData')[0].value = dataURI
+        })
+    })
 </script>
 {% endblock script %}
 
@@ -34,7 +114,7 @@
 <form class="new_item_wrap" method="post" enctype="multipart/form-data">
     <!-- <form class="item_form" method="post" enctype="multipart/form-data"> -->
     {% csrf_token %}
-    {{ formset.management_form }}
+    <!-- {{ formset.management_form }} -->
 
     {% comment %} {{ x.item }} {% endcomment %}
         <div class="new">
@@ -46,16 +126,18 @@
                     <div class="new_button_take">
                         {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
-                        <button type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
+                        <button id="start_cam" type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
                             <span class="list__button__text">Ota kuva</span>
                         </button>
                     </div>
                     <div class="divider"></div>
                     <div class="new_button_browse">
                         <div class="list__button list__button_bg_blue btn_strech btn-small btn-file">
-                            {{ form.picture }}
+                            <!-- {{ form.picture }} -->
+                            <input type="file" name="picture" class="" onchange="showPreview(event);" accept="image/*" id="id_picture">
                             <span class="list__button__text">Selaa kuva</span>
                         </div>
+                        <input type="hidden" id="canvasData" name="canvasData"/>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
                     </div>
                 </div>
@@ -63,15 +145,13 @@
                 <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
                         <label class="form-label">Kuvaus</label>
-                        <!-- <textarea class="form-controlli" type="text"> </textarea> -->
-                        {{form.item_description}}
+                        <textarea name="item_description" cols="40" rows="6" class="form-control" placeholder="" id="id_item_description"></textarea>
                     </div>
                 </div>
                 <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
                         <label class="form-label">HUOMAUTUKSET</label>
-                        <!-- <textarea class="form-controlli" type="text"> </textarea> -->
-                        {{staff.remarks}}
+                        <textarea name="remarks" cols="40" rows="6" class="form-control" maxlength="100" id="id_remarks"></textarea>
                     </div>
                 </div>
             </div>
@@ -84,29 +164,39 @@
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">TYÖKALURYHMÄ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.cat_name}}
+                            <select name="cat_name" class="form-select" id="id_cat_name">
+                                <option value="" selected="">---------</option>
+                                <option value="2">Työkalut</option>
+                                <option value="3">Sähkötyökalut</option>
+                                <option value="1">Kulutusmateriaali (ruuvit, maalit, johdot)</option>
+                            </select>
+                            <!-- {{form.cat_name}} -->
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">EAN</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.ean}}
+                            <input type="text" name="ean" class="form-control" placeholder="" maxlength="50" id="id_ean">
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">KAPPALEMÄÄRÄ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.amount}}
+                            <div class="input-group">
+                                <input type="number" value="1" min="1" max="100" step="1" class="form-control"/>
+                            </div>
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">YKSIKKÖ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.units}}
+                            <select name="units" class="form-select" id="id_units">
+                                <option value="">---------</option>
+                                <option value="unit" selected="">kpl</option>
+                                <option value="litre">l</option>
+                                <option value="kilogram">kg</option>
+                              </select>
+                            <!-- {{form.units}} -->
                         </div>
                     </div>
                 </div>
@@ -130,50 +220,50 @@
                     <div class="div2" style="display: flex; justify-content: center;"> 
                         <div>
                             <label class="form-label"> NIMI</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.item_name}}
+                            <input type="text" name="item_name" class="form-control" placeholder="" maxlength="150" id="id_item_name">
+                            <!-- {{form.item_name}} -->
                         </div>
                     </div>
                     <div class="div3" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> MERKKI</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.brand}}
+                            <input type="text" name="brand" class="form-control" placeholder="" maxlength="150" id="id_brand">
+                            <!-- {{form.brand}} -->
                         </div>
                     </div>
                     <div class="div4" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> MALLI</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.model}}
+                            <label class="form-label">MALLI</label>
+                            <input type="text" name="model" class="form-control" placeholder="" maxlength="150" id="id_model">
+                            <!-- {{form.model}} -->
                         </div>
                     </div>
                     <div class="div5" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TYYPPI</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.item_type}}
+                            <label class="form-label">TYYPPI</label>
+                            <input type="text" name="item_type" class="form-control" placeholder="" maxlength="100" id="id_item_type">
+                            <!-- {{form.item_type}} -->
                         </div>
                     </div>
                     <div class="div6" style="display: flex; justify-content: center;">
                         <div> 
-                            <label class="form-label"> KOKO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.size}}
+                            <label class="form-label">KOKO</label>
+                            <input type="text" name="size" class="form-control" placeholder="" maxlength="50" id="id_size">
+                            <!-- {{form.size}} -->
                         </div>
                     </div>
                     <div class="div7" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> PAKKAUS</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.pack}}
+                            <label class="form-label">PAKKAUS</label>
+                            <input type="text" name="pack" class="form-control" placeholder="" maxlength="50" id="id_pack">
+                            <!-- {{form.pack}} -->
                         </div>
                     </div>
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TEKNISET TIEDOT</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.parameters}}
+                            <label class="form-label">TEKNISET TIEDOT</label>
+                            <input type="text" name="parameters" class="form-control " placeholder="" maxlength="100" id="id_parameters">
+                            <!-- {{form.parameters}} -->
                         </div>
                     </div>
                 </div>
@@ -182,51 +272,59 @@
                 <div class="new_bottom">
                     <div class="div10" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> LASKUN NUMERO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.invoice_number}}
+                            <label class="form-label">LASKUN NUMERO</label>
+                            <input type="text" name="invoice_number" class="form-control" placeholder="" maxlength="50" id="id_invoice_number">
+                            <!-- {{form.invoice_number}} -->
                         </div> 
                     </div>
                     <div class="div11" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> HANKINTAPAIKKA</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.purchase_place}}
+                            <label class="form-label">HANKINTAPAIKKA</label>
+                            <input type="text" name="purchase_place" class="form-control" placeholder="" maxlength="50" id="id_purchase_place">
+                            <!-- {{form.purchase_place}} -->
                         </div>
                     </div>
                     <div class="div12" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> HANKINTAHINTA</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.purchase_price}}
+                            <label class="form-label">HANKINTAHINTA</label>
+                            <input type="text" name="purchase_price" class="form-control" placeholder="" id="id_purchase_price">
+                            <!-- {{form.purchase_price}} -->
                         </div>
                     </div>
                     <div class="div13" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> HANKINTA PÄIVÄMÄÄRÄ</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.purchase_data}}
+                            <label class="form-label">HANKINTA PÄIVÄMÄÄRÄ</label>
+                            <input type="date" name="purchase_data" class="datepicker_input form-control" id="id_purchase_data">
+                            <!-- {{form.purchase_data}} -->
                         </div>
                     </div>
                     <div class="div15" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> KUSTANNUSPAIKKA</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.cost_centre}}
+                            <label class="form-label">KUSTANNUSPAIKKA</label>
+                            <input type="text" name="cost_centre" class="form-control" placeholder="" maxlength="100" id="id_cost_centre">
+                            <!-- {{form.cost_centre}} -->
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> REKISTERINUMERO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.reg_number}}
+                            <label class="form-label">REKISTERINUMERO</label>
+                            <input type="text" name="reg_number" class="form-control" placeholder="" maxlength="50" id="id_reg_number">
+                            <!-- {{form.reg_number}} -->
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> VARASTO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.storage}}
+                            <select name="storage" class="form-select" id="id_storage">
+                                <option value="" selected="">---------</option>
+                                <option value="1">Auto-osasto</option>
+                                <option value="2">Rakennusala</option>
+                                <option value="3">Sähkö- ja automaatioala</option>
+                                <option value="4">Hius- ja kauneudenhoitoala</option>
+                                <option value="5">Kone- ja tuotantotekniikaala</option>
+                                <option value="6">Logistiikka ala</option>
+                              </select>
+                            <!-- {{form.storage}} -->
                         </div>
                     </div>
                 </div>
@@ -237,7 +335,7 @@
     <div class="new_button_bottom pb-2 pe-2">
         <div>
             <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color: white"><span class="button_s__text">PERUUTA</span></button>
-            <button type="submit" class="btn btn-primary" style="color: white"><span class="button_s__text">TALLENNA</span></button>
+            <button type="submit" class="btn btn-primary" style="color: white"><span class="button_s__text" id="save_all">TALLENNA</span></button>
         </div>
     </div>
 </form> 
@@ -271,14 +369,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-                <img src = "{% url 'video_stream' %}">
-                
+                <video id="video" width="640" height="480" autoplay></video>
+                <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="take_picture">OTA KUVA</button>
+                {% comment %} <button type="button" class="btn btn-success" id="take_picture" value="OTA KUVA">OTA KUVA</button> {% endcomment %}
+                <input type="button" class="btn btn-danger" id="take_picture" value="OTA KUVA" />
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SULJE</button>
-                <button type="submit" class="btn btn-primary">TALLENNA</button>
+                <button type="button" class="btn btn-primary" id="save">TALLENNA</button>
             </div>
         </div>
     </div>
