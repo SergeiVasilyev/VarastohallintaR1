@@ -92,7 +92,7 @@ class Goods(models.Model):
     units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Сделать подпапки
     item_description = models.TextField(blank=True, null=True) # Kuvaus
-    ean = models.CharField(max_length=50, null=True)
+    ean = models.CharField(max_length=13, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
