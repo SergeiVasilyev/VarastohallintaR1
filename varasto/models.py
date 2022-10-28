@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 from datetime import datetime
+from email.policy import default
 from pickle import NONE
 from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
@@ -7,6 +8,7 @@ from django.utils.translation import gettext as _
 import pytz
 from django.template.defaulttags import register
 import operator
+from django.conf import settings
 
 
 # Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
@@ -80,7 +82,7 @@ class Goods(models.Model):
     ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
-    brand = models.CharField(max_length=150, blank=True, null=True)
+    brand = models.CharField(max_length=150,)
     model = models.CharField(max_length=150, blank=True, null=True)
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
@@ -88,7 +90,7 @@ class Goods(models.Model):
     pack = models.CharField(max_length=50, blank=True, null=True) # 
     amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
+    picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Сделать подпапки
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=50, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
