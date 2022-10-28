@@ -12,4 +12,6 @@ RENTAL_PAGE_ORDERING_FIELDS_D = {
 }
 # print("One line Code Key value: ", list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[list(RENTAL_PAGE_ORDERING_FIELDS_D.values()).index('Alkamispäivä')])
 
+CATEGORY_CONSUMABLES_ID = 1
 
+CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
