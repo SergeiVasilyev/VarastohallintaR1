@@ -9,6 +9,8 @@ import pytz
 from django.template.defaulttags import register
 import operator
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 
 # Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
@@ -69,11 +71,22 @@ class Category(models.Model):
     def __str__(self):
         return '%s' % (self.cat_name)
 
+class IntegerRangeField(models.IntegerField):
+    # https://stackoverflow.com/questions/849142/how-to-limit-the-maximum-value-of-a-numeric-field-in-a-django-model
+    def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        models.IntegerField.__init__(self, verbose_name, name, **kwargs)
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value':self.max_value}
+        defaults.update(kwargs)
+        return super(IntegerRangeField, self).formfield(**defaults)
+
 class Goods(models.Model):
     UNITS = [
         ("unit", _("kpl")),
         ("litre", _("l")),
         ("kilogram", _("kg")),
+        ("meter", _("m")),
     ]
     ITEM_STATUS = [
         ("available", _("saatavilla")),
@@ -87,10 +100,12 @@ class Goods(models.Model):
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    pack = models.CharField(max_length=50, blank=True, null=True) # 
-    amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Сделать подпапки
+    # pack = models.CharField(max_length=50, blank=True, null=True)
+    pack = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    # Created new Class IntegerRangeField to limit values from min to max 
+    amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
