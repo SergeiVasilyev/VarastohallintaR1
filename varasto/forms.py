@@ -96,9 +96,12 @@ class GoodsForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': '',
             }),
-            'pack': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '',
+            'pack': NumberInput(attrs={
+                'min': 0, # Min value doesn't work
+                'max': 1000000,
+                'step': 0.001,
+                'data-decimals': 4,
+                'placeholder': '0',
             }),
             'parameters': TextInput(attrs={
                 'class': 'form-control ',
@@ -130,8 +133,8 @@ class GoodsForm(ModelForm):
                 'placeholder': '',
             }),
             'amount': NumberInput(attrs={
-                'min': 1,
-                'max': 100,
+                # 'min': 1, # Min value doesn't work
+                # 'max': 100,
             }),
             'units': widgets.Select(attrs={
                 'class': 'form-select',
