@@ -36,6 +36,75 @@ $(document).ready(function() {
     $('#id_cat_name').change(function(){
         $('.alert').show('fast')
     })
+
+    // Disable id_pack and id_units fields, if id_cat_name not Kulutusmateriaali
+    // Disable id_pack if id_units not selected
+
+    function null_is_empty(val){
+        return val ? val : 0
+    }
+
+    function check_units(){
+        var $id_pack = $("#id_pack")
+        var $id_units = $("#id_units")
+
+        if ($id_units.val()) {
+            $id_pack.prop("disabled", false)
+        } else {
+            $id_pack.prop("disabled", true)
+        }
+        //let accessAllowed = (age > 18) ? true : false;
+        if ($id_units.val() == 'unit') {
+            unit_around = Math.round($id_pack.val())
+            $id_pack.val(unit_around)
+            $id_pack.attr('data-decimals', 0)
+            $id_pack.attr('step', 1)           
+        } else {
+            let val = ($id_units.val()) ? null_is_empty($id_pack.val()) : ''
+            $id_pack.val(val)
+
+            $id_pack.attr('data-decimals', 4)
+            $id_pack.attr('step', 0.001)
+        }
+        
+    }
+    function check_cat_name(){
+        var $id_pack = $("#id_pack")
+        var $id_units = $("#id_units")
+        if ($('#id_cat_name').val() != '1'){
+            $id_pack.val('')
+            $id_pack.attr('placeholder', '')
+            $id_pack.prop("disabled", true)
+            $id_units.val('')
+            $id_units.prop("disabled", true)
+        } else {
+            check_units()
+            $id_units.prop("disabled", false)
+        }
+    }
+
+    check_cat_name()
+    check_units()
+    
+    // Change data-decimals and step in "MÄÄRÄ LAATIKOSSA" and round input value when YKSIKKÖ is kpl
+    $('#id_units').change(function(){
+        check_units()
+    })
+
+    // Disable MÄÄRÄ LAATIKOSSA kenttä (id_pack) when not selected kulutusmateriaalit in id_cat_name
+    $('#id_cat_name').change(function(){       
+        check_cat_name()
+    })
+
+    // Log
+    // $('button').click(function(){
+    //     console.log($('#id_pack').val())
+    // })
+
+    //----
+
+    // ---NEW ITEM PAGE
+
     
     // NEW ITEM PAGE
     // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!

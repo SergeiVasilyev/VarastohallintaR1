@@ -23,6 +23,11 @@
     }
 
     $(document).ready(function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
         console.log('{{ csrf_token }}')
         let camera_button = document.querySelector("#start_cam")
         let video = document.querySelector("#video")
@@ -172,16 +177,16 @@
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">EAN</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.ean}}
+                            <label class="form-label">LAATIKKO MÄÄRÄ, KPL</label>
+                            {{form.amount}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label">KAPPALEMÄÄRÄ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.amount}}
+                        <div data-bs-toggle="tooltip" data-bs-custom-class="tooltip_align" data-bs-delay="500"
+                        title="Pakkauksessa olevien tavaroiden määrä antaa varastotyöntekijöille mahdollisuuden hallita kulutustarvikkeita tarkemmin.">
+                            <label class="form-label">MÄÄRÄ LAATIKOSSA</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.pack}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
@@ -191,6 +196,7 @@
                             {{form.units}}
                         </div>
                     </div>
+                    
                 </div>
 
                 <!-- ALERTS -->
@@ -209,6 +215,13 @@
                 <!-- // ALERTS -->
 
                 <div class="new_middle mt-3">
+                    <div class="div1" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">EAN</label>
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.ean}}
+                        </div>
+                    </div>
                     <div class="div2" style="display: flex; justify-content: center;"> 
                         <div>
                             <label class="form-label"> NIMI</label>
@@ -232,25 +245,19 @@
                     </div>
                     <div class="div5" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TYYPPI</label>
+                            <label class="form-label">TYYPPI</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.item_type}}
                         </div>
                     </div>
                     <div class="div6" style="display: flex; justify-content: center;">
                         <div> 
-                            <label class="form-label"> KOKO</label>
+                            <label class="form-label">KOKO</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.size}}
                         </div>
                     </div>
-                    <div class="div7" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> PAKKAUS</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.pack}}
-                        </div>
-                    </div>
+                    
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> TEKNISET TIEDOT</label>
@@ -259,7 +266,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="new_bottom">
                     <div class="div10" style="display: flex; justify-content: center;">

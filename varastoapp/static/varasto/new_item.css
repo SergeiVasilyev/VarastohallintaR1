@@ -297,3 +297,12 @@ form {
   }
 
 /* INPUT IMAGE */
+
+
+
+.tooltip_align .tooltip-inner{
+    text-align: left;
+    /* color: #24A19C !important; */
+    /* border: 1px solid blue; */
+}
+

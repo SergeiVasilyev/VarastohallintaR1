@@ -430,6 +430,8 @@ def new_item(request):
                     item.picture = new_picture
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
+                    item.cat_name = None
+                    item.pack = None
                     item.picture = new_picture
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
                     form.save()
