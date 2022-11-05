@@ -332,12 +332,15 @@ $(document).ready(function() {
                 </div>
                 {% comment %} {{changed_items|length}} {% endcomment %}
                 {% for changed_item in changed_items %}
-                <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
-                    <div class="d-flex flex-row justify-content-between px-2" >
+                <div class="added_items col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
+                    <div class="px-2">
                         <div class="mb-3 me-3">
                             <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                            <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
+                            <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
                             <p>{{changed_item.item_type|default:""}} {{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
+                        </div>
+                        <div class="selector">
+                            <input type="number" value="1" min="1" inputmode="decimal" style="text-align: center" class="form-control" step="1" />
                         </div>
                         <div class="mb-3 d-flex">
                             <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">

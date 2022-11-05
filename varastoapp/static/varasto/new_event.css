@@ -80,6 +80,9 @@
     min-height: 100%;
     /* border: 1px solid red; */
 }
+.new_event_warp > div{
+    /* border: 1px solid blue; */
+}
 .new_event_warp input {
     display: block;
     /* min-width: 60em; */
@@ -106,12 +109,24 @@
 form {
     padding: 0 !important;
 }
-.new_event_warp h4{
+.new_event_warp h5{
     color: #2D3748;
 }
 
 .new_event_warp p{
     color: #718096
+}
+.added_items > div {
+    display: grid;
+    grid-template-columns: 3fr 1fr 53px;
+}
+
+.added_items div, .added_items div div{
+    border: 1px solid red;
+}
+
+.selector {
+
 }
 
 /* / CONTENT */

@@ -226,9 +226,9 @@ def getProducts(request):
                 'size': obj.size if obj.size else '',
                 'package': obj.pack if obj.pack else '',
                 'ean': obj.ean if obj.ean else '',
-                'rentable_at': obj.rentable_at,
-                'storage_place': obj.storage_place,
-                'storage_name': obj.storage.name,
+                'rentable_at': obj.rentable_at if obj.rentable_at else '',
+                'storage_place': obj.storage_place if obj.storage_place else '',
+                'storage_name': obj.storage.name if obj.storage else '', # if in Goods table is no goods.storage_id getting error when try get obj.storage.name, because name isn't in storage
             }
             data.append(item)
     
