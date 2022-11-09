@@ -304,7 +304,7 @@ $(document).ready(function() {
                     </div>
                 </div>
 
-                <div class="row g-3 mt-3 w-100 mb-4">
+                <div class="row g-3 mt-3 w-100 mb-5">
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
                             <div class="me-3 w-100">
@@ -334,21 +334,65 @@ $(document).ready(function() {
                 {% for changed_item in changed_items %}
                 <div class="added_items col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
                     <div class="px-2">
-                        <div class="mb-3 me-3">
-                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                            <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
-                            <p>{{changed_item.item_type|default:""}} {{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
+                        <div class="items">
+                            <div class="">
+                                <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
+                                <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
+                                <p>Tuotekoodi {{changed_item.id}}</p>
+                                <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
+                                <p>
+                                    {% if changed_item.cat_name.id == 1 %}
+                                        {{changed_item.amount|default:""}} laatikoa
+                                        | {{changed_item.pack|normalize_dec|default:""}} {{changed_item.units|default:""}} laatikossa
+                                        | {{changed_item.amount_x_pack|default:""}} {{changed_item.units|default:""}} yhteensä
+                                    {% endif %}
+                                </p>
+                            </div>
                         </div>
-                        <div class="selector">
-                            <input type="number" value="1" min="1" inputmode="decimal" style="text-align: center" class="form-control" step="1" />
+                        {% if changed_item.cat_name.id == 1 %}
+                        <div class="items mx-4">
+                            <!-- TODO -->
+                            <!-- TODO Kuinka paljon pitää palauta kulutusmaterialia, pitää rakenta palautus määrä, ja poistaa aikamäärä-->
+                            <div>
+                                <div>
+                                    <input type="number" value="1" min="1" inputmode="decimal" style="text-align: center" class="form-control" step="1" />
+                                </div>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault{{forloop.counter0}}" id="flexRadioDefault1-{{forloop.counter0}}" checked>
+                                        <label class="form-check-label" for="flexRadioDefault1-{{forloop.counter0}}">
+                                            laatikoa, kpl
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault{{forloop.counter0}}" id="flexRadioDefault2-{{forloop.counter0}}" >
+                                        <label class="form-check-label" for="flexRadioDefault2-{{forloop.counter0}}">
+                                            {{changed_item.units|default:""}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3 d-flex">
-                            <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
-                                <span class="bi bi-dash font-size"></span>
-                            </button>
+                        <div class="items">
+                            <div>
+                                <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
+                                    <span class="bi bi-dash font-size"></span>
+                                </button>
+                            </div>
                         </div>
+                        {% else %}
+                        <div class="items"></div>
+                        <div class="items">
+                            <div>
+                                <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
+                                    <span class="bi bi-dash font-size"></span>
+                                </button>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
+                <div class="border_light"></div>
                 {% endfor %}
             </div>
         </div>
@@ -366,9 +410,9 @@ $(document).ready(function() {
                         <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden">
                         {% endfor %}
                     {% endif %}
-                    <button type="button" class="btn btn-primary me-2">
+                    <!-- <button type="button" class="btn btn-primary me-2">
                         <span class="button_s__text">PERUUTA</span>
-                    </button> 
+                    </button>  -->
                     <button type="submit" class="btn btn-primary">
                         <span class="button_s__text">TALLENNA</span>  
                     </button>
