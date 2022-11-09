@@ -10,6 +10,7 @@ from django.template.defaulttags import register
 import operator
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import *
 
 
 
@@ -83,7 +84,7 @@ class IntegerRangeField(models.IntegerField):
 
 class Goods(models.Model):
     UNITS = [
-        ("unit", _("kpl")),
+        ("unit", _("kpl")), # TODO Poistaa eng version of items
         ("litre", _("l")),
         ("kilogram", _("kg")),
         ("meter", _("m")),
@@ -128,6 +129,20 @@ class Goods(models.Model):
     #         return event.estimated_date
     #     return None
 
+    @property
+    def amount_x_pack(self):
+        # return "%.1d" % Decimal(self.pack * self.amount)
+        # return "%.1f" % Decimal(self.pack * self.amount)
+        if not self.pack:
+            self.pack = 0
+        return Decimal(self.pack * self.amount).normalize()
+
+    @register.filter
+    def normalize_dec(num):
+        if num:
+            return Decimal(num).normalize()
+        else:
+            return None
     
     @property
     def rentable_at(self):
