@@ -164,7 +164,8 @@ def new_event(request):
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
         changed_items.pop(int(request.GET.get('_remove_item')))
 
-    if request.method == 'POST': # Jos painettiin Talenna nappi      
+    if request.method == 'POST': # Jos painettiin Talenna nappi
+        # TODO Сделать проверку достаточно ли товара для добавления, несмотря на ограничения во фронтэнде
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
             staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
