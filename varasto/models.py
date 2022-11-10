@@ -144,6 +144,24 @@ class Goods(models.Model):
         else:
             return None
     
+
+    @register.filter
+    def get_item_inp_amount(dictionary, key):
+        try:
+            k = dictionary['inp_amount'+str(key)]
+        except:
+            k = ''
+        print('inp_amount'+str(key), k)
+        return k
+    @register.filter
+    def get_item_radioUnit(dictionary, key):
+        try:
+            k = dictionary['radioUnit'+str(key)]
+        except:
+            k = ''
+        print('radioUnit'+str(key), k)
+        return k
+    
     @property
     def rentable_at(self):
         # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
