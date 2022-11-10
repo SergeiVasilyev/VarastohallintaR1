@@ -352,33 +352,71 @@ $(document).ready(function() {
                         {% if changed_item.cat_name.id == 1 %}
                         <div class="items mx-4">
                             <!-- TODO -->
-                            <!-- TODO Kuinka paljon pitää palauta kulutusmaterialia, pitää rakenta palautus määrä, ja poistaa aikamäärä-->
-                            <!-- BUG Количество сбрасывается, при добавлении еще одного товара -->
                             <div>
                                 <div>
-                                    <input type="number" name="inp_amount{{forloop.counter0}}" id="inp_amount{{forloop.counter0}}"
-                                            value="1" min="1" step="1"
-                                            max="{{changed_item.amount|default:""}}"
-                                            inputmode="decimal" style="text-align: center" class="form-control" step="1" />
-                                    <!-- <input type="number" name="inp_amount{{forloop.counter0}}" id="inp_amount{{forloop.counter0}}"
+                                    
+                                    {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
+                                    {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
+
+                                    <input type="number" name="inp_amount{{changed_item.id}}" id="inp_amount{{changed_item.id}}"
+                                            inputmode="decimal" style="text-align: center" class="form-control"
+
+                                            {% if item_amount_dict|get_item_inp_amount:changed_item.id %} 
+                                                {% for k, v in item_amount_dict.items %}
+                                                    value="{{ item_amount_dict|get_item_inp_amount:changed_item.id }}"
+                                                {% endfor %}
+                                            {% else %} 
+                                                value="1"
+                                            {% endif %}
+                                            
+                                            {% if item_amount_dict|get_item_radioUnit:changed_item.id == '0' and changed_item.units != "kpl" %}
+                                                data-decimals="4"
+                                                min="0" step="0.001"
+                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                            {% elif item_amount_dict|get_item_radioUnit:changed_item.id == '0' and changed_item.units == "kpl" %}
+                                                data-decimals="0"
+                                                min="1" step="1"
+                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                            {% else %}
+                                                data-decimals="0"
+                                                min="1" step="1"
+                                                max="{{changed_item.amount|default:''}}"
+                                            {% endif %}
+                                            />
+                                    {% comment %} <!-- <input type="number" name="inp_amount{{forloop.counter0}}" id="inp_amount{{forloop.counter0}}"
                                             {% if changed_item.units == 'kpl' %}
                                                 value="1" min="1" step="1"
                                             {% else %}
                                                 value="0" min="0" step="0.001" data-decimals="4" 
                                             {% endif %}
                                             max="{{changed_item.amount_x_pack|default:""}}"
-                                            inputmode="decimal" style="text-align: center" class="form-control" step="1" /> -->
+                                            inputmode="decimal" style="text-align: center" class="form-control" step="1" /> --> {% endcomment %}
                                 </div>
+                                {% comment %} {% for k, v in item_amount_dict.items %}
+                                    value="{{ item_amount_dict|get_item:k }}"
+                                {% endfor %} {% endcomment %}
                                 <div class="mt-2">
                                     <div class="form-check form-check-inline">
-                                        <input onclick="radio_btn('{{forloop.counter0}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{forloop.counter0}}" id="radioUnit1-{{forloop.counter0}}" checked>
-                                        <label class="form-check-label" for="radioUnit1-{{forloop.counter0}}">
+                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
+                                        value="1"
+                                        {% if item_amount_dict|get_item_radioUnit:changed_item.id == '1' or item_amount_dict|get_item_radioUnit:changed_item.id == '' %}
+                                            checked
+                                        {% else %}
+                                        {% endif %}
+                                            />
+                                        <label class="form-check-label" for="radioUnit1-{{changed_item.id}}">
                                             laatikoa, kpl
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input onclick="radio_btn('{{forloop.counter0}}', '{{changed_item.units}}', '{{changed_item.amount_x_pack}}')" class="form-check-input" type="radio" name="radioUnit{{forloop.counter0}}" id="radioUnit2-{{forloop.counter0}}" >
-                                        <label class="form-check-label" for="radioUnit2-{{forloop.counter0}}">
+                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount_x_pack}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit2-{{changed_item.id}}"
+                                        value="0"
+                                        {% if item_amount_dict|get_item_radioUnit:changed_item.id == '0' %}
+                                            checked                                       
+                                        {% else %}
+                                        {% endif %}
+                                            />
+                                        <label class="form-check-label" for="radioUnit2-{{changed_item.id}}">
                                             {{changed_item.units|default:""}}
                                         </label>
                                     </div>
@@ -386,7 +424,13 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="items">
-                            <div>
+                            <!-- TODO Make JS function, when press button + : BTN to - , then make GET query -->
+                            <div style="display: block;">
+                                <button type="submit" name="_fix_item" value="{{forloop.counter0}}" class="list__button list__button_bg_green btn_strech">
+                                    <span class="bi bi-plus font-size"></span>
+                                </button>
+                            </div>
+                            <div style="display: none;">
                                 <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
@@ -475,13 +519,16 @@ $(document).ready(function() {
 function radio_btn(counter, units, max_amount) {
     var $inp_amount = $("#inp_amount"+counter)
     var rounded_num = Math.round(parseInt($inp_amount.val())) // Round input value
+    //console.log($inp_amount.val())
     if ($("#radioUnit1-"+counter).is(':checked') || units == 'kpl') { // Check is checked "laatiko button" or units == kpl
+        // $inp_amount.val(1)
         $inp_amount.val(rounded_num)
         $inp_amount.attr('min', 1)
         $inp_amount.attr('max', max_amount)
         $inp_amount.attr('step', 1)
         $inp_amount.attr('data-decimals', 0)
     } else {
+        // $inp_amount.val(0)
         $inp_amount.attr('min', 0)
         $inp_amount.attr('max', max_amount)
         $inp_amount.attr('step', 0.001)

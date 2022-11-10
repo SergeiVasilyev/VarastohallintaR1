@@ -131,6 +131,11 @@ def new_event(request):
 
     # print('add_items ', add_items)
 
+    item_amount_dict = {}
+    r = re.compile("inp_amount") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
+    inp_amounts = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
+    # print(inp_amounts)
+
     if '_add_user' or '_add_item' in request.GET: # Tarkistetaan, painettiin nappit vai ei
         if request.GET.get('add_user'): # jos user code on kirjoitettiin
             # print('add_user: ', request.GET.get('add_user'))
@@ -158,11 +163,29 @@ def new_event(request):
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
                 estimated_date_issmall = True
 
+        
+        if inp_amounts: # jos item codes kirjoitetiin
+            for inp_amount in inp_amounts:
+                try:
+                    idx = re.sub(r, '', inp_amount)
+                    # print(Goods.objects.get(id=idx))
+                    # print(request.GET.get(inp_amount))
+                    # print('radioUnit:', request.GET.get('radioUnit'+idx))
+                    item_amount_dict[inp_amount] = request.GET.get(inp_amount)
+                    item_amount_dict['radioUnit'+idx] = request.GET.get('radioUnit'+idx)
+                except:
+                    print('ei löyty mitään')
+
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
 
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
         changed_items.pop(int(request.GET.get('_remove_item')))
+
+    
+    if '_fix_item' in request.GET:
+        pass
+        
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         # TODO Сделать проверку достаточно ли товара для добавления, несмотря на ограничения во фронтэнде
@@ -200,7 +223,8 @@ def new_event(request):
         'estimated_date': estimated_date,
         'estimated_date_issmall': estimated_date_issmall,
         'items': page_obj,
-        'feedback_status': feedback_status
+        'feedback_status': feedback_status,
+        'item_amount_dict': item_amount_dict,
     }
     return render(request, 'varasto/new_event.html', context)
 
