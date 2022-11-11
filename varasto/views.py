@@ -165,17 +165,17 @@ def new_event(request):
                 estimated_date_issmall = True
 
         
-        if inp_amounts: # jos item codes kirjoitetiin
-            for inp_amount in inp_amounts:
-                try:
-                    idx = re.sub(r, '', inp_amount)
-                    # print(Goods.objects.get(id=idx))
-                    # print(request.GET.get(inp_amount))
-                    # print('radioUnit:', request.GET.get('radioUnit'+idx))
-                    item_amount_dict[inp_amount] = request.GET.get(inp_amount)
-                    item_amount_dict['radioUnit'+idx] = request.GET.get('radioUnit'+idx)
-                except:
-                    print('ei löyty mitään')
+        # if inp_amounts: # jos item codes kirjoitetiin
+        #     for inp_amount in inp_amounts:
+        #         try:
+        #             idx = re.sub(r, '', inp_amount)
+        #             # print(Goods.objects.get(id=idx))
+        #             # print(request.GET.get(inp_amount))
+        #             # print('radioUnit:', request.GET.get('radioUnit'+idx))
+        #             item_amount_dict[inp_amount] = request.GET.get(inp_amount)
+        #             item_amount_dict['radioUnit'+idx] = request.GET.get('radioUnit'+idx)
+        #         except:
+        #             print('ei löyty mitään')
 
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
@@ -183,16 +183,50 @@ def new_event(request):
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
         changed_items.pop(int(request.GET.get('_remove_item')))
 
+
+    def contains(list, filter):
+        print(list, filter)
+        for count, x in enumerate(list):
+            print(x.id)
+            if x.id == int(filter):
+                return count
+        return False
+    
+
+    print(request.GET.get('radioUnit261'))
     fix_item_dict = {}
-    r = re.compile("_fix_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
-    inp_fixes = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
-    print('inp_fixes', inp_fixes)
+    r = re.compile("radioUnit")
+    inp_fixes = list(filter(r.match, request.GET))
+    print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes:
-            idx = re.sub(r, '', inp_fix)
-            fix_item_dict[idx] = True
+            idx_inp_fix = re.sub(r, '', inp_fix)
+            print('inp_fix', inp_fix)
+            print('idx_inp_fix', idx_inp_fix)
+
+            idxf = contains(changed_items, idx_inp_fix)
+            print('idxf', idxf)
+            changed_items[idxf].radioUnit = request.GET.get(inp_fix)
+            changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix)
+
+            print('radioUnit', request.GET.get(inp_fix))
+            print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
+            print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
     else:
         print('ei löyty mitään')
+    # if inp_amounts: # jos item codes kirjoitetiin
+    #     for inp_amount in inp_amounts:
+    #         try:
+    #             idx_inp_amount = re.sub(r, '', inp_amount)
+    #             print('inp_amount', inp_amount)
+    #             print('idx_inp_amount', idx_inp_amount)
+    #             idxf = contains(changed_items, lambda x: x.id == idx_inp_amount)
+    #             changed_items[idxf].item_amount = request.GET.get(idx_inp_amount)
+    #             print(changed_items[idxf].item_amount)     
+    #         except:
+    #             print('ei löyty mitään')
+
+
 
     def serch_fix_item(idx, inp_fixes):
         for inp_fix in inp_fixes:
@@ -201,13 +235,19 @@ def new_event(request):
             if idx == int(request.GET.get(inp_fix)):
                 return True
          
-        
+    
+    
+
+    # if contains(changed_items, lambda x: x.id == 261):
+    #     print('TOIMI')
+
+
     # serch_fix_item(idx, inp_fixes)
-    for changed_item in changed_items:
-        if serch_fix_item(changed_item.id, inp_fixes):
-            print('changed_items', changed_item.id)
-            # changed_item['inp_amount'] = 
-            changed_item.radioUnit = 1
+    # for changed_item in changed_items:
+    #     if serch_fix_item(changed_item.id, inp_fixes):
+    #         print('changed_items', changed_item.id)
+    #         # changed_item['inp_amount'] = 
+    #         changed_item.radioUnit = 1
 
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
@@ -250,7 +290,7 @@ def new_event(request):
         'item_amount_dict': item_amount_dict,
         'fix_item_dict': fix_item_dict,
     }
-    print(context)
+    # print(context)
     return render(request, 'varasto/new_event.html', context)
 
 def is_ajax(request):
