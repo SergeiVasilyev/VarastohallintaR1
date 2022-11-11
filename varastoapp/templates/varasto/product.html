@@ -65,6 +65,12 @@
                 <span class="personal_field_data">{{ selected_item.invoice_number|default:"-" }}</span>
             </div>
             <div class="new_rental">
+                <a class="nodecor pb-3" href="{% url 'product_report' selected_item.id %}">
+                    <button type="submit" class="button button_bg_blue resize">
+                        <span class="button__text resize">Raportti</span>
+                        <span class="button__icon"><i class="bi bi-printer"></i>
+                        </span>
+                    </button>
                 <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
                     <button type="submit" {% if not selected_item.rentable_at %} class="button button_bg_green resize" {% else %} class="button button_bg_gray resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>

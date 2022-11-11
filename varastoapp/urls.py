@@ -53,7 +53,7 @@ urlpatterns = [
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),
     path('report/<int:idx>/', views.report, name='report'),
-    path('product_report/<int:idx>', views.product_report, name='product_report'),
+    path('product_report/<int:idx>/', views.product_report, name='product_report'),
 
     path('test/', views.test, name='test'),
 

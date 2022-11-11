@@ -56,25 +56,23 @@
         <div class="renter_information">
             <span class="bold">Ostoksen tiedot:</span>
             <span class="">Laskun numero</span>
-            <span class="">91119001001948</span>
+            <span class="">{{item.invoice_number|default:"-" }}</span>
             <span class="">Hankitapaikka</span>
-            <span class="">Motonet</span>
+            <span class="">{{item.purchase_place|default:"-" }}</span>
             <span class="">Kustannuspaikka</span>
-            <span class="">021220</span>
+            <span class="">{{item.cost_centre|default:"-" }}</span>
             <span class="">Hankitahinta</span>
-            <span class="">171,70€</span>
+            <span class="">{{item.purchase_price|default:"-" }} euro</span>
             <span class="">Hankita Päivämäärä</span>
-            <span class="">03.05.2021</span>
+            <span class="">{{item.purchase_data|date:'d.m.Y' }}</span>
         </div>
     </div>
 
     <div>
         <div class="renter_information">
             <span class="bold">Sijoituspaikka:</span>
-            <span class="">Raseko</span>
-            <span class="">Rakennusalan varasto</span>
-            <span class="">Juhaninkuja 1</span>
-            <span class="">21200 Raisio</span>
+            <span class="">{{item.storage|default:"-" }}</span>
+            <span class="">{{item.storage_place|default:"-" }}</span>
         </div>
     </div>
 
@@ -94,11 +92,11 @@
         </div>
     </div>
     
-    <div class="row01">
+    <!-- <div class="row01">
         <div class="">
             <span class="">Tuoten tapahtuneet toimet</span>
         </div>
-    </div>
+    </div> -->
     
     <div class="row01">
         <div class="">
@@ -114,7 +112,7 @@
     <div class="row01">
         <div class="renter_name">
             <span class="name">{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
-            <span class="group">{{rental_event.renter.group}}</span>
+            <span class="group">Opiskelijanumero: {{rental_event.renter.code}}</span>
             
         </div>
     </div>
@@ -125,16 +123,16 @@
         </div>
     </div>
 
-    <div class="row01">
+    <!-- <div class="row01">
         <div class="event">
             <span class="status">Vuokrattu</span>
         </div>
-    </div>
+    </div> -->
 
     <div class="row01">
         <div class="interval">
-            <span class="">Juha Lindström</span>
-            <span class="">varastontyöntekijä</span>
+            <span class="">{{rental_event.staff.first_name}} {{rental_event.staff.last_name}}</span>
+            <span class="">{{rental_event.staff.role}}</span>
         </div>
     </div>
 

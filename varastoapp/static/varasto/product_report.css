@@ -82,7 +82,7 @@
 
 .column_name{
     display: grid;
-    grid-template-columns: minmax(16em, 1.5fr) repeat(3, 1fr);
+    grid-template-columns: minmax(16em, 1fr) repeat(2, 1fr);
     align-items: center;
     background-color:#325288;
     color: #FFFFFF;
@@ -90,7 +90,7 @@
     margin-top: 1em;
 }
 
-.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1), :last-child){
+.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
     display: flex;
     justify-content: center;
     /* border: 1px solid red; */
@@ -113,7 +113,7 @@
 
 .line_content{
     display: grid;
-    grid-template-columns:minmax(16em, 1.5fr) repeat(3, 1fr);
+    grid-template-columns:minmax(16em, 1fr) repeat(2, 1fr);
     align-items: center; 
     /* border: 1px solid blue; */
 }
@@ -139,7 +139,7 @@
     padding: 1.5em 0 0 0 ;
 }
 
-.item_name span, .renter_information span, .interval span{
+.item_name span, .renter_information span, .renter_name span, .interval span{
     display: block;
 }
 

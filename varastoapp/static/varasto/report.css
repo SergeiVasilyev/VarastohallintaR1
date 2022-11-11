@@ -92,7 +92,7 @@
     justify-content: center;
     border: 1px solid red;
 } */
-.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1), :last-child){
+.column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
     display: flex;
     justify-content: center;
     /* border: 1px solid red; */
