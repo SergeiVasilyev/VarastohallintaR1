@@ -143,23 +143,34 @@ class Goods(models.Model):
             return Decimal(num).normalize()
         else:
             return None
+        
+    @register.filter
+    def get_key(dictionary, key):
+        # try:
+        #     is_true = dictionary[key]
+        # except:
+        #     is_true = False
+        # return is_true
+        # return dictionary.get(key)
+        # print(key)
+        return dictionary.get(key)
     
-
     @register.filter
     def get_item_inp_amount(dictionary, key):
         try:
             k = dictionary['inp_amount'+str(key)]
         except:
             k = ''
-        print('inp_amount'+str(key), k)
+        # print('inp_amount'+str(key), k)
         return k
+
     @register.filter
     def get_item_radioUnit(dictionary, key):
         try:
             k = dictionary['radioUnit'+str(key)]
         except:
             k = ''
-        print('radioUnit'+str(key), k)
+        # print('radioUnit'+str(key), k)
         return k
     
     @property

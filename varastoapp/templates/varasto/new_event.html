@@ -357,7 +357,7 @@ $(document).ready(function() {
                                     
                                     {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
                                     {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
-
+                                    {{ changed_item.radioUnit }}
                                     <input type="number" name="inp_amount{{changed_item.id}}" id="inp_amount{{changed_item.id}}"
                                             inputmode="decimal" style="text-align: center" class="form-control"
 
@@ -395,6 +395,7 @@ $(document).ready(function() {
                                 {% comment %} {% for k, v in item_amount_dict.items %}
                                     value="{{ item_amount_dict|get_item:k }}"
                                 {% endfor %} {% endcomment %}
+                                {{changed_item.radioUnit}}
                                 <div class="mt-2">
                                     <div class="form-check form-check-inline">
                                         <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
@@ -423,18 +424,23 @@ $(document).ready(function() {
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="items">
                             <!-- TODO Make JS function, when press button + : BTN to - , then make GET query -->
+                            {{fix_item_dict|get_key:changed_item.id}}
+                            {% if not fix_item_dict|get_key:changed_item.id %}
                             <div style="display: block;">
-                                <button type="submit" name="_fix_item" value="{{forloop.counter0}}" class="list__button list__button_bg_green btn_strech">
+                                <button type="submit" name="_fix_item{{changed_item.id}}" value="{{changed_item.id}}" class="list__button list__button_bg_green btn_strech">
                                     <span class="bi bi-plus font-size"></span>
                                 </button>
                             </div>
-                            <div style="display: none;">
+                            {% else %}
+                            <div style="display: block;">
                                 <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
                             </div>
+                            {% endif %}
                         </div>
                         {% else %}
                         <div class="items"></div>

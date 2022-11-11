@@ -114,6 +114,7 @@ def renter(request, idx):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
+    context = {}
     now = datetime.now()
     datenow = pytz.utc.localize(now)
 
@@ -182,10 +183,32 @@ def new_event(request):
     if '_remove_item' in request.GET: # jos _remove_item nappi painettu, poistetaan item counter mukaan
         changed_items.pop(int(request.GET.get('_remove_item')))
 
-    
-    if '_fix_item' in request.GET:
-        pass
+    fix_item_dict = {}
+    r = re.compile("_fix_item") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
+    inp_fixes = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
+    print('inp_fixes', inp_fixes)
+    if inp_fixes:
+        for inp_fix in inp_fixes:
+            idx = re.sub(r, '', inp_fix)
+            fix_item_dict[idx] = True
+    else:
+        print('ei löyty mitään')
+
+    def serch_fix_item(idx, inp_fixes):
+        for inp_fix in inp_fixes:
+            # print('inp_fix ', request.GET.get(inp_fix))
+            # print('idx ', idx)
+            if idx == int(request.GET.get(inp_fix)):
+                return True
+         
         
+    # serch_fix_item(idx, inp_fixes)
+    for changed_item in changed_items:
+        if serch_fix_item(changed_item.id, inp_fixes):
+            print('changed_items', changed_item.id)
+            # changed_item['inp_amount'] = 
+            changed_item.radioUnit = 1
+
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         # TODO Сделать проверку достаточно ли товара для добавления, несмотря на ограничения во фронтэнде
@@ -225,7 +248,9 @@ def new_event(request):
         'items': page_obj,
         'feedback_status': feedback_status,
         'item_amount_dict': item_amount_dict,
+        'fix_item_dict': fix_item_dict,
     }
+    print(context)
     return render(request, 'varasto/new_event.html', context)
 
 def is_ajax(request):
