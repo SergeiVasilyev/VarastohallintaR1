@@ -64,3 +64,7 @@ def product_report(request, idx):
     }
     
     return render(request, 'varasto/product_report.html', context)
+
+def inventory (request):
+    items = Goods.objects.all()
+    return render(request, 'varasto/inventory.html', {"items": items})
