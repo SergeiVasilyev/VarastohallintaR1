@@ -622,7 +622,7 @@ function selectMultItem(){
         // url += '?param=1'
     }
 
-    setTimeout(() => {  window.location.href = url; }, 200) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
+    setTimeout(() => {  window.location.href = url; }, 1) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
     // window.location.href = url;
 }
 // --Select multiple items
@@ -671,7 +671,7 @@ function selectMultItem(){
         console.log('picked', picked)
         var updated_url = deleteParams(picked)
         console.log('updated_url ', updated_url)
-        setTimeout(() => {  window.location.href = updated_url; }, 2000) // Update url and reload page
+        setTimeout(() => {  window.location.href = updated_url; }, 1) // Update url and reload page
         // var value = $(this).attr('value')
         // var url = updated_url.split('_remove_user='+value).join('')
         // console.log(url)

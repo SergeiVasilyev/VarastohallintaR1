@@ -179,15 +179,18 @@ def new_event(request):
     
     # BUG Fix float number problem 4.7989999999999995
     # FIXED При удалении одного товара из списка, у оставшихся сбрасывается amount and radiobtn
+    # TODO Если Расходн. материалы уже добавлен, то при добавлении нового материала обновляет и поля старого без кнопки фиксации, надо поправить фиксауию
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
     print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
-            
+            # fix_item = '_fix_item'+str(idx_inp_fix)
+            # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
             print('idxf', idxf)
+
             if idxf != -1:
                 changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
                 changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix) # Set item_amount value 
