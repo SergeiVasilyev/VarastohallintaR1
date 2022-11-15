@@ -353,7 +353,7 @@ $(document).ready(function() {
                         <div class="items mx-4">
                             <!-- TODO -->
                             <div>
-                                <div>
+                                <div onclick="hide_fixItem_btn('{{changed_item.id}}')">
                                     
                                     {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
                                     {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
@@ -425,20 +425,20 @@ $(document).ready(function() {
                         
                         <div class="items">
                             <!-- TODO Make JS function, when press button + : BTN to - , then make GET query -->
-                            {% if not fix_item_dict|get_key:changed_item.id %}
-                            {% comment %} {% if not changed_item.item_amount %} {% endcomment %}
-                            <div style="display: block;">
-                                <button type="submit" name="_fix_item{{changed_item.id}}" value="{{changed_item.id}}" class="list__button list__button_bg_green btn_strech">
+                            {% comment %} {% if not fix_item_dict|get_key:changed_item.id %} {% endcomment %}
+                            {% comment %} {% if not changed_item.fix_item %} {% endcomment %}
+                            <div {% if not changed_item.fix_item %} style="display: block;" {% else %} style="display: none;" {% endif %} id="fix_item{{changed_item.id}}">
+                                <button type="submit" name="_fix_item{{changed_item.id}}" value="1" class="list__button list__button_bg_green btn_strech">
                                     <span class="bi bi-plus font-size"></span>
                                 </button>
                             </div>
-                            {% else %}
-                            <div style="display: block;">
+                            {% comment %} {% else %} {% endcomment %}
+                            <div {% if changed_item.fix_item %} style="display: block;" {% else %} style="display: none;" {% endif %} id="remove_item{{changed_item.id}}">
                                 <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
                                     <span class="bi bi-dash font-size"></span>
                                 </button>
                             </div>
-                            {% endif %}
+                            {% comment %} {% endif %} {% endcomment %}
                         </div>
                         {% else %}
                         <div class="items"></div>
@@ -540,6 +540,12 @@ function radio_btn(counter, units, max_amount) {
     }
 }
 
+function hide_fixItem_btn(id){
+    var $fix_btn = $("#fix_item"+id)
+    var $remove_btn = $("#remove_item"+id)
+    $fix_btn.show()
+    $remove_btn.hide()
+}
 
 
 // Select from list

@@ -118,6 +118,7 @@ class Goods(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
+    # _check_consumable = False
 
     # @property
     # def rentable_at(self):
@@ -128,6 +129,7 @@ class Goods(models.Model):
     #     if event:
     #         return event.estimated_date
     #     return None
+
 
     @property
     def amount_x_pack(self):

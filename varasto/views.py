@@ -132,7 +132,6 @@ def new_event(request):
 
     # print('add_items ', add_items)
 
-    item_amount_dict = {}
     r = re.compile("inp_amount") # html:ssa Inputit näyttävät kuin add_item<count number>, siksi pitää löytää kaikki
     inp_amounts = list(filter(r.match, request.GET)) # Etsimme request.GET:ssa kaikki avaimet, joissa nimella on merkkijono "add_item"
     # print(inp_amounts)
@@ -164,19 +163,6 @@ def new_event(request):
             if estimated_date <= datenow: # jos eilinen päivä on valittu kentällä, palautetaan virhe
                 estimated_date_issmall = True
 
-        
-        # if inp_amounts: # jos item codes kirjoitetiin
-        #     for inp_amount in inp_amounts:
-        #         try:
-        #             idx = re.sub(r, '', inp_amount)
-        #             # print(Goods.objects.get(id=idx))
-        #             # print(request.GET.get(inp_amount))
-        #             # print('radioUnit:', request.GET.get('radioUnit'+idx))
-        #             item_amount_dict[inp_amount] = request.GET.get(inp_amount)
-        #             item_amount_dict['radioUnit'+idx] = request.GET.get('radioUnit'+idx)
-        #         except:
-        #             print('ei löyty mitään')
-
     if '_remove_user' in request.GET: # jos _remove_user nappi painettu, poistetaan changed_user sisällöt
         changed_user = None
 
@@ -185,46 +171,39 @@ def new_event(request):
 
 
     def contains(list, filter):
-        print(list, filter)
+        # print(list, filter)
         for count, x in enumerate(list):
-            print(x.id)
             if x.id == int(filter):
                 return count
-        return False
+        return -1
     
-
-    print(request.GET.get('radioUnit261'))
-    fix_item_dict = {}
-    r = re.compile("radioUnit")
-    inp_fixes = list(filter(r.match, request.GET))
+    # BUG Fix float number problem 4.7989999999999995
+    # FIXED При удалении одного товара из списка, у оставшихся сбрасывается amount and radiobtn
+    r = re.compile("radioUnit") # Define group of variable from Get query
+    inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
     print('radioUnit', inp_fixes)
     if inp_fixes:
-        for inp_fix in inp_fixes:
-            idx_inp_fix = re.sub(r, '', inp_fix)
-            print('inp_fix', inp_fix)
-            print('idx_inp_fix', idx_inp_fix)
-
-            idxf = contains(changed_items, idx_inp_fix)
+        for inp_fix in inp_fixes: # Go through all list
+            idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
+            
+            idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
             print('idxf', idxf)
-            changed_items[idxf].radioUnit = request.GET.get(inp_fix)
-            changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix)
+            if idxf != -1:
+                changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
+                changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix) # Set item_amount value 
+                changed_items[idxf].fix_item = request.GET.get('_fix_item'+idx_inp_fix) if request.GET.get('_fix_item'+idx_inp_fix) else 1 # Set a fix_item (btn) value: 0, 1. If got none set 1.
 
-            print('radioUnit', request.GET.get(inp_fix))
-            print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
-            print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
+            # print('inp_fix', inp_fix)
+            # print('idx_inp_fix', idx_inp_fix)
+
+            # print('GET _fix_item'+idx_inp_fix, request.GET.get('_fix_item'+idx_inp_fix)) 
+
+            # print('idxf', idxf)
+            # print('radioUnit', request.GET.get(inp_fix))
+            # print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
+            # print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
     else:
         print('ei löyty mitään')
-    # if inp_amounts: # jos item codes kirjoitetiin
-    #     for inp_amount in inp_amounts:
-    #         try:
-    #             idx_inp_amount = re.sub(r, '', inp_amount)
-    #             print('inp_amount', inp_amount)
-    #             print('idx_inp_amount', idx_inp_amount)
-    #             idxf = contains(changed_items, lambda x: x.id == idx_inp_amount)
-    #             changed_items[idxf].item_amount = request.GET.get(idx_inp_amount)
-    #             print(changed_items[idxf].item_amount)     
-    #         except:
-    #             print('ei löyty mitään')
 
 
 
@@ -235,35 +214,34 @@ def new_event(request):
             if idx == int(request.GET.get(inp_fix)):
                 return True
          
-    
-    
-
-    # if contains(changed_items, lambda x: x.id == 261):
-    #     print('TOIMI')
-
-
-    # serch_fix_item(idx, inp_fixes)
-    # for changed_item in changed_items:
-    #     if serch_fix_item(changed_item.id, inp_fixes):
-    #         print('changed_items', changed_item.id)
-    #         # changed_item['inp_amount'] = 
-    #         changed_item.radioUnit = 1
 
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
-        # TODO Сделать проверку достаточно ли товара для добавления, несмотря на ограничения во фронтэнде
+        # TODO Сделать проверку достаточно ли расходных материалов для добавления, несмотря на ограничения во фронтэнде
+        # TODO Make Try-exeption to get objects from model
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
             staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
+                if item.cat_name_id == 1:
+                    unit = int(request.GET.get('radioUnit'+str(item.id)))
+                    item_amount = int(request.GET.get('inp_amount'+str(item.id)))
+                    print('GET unit', str(item.id), unit)
+                    print('GET item_amount', str(item.id), item_amount)
+                    if (item_amount <= item.amount and unit==1) or (item_amount <= item.pack and unit==0):
+                        print('ITEM AMOUNT <= item.amount or item.pack')
+
                 rental = Rental_event(item=item, 
                             renter=renter, 
                             staff=staff,
                             start_date=datenow,
                             storage_id = staff.storage_id,
-                            estimated_date=estimated_date)
-                rental.save()
+                            estimated_date=estimated_date,
+
+                            
+                            )
+                # rental.save()
             changed_user = None
             changed_items = []
             # return redirect('new_event')
@@ -287,8 +265,6 @@ def new_event(request):
         'estimated_date_issmall': estimated_date_issmall,
         'items': page_obj,
         'feedback_status': feedback_status,
-        'item_amount_dict': item_amount_dict,
-        'fix_item_dict': fix_item_dict,
     }
     # print(context)
     return render(request, 'varasto/new_event.html', context)
