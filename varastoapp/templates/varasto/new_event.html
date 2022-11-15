@@ -651,13 +651,15 @@ function selectMultItem(){
     function deleteParams(paramsObj) {
         var url = location.protocol + '//' + location.host + location.pathname + '?'
         var i = 0
+        let new_url = '' // This fix bug, when new_url is not define
         Object.entries(paramsObj).forEach(([key, value]) => { // key начинается с нуля - исправить
             console.log(key, ' - ', value)
             console.log(window.location.href)
             url = window.location.href
-            let new_url = url.split(key+'='+value).join('') //находим и удаляем из строки
-            console.log(new_url)
-            
+            let url_without_add_user = url.split(key+'='+value).join('') //находим и удаляем из строки 
+            new_url = url_without_add_user.split('&&').join('&') // Replace && to &
+            console.log('new_url', new_url)
+            // setTimeout(() => {  window.location.href = new_url2; }, 8000)
         })
         return new_url
     }
@@ -666,8 +668,10 @@ function selectMultItem(){
         let key_name = 'add_user'
         var url_params = getUrlParams(key_name)['url_params']
         const picked = (({ add_user }) => ({ add_user }))(url_params) // Обрезаем объект до указанных параметров
+        console.log('picked', picked)
         var updated_url = deleteParams(picked)
-        console.log(updated_url)
+        console.log('updated_url ', updated_url)
+        setTimeout(() => {  window.location.href = updated_url; }, 2000) // Update url and reload page
         // var value = $(this).attr('value')
         // var url = updated_url.split('_remove_user='+value).join('')
         // console.log(url)
