@@ -357,7 +357,7 @@ $(document).ready(function() {
                                     
                                     {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
                                     {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
-                                    {{ changed_item.id }} {{ changed_item.radioUnit }} {{ changed_item.item_amount }}
+                                    {% comment %} {{ changed_item.id }} {{ changed_item.radioUnit }} {{ changed_item.item_amount }} {% endcomment %}
                                     <input type="number" name="inp_amount{{changed_item.id}}" id="inp_amount{{changed_item.id}}"
                                             inputmode="decimal" style="text-align: center" class="form-control"
 

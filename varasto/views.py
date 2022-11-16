@@ -227,6 +227,14 @@ def new_event(request):
             staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
+                kwargs = {
+                    'item': item, 
+                    'renter': renter, 
+                    'staff': staff,
+                    'start_date': datenow,
+                    'storage_id': staff.storage_id,
+                    'estimated_date': estimated_date,
+                }
                 if item.cat_name_id == 1:
                     unit = int(request.GET.get('radioUnit'+str(item.id)))
                     item_amount = int(request.GET.get('inp_amount'+str(item.id)))
@@ -234,17 +242,10 @@ def new_event(request):
                     print('GET item_amount', str(item.id), item_amount)
                     if (item_amount <= item.amount and unit==1) or (item_amount <= item.pack and unit==0):
                         print('ITEM AMOUNT <= item.amount or item.pack')
+                        kwargs['amount'] = item_amount
 
-                rental = Rental_event(item=item, 
-                            renter=renter, 
-                            staff=staff,
-                            start_date=datenow,
-                            storage_id = staff.storage_id,
-                            estimated_date=estimated_date,
-
-                            
-                            )
-                # rental.save()
+                rental = Rental_event(**kwargs)
+                rental.save()
             changed_user = None
             changed_items = []
             # return redirect('new_event')
