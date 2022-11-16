@@ -19,7 +19,7 @@ main .white_background{
 }
 
 .inventory_header div, .inventory_wrap div{
-    /* border: 1px solid red; */
+     /* border: 1px solid red;  */
 }
 
 .inventory_header > div, .inventory_wrap > div{
@@ -31,6 +31,7 @@ main .white_background{
     grid-template-columns: 50px minmax(25em, 35em) repeat(9, minmax(14em, 20em));
     border-top: 1px solid #E2E8F0;
     align-items: center;
+    /* border: 1px solid red */
     
 }
 
