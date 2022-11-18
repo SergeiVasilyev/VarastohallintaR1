@@ -240,8 +240,8 @@ def new_event(request):
                     item_amount = int(request.GET.get('inp_amount'+str(item.id)))
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
-                    if (item_amount <= item.amount and unit==1) or (item_amount <= item.pack and unit==0):
-                        print('ITEM AMOUNT <= item.amount or item.pack')
+                    if (item_amount <= item.amount and unit==1) or (item_amount <= item.contents and unit==0):
+                        print('ITEM AMOUNT <= item.amount or item.contents')
                         kwargs['amount'] = item_amount
 
                 rental = Rental_event(**kwargs)
@@ -294,7 +294,7 @@ def getProducts(request):
                 'item_type': obj.item_type if obj.item_type else '',
                 'parameters': obj.parameters if obj.parameters else '',
                 'size': obj.size if obj.size else '',
-                'package': obj.pack if obj.pack else '',
+                'package': obj.contents if obj.contents else '',
                 'ean': obj.ean if obj.ean else '',
                 'rentable_at': obj.rentable_at if obj.rentable_at else '',
                 'storage_place': obj.storage_place if obj.storage_place else '',
@@ -501,7 +501,7 @@ def new_item(request):
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
                     item.cat_name = None
-                    item.pack = None
+                    item.contents = None
                     item.picture = new_picture
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
                     form.save()

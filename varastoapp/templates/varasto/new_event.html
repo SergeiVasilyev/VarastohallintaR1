@@ -343,7 +343,7 @@ $(document).ready(function() {
                                 <p>
                                     {% if changed_item.cat_name.id == 1 %}
                                         {{changed_item.amount|default:""}} laatikoa
-                                        | {{changed_item.pack|normalize_dec|default:""}} {{changed_item.units|default:""}} laatikossa
+                                        | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.units|default:""}} laatikossa
                                         | {{changed_item.amount_x_pack|default:""}} {{changed_item.units|default:""}} yhteensä
                                     {% endif %}
                                 </p>
@@ -394,7 +394,7 @@ $(document).ready(function() {
                                     value="{{ item_amount_dict|get_item:k }}"
                                 {% endfor %} {% endcomment %}
 
-                                <div class="mt-2">
+                                <div class="mt-2" onclick="hide_fixItem_btn('{{changed_item.id}}')">
                                     <div class="form-check form-check-inline">
                                         <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
                                         value="1"

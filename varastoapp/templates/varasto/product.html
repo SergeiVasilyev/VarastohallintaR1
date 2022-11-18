@@ -46,7 +46,7 @@
                 <span class="personal_field_name">tuotepaikka</span>
                 <span class="personal_field_data">{{ selected_item.storage_place|default:"-" }}</span>
                 <span class="personal_field_name">paketissa</span>
-                <span class="personal_field_data">{{ selected_item.pack|default:"-" }} kpl</span>
+                <span class="personal_field_data">{{ selected_item.contents|default:"-" }} kpl</span>
                 <span class="personal_field_name">määrä varastossa</span>
                 <span class="personal_field_data">{{ selected_item.amount|default:"-" }} {{ selected_item.units|default:"-" }}</span>
                 <span class="personal_field_name">kustannuspaikka</span>

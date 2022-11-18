@@ -82,6 +82,17 @@ class IntegerRangeField(models.IntegerField):
         defaults.update(kwargs)
         return super(IntegerRangeField, self).formfield(**defaults)
 
+class Units(models.Model):
+    UNITS = [
+        ("unit", _("kpl")),
+        ("litre", _("l")),
+        ("kilogram", _("kg")),
+        ("meter", _("m")),
+    ]
+    unit = models.CharField(max_length=50, choices=UNITS, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.unit)
+
 class Goods(models.Model):
     UNITS = [
         ("unit", _("kpl")), # TODO Poistaa eng version of items
@@ -102,7 +113,7 @@ class Goods(models.Model):
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
     # pack = models.CharField(max_length=50, blank=True, null=True)
-    pack = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     # Created new Class IntegerRangeField to limit values from min to max 
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
     units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
@@ -136,9 +147,9 @@ class Goods(models.Model):
     def amount_x_pack(self):
         # return "%.1d" % Decimal(self.pack * self.amount)
         # return "%.1f" % Decimal(self.pack * self.amount)
-        if not self.pack:
-            self.pack = 0
-        return Decimal(self.pack * self.amount).normalize()
+        if not self.contents:
+            self.contents = 0
+        return Decimal(self.contents * self.amount).normalize()
 
     @register.filter
     def normalize_dec(num):

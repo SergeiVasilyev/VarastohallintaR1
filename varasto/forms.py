@@ -53,7 +53,7 @@ class GoodsForm(ModelForm):
     class Meta:
         model = Goods
         fields =['ean','storage', 'cat_name', 'item_name', 'brand', 
-                'model', 'item_type', 'size', 'parameters', 'pack', 
+                'model', 'item_type', 'size', 'parameters', 'contents', 
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'units']
@@ -96,7 +96,7 @@ class GoodsForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': '',
             }),
-            'pack': NumberInput(attrs={
+            'contents': NumberInput(attrs={
                 'min': 0, # Min value doesn't work
                 'max': 1000000,
                 'step': 0.001,
