@@ -39,7 +39,47 @@ main .white_background {
     
 }
 
+.row_checkbox{
+    justify-self: center;
+}
+
+.row01 {
+    /* border: 1px solid red; */
+    /* padding: 1em; */
+}
+
+.item_name span{
+    display: block;
+}
 
 h1 {
     position:sticky;
+}
+
+
+
+.button_s {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_s__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    /* border: 1px solid red; */
 }
