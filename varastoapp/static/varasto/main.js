@@ -45,7 +45,7 @@ $(document).ready(function() {
     }
 
     function check_units(){
-        var $id_pack = $("#id_pack")
+        var $id_pack = $("#id_contents")
         var $id_units = $("#id_units")
 
         if ($id_units.val()) {
