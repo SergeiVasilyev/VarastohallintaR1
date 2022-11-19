@@ -83,13 +83,7 @@ class IntegerRangeField(models.IntegerField):
         return super(IntegerRangeField, self).formfield(**defaults)
 
 class Units(models.Model):
-    UNITS = [
-        ("unit", _("kpl")),
-        ("litre", _("l")),
-        ("kilogram", _("kg")),
-        ("meter", _("m")),
-    ]
-    unit = models.CharField(max_length=50, choices=UNITS, blank=True, null=True)
+    unit = models.CharField(max_length=25, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.unit)
 
@@ -212,7 +206,9 @@ class Rental_event(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
-    amount = models.IntegerField(default=1, blank=True, null=True) # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
+    amount = models.IntegerField(blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    units = models.ForeignKey(Units, related_name='units', on_delete=models.PROTECT, blank=True, null=True)
     start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
