@@ -217,7 +217,13 @@ def new_event(request):
             if idx == int(request.GET.get(inp_fix)):
                 return True
          
-
+    # TODO Lisätä tarkistus Kuinka plajon palautetaan takaisin kulutusmaterialia
+    # TODO Lopeta nappilla pitää lisätä uusi kenttä, kuinka paljon palautetaan kulutusmaterialia. Jos kentä jäetään tyhjänä - tarkoitta ei mitään palautettu ja merkataan palauttamaksi
+    # TODO Kulutusmateriali väri on Keltainen
+    # TODO Kun Estimated date on mennyt, automatisesti tehdä Lopeta funktio.
+    # TODO Kun annetaan kulutusmaterialit kannata vähentää Goods taulussa tavaran määrä
+    # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
+    # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         # TODO Сделать проверку достаточно ли расходных материалов для добавления, несмотря на ограничения во фронтэнде
@@ -226,7 +232,10 @@ def new_event(request):
             renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
             staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
+            
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
+                unit = int(request.GET.get('radioUnit'+str(item.id)))
+                item_amount = float(request.GET.get('inp_amount'+str(item.id)))
                 kwargs = {
                     'item': item, 
                     'renter': renter, 
@@ -234,16 +243,18 @@ def new_event(request):
                     'start_date': datenow,
                     'storage_id': staff.storage_id,
                     'estimated_date': estimated_date,
+                    'units': item.unit if not unit else None
                 }
-                if item.cat_name_id == 1:
-                    unit = int(request.GET.get('radioUnit'+str(item.id)))
-                    item_amount = int(request.GET.get('inp_amount'+str(item.id)))
+                if item.cat_name_id == CATEGORY_CONSUMABLES_ID:                   
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
-                    if (item_amount <= item.amount and unit==1) or (item_amount <= item.contents and unit==0):
+                    if (item_amount <= item.amount) or (item_amount <= item.contents):
                         print('ITEM AMOUNT <= item.amount or item.contents')
-                        kwargs['amount'] = item_amount
-
+                        if unit:
+                            kwargs['amount'] = item_amount
+                        else:
+                            kwargs['contents'] = item_amount
+                        
                 rental = Rental_event(**kwargs)
                 rental.save()
             changed_user = None
