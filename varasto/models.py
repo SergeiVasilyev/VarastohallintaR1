@@ -83,9 +83,9 @@ class IntegerRangeField(models.IntegerField):
         return super(IntegerRangeField, self).formfield(**defaults)
 
 class Units(models.Model):
-    unit = models.CharField(max_length=25, blank=True, null=True)
+    unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
     def __str__(self):
-        return '%s' % (self.unit)
+        return '%s' % (self.unit_name)
 
 class Goods(models.Model):
     UNITS = [
@@ -110,7 +110,8 @@ class Goods(models.Model):
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     # Created new Class IntegerRangeField to limit values from min to max 
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # pitää poistaa
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True)
     picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, null=True)
@@ -208,7 +209,7 @@ class Rental_event(models.Model):
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
     amount = models.IntegerField(blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
-    units = models.ForeignKey(Units, related_name='units', on_delete=models.PROTECT, blank=True, null=True)
+    units = models.ForeignKey(Units, on_delete=models.PROTECT, blank=True, null=True) # Goods, to_field='unit',
     start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
