@@ -77,7 +77,7 @@
                             <span class="item_num_name">Määrä</span>
                             <span class="item_num">
                                 {% if rental_event.units %}
-                                {{rental_event.contents|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                                {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
                                 {% else %}
                                 {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
                                 {% endif %}
