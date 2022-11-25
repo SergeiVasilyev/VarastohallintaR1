@@ -102,14 +102,14 @@
 
     <div class="row01">
         <div class="d-flex flex-column">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name}}</span></a>
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name|default_if_none:"-"}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place|default_if_none:"-"}}</span></a>
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean|default_if_none:"-"}}</span></a>
         </div>
     </div>
 
