@@ -82,7 +82,7 @@ class IntegerRangeField(models.IntegerField):
         defaults.update(kwargs)
         return super(IntegerRangeField, self).formfield(**defaults)
 
-class Units(models.Model):
+class Units(models.Model): # TODO Need to register in Admin.py
     unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.unit_name)
@@ -101,7 +101,7 @@ class Goods(models.Model):
     ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
-    brand = models.CharField(max_length=150,)
+    brand = models.CharField(max_length=150, blank=True, null=True)
     model = models.CharField(max_length=150, blank=True, null=True)
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
@@ -115,7 +115,7 @@ class Goods(models.Model):
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
-    ean = models.CharField(max_length=13, null=True)
+    ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
