@@ -20,9 +20,9 @@ main .white_background {
 .main_wrap{
     position: relative;
 }
-.inventory_header div, .inventory_wrap div{
-     /* border: 1px solid red;  */
-}
+/* .inventory_header div, .inventory_wrap div{
+      border: 1px solid red;
+} */
 
 .inventory_header > div, .inventory_wrap > div{
     padding: 0 0.2em;
@@ -43,10 +43,10 @@ main .white_background {
     justify-self: center;
 }
 
-.row01 {
-    /* border: 1px solid red; */
-    /* padding: 1em; */
-}
+/* .row01 {
+    border: 1px solid red;
+    padding: 1em;
+} */
 
 .item_name span{
     display: block;
