@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods, Staff_event
+from .models import CustomUser, Category, Goods, Staff_event, Units
 from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
@@ -56,7 +56,7 @@ class GoodsForm(ModelForm):
                 'model', 'item_type', 'size', 'parameters', 'contents', 
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
-                'invoice_number', 'amount', 'units']
+                'invoice_number', 'amount', 'units', 'unit']
         widgets ={
             'ean': TextInput(attrs={
                 'class': 'form-control',
@@ -139,7 +139,9 @@ class GoodsForm(ModelForm):
             'units': widgets.Select(attrs={
                 'class': 'form-select',
             }),
-        
+            'unit': widgets.Select(attrs={
+                'class': 'form-select',
+            }),
         }
 
 class Staff_eventForm(ModelForm):

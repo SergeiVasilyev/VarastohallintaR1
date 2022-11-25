@@ -110,8 +110,9 @@ class Goods(models.Model):
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     # Created new Class IntegerRangeField to limit values from min to max 
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # pitää poistaa
-    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True)
+    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
+    amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, null=True)
@@ -126,6 +127,7 @@ class Goods(models.Model):
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
+    # TODO Koska contents on aina sama, pitää lisätä yhdistys kentä amoun * contents. Ilman tätä ei mahdollista laskea iteemit 
 
     # @property
     # def rentable_at(self):
@@ -137,6 +139,17 @@ class Goods(models.Model):
     #         return event.estimated_date
     #     return None
 
+    @property
+    def decrease_items(self, is_сonsumables, amount):
+        try:
+            if is_сonsumables:
+                self.contents -= amount
+                return self.contents
+            else:
+                self.amount -= amount
+                return self.amount
+        except:
+            return False
 
     @property
     def amount_x_pack(self):
