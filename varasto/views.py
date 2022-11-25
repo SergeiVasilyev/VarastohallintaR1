@@ -40,6 +40,8 @@ import io
 import base64
 from django.middleware.csrf import get_token
 from django.conf import settings
+from decimal import *
+
 
 STATIC_URL = '/varastoapp/static/'
 
@@ -226,7 +228,6 @@ def new_event(request):
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
-        # TODO Сделать проверку достаточно ли расходных материалов для добавления, несмотря на ограничения во фронтэнде
         # TODO Make Try-exeption to get objects from model
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
@@ -235,7 +236,7 @@ def new_event(request):
             
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
                 unit = int(request.GET.get('radioUnit'+str(item.id)))
-                item_amount = float(request.GET.get('inp_amount'+str(item.id)))
+                item_amount = Decimal(request.GET.get('inp_amount'+str(item.id)))
                 kwargs = {
                     'item': item, 
                     'renter': renter, 
@@ -248,15 +249,28 @@ def new_event(request):
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:                   
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
-                    if (item_amount <= item.amount) or (item_amount <= item.contents):
+                    if (item_amount <= int(item.amount)) or (item_amount <= Decimal(item.contents) * int(item.amount)): # Tarkistus, riitako tavara varastossa?
                         print('ITEM AMOUNT <= item.amount or item.contents')
-                        if unit:
-                            kwargs['amount'] = item_amount
-                        else:
-                            kwargs['contents'] = item_amount
-                        
+                        try:
+                            if unit:
+                                item.amount = int(item.amount) - int(item_amount)
+                                kwargs['amount'] = item_amount
+                                print('item.amount', item.amount)
+                            else: # FIXME Koska contents on aina sama, pitää lisätä yhdistys kentä amoun * contents. Ilman tätä ei mahdollista laskea iteemit 
+                                all_contents = (Decimal(item.contents) * int(item.amount)) - Decimal(item_amount)
+                                print('all_contents', all_contents)
+                                content = all_contents // 2
+                                print('content', content)
+                                amount = (all_contents + Decimal(item_amount)) / int(item.amount)
+                                print('amount', amount)
+                                kwargs['contents'] = item_amount
+                                print('item.contents', item.contents)
+                            # item.save()
+                        except:
+                            raise Exception('Tavara ei riitä varastossa')
+
                 rental = Rental_event(**kwargs)
-                rental.save()
+                # rental.save()
             changed_user = None
             changed_items = []
             # return redirect('new_event')
@@ -505,15 +519,18 @@ def new_item(request):
                 new_picture = request.FILES['picture']
 
             if item.cat_name:
-                if not item.cat_name.id == CATEGORY_CONSUMABLES_ID: # Jos kategoria on Kulutusmateriaali lähetetään kaikki kappalet eri kentään
+                if not item.cat_name.id == CATEGORY_CONSUMABLES_ID: # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet eri kentään
                     l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
                     item.amount = 1 # Nollataan amount
+                    item.contents = None
                     item.picture = new_picture
+                    item.amount_x_contents = None
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
                     item.cat_name = None
-                    item.contents = None
+                    # item.contents = None
                     item.picture = new_picture
+                    item.amount_x_contents = Decimal(request.POST.get('amount')) * Decimal(request.POST.get('contents'))
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
                     form.save()
             else:
