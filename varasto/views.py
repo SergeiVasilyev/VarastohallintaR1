@@ -116,6 +116,7 @@ def renter(request, idx):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
+    error = {}
     context = {}
     now = datetime.now()
     datenow = pytz.utc.localize(now)
@@ -145,7 +146,7 @@ def new_event(request):
                  # saadan user, jolla on sama storage id kuin staffilla. Jos storage_id on NULL niin ei tarkistetaan storage_id (Adminilla ei ole storage_id)
                 changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) if storage_id else CustomUser.objects.get(code=request.GET.get('add_user'))
             except:
-                error = "User ei löydetty"
+                error[1] = "Lainaaja ei löydetty"
         if add_items: # jos item codes kirjoitetiin
             for add_item in add_items:
                 # print(add_item, ' ', request.GET.get(add_item))
@@ -157,7 +158,7 @@ def new_event(request):
                         changed_items.append(new_item) # Lisätään jos ei
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
-                    error = "Item ei löydetty"
+                    error[2] = "Tavaraa ei löydetty"
         if request.GET.get('estimated_date'):
             get_estimated_date = request.GET.get('estimated_date')
             date_formated = datetime.strptime(get_estimated_date, '%Y-%m-%d') # Make format stringed date to datetime format
@@ -180,7 +181,6 @@ def new_event(request):
         return -1
     
     # BUG Fix float number problem 4.7989999999999995
-    # FIXED При удалении одного товара из списка, у оставшихся сбрасывается amount and radiobtn
     # TODO Если Расходн. материалы уже добавлен, то при добавлении нового материала обновляет и поля старого без кнопки фиксации, надо поправить фиксауию
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
@@ -208,7 +208,7 @@ def new_event(request):
             # print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
             # print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
     else:
-        print('ei löyty mitään')
+        error[3] = 'Mitään ei löytynyt'
 
 
 
@@ -226,18 +226,22 @@ def new_event(request):
     # TODO Kun annetaan kulutusmaterialit kannata vähentää Goods taulussa tavaran määrä
     # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
+    # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
+    # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi 
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
-        # TODO Make Try-exeption to get objects from model
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
-            renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
-            staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
+            try:
+                renter = CustomUser.objects.get(id=changed_user.id) # etsitaan kirjoitettu vuokraja
+                staff = CustomUser.objects.get(id=request.user.id) # etsitaan varastotyöntekija, joka antoi tavara vuokrajalle
+            except:
+                error[5] = 'Error: Lainaaja ei löydy'
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
-                unit = int(request.GET.get('radioUnit'+str(item.id)))
-                item_amount = Decimal(request.GET.get('inp_amount'+str(item.id)))
-                kwargs = {
+                unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
+                item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
+                kwargs = { # Tehdään sanakirja, jossa kaikki kulutusmateriaalien ja työkalujen kentät ovat samat
                     'item': item, 
                     'renter': renter, 
                     'staff': staff,
@@ -246,36 +250,41 @@ def new_event(request):
                     'estimated_date': estimated_date,
                     'units': item.unit if not unit else None
                 }
-                if item.cat_name_id == CATEGORY_CONSUMABLES_ID:                   
+                if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
-                    if (item_amount <= int(item.amount)) or (item_amount <= Decimal(item.contents) * int(item.amount)): # Tarkistus, riitako tavara varastossa?
-                        print('ITEM AMOUNT <= item.amount or item.contents')
+                    if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
-                            if unit:
-                                item.amount = int(item.amount) - int(item_amount)
+                            if unit: # Jos yksikkö on pakkaus, kpl
+                                item.amount = int(item.amount) - item_amount
                                 kwargs['amount'] = item_amount
                                 print('item.amount', item.amount)
-                            else: # FIXME Koska contents on aina sama, pitää lisätä yhdistys kentä amoun * contents. Ilman tätä ei mahdollista laskea iteemit 
-                                all_contents = (Decimal(item.contents) * int(item.amount)) - Decimal(item_amount)
-                                print('all_contents', all_contents)
-                                content = all_contents // 2
-                                print('content', content)
-                                amount = (all_contents + Decimal(item_amount)) / int(item.amount)
-                                print('amount', amount)
-                                kwargs['contents'] = item_amount
-                                print('item.contents', item.contents)
-                            # item.save()
-                        except:
-                            raise Exception('Tavara ei riitä varastossa')
+                            else: # Jos yksikkö on sisällön määrää
+                                # amount_x_contents = item.amount * item.contents # formula
+                                print('item.amount_x_contents', item.amount_x_contents)
+                                remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
+                                print('remaining_contents', remaining_contents)
+                                new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
+                                print('new_amount', new_amount)
+                                remainder = remaining_contents - (item.contents * new_amount)
+                                print('remainder', remainder.normalize())
 
-                rental = Rental_event(**kwargs)
-                # rental.save()
+                                item.amount = new_amount
+                                item.amount_x_contents = remaining_contents
+                                kwargs['contents'] = item_amount
+                            item.save() # Päivitetään tavaoiden määrä varastossa
+                        except:
+                            raise Exception(f'Tavara {item.id} ei riitä varastossa')
+                    else:
+                        error[4] = 'Error: Ei tarpeeksi tuotteita varastossa'
+
+                rental = Rental_event(**kwargs) # Lisätään kaikki kentät tietokantaan. Jos lisättävää tavaraa ei ole kulutusmateriaalia, niin contents, amount_x_contents kentillä ovat None
+                rental.save()
             changed_user = None
             changed_items = []
-            # return redirect('new_event')
             return redirect('renter', idx=renter.id)
         else:
+            error[6] = 'Kaikkia kenttiä ei ole täytetty'
             feedback_status = False
 
     # print('changed_user ', changed_user)
