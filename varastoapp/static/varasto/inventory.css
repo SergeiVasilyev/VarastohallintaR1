@@ -1,51 +1,110 @@
-.inventory_header{
-    display: grid;
-    grid-template-columns: minmax(25em, 35em) repeat(9, minmax(14em, 20em));
-    margin-left: 50px;
-    align-items: center;
-    text-transform: uppercase;
-    color: #A0AEC0;
-}
-
-.inventory_header div span{
-    font-size: 0.75em;
-    font-weight: 500;
-}
-
-main .white_background{
-    /* overflow-x: scroll; */
-    overflow: auto;
-    white-space: nowrap;
-}
-
-.inventory_header div, .inventory_wrap div{
+/* PAGINATION */
+.pagination{
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
     /* border: 1px solid red; */
 }
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/
 
-.inventory_header > div, .inventory_wrap > div{
-    padding: 0 0.2em;
+/* BUTTONS IN CONTENT */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center; 
+}
+.btn-small{
+        min-width: 8em;
 }
 
-.inventory_wrap{
-    display: grid;
-    grid-template-columns: 50px minmax(25em, 35em) repeat(9, minmax(14em, 20em));
-    border-top: 1px solid #E2E8F0;
-    align-items: center;
+/* .btn-sq{
+
+} */
+
+.btn_strech {
+    place-self: center stretch;
     
 }
 
-.row_checkbox{
-    justify-self: center;
+.list__button_bg_green {
+    color: white;
+    background: #24A19C;
 }
 
-.row01 {
-    /* border: 1px solid red; */
-    /* padding: 1em; */
+.list__button_bg_white {
+    background: white;
 }
 
-.item_name span{
-    display: block;
+.list__button_bg_red {
+    color: white;
+    background: #D96098;
 }
+
+.list__button_bg_blue {
+    color: white;
+    background: #325288;
+}
+
+.list__collapse button div {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 100%;
+}
+
+.list__button__text{
+    padding: 0 1.2em;
+}
+
+.list__button span {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
+
+.list__button, .list__button:hover, .list__button:visited {
+    text-decoration: none;
+    color: white;
+}
+
+.font-size{
+    font-size: 1em;
+    padding: 0 0.9em;
+}
+
+.form-label{
+    /* font-size: 0.875em; */
+    color: #2D3748;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    font-weight: 600;
+}
+    
+/* / BUTTONS IN CONTENT */
 
 .button_s {
     display: inline-flex;
@@ -71,4 +130,79 @@ main .white_background{
     color: #FFFFFF;
     height: 100%;
     /* border: 1px solid red; */
+}
+
+div.relative {
+    position: relative;
+    width: 400px;
+    /* height: 200px; */
+    /* border: 3px solid #73AD21; */
+  } 
+
+.inventory_header{
+    display: grid;
+    grid-template-columns: minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    margin-left: 50px;
+    align-items: center;
+    text-transform: uppercase;
+    color: #A0AEC0;
+}
+
+.inventory_header div span{
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+div.absolute {
+    position: absolute;
+    /* left: 0; */
+    /* height: 100px; */   
+}
+  
+.inventory_wrap{
+    display: grid;
+    grid-template-columns: 50px minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    border-top: 1px solid #E2E8F0;
+    align-items: center;
+    /* border: 1px solid red */  
+}
+
+.row_checkbox{
+    justify-self: center;
+}
+
+/* .row01 {
+    border: 1px solid red;
+    padding: 1em;
+} */
+
+.item_name span{
+    display: block;
+}
+
+
+
+.main .white_background {
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.main_wrap{
+    position: relative;
+}
+/* .inventory_header div, .inventory_wrap div{
+     border: 1px solid red; 
+} */
+
+.inventory_header > div, .inventory_wrap > div{
+    padding: 0 0.2em;
+}
+
+/* ??????????????????? */
+.inventory_abs{
+    position: absolute;
+}
+
+h1 {
+    position:sticky;
 }

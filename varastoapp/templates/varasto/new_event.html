@@ -110,23 +110,27 @@ $(document).ready(function() {
     })
     
     function itemhtml (item) {
+        //console.log('item.cat_name_id - '+item.cat_name_id)
         let rentable_at = ''
         let disabled = ''
         let status = '<span class="status_green">Saatavilla</span>'
         let btn_class = 'button_active'
         let btnonclick = "selectItem("+item.id+")"
-        if (item.rentable_at){
+        if (item.rentable_at && item.cat_name_id != {{CATEGORY_CONSUMABLES_ID}}){
             const d = new Date(item.rentable_at)
             let date = d.getDate()
             let month = d.getMonth()
             if (d.getDate() < 10) date = '0' + d.getDate()
             if (d.getMonth() < 10) month = '0' + d.getMonth()
-            rentable_at = date + '.' + month + '.' + d.getFullYear()
+            rentable_at = '<span class="est_date">' + date + '.' + month + '.' + d.getFullYear() + '</span>'
 
             disabled = 'disabled'
             status = '<span class="status_red">Ei saatavilla</span>'
             btn_class = 'button_inactive'
             btnonclick = ""
+        }
+        if (item.cat_name_id == {{CATEGORY_CONSUMABLES_ID}}){
+            rentable_at = '<span class="est_date">'+item.amount+' pakkausta,</span><span class="est_date">'+item.amount_x_contents+' '+item.unit+' yhteensä</span>'
         }
         
         console.log(rentable_at)
@@ -177,7 +181,7 @@ $(document).ready(function() {
 
             <div class="row01">
                 <div class="">
-                    <span class="est_date">`+rentable_at+`</span>
+                    `+rentable_at+`
                 </div>
             </div>
             <div class="row01">
@@ -224,7 +228,10 @@ $(document).ready(function() {
         setPage()
     })
 
-
+    // $('.datepicker_input').datepicker({ 
+    //     startDate: new Date(),
+    //     'format': 'dd.mm.yyyy',
+    // });
 
 });
 
@@ -248,9 +255,9 @@ $(document).ready(function() {
                                 <input name="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{datenow|date:'Y-m-d'}}" style="" disabled />
                                 {% comment %} {{datenow|date:'Y-m-d'}} {% endcomment %}
                             </div>
-                            <div>
+                            <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
                                 <span class="small">Päättymisaika</span>
-                                <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
+                                <input id="estimated_date" name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" min="{{datenow|date:'Y-m-d'}}" type="date" {% if request.GET.estimated_date %}value="{{request.GET.estimated_date}}"{% endif %}  style="" />
                                 <div class="feedback-invalid {% if not estimated_date and not feedback_status %}show{% else %}hide{% endif %}">
                                     Kenttä on pakollinen
                                 </div>
@@ -301,7 +308,7 @@ $(document).ready(function() {
                     </div>
                 </div>
 
-                <div class="row g-3 mt-3 w-100 mb-4">
+                <div class="row g-3 mt-3 w-100 mb-5">
                     <div class="col-auto w-100">
                         <div class="d-flex align-items-end">
                             <div class="me-3 w-100">
@@ -329,20 +336,127 @@ $(document).ready(function() {
                 </div>
                 {% comment %} {{changed_items|length}} {% endcomment %}
                 {% for changed_item in changed_items %}
-                <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
-                    <div class="d-flex flex-row justify-content-between px-2" >
-                        <div class="mb-3 me-3">
-                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                            <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
-                            <p>{{changed_item.item_type|default:""}} {{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
+                <div class="added_items col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
+                    <div class="px-2">
+                        <div class="items">
+                            <div class="">
+                                <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
+                                <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
+                                <p>Tuotekoodi {{changed_item.id}}</p>
+                                <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
+                                <p>
+                                    {% if changed_item.cat_name.id == 1 %}
+                                        {{changed_item.amount|default:""}} laatikoa
+                                        | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
+                                        | {{changed_item.amount_x_pack|default:""}} {{changed_item.unit|default:""}} yhteensä
+                                    {% endif %}
+                                </p>
+                            </div>
                         </div>
-                        <div class="mb-3 d-flex">
-                            <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
-                                <span class="bi bi-dash font-size"></span>
-                            </button>
+                        {% if changed_item.cat_name.id == 1 %}
+                        <div class="items mx-4">
+                            <!-- TODO -->
+                            <div>
+                                <div onclick="hide_fixItem_btn('{{changed_item.id}}')">
+                                    
+                                    {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
+                                    {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
+                                    {% comment %} {{ changed_item.id }} {{ changed_item.radioUnit }} {{ changed_item.item_amount }} {% endcomment %}
+                                    <input type="number" name="inp_amount{{changed_item.id}}" id="inp_amount{{changed_item.id}}"
+                                            inputmode="decimal" style="text-align: center" class="form-control"
+
+                                            {% if changed_item.item_amount %} 
+                                                value="{{ changed_item.item_amount }}"
+                                            {% else %} 
+                                                value="1"
+                                            {% endif %}
+                                            
+                                            {% if changed_item.radioUnit == '0' and changed_item.units != "kpl" %}
+                                                data-decimals="4"
+                                                min="0" step="0.001"
+                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                            {% elif changed_item.radioUnit == '0' and changed_item.units == "kpl" %}
+                                                data-decimals="0"
+                                                min="1" step="1"
+                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                            {% else %}
+                                                data-decimals="0"
+                                                min="1" step="1"
+                                                max="{{changed_item.amount|default:''}}"
+                                            {% endif %}
+                                            />
+                                    {% comment %} <!-- <input type="number" name="inp_amount{{forloop.counter0}}" id="inp_amount{{forloop.counter0}}"
+                                            {% if changed_item.units == 'kpl' %}
+                                                value="1" min="1" step="1"
+                                            {% else %}
+                                                value="0" min="0" step="0.001" data-decimals="4" 
+                                            {% endif %}
+                                            max="{{changed_item.amount_x_pack|default:""}}"
+                                            inputmode="decimal" style="text-align: center" class="form-control" step="1" /> --> {% endcomment %}
+                                </div>
+                                {% comment %} {% for k, v in item_amount_dict.items %}
+                                    value="{{ item_amount_dict|get_item:k }}"
+                                {% endfor %} {% endcomment %}
+
+                                <div class="mt-2" onclick="hide_fixItem_btn('{{changed_item.id}}')">
+                                    <div class="form-check form-check-inline">
+                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
+                                        value="1"
+                                        {% if changed_item.radioUnit == '1' or not hanged_item.radioUnit %}
+                                            checked
+                                        {% else %}
+                                        {% endif %}
+                                            />
+                                        <label class="form-check-label" for="radioUnit1-{{changed_item.id}}">
+                                            laatikoa, kpl
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.unit}}', '{{changed_item.amount_x_pack}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit2-{{changed_item.id}}"
+                                        value="0"
+                                        {% if changed_item.radioUnit == '0' %}
+                                            checked                                       
+                                        {% else %}
+                                        {% endif %}
+                                            />
+                                        <label class="form-check-label" for="radioUnit2-{{changed_item.id}}">
+                                            {{changed_item.unit|default:""}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <div class="items">
+                            <!-- TODO Make JS function, when press button + : BTN to - , then make GET query -->
+                            {% comment %} {% if not fix_item_dict|get_key:changed_item.id %} {% endcomment %}
+                            {% comment %} {% if not changed_item.fix_item %} {% endcomment %}
+                            <div {% if not changed_item.fix_item %} style="display: block;" {% else %} style="display: none;" {% endif %} id="fix_item{{changed_item.id}}">
+                                <button type="submit" name="_fix_item{{changed_item.id}}" value="1" class="list__button list__button_bg_green btn_strech">
+                                    <span class="bi bi-plus font-size"></span>
+                                </button>
+                            </div>
+                            {% comment %} {% else %} {% endcomment %}
+                            <div {% if changed_item.fix_item %} style="display: block;" {% else %} style="display: none;" {% endif %} id="remove_item{{changed_item.id}}">
+                                <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
+                                    <span class="bi bi-dash font-size"></span>
+                                </button>
+                            </div>
+                            {% comment %} {% endif %} {% endcomment %}
+                        </div>
+                        {% else %}
+                        <div class="items"></div>
+                        <div class="items">
+                            <div>
+                                <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
+                                    <span class="bi bi-dash font-size"></span>
+                                </button>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
+                <div class="border_light"></div>
                 {% endfor %}
             </div>
         </div>
@@ -360,9 +474,9 @@ $(document).ready(function() {
                         <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden">
                         {% endfor %}
                     {% endif %}
-                    <button type="button" class="btn btn-primary me-2">
+                    <!-- <button type="button" class="btn btn-primary me-2">
                         <span class="button_s__text">PERUUTA</span>
-                    </button> 
+                    </button>  -->
                     <button type="submit" class="btn btn-primary">
                         <span class="button_s__text">TALLENNA</span>  
                     </button>
@@ -409,6 +523,33 @@ $(document).ready(function() {
 </div>
 <script type="text/javascript">
 
+// Check radio btns
+function radio_btn(counter, units, max_amount) {
+    var $inp_amount = $("#inp_amount"+counter)
+    var rounded_num = Math.round(parseInt($inp_amount.val())) // Round input value
+    //console.log($inp_amount.val())
+    if ($("#radioUnit1-"+counter).is(':checked') || units == 'kpl') { // Check is checked "laatiko button" or units == kpl
+        // $inp_amount.val(1)
+        $inp_amount.val(rounded_num)
+        $inp_amount.attr('min', 1)
+        $inp_amount.attr('max', max_amount)
+        $inp_amount.attr('step', 1)
+        $inp_amount.attr('data-decimals', 0)
+    } else {
+        // $inp_amount.val(0)
+        $inp_amount.attr('min', 0)
+        $inp_amount.attr('max', max_amount)
+        $inp_amount.attr('step', 0.001)
+        $inp_amount.attr('data-decimals', 4)
+    }
+}
+
+function hide_fixItem_btn(id){
+    var $fix_btn = $("#fix_item"+id)
+    var $remove_btn = $("#remove_item"+id)
+    $fix_btn.show()
+    $remove_btn.hide()
+}
 
 
 // Select from list
@@ -485,7 +626,7 @@ function selectMultItem(){
         // url += '?param=1'
     }
 
-    setTimeout(() => {  window.location.href = url; }, 200) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
+    setTimeout(() => {  window.location.href = url; }, 1) // timeout, jos halua katsoa console.log ennen sivun päivitämistä
     // window.location.href = url;
 }
 // --Select multiple items
@@ -514,13 +655,15 @@ function selectMultItem(){
     function deleteParams(paramsObj) {
         var url = location.protocol + '//' + location.host + location.pathname + '?'
         var i = 0
+        let new_url = '' // This fix bug, when new_url is not define
         Object.entries(paramsObj).forEach(([key, value]) => { // key начинается с нуля - исправить
             console.log(key, ' - ', value)
             console.log(window.location.href)
             url = window.location.href
-            let new_url = url.split(key+'='+value).join('') //находим и удаляем из строки
-            console.log(new_url)
-            
+            let url_without_add_user = url.split(key+'='+value).join('') //находим и удаляем из строки 
+            new_url = url_without_add_user.split('&&').join('&') // Replace && to &
+            console.log('new_url', new_url)
+            // setTimeout(() => {  window.location.href = new_url2; }, 8000)
         })
         return new_url
     }
@@ -529,8 +672,10 @@ function selectMultItem(){
         let key_name = 'add_user'
         var url_params = getUrlParams(key_name)['url_params']
         const picked = (({ add_user }) => ({ add_user }))(url_params) // Обрезаем объект до указанных параметров
+        console.log('picked', picked)
         var updated_url = deleteParams(picked)
-        console.log(updated_url)
+        console.log('updated_url ', updated_url)
+        setTimeout(() => {  window.location.href = updated_url; }, 1) // Update url and reload page
         // var value = $(this).attr('value')
         // var url = updated_url.split('_remove_user='+value).join('')
         // console.log(url)

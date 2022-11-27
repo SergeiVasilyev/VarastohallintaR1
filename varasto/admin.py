@@ -45,9 +45,9 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Goods)
 class GoodsAdmin(admin.ModelAdmin):
     list_display = ['item_name', 'brand', 'model', 'cat_name', 
-        'item_type', 'size', 'parameters', 'pack', 'picture',
+        'item_type', 'size', 'parameters', 'contents', 'picture',
         'item_description', 'cost_centre', 'reg_number', 'purchase_data', 
-        'purchase_price', 'purchase_place', 'invoice_number', 'storage', 'ean', 'amount', 'units']
+        'purchase_price', 'purchase_place', 'invoice_number', 'storage', 'ean', 'amount', 'units', 'unit', 'amount_x_contents']
 
 @admin.register(Storage_name)
 class Storage_nameAdmin(admin.ModelAdmin):
