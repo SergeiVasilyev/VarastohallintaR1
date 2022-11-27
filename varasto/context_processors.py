@@ -3,6 +3,7 @@ import pytz
 from multiprocessing import context
 from .models import Settings, CustomUser
 from datetime import datetime
+from .storage_settings import *
 
 from django.contrib.auth.models import Group, Permission
 
@@ -28,5 +29,6 @@ def get_rental_events_page(request):
         'rental_events_page': page.set_value,
         'datenow': datenow,
         'user': request.user,
+        'CATEGORY_CONSUMABLES_ID': CATEGORY_CONSUMABLES_ID,
     }
     return context
