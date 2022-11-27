@@ -67,6 +67,7 @@
     align-self: end;
     display: flex;
     justify-content: center;
+    flex-direction: column;
 
 }
 .new_rental button {
