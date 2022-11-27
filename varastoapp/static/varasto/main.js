@@ -45,8 +45,8 @@ $(document).ready(function() {
     }
 
     function check_units(){
-        var $id_pack = $("#id_pack")
-        var $id_units = $("#id_units")
+        var $id_pack = $("#id_contents")
+        var $id_units = $("#id_unit")
 
         if ($id_units.val()) {
             $id_pack.prop("disabled", false)
@@ -54,7 +54,8 @@ $(document).ready(function() {
             $id_pack.prop("disabled", true)
         }
         //let accessAllowed = (age > 18) ? true : false;
-        if ($id_units.val() == 'unit') {
+        console.log($id_units.val())
+        if ($id_units.val() == '1') { // TODO need to assign a variable for '1' as kpl
             unit_around = Math.round($id_pack.val())
             $id_pack.val(unit_around)
             $id_pack.attr('data-decimals', 0)
@@ -70,7 +71,7 @@ $(document).ready(function() {
     }
     function check_cat_name(){
         var $id_pack = $("#id_pack")
-        var $id_units = $("#id_units")
+        var $id_units = $("#id_unit")
         if ($('#id_cat_name').val() != '1'){
             $id_pack.val('')
             $id_pack.attr('placeholder', '')
@@ -87,7 +88,7 @@ $(document).ready(function() {
     check_units()
     
     // Change data-decimals and step in "MÄÄRÄ LAATIKOSSA" and round input value when YKSIKKÖ is kpl
-    $('#id_units').change(function(){
+    $('#id_unit').change(function(){
         check_units()
     })
 
