@@ -110,23 +110,27 @@ $(document).ready(function() {
     })
     
     function itemhtml (item) {
+        //console.log('item.cat_name_id - '+item.cat_name_id)
         let rentable_at = ''
         let disabled = ''
         let status = '<span class="status_green">Saatavilla</span>'
         let btn_class = 'button_active'
         let btnonclick = "selectItem("+item.id+")"
-        if (item.rentable_at){
+        if (item.rentable_at && item.cat_name_id != {{CATEGORY_CONSUMABLES_ID}}){
             const d = new Date(item.rentable_at)
             let date = d.getDate()
             let month = d.getMonth()
             if (d.getDate() < 10) date = '0' + d.getDate()
             if (d.getMonth() < 10) month = '0' + d.getMonth()
-            rentable_at = date + '.' + month + '.' + d.getFullYear()
+            rentable_at = '<span class="est_date">' + date + '.' + month + '.' + d.getFullYear() + '</span>'
 
             disabled = 'disabled'
             status = '<span class="status_red">Ei saatavilla</span>'
             btn_class = 'button_inactive'
             btnonclick = ""
+        }
+        if (item.cat_name_id == {{CATEGORY_CONSUMABLES_ID}}){
+            rentable_at = '<span class="est_date">'+item.amount+' pakkausta,</span><span class="est_date">'+item.amount_x_contents+' '+item.unit+' yhteensä</span>'
         }
         
         console.log(rentable_at)
@@ -177,7 +181,7 @@ $(document).ready(function() {
 
             <div class="row01">
                 <div class="">
-                    <span class="est_date">`+rentable_at+`</span>
+                    `+rentable_at+`
                 </div>
             </div>
             <div class="row01">

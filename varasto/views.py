@@ -227,7 +227,8 @@ def new_event(request):
     # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
     # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
-    # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi 
+    # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi
+    # DONE Lisää Products sivulle tietoja tavaroiden saldosta
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
@@ -333,6 +334,11 @@ def getProducts(request):
                 'rentable_at': obj.rentable_at if obj.rentable_at else '',
                 'storage_place': obj.storage_place if obj.storage_place else '',
                 'storage_name': obj.storage.name if obj.storage else '', # if in Goods table is no goods.storage_id getting error when try get obj.storage.name, because name isn't in storage
+                'cat_name_id': obj.cat_name_id if obj.cat_name_id else '',
+                'amount': obj.amount if obj.amount else '',
+                'contents': obj.contents if obj.contents else '',
+                'amount_x_contents': obj.amount_x_contents.normalize() if obj.amount_x_contents else '',
+                'unit': obj.unit.unit_name if obj.unit else '',
             }
             data.append(item)
     
