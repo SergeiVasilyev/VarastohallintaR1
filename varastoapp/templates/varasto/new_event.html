@@ -348,7 +348,7 @@ $(document).ready(function() {
                                     {% if changed_item.cat_name.id == 1 %}
                                         {{changed_item.amount|default:""}} laatikoa
                                         | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
-                                        | {{changed_item.amount_x_pack|default:""}} {{changed_item.unit|default:""}} yhteensä
+                                        | {{changed_item.amount_x_contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} yhteensä
                                     {% endif %}
                                 </p>
                             </div>
@@ -374,11 +374,11 @@ $(document).ready(function() {
                                             {% if changed_item.radioUnit == '0' and changed_item.units != "kpl" %}
                                                 data-decimals="4"
                                                 min="0" step="0.001"
-                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                                max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
                                             {% elif changed_item.radioUnit == '0' and changed_item.units == "kpl" %}
                                                 data-decimals="0"
                                                 min="1" step="1"
-                                                max="{{changed_item.amount_x_pack|default:''}}"
+                                                max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
                                             {% else %}
                                                 data-decimals="0"
                                                 min="1" step="1"
@@ -412,7 +412,7 @@ $(document).ready(function() {
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.unit}}', '{{changed_item.amount_x_pack}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit2-{{changed_item.id}}"
+                                        <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.unit}}', '{{changed_item.amount_x_contents|normalize_dec}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit2-{{changed_item.id}}"
                                         value="0"
                                         {% if changed_item.radioUnit == '0' %}
                                             checked                                       
