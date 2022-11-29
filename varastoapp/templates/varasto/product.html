@@ -70,8 +70,8 @@
                         <span class="button__icon"><i class="bi bi-printer"></i>
                         </span>
                     </button>
-                <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
-                    <button type="submit" {% if not selected_item.rentable_at %} class="button button_bg_green resize" {% else %} class="button button_bg_gray resize" {% endif %}> 
+                <a class="nodecor {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
@@ -159,10 +159,7 @@
             {% endfor %}
 
         </div>
-        
 
-        
-    
     </div>
 
 {% endblock %}
