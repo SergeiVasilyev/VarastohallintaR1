@@ -87,8 +87,9 @@
         
         <div class="history_header_wrap">
             <div class="column_names">
-                <div><span>Valokuva</span></div>
+                <div><span></span></div>
                 <div><span>Vuokrajan tiedot</span></div>
+                <div><span>Tapahtuma tiedot</span></div>
                 <div><span>Vuokra-aika</span></div>
                 <!-- <div><span>Vastuulinen henkilö</span></div> -->
                 <div><span>Kommentit</span></div>
@@ -122,6 +123,27 @@
                     <span class="item_num_name">Opiskelijakoodi</span>
                     <!-- <span class="item_num">{{rental_event.id_start_null}}</span> -->
                     <span class="item_num">{{rental_event.renter.code}}</span>
+                </div>
+
+                <div class="item_info">
+                    <div>
+                        <span class="item_num_name">Tapahtumakoodi</span>
+                        <span class="item_num">{{rental_event.id}}</span>
+                    </div>
+                    <div>
+                        <span class="item_num_name">Määrä</span>
+                        <span class="item_num">
+                            {% if rental_event.units %}
+                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                            {% else %}
+                            {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="item_num_name"></span>
+                        <span class="item_num"></span>
+                    </div>
                 </div>
 
                 <div class="rental_period">
