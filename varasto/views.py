@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
 from django.db.models import Count
 
 from django.db.models import Min, Max
@@ -154,8 +154,8 @@ def new_event(request):
                     # Jos storage_id on NULL niin etsitaan tavaraa koko tietokannassa (Adminilla ei ole storage_id)
                     new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id)) if storage_id else Goods.objects.get(id=request.GET.get(add_item))
                     # if new_item.rentable_at: print(new_item, ' rented')
-                    if new_item not in changed_items and not new_item.rentable_at: # Onko lisättävä tavara jo lisätty?
-                        changed_items.append(new_item) # Lisätään jos ei
+                    if new_item not in changed_items and new_item.is_possible_to_rent[0] == True: # Onko lisättävä tavara jo lisätty and item not consumable
+                        changed_items.append(new_item) # Lisätään jos ei 
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
                     error[2] = "Tavaraa ei löydetty"
@@ -240,8 +240,6 @@ def new_event(request):
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
-                unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
-                item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
                 kwargs = { # Tehdään sanakirja, jossa kaikki kulutusmateriaalien ja työkalujen kentät ovat samat
                     'item': item, 
                     'renter': renter, 
@@ -249,9 +247,12 @@ def new_event(request):
                     'start_date': datenow,
                     'storage_id': staff.storage_id,
                     'estimated_date': estimated_date,
-                    'units': item.unit if not unit else None
+                    'amount': 1,
+                    # 'units': item.unit if not unit else None
                 }
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
+                    unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
+                    item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
@@ -272,7 +273,10 @@ def new_event(request):
 
                                 item.amount = new_amount
                                 item.amount_x_contents = remaining_contents
+                                kwargs['amount'] = None
                                 kwargs['contents'] = item_amount
+                                kwargs['units'] = item.unit
+
                             item.save() # Päivitetään tavaoiden määrä varastossa
                         except:
                             raise Exception(f'Tavara {item.id} ei riitä varastossa')
