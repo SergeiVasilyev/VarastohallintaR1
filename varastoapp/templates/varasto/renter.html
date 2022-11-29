@@ -91,9 +91,9 @@
                             </span>
                         </div>
                         <div>
-                            <span class="item_num_name">Tuotepaikka / Tuotekoodi</span>
+                            <span class="item_num_name">Tuotepaikka / Tuotekoodi / Tapahtumakoodi</span>
                             <!-- <span class="item_num">{{rental_event.id_start_null}}</span> -->
-                            <span class="item_num">{{rental_event.item.storage_place|default_if_none:"-"}} / {{rental_event.item.id}}</span>
+                            <span class="item_num">{{rental_event.item.storage_place|default_if_none:"-"}} / {{rental_event.item.id}} / {{rental_event.id}}</span>
                         </div>
                     </a>
                 </div>
@@ -129,21 +129,21 @@
                 <div class="update_event">
                     <div class="buttons">
                         <!-- При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!! -->
-                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.item.id}}" >
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.id}}" >
                             <span class="list__button__text ">Päivitä</span>
                         </button>
                     </div>
                     <div class="buttons">
-                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.item.id}}">
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.id}}">
                             <span class="list__button__text ">Lopeta</span>
                         </button>
                     </div>
                 </div>
             </div>
-
+            
 
             <!-- Modal 1-->
-            <div class="modal fade" id="p{{rental_event.item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="p{{rental_event.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -167,9 +167,9 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Modal 2-->
-            <div class="modal fade" id="l{{rental_event.item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="l{{rental_event.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
