@@ -11,6 +11,8 @@ import operator
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import *
+from .storage_settings import *
+
 
 
 
@@ -204,6 +206,16 @@ class Goods(models.Model):
             # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
+
+    # This property is modificate of rentable_at 
+    @property
+    def is_possible_to_rent(self):
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
+        if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
+            return [False, event.estimated_date, 'Item is not consumables but it is rented now']
+        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+            return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        return [True, None, 'Item is not rented yet']
 
     def __str__(self):
         return '%s' % (self.item_name)
