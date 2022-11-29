@@ -110,9 +110,15 @@
                         {% endif %}
                     </span>
                     {% if not rental_event.returned_date and rental_event.is_past_due %}
-                        <div class="list__rented_item_status">
-                            <div class="status_green"><span>Lainassa</span></div>
-                        </div>
+                        {% if rental_event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                            <div class="list__rented_item_status">
+                                <div class="status_orange"><span>Lainassa*</span></div>
+                            </div>
+                        {% else %}
+                            <div class="list__rented_item_status">
+                                <div class="status_green"><span>Lainassa</span></div>
+                            </div>
+                        {% endif %}
                         {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
                         <div class="list__rented_item_status">
                             <div class="status_red"><span>Erääntynyt</span></div>

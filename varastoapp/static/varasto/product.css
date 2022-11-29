@@ -234,6 +234,11 @@
     border: 1px solid #D96098;
     color: white;
 } 
+.status_orange {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 
 .update_event {

@@ -119,7 +119,11 @@
             {% if item.rentable_at and item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
             <span class="status_red">Ei saatavilla</span>
             {% else %}
-            <span class="status_green">Saatavilla</span>
+                {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                    <span class="status_orange">Saatavilla</span>
+                {% else %}
+                    <span class="status_green">Saatavilla</span>
+                {% endif %}
             {% endif %} 
         </div>
     </div>
