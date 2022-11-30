@@ -59,25 +59,72 @@ def person_view(request):
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
+    error = {}
     # on välttämätöntä kieltää edellisen päivämäärän valitseminen!!
     if request.method == 'POST':
-        # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
-        # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
+        print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
+        print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
+        print("BUTTON", request.POST.get('_return'))
+        print("BUTTON", request.POST.get('_close_rent'))
         item = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
-        if request.POST.get('rental_close'):
+        product = Goods.objects.get(id=item.item_id)
+
+        def return_products(got_amount: int) -> None:
+            if (item.amount - got_amount) >= 0: # FIXME or (item.contents - got_amount) >= 0
+                if item.amount:
+                    product.amount = product.amount + got_amount
+                elif item.contents:
+                    product.amount_x_contents = product.amount_x_contents + got_amount
+            else:
+                return False
+            item.returned = item.returned + got_amount if item.returned != None else got_amount
+            return True
+
+        def update_amount_data():
+            if request.POST.getlist('everything_returned'):
+                got_amount = item.amount if item.amount else item.contents 
+                if not return_products(got_amount):
+                    error[0] = "Tapahtuman päivitys epäonnistui, yritä uudelleen"
+                    return error
+                print('everything_returned', request.POST.get('return_amount'+str(item.id)))
+            if not request.POST.getlist('everything_returned') and request.POST.getlist('return_amount'+str(item.id)):
+                got_amount = Decimal(request.POST.get('return_amount'+str(item.id))) if item.contents else int(request.POST.get('return_amount'+str(item.id)))
+                return_products(got_amount)
+                print('return part of rented', request.POST.get('return_amount'+str(item.id)))
+
+        if request.POST.get('rental_close'): # UPDATE DATE
+            print('RENTAL CLOSE')
             sended_date = request.POST.get('rental_close') 
             date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
             date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
             # print(item.item.item_name, date_localized)
             item.estimated_date = date_localized # Save new estimated date into database
             item.save()
-        if request.POST.getlist('set_end_date'):
+
+        if request.POST.getlist('_close_rent') or request.POST.getlist('_return'):
+            # TODO Если возврщаем все, то закрываем аренду и увеличиваем товар в Goods
+            # TODO Если возвращаем частично, то увеличиваем товар в Goods на возвращаемое количество. 
+            # TODO При этом если нажата кнопка Lopeta то закрываем позицию, если нажата Päivitä то позицию оставляем открытой
+            # !!!! Kun palautetaan kulutusmateriaalia, varmasti ei saa laittaa takaisin pakkaukseen. Sitten luulen kasvatetaan vain sisällön määrä
+            # FIXED inaccuracy of decimal numbers https://www.codingem.com/javascript-how-to-limit-decimal-places/
+            print('_close_rent', request.POST.get('return_amount'+str(item.id)))         
+            if not item.returned_date: # Need to prevent form resubmission
+                update_amount_data()
+            if request.POST.getlist('_close_rent'): # или если rental event.amount / contents = 0
+                now = datetime.now()
+                datenow = pytz.utc.localize(now)
+                item.returned_date = datenow # Save new estimated date into database
+            item.save()
+            product.save()
+
+        if request.POST.getlist('set_end_date'): # CLOSE RENT
+            print('set_end_date')
             now = datetime.now()
             datenow = pytz.utc.localize(now)
             item.returned_date = datenow # Save new estimated date into database
             item.save()
         if request.POST.getlist('set_problem'):
-            # print('PROBLEM')
+            print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
         if request.POST.getlist('send_email_to_teacher'):
