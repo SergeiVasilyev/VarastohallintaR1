@@ -175,6 +175,7 @@ $(document).ready(function() {
                                 {% if event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
                                     <div class="list__rented_item_status status_orange">
                                         <span>Lainassa*</span>
+                                        {% comment %} ei palautettava {% endcomment %}
                                     </div>
                                 {% else %}
                                     <div class="list__rented_item_status status_green">
