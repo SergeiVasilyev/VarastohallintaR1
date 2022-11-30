@@ -239,6 +239,7 @@ class Rental_event(models.Model):
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+    returned = models.DecimalField(max_digits=11, decimal_places=4, default=0, blank=True, null=True)
 
     @property
     def id_start_null (self):
