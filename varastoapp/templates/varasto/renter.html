@@ -195,9 +195,10 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">sulje</button>
                                 {% if rental_event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
-                                <button type="submit" name="_return" value="{{rental_event.id}}" class="btn btn-primary">PALAUTA</button>
-                                {% endif %}
+                                <button type="submit" name="_close_rent_cons" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                {% else %}
                                 <button type="submit" name="_close_rent" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
