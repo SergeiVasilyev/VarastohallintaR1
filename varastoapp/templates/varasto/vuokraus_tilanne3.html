@@ -18,7 +18,7 @@
             <span class="small mt-3">Tuotenumero</span>
             <span class="middle">{{rental_event.item.id}}</span>
             <span class="small mt-3">Tuotepaikka</span>
-            <span class="middle">{{rental_event.item.storage_place}}</span>
+            <span class="middle">{{rental_event.item.storage_place|default_if_none:"-"}}</span>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                         data-decimals="0"
                         min="1" step="1"
                         max="{{ rental_event.amount }}"
-                        data-suffix="p kpl"
+                        data-suffix="paketti kpl"
                     {% else %} 
                         value="{{ rental_event.contents|normalize_dec }}"
                         data-decimals="4"

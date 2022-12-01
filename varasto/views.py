@@ -115,6 +115,7 @@ def renter(request, idx):
 
         if request.POST.getlist('set_end_date'): # CLOSE RENT
             print('set_end_date')
+            item.returned = 1
             now = datetime.now()
             datenow = pytz.utc.localize(now)
             item.returned_date = datenow # Save new estimated date into database
