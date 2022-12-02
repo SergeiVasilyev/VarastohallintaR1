@@ -16,6 +16,7 @@ from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staf
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
+from django.core.paginator import Paginator
 
 def report(request, idx):
     rental_events = Rental_event.objects.filter(renter_id=idx).order_by("-start_date")
@@ -66,5 +67,10 @@ def product_report(request, idx):
     return render(request, 'varasto/product_report.html', context)
 
 def inventory (request):
-    items = Goods.objects.all()
-    return render(request, 'varasto/inventory.html', {"items": items})
+    items = Goods.objects.all().order_by("id")
+    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'varasto/inventory.html', {"items": page_obj})
