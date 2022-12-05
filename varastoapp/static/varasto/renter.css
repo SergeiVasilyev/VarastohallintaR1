@@ -7,7 +7,7 @@
 
 .person_info {
     display: grid;
-    grid-template-columns: auto 3fr 1fr; 
+    grid-template-columns: auto 5fr 1fr; 
     /* align-items: center; */
 }
 .information {
@@ -54,12 +54,18 @@
 .new_rental {
     align-self: end;
     display: flex;
-    justify-content: center;
     flex-direction: column;
 
 }
+.new_rental a {
+    display: block;
+    align-self: center;
+    width: 15em;
+    /* border: 1px solid red; */
+}
 .new_rental button {
-    min-width: 15em;
+    /* min-width: 15em; */
+    /* width: 15em; */
 }
 /* /---person_info--- */
 
