@@ -192,12 +192,12 @@
                         title="Pakkauksessa olevien tavaroiden määrä antaa varastotyöntekijöille mahdollisuuden hallita kulutustarvikkeita tarkemmin.">
                             <label class="form-label">MÄÄRÄ PAKKAUKSESSA</label>
                             {% comment %} {{form.contents}} {% endcomment %}
-                            
-                            {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
+                            {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
+                            {% comment %} {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
                                 {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
                             {% else %}
                                 {% render_field form.contents|append_attr:"id:contents" %}
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                             
                         </div>
                     </div>

@@ -574,7 +574,13 @@ def edit_item(request, idx):
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
     get_item = Goods.objects.get(id=idx)
-    print('get_item.cat_name', get_item.unit, 'get_item.cat_name', get_item.cat_name)
+    unit = get_item.unit
+    cat_name = get_item.cat_name
+    cat_name_id = get_item.cat_name_id
+    storage = get_item.storage
+    amount = get_item.amount
+    contents = get_item.contents
+
     # FIXME if SELECT INPUT DISABLED we don't get value from html. So need to get all SELECT fields get from database
     # form = GoodsForm(request.POST, request.FILES)
     if request.method == "POST":
@@ -591,12 +597,21 @@ def edit_item(request, idx):
                 item.picture = new_picture
             except:
                 print('get_item.picture=', get_item.picture)
+            # FIXME Yksikko перенести в поле MÄÄRÄ PAKKAUKSESSA, а на освободившееся место поставить поле amount_x_contents
+            if cat_name_id == CATEGORY_CONSUMABLES_ID:
+                print('item.amount_x_contents', item.amount_x_contents)
+                if (item.amount - amount) > 0:
+                    new_amount_x_contents = (item.amount - amount) * contents
+                    item.amount_x_contents += new_amount_x_contents
+                if (item.amount - amount) < 0:
+                    new_amount_x_contents = (amount - item.amount) * contents
+                    item.amount_x_contents -= new_amount_x_contents
 
-            print(get_item, get_item.unit, 'get_item.cat_name', get_item.cat_name)
-            item.unit = get_item.unit
-            item.cat_name = get_item.cat_name
+            item.contents = contents # Ei saa muokata contents
+            item.cat_name = cat_name
+            item.unit = unit
+            item.storage = storage if not item.storage else item.storage
 
-            item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
             form.save()
             return redirect('product', idx)
         else:
