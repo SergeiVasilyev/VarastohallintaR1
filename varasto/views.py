@@ -148,8 +148,12 @@ def renter(request, idx):
     else:
         rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
 
+    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'rental_events': rental_events,
+        'rental_events': page_obj,
         'selected_user': selected_user,
         'idx': idx,
     }
@@ -634,13 +638,14 @@ def product(request, idx):
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
     if user.has_perm('varasto.view_customuser'):
-        rental_events = Rental_event.objects.filter(item=selected_item)
+        rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
 
-    # if rental_events:
-    #     print(rental_events)
+    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'rental_events': rental_events,
+        'rental_events': page_obj,
         'selected_item': selected_item,
         'idx': idx,
     }
