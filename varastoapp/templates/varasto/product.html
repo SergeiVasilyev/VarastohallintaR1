@@ -85,6 +85,20 @@
             </div>
         </div>
         
+        <div class="pagination mt-3">
+            <span class="step-links">
+                <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+                <a href="{% if rental_events.has_previous %}?page={{ rental_events.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+                
+                <span class="current">
+                    Sivu {{ rental_events.number }} / {{ rental_events.paginator.num_pages }}
+                </span>
+    
+                <a href="{% if rental_events.has_next %}?page={{ rental_events.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+                <a href="?page={{ rental_events.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+            </span>
+        </div>
+
         <div class="history_header_wrap">
             <div class="column_names">
                 <div><span></span></div>
