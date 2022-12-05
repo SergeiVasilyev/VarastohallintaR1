@@ -32,7 +32,7 @@
                 <span class="personal_field_name">EAN</span>
                 <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
                 <span class="personal_field_name">saatavuus</span>
-                <span class="personal_field_data ">{% if selected_item.rentable_at %}<span class="status_red round">Ei saatavilla</span>{% else %}<span class="status_green round">Saatavilla</span>{% endif %}</span>
+                <span class="personal_field_data ">{% if selected_item.is_possible_to_rent.0 %}<span class="status_green round">Saatavilla</span>{% else %}<span class="status_red round">Ei saatavilla</span>{% endif %}</span>
                 <span class="personal_field_name">tuotekoodi</span>
                 <span class="personal_field_data">{{ selected_item.id|default:"-" }}</span>
                 <span class="personal_field_name">varasto</span>
@@ -55,7 +55,7 @@
                 <span class="personal_field_name">rekisterinumero</span>
                 <span class="personal_field_data">{{ selected_item.reg_number|default:"-" }}</span>
                 <span class="personal_field_name">ostopäivämäärä</span>
-                <span class="personal_field_data">{{ selected_item.purchase_data|date:'d.m.Y' }}</span>
+                <span class="personal_field_data">{{ selected_item.purchase_data|date:'d.m.Y'|default:"-" }}</span>
                 <span class="personal_field_name">ostohinta</span>
                 <span class="personal_field_data">{{ selected_item.purchase_price|default:"-" }} euro</span>
                 <span class="personal_field_name">ostopaikka</span>
@@ -67,9 +67,15 @@
                 <a class="nodecor pb-3" href="{% url 'product_report' selected_item.id %}">
                     <button type="submit" class="button button_bg_blue resize">
                         <span class="button__text resize">Raportti</span>
-                        <span class="button__icon"><i class="bi bi-printer"></i>
-                        </span>
+                        <span class="button__icon"><i class="bi bi-printer"></i></span>
                     </button>
+                </a>
+                <a class="nodecor pb-3" href="{% url 'edit_item' selected_item.id %}">
+                    <button type="submit" class="button button_bg_blue resize">
+                        <span class="button__text resize">Muokkaa tavara</span>
+                        <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
+                    </button>
+                </a>
                 <a class="nodecor {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
                     <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
