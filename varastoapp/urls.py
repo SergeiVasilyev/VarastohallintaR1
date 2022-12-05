@@ -48,6 +48,7 @@ urlpatterns = [
     path('inventaario_side_window/', views.inventaario_side_window, name='inventaario_side_window'),
     path('recovery/', views.user_recovery, name='recovery'),
     path('new_item/', views.new_item, name='new_item'),
+    path('edit_item/<int:idx>/', views.edit_item, name='edit_item'),
     path('update_rental_status/', views.update_rental_status, name='update_rental_status'),
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),

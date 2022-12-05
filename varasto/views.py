@@ -24,6 +24,7 @@ from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
 from django.db.models import Count
+from django.contrib.auth.models import Group
 
 from django.db.models import Min, Max
 from .test_views import test
@@ -565,6 +566,67 @@ def get_photo(request):
     img = _save_image(picData)
     print(img)
     return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
+
+@login_required()
+@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
+def edit_item(request, idx):
+    l = []
+    error_massage = ''
+    camera_picture = request.POST.get('canvasData')
+    get_item = Goods.objects.get(id=idx)
+    print('get_item.cat_name', get_item.unit, 'get_item.cat_name', get_item.cat_name)
+    # FIXME if SELECT INPUT DISABLED we don't get value from html. So need to get all SELECT fields get from database
+    # form = GoodsForm(request.POST, request.FILES)
+    if request.method == "POST":
+        print('request.POST')
+        form = GoodsForm(request.POST, request.FILES, instance=get_item)
+        if form.is_valid():
+            item = form.save(commit=False)
+            print('item.picture=', item.picture)
+            try:
+                if not item.picture:
+                    new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                else:
+                    new_picture = request.FILES['picture']
+                item.picture = new_picture
+            except:
+                print('get_item.picture=', get_item.picture)
+
+            print(get_item, get_item.unit, 'get_item.cat_name', get_item.cat_name)
+            item.unit = get_item.unit
+            item.cat_name = get_item.cat_name
+
+            item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
+            form.save()
+            return redirect('product', idx)
+        else:
+            return HttpResponse('form not valid')
+    else:        
+        form = GoodsForm(instance=get_item)
+
+    
+    # permission_group = request.user.groups.get()
+    
+    if request.user.groups.filter(name='storage_employee').exists() or request.user.groups.filter(name='student_ext').exists():
+        is_storage_employee = ['readonly', 'disabled']
+    else:
+        is_storage_employee = ['', '']
+    print(is_storage_employee)
+
+    event = Rental_event.objects.filter(item_id=idx).filter(returned_date=None)
+    is_rented = False
+    if event:
+        is_rented = True
+    # TODO Send user permission in context. Can't edit laskunnumer etc..
+    # TODO Send rental event, if this product is not returned yet staff can't edit varasto field.
+    context = {
+        'form': form,
+        'item': get_item,
+        'is_storage_employee': is_storage_employee,
+        'is_rented': is_rented,
+        'error_massage': error_massage
+    }
+    return render(request, 'varasto/edit_item.html', context)
 
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
