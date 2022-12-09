@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 import operator
 import re
 from django.forms import inlineformset_factory, modelformset_factory
@@ -22,8 +22,9 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
 from django.db.models import Count
+from django.contrib.auth.models import Group
 
 from django.db.models import Min, Max
 from .test_views import test
@@ -59,25 +60,69 @@ def person_view(request):
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
-    # on välttämätöntä kieltää edellisen päivämäärän valitseminen!!
+    error = {}
     if request.method == 'POST':
         # print(request.POST.get('rental_close'), request.POST.getlist('set_end_date'))
         # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
+        # print("BUTTON", request.POST.get('_close_rent_cons'))
         item = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
-        if request.POST.get('rental_close'):
+        product = Goods.objects.get(id=item.item_id)
+
+        if request.POST.get('rental_close'): # UPDATE DATE
+            print('RENTAL CLOSE')
             sended_date = request.POST.get('rental_close') 
             date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
             date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
             # print(item.item.item_name, date_localized)
             item.estimated_date = date_localized # Save new estimated date into database
             item.save()
-        if request.POST.getlist('set_end_date'):
+
+        def return_products(got_amount):
+            if item.amount and (item.amount - got_amount) >= 0 and isinstance(got_amount, int):
+                product.amount = product.amount + got_amount
+            elif item.contents and (item.contents - got_amount) >= 0:
+                product.amount_x_contents = product.amount_x_contents + got_amount
+            else:
+                return False
+            item.returned = got_amount
+            return True
+
+        def update_amount_data():
+            if request.POST.getlist('everything_returned'):
+                got_amount = item.amount if item.amount else item.contents 
+                if not return_products(got_amount):
+                    return False
+            if not request.POST.getlist('everything_returned') and request.POST.getlist('return_amount'+str(item.id)):
+                got_amount = Decimal(request.POST.get('return_amount'+str(item.id))) if item.contents else int(request.POST.get('return_amount'+str(item.id)))
+                return_products(got_amount)
+            return True
+
+        if request.POST.getlist('_close_rent_cons'):
+            # TODO Если возврщаем все, то закрываем аренду и увеличиваем товар в Goods
+            # TODO Если возвращаем частично, то увеличиваем товар в Goods на возвращаемое количество. 
+            # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
+            print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
+            if not item.returned_date: # Need to prevent form resubmission
+                if update_amount_data():
+                    now = datetime.now()
+                    datenow = pytz.utc.localize(now)
+                    item.returned_date = datenow # Save new estimated date into database
+                    item.save()
+                    product.save()
+                    return redirect('renter', idx=item.renter_id)
+                else:
+                    error[0] = "Tapahtuman päivitys epäonnistui, yritä uudelleen"
+                    return redirect('renter', idx=item.renter_id)
+
+        if request.POST.getlist('set_end_date'): # CLOSE RENT
+            print('set_end_date')
+            item.returned = 1
             now = datetime.now()
             datenow = pytz.utc.localize(now)
             item.returned_date = datenow # Save new estimated date into database
             item.save()
         if request.POST.getlist('set_problem'):
-            # print('PROBLEM')
+            print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
         if request.POST.getlist('send_email_to_teacher'):
@@ -99,15 +144,17 @@ def renter(request, idx):
     selected_user = CustomUser.objects.get(id=idx)
     user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
     
-    # TAVARAA EI OLE NÄKYVISSÄ, JOS ADMIN ON KIRJAUTUNUT SISÄÄN
-    # Kannattaa tehdä tarkistus, jos kirjautunut Admin tai Hallinto, tai Opettaja
     if user.role == 'super':
         rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
     else:
         rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
 
+    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'rental_events': rental_events,
+        'rental_events': page_obj,
         'selected_user': selected_user,
         'idx': idx,
     }
@@ -154,8 +201,8 @@ def new_event(request):
                     # Jos storage_id on NULL niin etsitaan tavaraa koko tietokannassa (Adminilla ei ole storage_id)
                     new_item = Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id)) if storage_id else Goods.objects.get(id=request.GET.get(add_item))
                     # if new_item.rentable_at: print(new_item, ' rented')
-                    if new_item not in changed_items and not new_item.rentable_at: # Onko lisättävä tavara jo lisätty?
-                        changed_items.append(new_item) # Lisätään jos ei
+                    if new_item not in changed_items and new_item.is_possible_to_rent[0] == True: # Onko lisättävä tavara jo lisätty and item not consumable
+                        changed_items.append(new_item) # Lisätään jos ei 
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
                     error[2] = "Tavaraa ei löydetty"
@@ -229,6 +276,7 @@ def new_event(request):
     # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
     # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi
     # DONE Lisää Products sivulle tietoja tavaroiden saldosta
+    # TODO Pitää lisätä product ja renter sivulle Lisää tavara nappi tarkistus, riitako tavara?!
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
@@ -240,8 +288,6 @@ def new_event(request):
             items = Goods.objects.filter(pk__in=[x.id for x in changed_items]) # etsitaan ja otetaan kaikki tavarat, joilla pk on sama kuin changed_items sisällä
             
             for item in items: # Iteroidaan ja laitetaan kaikki tavarat ja niiden vuokraja Rental_event tauluun
-                unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
-                item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
                 kwargs = { # Tehdään sanakirja, jossa kaikki kulutusmateriaalien ja työkalujen kentät ovat samat
                     'item': item, 
                     'renter': renter, 
@@ -249,9 +295,12 @@ def new_event(request):
                     'start_date': datenow,
                     'storage_id': staff.storage_id,
                     'estimated_date': estimated_date,
-                    'units': item.unit if not unit else None
+                    'amount': 1,
+                    # 'units': item.unit if not unit else None
                 }
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
+                    unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
+                    item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
                     print('GET unit', str(item.id), unit)
                     print('GET item_amount', str(item.id), item_amount)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
@@ -272,7 +321,10 @@ def new_event(request):
 
                                 item.amount = new_amount
                                 item.amount_x_contents = remaining_contents
+                                kwargs['amount'] = None
                                 kwargs['contents'] = item_amount
+                                kwargs['units'] = item.unit
+
                             item.save() # Päivitetään tavaoiden määrä varastossa
                         except:
                             raise Exception(f'Tavara {item.id} ei riitä varastossa')
@@ -517,6 +569,82 @@ def get_photo(request):
 
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
+def edit_item(request, idx):
+    l = []
+    error_massage = ''
+    camera_picture = request.POST.get('canvasData')
+    get_item = Goods.objects.get(id=idx)
+    unit = get_item.unit
+    cat_name = get_item.cat_name
+    cat_name_id = get_item.cat_name_id
+    storage = get_item.storage
+    amount = get_item.amount
+    contents = get_item.contents
+
+    # FIXME if SELECT INPUT DISABLED we don't get value from html. So need to get all SELECT fields get from database
+    # form = GoodsForm(request.POST, request.FILES)
+    if request.method == "POST":
+        print('request.POST')
+        form = GoodsForm(request.POST, request.FILES, instance=get_item)
+        if form.is_valid():
+            item = form.save(commit=False)
+            print('item.picture=', item.picture)
+            try:
+                if not item.picture:
+                    new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                else:
+                    new_picture = request.FILES['picture']
+                item.picture = new_picture
+            except:
+                print('get_item.picture=', get_item.picture)
+            # FIXME Yksikko перенести в поле MÄÄRÄ PAKKAUKSESSA, а на освободившееся место поставить поле amount_x_contents
+            if cat_name_id == CATEGORY_CONSUMABLES_ID:
+                print('item.amount_x_contents', item.amount_x_contents)
+                if (item.amount - amount) > 0:
+                    new_amount_x_contents = (item.amount - amount) * contents
+                    item.amount_x_contents += new_amount_x_contents
+                if (item.amount - amount) < 0:
+                    new_amount_x_contents = (amount - item.amount) * contents
+                    item.amount_x_contents -= new_amount_x_contents
+
+            item.contents = contents # Ei saa muokata contents
+            item.cat_name = cat_name
+            item.unit = unit
+            item.storage = storage if not item.storage else item.storage
+
+            form.save()
+            return redirect('product', idx)
+        else:
+            return HttpResponse('form not valid')
+    else:        
+        form = GoodsForm(instance=get_item)
+
+    
+    # permission_group = request.user.groups.get()
+    
+    if request.user.groups.filter(name='storage_employee').exists() or request.user.groups.filter(name='student_ext').exists():
+        is_storage_employee = ['readonly', 'disabled']
+    else:
+        is_storage_employee = ['', '']
+    print(is_storage_employee)
+
+    event = Rental_event.objects.filter(item_id=idx).filter(returned_date=None)
+    is_rented = False
+    if event:
+        is_rented = True
+    # TODO Send user permission in context. Can't edit laskunnumer etc..
+    # TODO Send rental event, if this product is not returned yet staff can't edit varasto field.
+    context = {
+        'form': form,
+        'item': get_item,
+        'is_storage_employee': is_storage_employee,
+        'is_rented': is_rented,
+        'error_massage': error_massage
+    }
+    return render(request, 'varasto/edit_item.html', context)
+
+@login_required()
+@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
     l = []
     error_massage = ''
@@ -587,13 +715,14 @@ def product(request, idx):
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
     if user.has_perm('varasto.view_customuser'):
-        rental_events = Rental_event.objects.filter(item=selected_item)
+        rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
 
-    # if rental_events:
-    #     print(rental_events)
+    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'rental_events': rental_events,
+        'rental_events': page_obj,
         'selected_item': selected_item,
         'idx': idx,
     }

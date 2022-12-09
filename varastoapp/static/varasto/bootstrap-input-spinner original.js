@@ -207,7 +207,6 @@
           }
 
           function setValue(newValue, updateInput) {
-            console.log('spinner, '+newValue+' '+updateInput)
               if (updateInput === undefined) {
                   updateInput = true
               }
@@ -272,17 +271,8 @@
               if (isNaN(value)) {
                   value = 0
               }
-            //   setValue(Math.round(value / step) * step + step)
-            // FIXED inaccuracy of decimal numbers
-            // https://www.codingem.com/javascript-how-to-limit-decimal-places/
-              setValue((Math.round((value + Number.EPSILON)/step + (step + Number.EPSILON)/step)) * step)
-            //   console.log('value '+value)
-            //   console.log('step '+step)
-            //   console.log('Math.round(value / step) '+Math.round(value / step))
-            //   console.log('Math.round(value / step) * step '+Math.round(value / step) * step)
-            //   console.log('Math.round(value / step) * step + step '+(Math.round(value / step) * step + step))
-            //   console.log((Math.round((value + Number.EPSILON)*1000 + (step + Number.EPSILON)*1000)) / 1000 )
-            //   console.log((Math.round((value + Number.EPSILON)/step + (step + Number.EPSILON)/step)) * step )
+              setValue(Math.round(value / step) * step + step)
+              dispatchEvent($original, "input")
           }
 
           function resetTimer() {

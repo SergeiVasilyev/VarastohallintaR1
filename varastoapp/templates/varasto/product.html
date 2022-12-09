@@ -32,7 +32,7 @@
                 <span class="personal_field_name">EAN</span>
                 <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
                 <span class="personal_field_name">saatavuus</span>
-                <span class="personal_field_data ">{% if selected_item.rentable_at %}<span class="status_red round">Ei saatavilla</span>{% else %}<span class="status_green round">Saatavilla</span>{% endif %}</span>
+                <span class="personal_field_data ">{% if selected_item.is_possible_to_rent.0 %}<span class="status_green round">Saatavilla</span>{% else %}<span class="status_red round">Ei saatavilla</span>{% endif %}</span>
                 <span class="personal_field_name">tuotekoodi</span>
                 <span class="personal_field_data">{{ selected_item.id|default:"-" }}</span>
                 <span class="personal_field_name">varasto</span>
@@ -55,7 +55,7 @@
                 <span class="personal_field_name">rekisterinumero</span>
                 <span class="personal_field_data">{{ selected_item.reg_number|default:"-" }}</span>
                 <span class="personal_field_name">ostopäivämäärä</span>
-                <span class="personal_field_data">{{ selected_item.purchase_data|date:'d.m.Y' }}</span>
+                <span class="personal_field_data">{{ selected_item.purchase_data|date:'d.m.Y'|default:"-" }}</span>
                 <span class="personal_field_name">ostohinta</span>
                 <span class="personal_field_data">{{ selected_item.purchase_price|default:"-" }} euro</span>
                 <span class="personal_field_name">ostopaikka</span>
@@ -67,11 +67,17 @@
                 <a class="nodecor pb-3" href="{% url 'product_report' selected_item.id %}">
                     <button type="submit" class="button button_bg_blue resize">
                         <span class="button__text resize">Raportti</span>
-                        <span class="button__icon"><i class="bi bi-printer"></i>
-                        </span>
+                        <span class="button__icon"><i class="bi bi-printer"></i></span>
                     </button>
-                <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
-                    <button type="submit" {% if not selected_item.rentable_at %} class="button button_bg_green resize" {% else %} class="button button_bg_gray resize" {% endif %}> 
+                </a>
+                <a class="nodecor pb-3" href="{% url 'edit_item' selected_item.id %}">
+                    <button type="submit" class="button button_bg_blue resize">
+                        <span class="button__text resize">Muokkaa tavara</span>
+                        <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
+                    </button>
+                </a>
+                <a class="nodecor {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
@@ -85,10 +91,25 @@
             </div>
         </div>
         
+        <div class="pagination mt-3">
+            <span class="step-links">
+                <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+                <a href="{% if rental_events.has_previous %}?page={{ rental_events.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+                
+                <span class="current">
+                    Sivu {{ rental_events.number }} / {{ rental_events.paginator.num_pages }}
+                </span>
+    
+                <a href="{% if rental_events.has_next %}?page={{ rental_events.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+                <a href="?page={{ rental_events.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+            </span>
+        </div>
+
         <div class="history_header_wrap">
             <div class="column_names">
-                <div><span>Valokuva</span></div>
+                <div><span></span></div>
                 <div><span>Vuokrajan tiedot</span></div>
+                <div><span>Tapahtuma tiedot</span></div>
                 <div><span>Vuokra-aika</span></div>
                 <!-- <div><span>Vastuulinen henkilö</span></div> -->
                 <div><span>Kommentit</span></div>
@@ -124,6 +145,27 @@
                     <span class="item_num">{{rental_event.renter.code}}</span>
                 </div>
 
+                <div class="item_info">
+                    <div>
+                        <span class="item_num_name">Tapahtumakoodi</span>
+                        <span class="item_num">{{rental_event.id}}</span>
+                    </div>
+                    <div>
+                        <span class="item_num_name">Määrä</span>
+                        <span class="item_num">
+                            {% if rental_event.units %}
+                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                            {% else %}
+                            {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="item_num_name"></span>
+                        <span class="item_num"></span>
+                    </div>
+                </div>
+
                 <div class="rental_period">
                     <!-- Если аренда закончина, написать дату возврата, вместо начала и предполагаемой даты -->
                     <span class="rental_period_date">
@@ -134,9 +176,15 @@
                         {% endif %}
                     </span>
                     {% if not rental_event.returned_date and rental_event.is_past_due %}
-                        <div class="list__rented_item_status">
-                            <div class="status_green"><span>Lainassa</span></div>
-                        </div>
+                        {% if rental_event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                            <div class="list__rented_item_status">
+                                <div class="status_orange"><span>Lainassa*</span></div>
+                            </div>
+                        {% else %}
+                            <div class="list__rented_item_status">
+                                <div class="status_green"><span>Lainassa</span></div>
+                            </div>
+                        {% endif %}
                         {% else %}{% if not rental_event.returned_date and not rental_event.is_past_due %}
                         <div class="list__rented_item_status">
                             <div class="status_red"><span>Erääntynyt</span></div>
@@ -159,10 +207,7 @@
             {% endfor %}
 
         </div>
-        
 
-        
-    
     </div>
 
 {% endblock %}

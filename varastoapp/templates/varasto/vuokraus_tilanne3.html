@@ -26,37 +26,33 @@
     <div class="row02 mt-4">
         <div class="form-check">
             <div class="boxes">
-                <input name="set_end_date" class="form-check-input" type="checkbox" value="" id="checkbox_back" checked>
-                <label class="form-check-label ms-2" for="checkbox_back">
-                    Palautettu
+                <input name="everything_returned" class="form-check-input" type="checkbox" value="" id="everything_returned{{rental_event.id}}" checked>
+                <label class="form-check-label ms-2" for="everything_returned{{rental_event.id}}">
+                    Palautettu kaikki
                 </label>
             </div>
         </div>
         <div class="form-check mt-2">
             <div class="boxes">
-                <!-- checkbox ei toimii, koska sivulla on paljon sama modal ikkunoita ja niillä kaikkilla on sama id=check_back !!!!!!!!! -->
-                <input name="send_email_item_is_damaged" class="form-check-input" type="checkbox" value="" id="check_problem">
-                <label class="form-check-label ms-2" for="check_problem">
-                    Tavarassa / työkalussa on vika
-                </label>
+                <input type="number" name="return_amount{{rental_event.id}}" id="return_amount{{rental_event.id}}"
+                    style="text-align: center" class="form-control"
+
+                    {% if rental_event.units == None %} 
+                        value="{{ rental_event.amount }}"
+                        data-decimals="0"
+                        min="1" step="1"
+                        max="{{ rental_event.amount }}"
+                        data-suffix="paketti kpl"
+                    {% else %} 
+                        value="{{ rental_event.contents|normalize_dec }}"
+                        data-decimals="4"
+                        min="0.001" step="0.001"
+                        max="{{ rental_event.contents }}"
+                        data-suffix="{{ rental_event.units }}"
+                    {% endif %}
+                    
+                />
             </div>
         </div>
-        <div class="row02 mt-1">
-            <div class="form-floating">
-                <textarea name="damaged_remarks" class="form-control" placeholder="Leave a comment here" id="text_problem" style="height: 150px "></textarea>
-                <label for="text_problem">Kirjoita tähän tarkempi selostu viasta..</label>
-            </div>
-        </div>
-        <!-- <div class="row02 right">
-            <div>
-                <button type="button" class="button">
-                    <span class="button__text">PERUUTA</span>
-                </button>
-        
-                <button type="button" class="button">
-                    <span class="button__text">TALLENNA</span>  
-                </button>
-            </div>
-        </div> -->
     </div>
 </div>

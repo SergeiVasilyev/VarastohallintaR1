@@ -172,9 +172,16 @@ $(document).ready(function() {
                                 </span>
                             </div>
                             {% if not event.returned_date and event.is_past_due %}
-                            <div class="list__rented_item_status status_green">
-                                <span>Lainassa</span>
-                            </div>
+                                {% if event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                                    <div class="list__rented_item_status status_orange">
+                                        <span>Lainassa*</span>
+                                        {% comment %} ei palautettava {% endcomment %}
+                                    </div>
+                                {% else %}
+                                    <div class="list__rented_item_status status_green">
+                                        <span>Lainassa</span>
+                                    </div>
+                                {% endif %}
                             {% else %}{% if not event.returned_date and not event.is_past_due %}
                             <div class="list__rented_item_status status_red">
                                 <span>Erääntynyt</span>

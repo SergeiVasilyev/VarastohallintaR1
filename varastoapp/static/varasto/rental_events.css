@@ -286,7 +286,14 @@
     border: 1px solid #D96098;
     color: white;
 } 
-
+.status_orange > span {
+    /* background-color: #d9a00f;
+    border: 1px solid #d9a00f;
+    color: white; */
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 /* /----MAIN---- */
 
