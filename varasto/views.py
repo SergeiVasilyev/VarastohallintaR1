@@ -37,8 +37,7 @@ from .alerts import email_alert
 from .storage_settings import *
 from .services import _save_image
 import PIL.Image as Image
-import io
-import base64
+
 from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
