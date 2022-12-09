@@ -330,7 +330,8 @@
                             <label class="form-label"> VARASTO</label>
                             <!-- <input class="form-control" type="text"> -->
                             {% comment %} {{form.storage}} {% endcomment %}
-                            {% if is_rented  and item.cat_name_id != CATEGORY_CONSUMABLES_ID%}
+                            <!-- FIXME -->
+                            {% if is_rented and item.cat_name_id != CATEGORY_CONSUMABLES_ID%}
                                 {% render_field form.storage|append_attr:is_storage_employee.1 %}
                             {% else %}
                                 {% render_field form.storage %}
