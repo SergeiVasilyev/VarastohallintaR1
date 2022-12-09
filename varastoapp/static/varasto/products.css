@@ -96,7 +96,11 @@
     border: 1px solid #24A19C;
     color: white;
 }
-
+.status_orange {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 .status_red{
     background-color: #D96098;
     border: 1px solid #D96098;

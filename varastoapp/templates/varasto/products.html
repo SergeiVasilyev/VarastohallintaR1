@@ -86,7 +86,7 @@
         
         <div class="item_name">
             <a href="{% url 'product' item.id %}" class="nodecor">
-                <span class="header" for="chekbox{{item.id}}">{{item.item_name}} {{item.brand}}</span>
+                <span class="header" for="chekbox{{item.id}}">{{item.item_name|default_if_none:""}} {{item.brand|default_if_none:""}}</span>
                 <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
                 {% comment %} {{forloop.counter}} {% endcomment %}
             </a>
@@ -102,31 +102,40 @@
 
     <div class="row01">
         <div class="d-flex flex-column">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name}}</span></a>
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name|default_if_none:"-"}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place|default_if_none:"-"}}</span></a>
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean|default_if_none:"-"}}</span></a>
         </div>
     </div>
-
+    
     <div class="row01">
         <div class="item_status">
             {% comment %} {% if item.item_status != 'available'  %} {% endcomment %}
-            {% if item.rentable_at %}
+            {% if item.rentable_at and item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
             <span class="status_red">Ei saatavilla</span>
             {% else %}
-            <span class="status_green">Saatavilla</span>
+                {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                    <span class="status_orange">Saatavilla</span>
+                {% else %}
+                    <span class="status_green">Saatavilla</span>
+                {% endif %}
             {% endif %} 
         </div>
     </div>
 
     <div class="row01">
         <div class="">
+            {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
             <span class="est_date">{{ item.rentable_at|date:'d.m.Y' }}</span>
+            {% else %}
+            <span class="est_date">{{ item.amount }} pakkausta,</span>
+            <span class="est_date">{{ item.amount_x_contents|normalize_dec }} {{ item.unit }} yhteensä</span>
+            {% endif %} 
         </div>
     </div>
 

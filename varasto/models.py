@@ -1,5 +1,6 @@
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 from datetime import datetime
+from email.policy import default
 from pickle import NONE
 from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
@@ -7,6 +8,12 @@ from django.utils.translation import gettext as _
 import pytz
 from django.template.defaulttags import register
 import operator
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import *
+from .storage_settings import *
+
+
 
 
 # Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
@@ -67,11 +74,27 @@ class Category(models.Model):
     def __str__(self):
         return '%s' % (self.cat_name)
 
+class IntegerRangeField(models.IntegerField):
+    # https://stackoverflow.com/questions/849142/how-to-limit-the-maximum-value-of-a-numeric-field-in-a-django-model
+    def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        models.IntegerField.__init__(self, verbose_name, name, **kwargs)
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value':self.max_value}
+        defaults.update(kwargs)
+        return super(IntegerRangeField, self).formfield(**defaults)
+
+class Units(models.Model): # TODO Need to register in Admin.py
+    unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.unit_name)
+
 class Goods(models.Model):
     UNITS = [
-        ("unit", _("kpl")),
+        ("unit", _("kpl")), # TODO Poistaa eng version of items
         ("litre", _("l")),
         ("kilogram", _("kg")),
+        ("meter", _("m")),
     ]
     ITEM_STATUS = [
         ("available", _("saatavilla")),
@@ -85,12 +108,16 @@ class Goods(models.Model):
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    pack = models.CharField(max_length=50, blank=True, null=True) # 
-    amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
+    # pack = models.CharField(max_length=50, blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    # Created new Class IntegerRangeField to limit values from min to max 
+    amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
+    amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
-    ean = models.CharField(max_length=50, null=True)
+    ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
@@ -100,6 +127,9 @@ class Goods(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
+    # Packages amount, package contents, units
+    # Pakkausten määrä, pakkauksen sisältö, yksiköt
+    # TODO Koska contents on aina sama, pitää lisätä yhdistys kentä amoun * contents. Ilman tätä ei mahdollista laskea iteemit 
 
     # @property
     # def rentable_at(self):
@@ -111,6 +141,61 @@ class Goods(models.Model):
     #         return event.estimated_date
     #     return None
 
+    @property
+    def decrease_items(self, is_сonsumables, amount):
+        try:
+            if is_сonsumables:
+                self.contents -= amount
+                return self.contents
+            else:
+                self.amount -= amount
+                return self.amount
+        except:
+            return False
+
+    @property
+    def amount_x_pack(self):
+        # return "%.1d" % Decimal(self.pack * self.amount)
+        # return "%.1f" % Decimal(self.pack * self.amount)
+        if not self.contents:
+            self.contents = 0
+        return Decimal(self.contents * self.amount).normalize()
+
+    @register.filter
+    def normalize_dec(num):
+        if num:
+            return Decimal(num).normalize()
+        else:
+            return None
+        
+    @register.filter
+    def get_key(dictionary, key):
+        # try:
+        #     is_true = dictionary[key]
+        # except:
+        #     is_true = False
+        # return is_true
+        # return dictionary.get(key)
+        # print(key)
+        return dictionary.get(key)
+    
+    @register.filter
+    def get_item_inp_amount(dictionary, key):
+        try:
+            k = dictionary['inp_amount'+str(key)]
+        except:
+            k = ''
+        # print('inp_amount'+str(key), k)
+        return k
+
+    @register.filter
+    def get_item_radioUnit(dictionary, key):
+        try:
+            k = dictionary['radioUnit'+str(key)]
+        except:
+            k = ''
+        # print('radioUnit'+str(key), k)
+        return k
     
     @property
     def rentable_at(self):
@@ -121,6 +206,16 @@ class Goods(models.Model):
             # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
+
+    # This property is modificate of rentable_at 
+    @property
+    def is_possible_to_rent(self):
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
+        if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
+            return [False, event.estimated_date, 'Item is not consumables but it is rented now']
+        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+            return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        return [True, None, 'Item is not rented yet']
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -137,11 +232,14 @@ class Rental_event(models.Model):
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
-    amount = models.IntegerField(default=1, blank=True, null=True) # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
+    amount = models.IntegerField(blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    units = models.ForeignKey(Units, on_delete=models.PROTECT, blank=True, null=True) # Goods, to_field='unit',
     start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+    returned = models.DecimalField(max_digits=11, decimal_places=4, default=0, blank=True, null=True)
 
     @property
     def id_start_null (self):

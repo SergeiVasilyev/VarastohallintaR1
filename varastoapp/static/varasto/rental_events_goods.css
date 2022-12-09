@@ -28,7 +28,7 @@
     /* Checkbox filters */
     .checkbox_filters {
         display: flex;
-        justify-content: center;
+        justify-content: end;
         align-items: center;
         font-size: 0.875em;
     }
@@ -299,6 +299,14 @@
     border: 1px solid #D96098;
     color: white;
 } 
+.status_orange {
+    /* background-color: #d9a00f;
+    border: 1px solid #d9a00f;
+    color: white; */
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 /* /----MAIN---- */
 

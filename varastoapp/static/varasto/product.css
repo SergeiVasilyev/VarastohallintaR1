@@ -66,12 +66,18 @@
 .new_rental {
     align-self: end;
     display: flex;
-    justify-content: center;
     flex-direction: column;
 
 }
+.new_rental a {
+    display: block;
+    align-self: center;
+    width: 15em;
+    /* border: 1px solid red; */
+}
 .new_rental button {
-    min-width: 15em;
+    /* min-width: 15em; */
+    /* width: 15em; */
 }
 
 .product_description {
@@ -99,7 +105,7 @@
     flex-direction: column;
     /* border: 1px solid green; */
 }
-.column_names div:nth-child(2) span {
+.column_names div:nth-child(2) span, .column_names div:nth-child(3) span {
     text-align: left;
 }
 .column_names div span {
@@ -119,7 +125,7 @@
 .history_list, .column_names {
     display: grid;
     /* grid-template-columns: 170px repeat(3, minmax(6em, 1fr)); */
-    grid-template-columns: 170px minmax(17em, 1fr) minmax(14em, 1fr) minmax(18em, 1fr)
+    grid-template-columns: 170px minmax(17em, 0.7fr) minmax(17em, 0.7fr) minmax(14em, 1fr) minmax(18em, 1fr)
 }
 .history_list div {
     /* border: 1px solid green; */
@@ -234,6 +240,11 @@
     border: 1px solid #D96098;
     color: white;
 } 
+.status_orange {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 
 .update_event {
@@ -292,7 +303,15 @@
     text-decoration: none;
     color: black;
 }
-
+.font-size{
+    font-size: 1em;
+    padding: 0 0.9em;
+}
+.list__button span {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
 /* /---history--- */
 
 
@@ -313,8 +332,29 @@
     transition-duration: 0,4s;
 }
 
-
-
-
-
 /* // MODAL */
+
+
+/* PAGINATION */
+.pagination{
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
+    /* border: 1px solid red; */
+}
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/
