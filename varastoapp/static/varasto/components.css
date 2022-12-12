@@ -27,6 +27,12 @@
     
 }
 
+/* jostain syystä ei toimi product_report */
+.button_active{
+    color: #FFFFFF;
+    background: #325288;
+}
+
 .list__button_bg_green {
     color: white;
     background: #24A19C;
