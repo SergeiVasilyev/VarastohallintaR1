@@ -29,7 +29,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory
+from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -557,8 +557,8 @@ def rental_events(request):
 def new_user(request):
     return render(request, 'varasto/new_user.html')
 
-def grant_permissions(request):
-    return render(request, 'varasto/grant_permissions.html')
+# def grant_permissions(request):
+#     return render(request, 'varasto/grant_permissions.html')
 
 def get_photo(request):
     picData = request.POST.get('picData')

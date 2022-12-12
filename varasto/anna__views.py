@@ -74,3 +74,6 @@ def inventory (request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'varasto/inventory.html', {"items": page_obj})
+
+def grant_permissions(request):
+    return render(request, 'varasto/grant_permissions.html')
