@@ -76,4 +76,5 @@ def inventory (request):
     return render(request, 'varasto/inventory.html', {"items": page_obj})
 
 def grant_permissions(request):
-    return render(request, 'varasto/grant_permissions.html')
+    users = CustomUser.objects.all().order_by("id")
+    return render(request, 'varasto/grant_permissions.html', {"users": users})
