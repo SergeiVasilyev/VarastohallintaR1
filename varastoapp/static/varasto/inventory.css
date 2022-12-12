@@ -74,7 +74,7 @@ div.relative {
 
 .inventory_header{
     display: grid;
-    grid-template-columns: minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    grid-template-columns: minmax(25em, 35em) repeat(10, minmax(14em, 20em));
     margin-left: 50px;
     align-items: center;
     text-transform: uppercase;
@@ -94,7 +94,7 @@ div.absolute {
   
 .inventory_wrap{
     display: grid;
-    grid-template-columns: 50px minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    grid-template-columns: 50px minmax(25em, 35em) repeat(10, minmax(14em, 20em));
     border-top: 1px solid #E2E8F0;
     align-items: center;
     /* border: 1px solid red */  

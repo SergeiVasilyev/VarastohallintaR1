@@ -53,7 +53,19 @@
         
         <div class="row01">
             <div class="">
-                <span class="">Pakkaus</span>
+                <span class="">Pakkauksen määrä</span>
+            </div>
+        </div>
+
+        <div class="row01">
+            <div class="">
+                <span class="">Määrä pakauksessa</span>
+            </div>
+        </div>
+
+        <div class="row01">
+            <div class="">
+                <span class="">Sisältö yhteensä</span>
             </div>
         </div>
         
@@ -93,11 +105,7 @@
             </div>
         </div>
         
-        <div class="row01">
-            <div class="">
-                <span class="">Kappalemäärä</span>
-            </div>
-        </div>
+    
     </div>
 
     <div class="absolute">
@@ -127,7 +135,19 @@
         
             <div class="row01">
                 <div class="">
-                    <span class="">{{item.pack}}</span>
+                    <span class="">{{item.amount}} kpl</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.contents|normalize_dec|default:"-" }} {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}{{ item.unit }}{% else %}kpl{% endif %}</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="">{% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}{{item.amount_x_contents|normalize_dec|default:"-" }} {{ item.unit }}{% else %}{% endif %}</span>
                 </div>
             </div>
         
@@ -167,11 +187,7 @@
                 </div>
             </div>
         
-            <div class="row01">
-                <div class="">
-                    <span class="">15</span>
-                </div>
-            </div>
+            
         
             
         </div>
