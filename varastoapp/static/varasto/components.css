@@ -11,7 +11,38 @@
     font-size: 1em;
     font-weight: 400;
     cursor: pointer;
-    justify-content: center; 
+    justify-content: center;
+}
+
+.font_size_1-2{
+    font-size: 1.2em;
+}
+
+.btn_width_10{
+    width: 10em;
+}
+
+.btn_uppercase{
+    text-transform: uppercase;
+}
+
+.button_props{
+    display: inline-flex;
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: help;
+    justify-content:center ;
+}
+
+.list__button:hover{
+    filter: opacity(85%);
 }
 
 .list__button_big_size {
@@ -27,10 +58,16 @@
     
 }
 
-/* jostain syystä ei toimi product_report */
 .button_active{
     color: #FFFFFF;
     background: #325288;
+    cursor: pointer;
+}
+
+.button_inactive{
+    color: #889EAF;
+    background: #E1E5EA;
+    cursor: auto !important;
 }
 
 .list__button_bg_green {
@@ -61,6 +98,10 @@
 
 .list__button__text{
     padding: 0 1.5em;
+}
+
+.list__button_bg_green__text{
+    padding: 0 1.2em;
 }
 
 .list__button span {
