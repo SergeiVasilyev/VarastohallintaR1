@@ -1,5 +1,5 @@
 /* BUTTONS IN CONTENT */
-.list__button {
+/* .list__button {
     display: inline-flex;
     height: 39px;
     padding: 0;
@@ -12,14 +12,14 @@
     font-weight: 400;
     cursor: pointer;
     justify-content: center; 
-}
-    .btn-small{
+} */
+    /* .btn-small{
         min-width: 8em;
     }
     .btn-sq{
 
-    }
-    .btn_strech {
+    } */
+    /* .btn_strech {
         place-self: center stretch;
     }
     .list__button_bg_green {
@@ -32,26 +32,26 @@
     .list__button_bg_red {
         color: white;
         background: #D96098;
-    }
-    .list__collapse button div {
+    } */
+    /* .list__collapse button div {
         display: inline-flex;
         align-items: center;
         padding: 0 24px;
         height: 100%;
-    }
+    } */
 
-    .list__button__text{
+    /* .list__button__text{
         padding: 0 1.2em;
-    }
-    .list__button span {
+    } */
+    /* .list__button span {
         display: inline-flex;
         align-items: center;
         height: 100%;
-    }
-    .list__button, .list__button:hover, .list__button:visited {
+    } */
+    /* .list__button, .list__button:hover, .list__button:visited {
         text-decoration: none;
         color: white;
-    }
+    } */
 
     .font-size{
         font-size: 1.5em;
@@ -157,7 +157,7 @@ form {
 
 /* MAIN BUTTONS */
 
-.button_s {
+/* .button_s {
     display: inline-flex;
     height: 39px;
     width: 130px;
@@ -180,15 +180,15 @@ form {
     padding: 0 24px;
     color: #FFFFFF;
     height: 100%;
-    /* border: 1px solid red; */
-}
-.btn-primary, .btn-primary:active, .btn-primary:visited {
+    border: 1px solid red;
+} */
+/* .btn-primary, .btn-primary:active, .btn-primary:visited {
     text-transform: uppercase;
     background-color: #325288 !important;
     border: #325288 !important;
     padding: 0.7em 1em !important;
     transition-duration: 0,4s;
-}
+} */
 
 /* / MAIN BUTTONS */
 

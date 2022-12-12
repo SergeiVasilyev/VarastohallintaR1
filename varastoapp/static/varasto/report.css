@@ -46,7 +46,7 @@
 } 
 
 /* BUTTON */
-.button_props{
+/* .button_props{
     display: inline-flex;
     width: 100px;
     height: 30px;
@@ -59,19 +59,19 @@
     font-weight: 500;
     cursor: pointer;
     justify-content:center ;
-}
+} */
 
-.button__text{
+/* .button__text{
     display: inline-flex;
     align-items: center;
     padding: 0 24px;
     height: 100%;
-}
+} */
 
-.button_active{
+/* .button_active{
     color: #FFFFFF;
     background: #325288;
-}
+} */
 
 .logo_header, .subhead, .subhead01{
     justify-content:space-between;
