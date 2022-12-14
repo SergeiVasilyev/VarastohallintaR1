@@ -1,8 +1,10 @@
-# Demo
-http://109.204.232.228
-
 # Varastohallinta
 ### Varastohallinta-projektin tavoitteena on luoda Rasekon koululle varastonhallintajärjestelmä.
+
+## Demo
+http://109.204.232.228
+
+
 ## Päätavoitteet:
 1. Luo käyttäjä- ja järjestelmänvalvoja rooleja: hallinta, varastotyöntekijä, opettaja, opiskelija, edistynyt opiskelija ja järjestelmänvalvoja (superkäyttäjä)
 2. Roolien muokkaaminen
