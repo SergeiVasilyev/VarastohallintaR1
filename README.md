@@ -1,3 +1,6 @@
+# Demo
+http://109.204.232.228
+
 # Varastohallinta
 ### Varastohallinta-projektin tavoitteena on luoda Rasekon koululle varastonhallintajärjestelmä.
 ## Päätavoitteet:
@@ -9,6 +12,3 @@
 6. Viestien/sähköposti-ilmoitusten lähettäminen vastuullisille opettajille ja opiskelijoille järjestelmän toiminnasta (vuokraus, palautus muistutus muutama päivä etukäteen, ilmoitus tavaroista, joita ei ole palautettu ajoissa).
 7. Varaston jäsenten toimien kirjaaminen
 8. Raportointi
-
-# Demo
-http://109.204.232.228
