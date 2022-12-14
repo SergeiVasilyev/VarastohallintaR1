@@ -65,6 +65,9 @@ class CustomUser(AbstractUser, PermissionsMixin):
         user = CustomUser.objects.get(username=self)
         return user.groups.get()
 
+    def roles(self):
+        return dict(CustomUser.ROLE)
+
 
 
 

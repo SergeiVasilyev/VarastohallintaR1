@@ -14,7 +14,7 @@
 
 .list__item {
     display: grid;
-    grid-template-columns: 60px 1.5fr 1fr 1fr;
+    grid-template-columns: 60px 1.5fr 1fr 1fr 1fr;
     padding: 5px; 
     /* border: 1px solid blue; */
 }
@@ -77,7 +77,7 @@
     color: #718096;
 }
 
-.list__item_role{
+.list__item_role, .list__item_button{
     display: flex;
     justify-content: center;
 }
