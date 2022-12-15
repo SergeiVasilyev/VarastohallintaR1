@@ -43,7 +43,7 @@ from django.conf import settings
 from decimal import *
 
 
-STATIC_URL = '/varastoapp/static/'
+# STATIC_URL = '/static/'
 
 
 
@@ -373,7 +373,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': STATIC_URL + str(obj.picture),
+                'picture': settings.STATIC_URL + str(obj.picture),
                 'item_name': obj.item_name if obj.item_name else '',
                 'brand': obj.brand if obj.brand else '',
                 'model': obj.model if obj.model else '',
@@ -392,7 +392,7 @@ def getProducts(request):
                 'unit': obj.unit.unit_name if obj.unit else '',
             }
             data.append(item)
-    
+            print(settings.STATIC_URL + str(obj.picture))
     return JsonResponse({'items': data, })
 
 
