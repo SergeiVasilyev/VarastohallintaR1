@@ -97,8 +97,6 @@ def renter(request, idx):
             return True
 
         if request.POST.getlist('_close_rent_cons'):
-            # TODO Если возврщаем все, то закрываем аренду и увеличиваем товар в Goods
-            # TODO Если возвращаем частично, то увеличиваем товар в Goods на возвращаемое количество. 
             # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
             print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
             if not item.returned_date: # Need to prevent form resubmission
