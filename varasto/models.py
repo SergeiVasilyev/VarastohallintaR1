@@ -87,18 +87,12 @@ class IntegerRangeField(models.IntegerField):
         defaults.update(kwargs)
         return super(IntegerRangeField, self).formfield(**defaults)
 
-class Units(models.Model): # TODO Need to register in Admin.py
+class Units(models.Model):
     unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.unit_name)
 
 class Goods(models.Model):
-    UNITS = [
-        ("unit", _("kpl")), # TODO Poistaa eng version of items
-        ("litre", _("l")),
-        ("kilogram", _("kg")),
-        ("meter", _("m")),
-    ]
     ITEM_STATUS = [
         ("available", _("saatavilla")),
         ("not_available", _("ei saatavilla")),
@@ -115,7 +109,7 @@ class Goods(models.Model):
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     # Created new Class IntegerRangeField to limit values from min to max 
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
+    # units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
     unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
@@ -132,7 +126,6 @@ class Goods(models.Model):
     item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
-    # TODO Koska contents on aina sama, pitää lisätä yhdistys kentä amoun * contents. Ilman tätä ei mahdollista laskea iteemit 
 
     # @property
     # def rentable_at(self):
