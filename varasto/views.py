@@ -271,9 +271,7 @@ def new_event(request):
     # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
     # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
-    # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi
     # DONE Lisää Products sivulle tietoja tavaroiden saldosta
-    # TODO Pitää lisätä product ja renter sivulle Lisää tavara nappi tarkistus, riitako tavara?!
 
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
