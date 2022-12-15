@@ -224,8 +224,8 @@ def new_event(request):
                 return count
         return -1
     
-    # BUG Fix float number problem 4.7989999999999995
-    # TODO Если Расходн. материалы уже добавлен, то при добавлении нового материала обновляет и поля старого без кнопки фиксации, надо поправить фиксауию
+    # FIXED Fix float number problem 4.7989999999999995 // FIXED IN bootstrap-input-spinner.js LIBRARY
+    # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
     print('radioUnit', inp_fixes)
@@ -262,8 +262,8 @@ def new_event(request):
             # print('idx ', idx)
             if idx == int(request.GET.get(inp_fix)):
                 return True
-    
-      
+
+
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
@@ -349,6 +349,44 @@ def new_event(request):
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+def getPersons(request):
+    json_persons = []
+    if is_ajax(request=request):
+        if len(request.GET.get('name')) > 1:
+            persons = CustomUser.objects.filter(
+                Q(first_name__icontains=request.GET.get('name')) | 
+                Q(last_name__icontains=request.GET.get('name')) | 
+                Q(code__icontains=request.GET.get('name')))[:10]
+            for person in persons:
+                item = {
+                    'id': person.id,
+                    'first_name': person.first_name,
+                    'last_name': person.last_name,
+                    'code': person.code,
+                }
+                json_persons.append(item) # Make response in json 
+    return JsonResponse({'persons': json_persons})
+
+def getProduct(request):
+    json_goods = []
+    if is_ajax(request=request):
+        if len(request.GET.get('name')) > 1:
+            products = Goods.objects.filter(
+                Q(id__icontains=request.GET.get('name')) | 
+                Q(item_name__icontains=request.GET.get('name')) | 
+                Q(brand__icontains=request.GET.get('name')) | 
+                Q(model__icontains=request.GET.get('name'))).order_by("id")[:10]
+            for product in products:
+                item = {
+                    'id': product.id,
+                    'item_name': product.item_name,
+                    'brand': product.brand,
+                    'model': product.model,
+                    'ean': product.ean,
+                }
+                json_goods.append(item) # Make response in json 
+    return JsonResponse({'goods': json_goods})
 
 def getProducts(request):
     data = []
