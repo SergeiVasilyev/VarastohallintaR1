@@ -262,17 +262,9 @@ def new_event(request):
             # print('idx ', idx)
             if idx == int(request.GET.get(inp_fix)):
                 return True
-         
-    # TODO Lisätä tarkistus Kuinka plajon palautetaan takaisin kulutusmaterialia
-    # TODO Lopeta nappilla pitää lisätä uusi kenttä, kuinka paljon palautetaan kulutusmaterialia. Jos kentä jäetään tyhjänä - tarkoitta ei mitään palautettu ja merkataan palauttamaksi
-    # TODO Kulutusmateriali väri on Keltainen
-    # TODO Kun Estimated date on mennyt, automatisesti tehdä Lopeta funktio.
-    # TODO Kun annetaan kulutusmaterialit kannata vähentää Goods taulussa tavaran määrä
-    # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
+    
+      
     # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
-    # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
-    # DONE Lisää Products sivulle tietoja tavaroiden saldosta
-
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             try:
