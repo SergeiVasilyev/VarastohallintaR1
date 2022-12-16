@@ -4,7 +4,9 @@
 ## Demo
 http://109.204.232.228
 
-Login: admin, Pass: admin
+Administrator: Login: admin, Pass: admin
+Management: user4, Q2wertyy
+Storage employee: user5, Q2wertyy
 
 ## Päätavoitteet:
 1. Luo käyttäjä- ja järjestelmänvalvoja rooleja: hallinta, varastotyöntekijä, opettaja, opiskelija, edistynyt opiskelija ja järjestelmänvalvoja (superkäyttäjä)
