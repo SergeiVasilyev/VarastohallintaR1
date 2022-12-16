@@ -75,6 +75,17 @@ def inventory (request):
 
     return render(request, 'varasto/inventory.html', {"items": page_obj})
 
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
 def grant_permissions(request):
+    print (request.user.role)
     users = CustomUser.objects.all().order_by("id")
-    return render(request, 'varasto/grant_permissions.html', {"users": users})
+    if request.user.is_superuser:
+        context = {"users": users}
+    elif request.user.role=="management":
+        context = {"users": users.exclude(is_superuser=True)}
+    elif request.user.role=="storage_employee":
+        context = {"users": users.exclude(is_superuser=True).exclude(role="management")}
+    else:
+        context = {}
+    return render(request, 'varasto/grant_permissions.html', context)
