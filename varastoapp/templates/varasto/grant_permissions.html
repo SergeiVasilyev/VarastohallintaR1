@@ -32,6 +32,7 @@
 </div> 
 
 <div class="list">
+{% if users %}
 {% for usr in users %}  
     <div class="list__item brd_top">
         <div class="list__item_photo">
@@ -45,7 +46,7 @@
         </div>
         <div class="list__item_group">
             <span>{{usr.role}}</span>
-            <span>{{usr.group}}</span>
+            <span>{{usr.group|default:""}}</span>
         </div>
 
         <div class="list__item_role">
@@ -59,14 +60,15 @@
         </div>
 
         <div class="list__item_button">
-                <button type="button" class="list__button list__button_bg_blue btn_strech">
-                    <span class="list__button__text ">Tallenna</span>
-                </button>
+            <button class="list__button list__button_bg_blue btn_strech">
+                <span class="list__button__text ">Tallenna</span>
+            </button>
         </div>
         
 
     </div>
 {% endfor %}
+{% endif %}
 
 </div>
 
