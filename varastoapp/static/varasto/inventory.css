@@ -22,74 +22,7 @@
 }
 /* // PAGINATION*/
 
-/* BUTTONS IN CONTENT */
-.list__button {
-    display: inline-flex;
-    height: 39px;
-    padding: 0;
-    border: none;
-    outline: none;
-    border-radius: 3px;
-    overflow: hidden;
-    font-family: 'rubik';
-    font-size: 1em;
-    font-weight: 400;
-    cursor: pointer;
-    justify-content: center; 
-}
-.btn-small{
-        min-width: 8em;
-}
 
-/* .btn-sq{
-
-} */
-
-.btn_strech {
-    place-self: center stretch;
-    
-}
-
-.list__button_bg_green {
-    color: white;
-    background: #24A19C;
-}
-
-.list__button_bg_white {
-    background: white;
-}
-
-.list__button_bg_red {
-    color: white;
-    background: #D96098;
-}
-
-.list__button_bg_blue {
-    color: white;
-    background: #325288;
-}
-
-.list__collapse button div {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 24px;
-    height: 100%;
-}
-
-.list__button__text{
-    padding: 0 1.2em;
-}
-
-.list__button span {
-    display: inline-flex;
-    align-items: center;
-    height: 100%;
-}
-
-.list__button, .list__button:hover, .list__button:visited {
-    text-decoration: none;
-    color: white;
-}
 
 .font-size{
     font-size: 1em;
@@ -141,7 +74,7 @@ div.relative {
 
 .inventory_header{
     display: grid;
-    grid-template-columns: minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    grid-template-columns: minmax(25em, 35em) repeat(10, minmax(14em, 20em));
     margin-left: 50px;
     align-items: center;
     text-transform: uppercase;
@@ -161,10 +94,14 @@ div.absolute {
   
 .inventory_wrap{
     display: grid;
-    grid-template-columns: 50px minmax(25em, 35em) repeat(9, minmax(14em, 20em));
+    grid-template-columns: 50px minmax(25em, 35em) repeat(10, minmax(14em, 20em));
     border-top: 1px solid #E2E8F0;
     align-items: center;
     /* border: 1px solid red */  
+}
+
+.inventory_wrap:nth-child(odd) {
+    background-color: #f8fbff;
 }
 
 .row_checkbox{
@@ -180,6 +117,18 @@ div.absolute {
     display: block;
 }
 
+.header{
+    font-size: 1em;
+    font-weight: 600;
+    color: #2D3748;
+
+}
+
+.paragraph{
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #718096;
+}
 
 
 .main .white_background {

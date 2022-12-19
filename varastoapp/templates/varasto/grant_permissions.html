@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/grant_permissions.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock stylesheet %}
@@ -31,71 +32,44 @@
 </div> 
 
 <div class="list">
+{% if users %}
+{% for usr in users %}  
     <div class="list__item brd_top">
         <div class="list__item_photo">
             <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-            <div><img src="{% static 'images/students/Cory_henry.jpg' %}" alt="Cory_henry.jpg"></div>
+            <div><img src="{% static usr.photo %}" alt="usr.photo"></div>
         </div>
-        
+             
         <div class="list__item_student">
-            <span>Sami Mäkitalo</span>
-            <span>25255@edu.raseko.com</span>
+            <span>{{usr.first_name}} {{usr.last_name}}</span>
+            <span>{{usr.email}}</span>
         </div>
         <div class="list__item_group">
-            <span>Opettaja</span>
-            <span>Developer</span>
+            <span>{{usr.role}}</span>
+            <span>{{usr.group|default:""}}</span>
         </div>
 
         <div class="list__item_role">
             <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                    Valitse
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button">Student</button></li>
-                    <li><button class="dropdown-item" type="button">Student extended</button></li>
-                    <li><button class="dropdown-item" type="button">Storage employee</button></li>
-                    <li><button class="dropdown-item" type="button">Management</button></li>
-                    <li><button class="dropdown-item" type="button">Teacher</button></li>
-                    <li><button class="dropdown-item" type="button">Super</button></li>
-                </ul>
+                <select class="form-select" name="roles">
+                {% for entry in usr.roles %} 
+                <option value="{{entry}}" {% if entry == usr.role %} selected {% endif %}>{{entry}}</option>
+                {% endfor %}
+                </select>
             </div>
         </div>
-    </div>
 
-    <div class="list__item brd_top">
-        <div class="list__item_photo">
-            <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-            <div><img src="{% static 'images/students/daniel-monteiro-iK2MdOKSmj8-unsplash.jpg' %}" alt="daniel-monteiro-iK2MdOKSmj8-unsplash.jpg"></div>
+        <div class="list__item_button">
+            <button class="list__button list__button_bg_blue btn_strech">
+                <span class="list__button__text ">Tallenna</span>
+            </button>
         </div>
         
-        <div class="list__item_student">
-            <span>Jani Virtanen</span>
-            <span>13135@edu.raseko.com</span>
-        </div>
-        <div class="list__item_group">
-            <span>Student</span>
-            <span>Tivi20oa</span>
-        </div>
 
-        <div class="list__item_role">
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                    Valitse
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button">Student</button></li>
-                    <li><button class="dropdown-item" type="button">Student extended</button></li>
-                    <li><button class="dropdown-item" type="button">Storage employee</button></li>
-                    <li><button class="dropdown-item" type="button">Management</button></li>
-                    <li><button class="dropdown-item" type="button">Teacher</button></li>
-                    <li><button class="dropdown-item" type="button">Super</button></li>
-                </ul>
-            </div>
-        </div>
     </div>
+{% endfor %}
+{% endif %}
 
-    
 </div>
 
 {% endblock %}

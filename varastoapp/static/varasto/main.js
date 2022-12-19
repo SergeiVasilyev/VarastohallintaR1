@@ -55,7 +55,7 @@ $(document).ready(function() {
         }
         //let accessAllowed = (age > 18) ? true : false;
         console.log($id_units.val())
-        if ($id_units.val() == '1') { // TODO need to assign a variable for '1' as kpl
+        if ($id_units.val() == '1') { // need to assign a variable for '1' as kpl
             unit_around = Math.round($id_pack.val())
             $id_pack.val(unit_around)
             $id_pack.attr('data-decimals', 0)

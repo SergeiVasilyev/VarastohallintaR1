@@ -1,5 +1,7 @@
 ITEMES_LETTER_CODE = 'A'
 
+UNITS_LIST = ['kpl', 'l', 'kg', 'm', 'm³']
+
 RENTAL_PAGE_VIEW = 'rental_events'
 
 RENTAL_PAGE_ORDERING_FIELDS = ['Alkamispäivä', 'Päättymispäivä', 'Nimi', 'Tavara']

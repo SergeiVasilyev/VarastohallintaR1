@@ -133,7 +133,7 @@ form {
 }
 
 /* BUTTONS IN CONTENT */
-.list__button {
+/* .list__button {
     display: inline-flex;
     height: 39px;
     padding: 0;
@@ -192,7 +192,7 @@ form {
     .list__button, .list__button:hover, .list__button:visited {
         text-decoration: none;
         color: white;
-    }
+    } */
 
     
 /* / BUTTONS IN CONTENT */

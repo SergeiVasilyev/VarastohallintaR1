@@ -29,7 +29,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory
+from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -43,7 +43,7 @@ from django.conf import settings
 from decimal import *
 
 
-STATIC_URL = '/varastoapp/static/'
+# STATIC_URL = '/static/'
 
 
 
@@ -97,8 +97,6 @@ def renter(request, idx):
             return True
 
         if request.POST.getlist('_close_rent_cons'):
-            # TODO Если возврщаем все, то закрываем аренду и увеличиваем товар в Goods
-            # TODO Если возвращаем частично, то увеличиваем товар в Goods на возвращаемое количество. 
             # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
             print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
             if not item.returned_date: # Need to prevent form resubmission
@@ -226,8 +224,8 @@ def new_event(request):
                 return count
         return -1
     
-    # BUG Fix float number problem 4.7989999999999995
-    # TODO Если Расходн. материалы уже добавлен, то при добавлении нового материала обновляет и поля старого без кнопки фиксации, надо поправить фиксауию
+    # FIXED Fix float number problem 4.7989999999999995 // FIXED IN bootstrap-input-spinner.js LIBRARY
+    # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
     print('radioUnit', inp_fixes)
@@ -264,19 +262,9 @@ def new_event(request):
             # print('idx ', idx)
             if idx == int(request.GET.get(inp_fix)):
                 return True
-         
-    # TODO Lisätä tarkistus Kuinka plajon palautetaan takaisin kulutusmaterialia
-    # TODO Lopeta nappilla pitää lisätä uusi kenttä, kuinka paljon palautetaan kulutusmaterialia. Jos kentä jäetään tyhjänä - tarkoitta ei mitään palautettu ja merkataan palauttamaksi
-    # TODO Kulutusmateriali väri on Keltainen
-    # TODO Kun Estimated date on mennyt, automatisesti tehdä Lopeta funktio.
-    # TODO Kun annetaan kulutusmaterialit kannata vähentää Goods taulussa tavaran määrä
-    # TODO Renter sivulla, kulutusmateriaali rivilla pitää laitta harmaksi nappi Päivitä
-    # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
-    # TODO Сделать возможность добавлять расходные материалы к существующей записи, если это тот же товар
-    # FIXME Kun annetaan lainaksi kulutusmateriaalia, emme voi anttaa muille lainajille tämä tavara. Kulutusmateriaalit voi lainata aina kuin ne ovat tarpeeksi
-    # DONE Lisää Products sivulle tietoja tavaroiden saldosta
-    # TODO Pitää lisätä product ja renter sivulle Lisää tavara nappi tarkistus, riitako tavara?!
 
+
+    # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             try:
@@ -362,6 +350,44 @@ def new_event(request):
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+def getPersons(request):
+    json_persons = []
+    if is_ajax(request=request):
+        if len(request.GET.get('name')) > 1:
+            persons = CustomUser.objects.filter(
+                Q(first_name__icontains=request.GET.get('name')) | 
+                Q(last_name__icontains=request.GET.get('name')) | 
+                Q(code__icontains=request.GET.get('name')))[:10]
+            for person in persons:
+                item = {
+                    'id': person.id,
+                    'first_name': person.first_name,
+                    'last_name': person.last_name,
+                    'code': person.code,
+                }
+                json_persons.append(item) # Make response in json 
+    return JsonResponse({'persons': json_persons})
+
+def getProduct(request):
+    json_goods = []
+    if is_ajax(request=request):
+        if len(request.GET.get('name')) > 1:
+            products = Goods.objects.filter(
+                Q(id__icontains=request.GET.get('name')) | 
+                Q(item_name__icontains=request.GET.get('name')) | 
+                Q(brand__icontains=request.GET.get('name')) | 
+                Q(model__icontains=request.GET.get('name'))).order_by("id")[:10]
+            for product in products:
+                item = {
+                    'id': product.id,
+                    'item_name': product.item_name,
+                    'brand': product.brand,
+                    'model': product.model,
+                    'ean': product.ean,
+                }
+                json_goods.append(item) # Make response in json 
+    return JsonResponse({'goods': json_goods})
+
 def getProducts(request):
     data = []
     if is_ajax(request=request):
@@ -373,7 +399,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': STATIC_URL + str(obj.picture),
+                'picture': settings.STATIC_URL + str(obj.picture),
                 'item_name': obj.item_name if obj.item_name else '',
                 'brand': obj.brand if obj.brand else '',
                 'model': obj.model if obj.model else '',
@@ -392,7 +418,7 @@ def getProducts(request):
                 'unit': obj.unit.unit_name if obj.unit else '',
             }
             data.append(item)
-    
+            print(settings.STATIC_URL + str(obj.picture))
     return JsonResponse({'items': data, })
 
 
@@ -557,8 +583,8 @@ def rental_events(request):
 def new_user(request):
     return render(request, 'varasto/new_user.html')
 
-def grant_permissions(request):
-    return render(request, 'varasto/grant_permissions.html')
+# def grant_permissions(request):
+#     return render(request, 'varasto/grant_permissions.html')
 
 def get_photo(request):
     picData = request.POST.get('picData')
