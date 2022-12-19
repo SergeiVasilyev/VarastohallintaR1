@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/inventory.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
@@ -13,150 +14,194 @@
 {% block page %}Inventaario{% endblock %}
 
 {% block main_content %}
+<div class="pagination">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ items.number }} / {{ items.paginator.num_pages }}
+        </span>
 
-<div class="inventory_header">
-
-    <div class="row01">
-        <div class="">
-            <span class="">Tuote</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">ID / Tuotenumero</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Pakkaus</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Sijoituspaikka</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">laskun numero</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Hankintapaikka</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Hankintahinta</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Päivämäärä</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Kustannuspaikka</span>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="">
-            <span class="">Kappalemäärä</span>
-        </div>
-    </div>
-</div>
-
-<div class="inventory_wrap">
-
-    <div class="row_checkbox">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-          </div>
-    </div>
-
-    <div class="row01">
-        <div class="item_name">
-            <span class="header">Makita Screwdriver</span>
-            <span class="paragraph">OST-25</span>
-            
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">98258</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">1 kpl</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">Rakennus varasto</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">12352056465</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">Gigantti</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">120.00</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">31.02.2015</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">021220</span>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <span class="">15</span>
-        </div>
-    </div>
-
-    
+        <a href="{% if items.has_next %}?page={{ items.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ items.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
 </div>
 
 <div class="main_buttons right pb-2 pe-2">
     <div>
-        <button type="button" class="button_s me-5">
-            <span class="button_s__text">POISTA</span>
-        </button> 
+        <button type="button" class="list__button list__button_bg_blue list__button_big_size" >
+            <span class="list__button__text ">POISTA</span>
+        </button>
     </div>
 </div>
 
+<div class="relative">
+    <div class="inventory_header">
+
+        <div class="row01">
+            <div class="">
+                <span class="">Tuote</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">ID / Tuotenumero</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Pakkauksen määrä</span>
+            </div>
+        </div>
+
+        <div class="row01">
+            <div class="">
+                <span class="">Määrä pakauksessa</span>
+            </div>
+        </div>
+
+        <div class="row01">
+            <div class="">
+                <span class="">Sisältö yhteensä</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Sijoituspaikka</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">laskun numero</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Hankintapaikka</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Hankintahinta</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Päivämäärä</span>
+            </div>
+        </div>
+        
+        <div class="row01">
+            <div class="">
+                <span class="">Kustannuspaikka</span>
+            </div>
+        </div>
+        
+    
+    </div>
+
+    <div class="absolute">
+
+        {% for item in items %}
+        <div class="inventory_wrap">
+        
+            <div class="row_checkbox">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  </div>
+            </div>
+        
+            <div class="row01">
+                <div class="item_name">
+                    <span class="header">{{item.item_name}} {{item.brand}}</span>
+                    <span class="paragraph">{{item.model}}</span>
+                    
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.id}}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.amount}} kpl</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.contents|normalize_dec|default:"-" }} {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}{{ item.unit }}{% else %}kpl{% endif %}</span>
+                </div>
+            </div>
+
+            <div class="row01">
+                <div class="">
+                    <span class="">{% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}{{item.amount_x_contents|normalize_dec|default:"-" }} {{ item.unit }}{% else %}{% endif %}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.storage|default:"-" }}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.invoice_number|default:"-" }}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.purchase_place|default:"-" }}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.purchase_price|default:"-" }} euro</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.purchase_data|date:'d.m.Y' }}</span>
+                </div>
+            </div>
+        
+            <div class="row01">
+                <div class="">
+                    <span class="">{{item.cost_centre|default:"-" }}</span>
+                </div>
+            </div>
+        
+            
+        
+            
+        </div>
+        {% endfor %}
+        <div class="main_buttons right pb-2 pe-2 pt-3">
+            <div>
+                <button type="button" class="list__button list__button_bg_blue list__button_big_size" >
+                    <span class="list__button__text ">POISTA</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
 
 {% endblock %}

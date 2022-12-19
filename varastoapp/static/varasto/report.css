@@ -46,7 +46,7 @@
 } 
 
 /* BUTTON */
-.button_props{
+/* .button_props{
     display: inline-flex;
     width: 100px;
     height: 30px;
@@ -59,19 +59,19 @@
     font-weight: 500;
     cursor: pointer;
     justify-content:center ;
-}
+} */
 
-.button__text{
+/* .button__text{
     display: inline-flex;
     align-items: center;
     padding: 0 24px;
     height: 100%;
-}
+} */
 
-.button_active{
+/* .button_active{
     color: #FFFFFF;
     background: #325288;
-}
+} */
 
 .logo_header, .subhead, .subhead01{
     justify-content:space-between;
@@ -87,6 +87,11 @@
     margin-top: 1em;
 }
 
+/* .column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
+    display: flex;
+    justify-content: center;
+    border: 1px solid red;
+} */
 .column_name div:not(:nth-child(1)), .line_content div:not(:nth-child(1)){
     display: flex;
     justify-content: center;
@@ -131,7 +136,7 @@
 }
 
 .row01 {
-    /* border: 1px solid red; */
+    /*border: 1px solid red;*/
     padding: 1.5em 0 0 0 ;
 }
 

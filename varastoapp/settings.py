@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'varasto',
     'varastoapp',
 ]
@@ -64,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "varasto.context_processors.get_rental_events_page",
             ],
         },
     },
@@ -129,7 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = '/varastoapp/static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -144,3 +146,7 @@ LOGIN_URL = '/login/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'varastoapp/static/')
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 MEDIA_URL = '/images/'
+
+UPLOAD_IMG = '/upload_img/'
+
+PRODUCT_IMG_PATH = 'images/goods/'

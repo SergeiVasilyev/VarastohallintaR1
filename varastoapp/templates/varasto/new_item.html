@@ -4,12 +4,13 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/new_item.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock stylesheet %}
 
 {% block script %}
-<script>
+<script type="text/javascript">
     // PICTURE PREVIEW
     function showPreview(event){
         if(event.target.files.length > 0){
@@ -21,6 +22,91 @@
             preview.style.height = "250px";
         }
     }
+
+    $(document).ready(function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        console.log('{{ csrf_token }}')
+        let camera_button = document.querySelector("#start_cam")
+        let video = document.querySelector("#video")
+        let take_picture = document.querySelector("#take_picture")
+        let canvas = document.querySelector("#canvas")
+        let save_btn = document.querySelector("#save")
+
+        camera_button.addEventListener('click', async function() {
+            let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            video.srcObject = stream
+        });
+
+        take_picture.addEventListener('click', function() {
+            canvas.getContext('2d').fillStyle = "rgb(250,250,250)"
+            canvas.getContext('2d').fillRect(0, 0, canvas.width, canvas.height) // Flash
+
+            setTimeout(() => {  
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); 
+                let image_data_url = canvas.toDataURL('image/jpeg')
+
+                // console.log(image_data_url)
+                let file = null;
+                let blob = canvas.toBlob(function(blob) {
+                    file = new File([blob], 'test.jpg', { type: 'image/jpeg' });
+                }, 'image/jpeg');
+                
+                
+            }, 100)
+            
+
+            $('#video').toggle()
+            $('#canvas').toggle()
+            if ($(this).val() == "OTA KUVA") {
+                $(this).val("CAMERA")
+                $(this).addClass('btn-success')
+                $(this).removeClass('btn-danger')
+            } else {
+                $(this).val("OTA KUVA")
+                $(this).removeClass('btn-success')
+                $(this).addClass('btn-danger')
+            }
+
+        })
+
+        save_btn.addEventListener('click', function() {
+            const sendPic = (dataURI) => {
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_photo/',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'picData': dataURI,
+                    },
+                    
+                })
+            }
+            // .replace(/^data:image\/jpeg;base64,/, "")
+            var myModalEl = document.getElementById('cam')
+            var modal = bootstrap.Modal.getInstance(myModalEl)
+            modal.hide()
+
+            let preview = document.getElementById("preview_pic")
+            const mycanvas = document.querySelector("#canvas")
+            const ctx = canvas.getContext("2d")
+            let dataURI1 = mycanvas.toDataURL()
+            preview.src = dataURI1
+            preview.style.opacity = "1";
+            preview.style.maxWidth = "333px";
+            preview.style.height = "250px";
+            
+            let dataURI = mycanvas.toDataURL().replace(/^data:image\/png;base64/, "")
+            console.log(dataURI)
+
+            // sendPic(dataURI)
+            
+            $('#canvasData')[0].value = dataURI
+        })
+    })
 </script>
 {% endblock script %}
 
@@ -46,16 +132,18 @@
                     <div class="new_button_take">
                         {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
-                        <button type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
-                            <span class="list__button__text">Ota kuva</span>
+                        <button id="start_cam" type="button" class="list__button list__button_bg_blue btn_strech btn-small font_size_1-2 btn_width_10" data-bs-toggle="modal" data-bs-target="#cam">
+                            <span class="list__button__text">OTA KUVA</span>
                         </button>
                     </div>
                     <div class="divider"></div>
                     <div class="new_button_browse">
-                        <div class="list__button list__button_bg_blue btn_strech btn-small btn-file">
-                            {{ form.picture }}
-                            <span class="list__button__text">Selaa kuva</span>
+                        <div class="list__button list__button_bg_blue btn_strech btn-small btn-file font_size_1-2 btn_width_10">
+                            <!-- {{ form.picture }} -->
+                            <input type="file" name="picture" class="" onchange="showPreview(event);" accept="image/*" id="id_picture">
+                            <span class="list__button__text">SELA KUVA</span>
                         </div>
+                        <input type="hidden" id="canvasData" name="canvasData"/>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
                     </div>
                 </div>
@@ -67,13 +155,13 @@
                         {{form.item_description}}
                     </div>
                 </div>
-                <div class="new_product_desc" style="display: flex; justify-content: center;">
+                {% comment %} <div class="new_product_desc" style="display: flex; justify-content: center;">
                     <div class=" mt-3" style="width: 100%;">
                         <label class="form-label">HUOMAUTUKSET</label>
                         <!-- <textarea class="form-controlli" type="text"> </textarea> -->
                         {{staff.remarks}}
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
 
             
@@ -84,31 +172,29 @@
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">TYÖKALURYHMÄ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
                             {{form.cat_name}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">EAN</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.ean}}
+                            <label class="form-label">PAKKAUKSEN MÄÄRÄ, KPL</label>
+                            {{form.amount}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label">KAPPALEMÄÄRÄ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.amount}}
+                        <div data-bs-toggle="tooltip" data-bs-custom-class="tooltip_align" data-bs-delay="500"
+                        title="Pakkauksessa olevien tavaroiden määrä antaa varastotyöntekijöille mahdollisuuden hallita kulutustarvikkeita tarkemmin.">
+                            <label class="form-label">MÄÄRÄ PAKKAUKSESSA</label>
+                            {{form.contents}}
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">YKSIKKÖ</label>
-                            <!-- <input class="form-control" type="text" name="item_type"> -->
-                            {{form.units}}
+                            {{form.unit}}
                         </div>
                     </div>
+                    
                 </div>
 
                 <!-- ALERTS -->
@@ -127,6 +213,13 @@
                 <!-- // ALERTS -->
 
                 <div class="new_middle mt-3">
+                    <div class="div1" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">EAN</label>
+                            <!-- <input class="form-control" type="text" name="item_type"> -->
+                            {{form.ean}}
+                        </div>
+                    </div>
                     <div class="div2" style="display: flex; justify-content: center;"> 
                         <div>
                             <label class="form-label"> NIMI</label>
@@ -150,25 +243,19 @@
                     </div>
                     <div class="div5" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TYYPPI</label>
+                            <label class="form-label">TYYPPI</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.item_type}}
                         </div>
                     </div>
                     <div class="div6" style="display: flex; justify-content: center;">
                         <div> 
-                            <label class="form-label"> KOKO</label>
+                            <label class="form-label">KOKO</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.size}}
                         </div>
                     </div>
-                    <div class="div7" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> PAKKAUS</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.pack}}
-                        </div>
-                    </div>
+                    
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label"> TEKNISET TIEDOT</label>
@@ -177,7 +264,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="new_bottom">
                     <div class="div10" style="display: flex; justify-content: center;">
@@ -236,8 +322,8 @@
     
     <div class="new_button_bottom pb-2 pe-2">
         <div>
-            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color: white"><span class="button_s__text">PERUUTA</span></button>
-            <button type="submit" class="btn btn-primary" style="color: white"><span class="button_s__text">TALLENNA</span></button>
+            <!-- <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style="color: white"><span class="button_s__text">PERUUTA</span></button> -->
+            <button type="submit" class="list__button list__button_bg_blue list__button_big_size" style="color: white"><span class="list__button__text" id="save_all">TALLENNA</span></button>
         </div>
     </div>
 </form> 
@@ -271,14 +357,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-                <img src = "{% url 'video_stream' %}">
-                
+                <video id="video" width="640" height="480" autoplay></video>
+                <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="take_picture">OTA KUVA</button>
+                {% comment %} <button type="button" class="btn btn-success" id="take_picture" value="OTA KUVA">OTA KUVA</button> {% endcomment %}
+                <input type="button" class="btn btn-danger" id="take_picture" value="OTA KUVA" />
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SULJE</button>
-                <button type="submit" class="btn btn-primary">TALLENNA</button>
+                <button type="button" class="btn btn-primary" id="save">TALLENNA</button>
             </div>
         </div>
     </div>

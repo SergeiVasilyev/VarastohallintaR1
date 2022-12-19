@@ -1,0 +1,316 @@
+
+/* ----MAIN---- */
+
+
+/* filter panel */
+
+.filter_panel {
+    display: grid;
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-template-columns: 1.5fr 1fr 1.5fr;
+    /* border: 1px solid red; */
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+}
+
+    .filter_panel > div {
+        /* border: 1px solid blue; */
+    }
+
+    .sorting button {
+        background-color: white !important;
+        color: #2D3748 !important;
+        font-size: 0.875em;
+    }
+
+    /* Checkbox filters */
+    .checkbox_filters {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        font-size: 0.875em;
+    }
+    /* Date */
+    .date_selection form{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 19rem;
+    }
+    .date_selection button {
+        background-color: white !important;
+        color: #2D3748 !important;
+        font-size: 0.875em;
+    }
+
+
+
+
+
+/* BUTTON IN LIST */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center;
+    
+}
+    .button_link, .button_link:hover, .button_link:visited {
+        text-decoration: none;
+        /* border: 1px solid blue; */
+    }
+
+    .btn_strech {
+        place-self: center stretch;
+    }
+    
+
+    .list__button__text {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+        /* border: 1px solid blue; */
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #325288;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+
+
+
+
+
+
+/* COLUMNS */
+.column_names {
+    display: grid;
+    grid-template-columns: minmax(14em, 0.5fr) minmax(12em, 0.5fr) repeat(3, minmax(8em, 0.5fr)) minmax(16em, 0.7fr);
+    padding: 5px;
+    margin-left: 60px;
+    /* border-bottom: 1px solid #E2E8F0; */
+    /* margin-bottom: 1.5em; */
+    /* border: 1px solid blue; */
+
+}
+.column_names div{
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid green; */
+}
+.column_names div:nth-child(1) span {
+    text-align: left;
+}
+.column_names div span {
+    font-size: 0.75em;
+    text-align: center;
+    color: #A0AEC0;
+    text-transform: uppercase;
+}
+
+
+/* ITEM LIST */
+
+.list a {
+    color: inherit;
+    text-decoration: none;
+}
+.list a:hover {
+    color:#325288;
+}
+
+.sublist_warp {
+    width: 100%;
+}
+
+.list__item {
+    display: grid;
+    grid-template-columns: 60px minmax(14em, 0.5fr) minmax(12em, 0.5fr) repeat(3, minmax(8em, 0.5fr)) minmax(16em, 0.7fr);
+    padding: 5px; 
+    /* border: 1px solid blue; */
+}
+.brd_bottom {
+    border-bottom: 1px solid #E2E8F0;
+}
+.brd_top {
+    padding-top: 1em;
+    border-top: 1px solid #E2E8F0;
+}
+
+.list__rented_item {
+    display: grid;
+    grid-template-columns: minmax(16em, 1.5fr) repeat(4, minmax(6em, 0.5fr));
+    margin-left: 60px;
+}
+
+.list__item > div, .list__rented_item > div {
+    /* !!!!!!!!!!!!!!!!!!!!!!!!!! */
+    /* border: 1px solid red;  */
+    place-self: center stretch;
+}
+
+.list__item_photo > div{
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    
+}
+.list__item_photo img {
+    width: 50px;
+    height: 50px;
+    object-fit:cover;
+    /* object-position: -38px 10%; */
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
+.list__item_etime {
+    display: flex;
+    justify-content: center;
+    color:#718096;
+    font-size: 1em;
+    text-align: center;
+    font-weight: 400;
+}
+
+.list__item_comment {
+    display: flex;
+    justify-content: left;
+}
+
+.list__item_student, .list__item_group, .list__item_st-time, .list__item_end-time, 
+.list__nameof_rented_item, .list__collapse {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.list__item_st-time span {
+    color:#718096;
+    font-size: 1em;
+    text-align: center;
+    font-weight: 400;
+}
+
+.brd_left {
+    border-left: 1px solid #CBD5E0;
+}
+
+.list__item_student span {
+    padding-left: 1rem;
+    text-align: left;
+    /* border: 1px solid red; */
+}
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+.list__nameof_rented_item {
+    padding: 5px 5px 5px 5em;
+    /* text-align: left; */
+    /* border-left: 1px solid red; */
+}
+
+.list__item_group span {
+    text-align: center;
+}
+.list__item_student span:nth-child(1), .list__item_group span:nth-child(1),
+.list__nameof_rented_item span:nth-child(1) {
+    font-size: 1em;
+    font-weight: 500;
+    color: #2D3748;
+}
+.list__item_student span:nth-child(2), .list__item_group span:nth-child(2),
+.list__nameof_rented_item span:nth-child(2) {
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #718096;
+}
+
+.list__item_status, .list__rented_item_status {
+    display: flex;
+    justify-content: center;
+}
+
+
+.list__item_status > span{
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.list__item_etime span, .list__item_end-time span {
+    text-align: center;
+    font-size: 1em;
+    font-weight: 400;
+    /* border: 1px solid #24A19C; */
+}
+
+.list__collapse span {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 400;
+}
+
+
+
+.list__rented_item_status > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 7.5em;
+    height: 1.5em;
+    border-radius: 0.8em;
+    text-align: center;
+    padding: 0.8em;
+    /* border: 1px solid green; */
+}
+.status_green {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: white;
+}
+.status_gray {
+    background-color: #CBD5E0;
+    border: 1px solid #CBD5E0;
+    color: #7897AB;
+} 
+.status_red {
+    background-color: #D96098;
+    border: 1px solid #D96098;
+    color: white;
+} 
+.status_orange {
+    /* background-color: #d9a00f;
+    border: 1px solid #d9a00f;
+    color: white; */
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
+
+/* /----MAIN---- */
+
+
+
+
+

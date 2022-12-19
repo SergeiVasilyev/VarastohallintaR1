@@ -28,15 +28,17 @@
     /* Checkbox filters */
     .checkbox_filters {
         display: flex;
-        justify-content: center;
+        justify-content: end;
         align-items: center;
         font-size: 0.875em;
     }
     /* Date */
-    .date_selection {
+    .date_selection form{
         display: flex;
         justify-content: center;
         align-items: center;
+        max-width: 19rem;
+        /* border: 1px solid blue; */
     }
     .date_selection button {
         background-color: white !important;
@@ -207,7 +209,7 @@
 }
 
 .list__item_student span {
-    padding-left: 1em;
+    padding-left: 1rem;
     text-align: left;
 }
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
@@ -284,7 +286,14 @@
     border: 1px solid #D96098;
     color: white;
 } 
-
+.status_orange > span {
+    /* background-color: #d9a00f;
+    border: 1px solid #d9a00f;
+    color: white; */
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 /* /----MAIN---- */
 

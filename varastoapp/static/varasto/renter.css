@@ -7,7 +7,7 @@
 
 .person_info {
     display: grid;
-    grid-template-columns: auto 3fr 1fr; 
+    grid-template-columns: auto 5fr 1fr; 
     /* align-items: center; */
 }
 .information {
@@ -54,11 +54,18 @@
 .new_rental {
     align-self: end;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 
 }
+.new_rental a {
+    display: block;
+    align-self: center;
+    width: 15em;
+    /* border: 1px solid red; */
+}
 .new_rental button {
-    min-width: 15em;
+    /* min-width: 15em; */
+    /* width: 15em; */
 }
 /* /---person_info--- */
 
@@ -73,7 +80,7 @@
     flex-direction: column;
     /* border: 1px solid green; */
 }
-.column_names div:nth-child(2) span {
+.column_names div:nth-child(2) span, .column_names div:nth-child(3) span {
     text-align: left;
 }
 .column_names div span {
@@ -93,7 +100,7 @@
 .history_list, .column_names {
     display: grid;
     /* grid-template-columns: 170px repeat(3, minmax(6em, 1fr)); */
-    grid-template-columns: 170px minmax(17em, 1fr) minmax(14em, 1fr) minmax(14em, 1fr) minmax(18em, 0.5fr)
+    grid-template-columns: 170px minmax(17em, 0.7fr) minmax(17em, 0.7fr) minmax(14em, 1fr) minmax(14em, 1fr) minmax(18em, 0.5fr)
 }
 .history_list div {
     /* border: 1px solid green; */
@@ -121,12 +128,14 @@
 .item_info, .remarks {
     display: inline-flex;
     flex-direction: column;
-    padding: 0.6em 0.5em;
+    /* padding: 0.6em 0.5em; */
+    padding: 0.2em 0.5em;
 }
-.item_info > div {
+.item_info div {
     display: inline-flex;
     flex-direction: column;
     height: 100%;
+    margin-top: 0.4em;
     /* border: 0.5px solid red; */
 }
 .item_info_place {
@@ -192,6 +201,11 @@
     border: 1px solid #24A19C;
     color: white;
 }
+.status_orange {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 .status_gray {
     background-color: #CBD5E0;
     border: 1px solid #CBD5E0;
@@ -223,7 +237,7 @@
     font-size: 1em;
     font-weight: 400;
     cursor: pointer;
-    justify-content: center;
+    justify-content: center; 
 }
 .buttons {
     display: flex;
@@ -239,11 +253,8 @@
     align-items: center;
     padding: 0 24px;
     height: 100%;
-    /* border: 1px solid blue; */
 }
-.btn_strech {
-    place-self: center stretch;
-}
+
 .list__button_bg_blue {
     color: white;
     background: #325288;
@@ -253,8 +264,15 @@
     color:#7897AB;
     background:#CBD5E0;
 }
-
-
+.font-size{
+    font-size: 1em;
+    padding: 0 0.9em;
+}
+.list__button span {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
 
 /* /---history--- */
 
@@ -281,3 +299,28 @@
 
 
 /* // MODAL */
+
+
+/* PAGINATION */
+.pagination{
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
+    /* border: 1px solid red; */
+}
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/

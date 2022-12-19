@@ -1,5 +1,5 @@
 /* BUTTONS IN CONTENT */
-.list__button {
+/* .list__button {
     display: inline-flex;
     height: 39px;
     padding: 0;
@@ -12,14 +12,14 @@
     font-weight: 400;
     cursor: pointer;
     justify-content: center; 
-}
-    .btn-small{
+} */
+    /* .btn-small{
         min-width: 8em;
     }
     .btn-sq{
 
-    }
-    .btn_strech {
+    } */
+    /* .btn_strech {
         place-self: center stretch;
     }
     .list__button_bg_green {
@@ -32,26 +32,26 @@
     .list__button_bg_red {
         color: white;
         background: #D96098;
-    }
-    .list__collapse button div {
+    } */
+    /* .list__collapse button div {
         display: inline-flex;
         align-items: center;
         padding: 0 24px;
         height: 100%;
-    }
+    } */
 
-    .list__button__text{
+    /* .list__button__text{
         padding: 0 1.2em;
-    }
-    .list__button span {
+    } */
+    /* .list__button span {
         display: inline-flex;
         align-items: center;
         height: 100%;
-    }
-    .list__button, .list__button:hover, .list__button:visited {
+    } */
+    /* .list__button, .list__button:hover, .list__button:visited {
         text-decoration: none;
         color: white;
-    }
+    } */
 
     .font-size{
         font-size: 1.5em;
@@ -80,6 +80,9 @@
     min-height: 100%;
     /* border: 1px solid red; */
 }
+.new_event_warp > div{
+    /* border: 1px solid blue; */
+}
 .new_event_warp input {
     display: block;
     /* min-width: 60em; */
@@ -106,12 +109,46 @@
 form {
     padding: 0 !important;
 }
-.new_event_warp h4{
+.new_event_warp h5{
     color: #2D3748;
+    /* font-size: 1.4em; */
 }
 
 .new_event_warp p{
-    color: #718096
+    color: #718096;
+    /* border: 1px solid green; */
+    margin: 0 !important;
+}
+.added_items {
+    /* margin-bottom: 1.5rem; */
+    
+}
+.added_items > div {
+    display: grid;
+    /* grid-template-columns: 3fr minmax(140px, 0.5fr) minmax(200px, 1fr) 53px; */
+    grid-template-columns: 3fr  minmax(280px, 1fr) 53px;
+    /* border: 1px solid red; */
+}
+
+.added_items div, .added_items div div{
+    /* border: 1px solid red; */
+}
+
+.items div {
+    /* border: 1px solid green; */
+}
+
+.items {
+    display: flex;
+    align-items: center;
+    /* border: 1px solid red; */
+}
+.border_light {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    /* border: 1px solid green; */
+    border-bottom: 1px solid #c6cfdd;
 }
 
 /* / CONTENT */
@@ -120,7 +157,7 @@ form {
 
 /* MAIN BUTTONS */
 
-.button_s {
+/* .button_s {
     display: inline-flex;
     height: 39px;
     width: 130px;
@@ -143,15 +180,15 @@ form {
     padding: 0 24px;
     color: #FFFFFF;
     height: 100%;
-    /* border: 1px solid red; */
-}
-.btn-primary, .btn-primary:active, .btn-primary:visited {
+    border: 1px solid red;
+} */
+/* .btn-primary, .btn-primary:active, .btn-primary:visited {
     text-transform: uppercase;
     background-color: #325288 !important;
     border: #325288 !important;
     padding: 0.7em 1em !important;
     transition-duration: 0,4s;
-}
+} */
 
 /* / MAIN BUTTONS */
 
@@ -173,12 +210,18 @@ form {
 .dates {
     gap: 3em;
 }
-
-
-
 /* // Date */
 
-
+.feedback-invalid{
+    color: #D96098;
+    font-size: 0.875em;
+}
+.show{
+    display: block;
+}
+.hide{
+    display: none;
+}
 
 
 /* MODAL */
@@ -233,8 +276,42 @@ form {
     }
 
 
+    /* PAGINATION */
+    .pagination{
+        display: flex;
+        justify-content: center;
+        color: #2D3748;
+        /* border: 1px solid red; */
+    }
+    .pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+        text-decoration: none;
+        color: #FFFFFF;
+    }
+    .step-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.875em;
+    }
+    .current {
+        width: 10em;
+        text-align: center;
+        /* border: 1px solid red; */
+    }
+
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    /* // PAGINATION*/
+
 /* // MODAL */
 
 
+#add_user_list {
+    font-family: 'rubik' !important;
+    font-size: 2em !important;
+    border: 1px solid red !important;
+}
 
 

@@ -8,9 +8,21 @@ $(document).ready(function() {
         $(this).find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
+    // RENTAL EVENTS PAGE
+    // Expand/collapse the entire list of goods
     $('#chk-05').click(function(){
-        $(`.sublist_warp`).slideToggle('fast')
-        $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
+        if ($("#chk-05").is(':checked')) {
+            $(".sublist_warp").slideDown('fast')  // checked
+            $('.list__collapse').find('.bi').addClass('bi-caret-down')
+            $('.list__collapse').find('.bi').removeClass('bi-caret-left')
+        }
+        else {
+            $(".sublist_warp").slideUp('fast')  // unchecked
+            $('.list__collapse').find('.bi').addClass('bi-caret-left')
+            $('.list__collapse').find('.bi').removeClass('bi-caret-down')
+        }
+        // $(`.sublist_warp`).slideToggle('fast')
+        // $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
 
@@ -18,101 +30,115 @@ $(document).ready(function() {
     // https://shaack.com/projekte/bootstrap-input-spinner/
     $("input[type='number']").inputSpinner()
 
+
     // NEW ITEM PAGE
     // Alerts
     $('#id_cat_name').change(function(){
         $('.alert').show('fast')
     })
-    
 
-    
-    // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!
-    $('#take_picture').click(function(){
-        var origin = window.location.origin
-        var myModalEl = document.getElementById('cam')
-        var modal = bootstrap.Modal.getInstance(myModalEl)
-        // modal.hide()
-        $.get('take_pacture', function (data, status) {
-            console.log(origin)
-            console.log(data)
+    // Disable id_pack and id_units fields, if id_cat_name not Kulutusmateriaali
+    // Disable id_pack if id_units not selected
 
-            var preview = document.getElementById("preview_pic")
-            preview.style.opacity = "1";
-            preview.style.maxWidth = "250px";
-            preview.style.height = "250px";
-            preview.src = origin + data
-            // $('#preview_pic').attr('src', origin + data)
-            })
+    function null_is_empty(val){
+        return val ? val : 0
+    }
+
+    function check_units(){
+        var $id_pack = $("#id_contents")
+        var $id_units = $("#id_unit")
+
+        if ($id_units.val()) {
+            $id_pack.prop("disabled", false)
+        } else {
+            $id_pack.prop("disabled", true)
+        }
+        //let accessAllowed = (age > 18) ? true : false;
+        console.log($id_units.val())
+        if ($id_units.val() == '1') { // need to assign a variable for '1' as kpl
+            unit_around = Math.round($id_pack.val())
+            $id_pack.val(unit_around)
+            $id_pack.attr('data-decimals', 0)
+            $id_pack.attr('step', 1)           
+        } else {
+            let val = ($id_units.val()) ? null_is_empty($id_pack.val()) : ''
+            $id_pack.val(val)
+
+            $id_pack.attr('data-decimals', 4)
+            $id_pack.attr('step', 0.001)
+        }
+        
+    }
+    function check_cat_name(){
+        var $id_pack = $("#id_pack")
+        var $id_units = $("#id_unit")
+        if ($('#id_cat_name').val() != '1'){
+            $id_pack.val('')
+            $id_pack.attr('placeholder', '')
+            $id_pack.prop("disabled", true)
+            $id_units.val('')
+            $id_units.prop("disabled", true)
+        } else {
+            check_units()
+            $id_units.prop("disabled", false)
+        }
+    }
+
+    check_cat_name()
+    check_units()
+    
+    // Change data-decimals and step in "MÄÄRÄ LAATIKOSSA" and round input value when YKSIKKÖ is kpl
+    $('#id_unit').change(function(){
+        check_units()
     })
 
-    // data {csrfmiddlewaretoken: csrf}....
+    // Disable MÄÄRÄ LAATIKOSSA kenttä (id_pack) when not selected kulutusmateriaalit in id_cat_name
+    $('#id_cat_name').change(function(){       
+        check_cat_name()
+    })
 
-    // $('#take_picture').click(function(){
-    //     alert('1111')
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: "take_pacture",
-    //         mimeType:"multipart/form-data",
-    //         success: (data) => {
-    //             console.log(data);
-    //         },
-    //     })
+    // Log
+    // $('button').click(function(){
+    //     console.log($('#id_pack').val())
     // })
 
+    //----
 
+    // ---NEW ITEM PAGE
 
-
-
-    // $('#add_product').click(function(){
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: "/new_event_goods",
-    //         dataType: "json",
-    //         success: (data) => {
-    //             console.log(data);
-    //         },
-    //     })
-    // })
-
-
-    // SCROLLBAR
-    // (function($) {
-    //     $.fn.hasScrollBar = function() {
-    //         console.log(this.get(0).scrollHeight-16)
-    //         console.log(this.height())
-    //         return this.get(0).scrollHeight-16 > this.height();
-    //     }
-    // })(jQuery);
     
+    // NEW ITEM PAGE
+    // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!
+    // $('#take_picture').click(function(){
+    //     var origin = window.location.origin
+    //     var myModalEl = document.getElementById('cam')
+    //     var modal = bootstrap.Modal.getInstance(myModalEl)
+    //     // modal.hide()
+    //     $.get('take_pacture', function (data, status) {
+    //         console.log(origin)
+    //         console.log(data)
 
-    // $('.list__collapse button').click(function(){
-        
-    //     if ($('#wb').hasScrollBar()) {
-    //         console.log('content 1: ' + $('#wb').hasScrollBar());
-    //         $('#wb').attr('margin-left', '50px')
-    //     }
+    //         var preview = document.getElementById("preview_pic")
+    //         preview.style.opacity = "1";
+    //         preview.style.maxWidth = "250px";
+    //         preview.style.height = "250px";
+    //         preview.src = origin + data
+    //         // $('#preview_pic').attr('src', origin + data)
+    //         })
     // })
 
-    // $.fn.hasScrollBar = function() {
-    //     console.log(this.get(0).scrollHeight)
-    //     console.log(this.height())
-    //     return this.get(0).scrollHeight > this.height();
-    // }
+    // NEW EVENT PAGE
+    // Click button when Date is changed
+    $('#estimated_date').change(function(){
+        document.querySelector("button[name=_add_user]").click()
+    })
 
-    // console.log($('main .white_background').hasScrollBar())
-    // if ($('main .white_background').hasScrollBar()) {
-    //     alert($('main .white_background').hasScrollBar())
-    // }
+    $('#rental_start').change(function(){
+        document.querySelector("#date_submit").click()
+    })
 
-    //MODAL
-    // $("#b1").click(function () {
-    //     $('#d3').modal('toggle');
-    //     // var text = $("#textarea").val();
-    //     // $("#modal_body").html(text);
-    // });
-    // $("#b2").click(function () {
-    //     $('#d4').modal('toggle');
-    //     // var text = $("#textarea").val();
-    //     // $("#modal_body").html(text);
-    // });
+    $('#rental_end').change(function(){
+        document.querySelector("#date_submit").click()
+    })
+
 })
