@@ -12,13 +12,13 @@ def email_alert(subject, body, to):
     msg['subject'] = subject
     msg['to'] = to
 
-    user = "info.varasto@gmail.com"
-    msg['from'] = user
-    password ="mbmxdxuhmjkojukb" 
+    VARASTO_EMAIL_USER = "info.varasto@gmail.com"
+    msg['from'] = VARASTO_EMAIL_USER
+    VARASTO_EMAIL_PASSWORD ="mbmxdxuhmjkojukb" 
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
-    server.login(user, password)
+    server.login(VARASTO_EMAIL_USER, VARASTO_EMAIL_PASSWORD)
     server.send_message(msg)
 
     server.quit()

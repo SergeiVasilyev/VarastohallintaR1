@@ -18,3 +18,8 @@ RENTAL_PAGE_ORDERING_FIELDS_D = {
 CATEGORY_CONSUMABLES_ID = 1
 
 CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
+
+# Login credentials for email reminder alerts
+VARASTO_EMAIL_USER = "info.varasto@gmail.com"
+
+VARASTO_EMAIL_PASSWORD ="mbmxdxuhmjkojukb"
