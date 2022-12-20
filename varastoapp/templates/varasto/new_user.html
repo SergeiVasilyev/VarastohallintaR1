@@ -15,46 +15,37 @@
 {% block main_content %}
 
 <div class="new_user_warp">
-    
-    <div class="d-flex">
-    <div class="mb-3 me-3">
-        <span class="form-label">Lisää valokuva</span>
+    <div>
+        <label for="search_user" class="form-label">Hae opiskelijaa tai työntekijää:</label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="search_user" placeholder="Kirjoita opiskelija- opettajanumero tai nimi">
+            <div class="input-group-append">
+                <button class="btn btn-secondary bi bi-search" type="button"></button>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <button type="button" class="list__button list__button_bg_green btn_strech">
-            <span class="bi bi-plus font-size"></span>
-        </button>
-    </div>
+
+    <div class="user_info mb-3">
+        <h5>Erkki Esimerkki</h5>
+        <p><b>status:</b> Opiskelija</p>
+        <p><b>koodi:</b> 34562</p>
+        <p><b>puhelin:</b> +358 34 256 78 34</p>
+        <p><b>e-mail:</b> erkkiesimerkki@raseko.fi</p>
     </div>
 
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Etunimi</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+        <label for="email" class="form-label">Sähköposti:</label>
+        <input type="text" class="form-control" id="email">
     </div>
 
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Sukunimi</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+        <label for="pass1" class="form-label">Salasana:</label>
+        <input type="text" class="form-control" id="pass1">
     </div>
 
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Ryhmä</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
-    </div>
-
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Sähköposti</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
-    </div>
-
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Puhelin</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
-    </div>
-
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Vastuuopettaja</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+        <label for="pass2" class="form-label">Salasana uudelleen:</label>
+        <input type="text" class="form-control" id="pass2">
     </div>
 
     <div class="main_buttons">

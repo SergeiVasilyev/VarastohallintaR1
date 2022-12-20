@@ -13,30 +13,30 @@
     cursor: pointer;
     justify-content: center;
 }
-    .btn_strech {
-        place-self: center stretch;
-    }
-    .list__button_bg_green {
-        color: white;
-        background: #24A19C;
-    }
+.btn_strech {
+    place-self: center stretch;
+}
+.list__button_bg_green {
+    color: white;
+    background: #24A19C;
+}
 
-    .list__button span {
-        display: inline-flex;
-        align-items: center;
-        height: 100%;
-    }
+.list__button span {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
 
-    .font-size{
-        font-size: 1.5em;
-        padding: 0 0.6em;
-    }
+.font-size{
+    font-size: 1.5em;
+    padding: 0 0.6em;
+}
 
 /* / BUTTON*/
 
 .form-label{
-    font-size: 1.25em;
-    font-weight: 500;
+    font-size: 1em;
+    font-weight: 400;
     color: #2D3748;
 }
 
@@ -80,3 +80,18 @@
 }
 
 /* / MAIN BUTTONS */
+
+
+
+div.new_user_warp{
+    position: relative;
+    width: 400px;
+    height: 600px;
+    /* border: 1px solid red; */
+}
+
+.user_info p, h5{
+    margin-bottom: 0.2em;
+    font-size: 1em;
+    padding: 0 0.6em;
+}
