@@ -81,17 +81,21 @@
 
 /* / MAIN BUTTONS */
 
+.cont{
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
 
-
-div.new_user_warp{
-    position: relative;
-    width: 400px;
-    height: 600px;
+.new_user_warp{
+    min-width: 400px;
     /* border: 1px solid red; */
 }
 
-.user_info p, h5{
+.user_info p, .user_info h5{
     margin-bottom: 0.2em;
-    font-size: 1em;
+}
+
+.user_info {
     padding: 0 0.6em;
 }
