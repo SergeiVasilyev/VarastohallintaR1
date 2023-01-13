@@ -1,5 +1,5 @@
 # Varastohallinta
-### Varastohallinta-projektin tavoitteena on luoda Rasekon koululle varastonhallintajärjestelmä.
+### Rasekon varastonhallintajärjestelmä.
 
 ## Demo
 http://109.204.232.228
