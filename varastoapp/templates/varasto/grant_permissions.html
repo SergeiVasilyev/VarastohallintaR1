@@ -37,12 +37,18 @@
     <div class="list__item brd_top">
         <div class="list__item_photo">
             <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-            <div><img src="{% static usr.photo %}" alt="usr.photo"></div>
+            <div>
+                {% if usr.photo %}
+                <img src="{% static usr.photo %}" alt="usr.photo">
+                {% else %}
+                <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
+                {% endif %}
+            </div>
         </div>
              
         <div class="list__item_student">
-            <span>{{usr.first_name}} {{usr.last_name}}</span>
-            <span>{{usr.email}}</span>
+            <span><a href="{% url 'renter' usr.id %}">{{usr.first_name}} {{usr.last_name}}</a></span>
+            <span><a href="{% url 'renter' usr.id %}">{{usr.email}}</a></span>
         </div>
         <div class="list__item_group">
             <span>{{usr.role}}</span>
