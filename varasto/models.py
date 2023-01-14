@@ -112,7 +112,7 @@ class Goods(models.Model):
     # units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
     unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
-    picture = models.ImageField(upload_to=settings.PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
+    picture = models.ImageField(upload_to=PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka

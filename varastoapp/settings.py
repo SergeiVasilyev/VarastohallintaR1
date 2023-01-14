@@ -149,4 +149,4 @@ MEDIA_URL = '/images/'
 
 UPLOAD_IMG = '/upload_img/'
 
-PRODUCT_IMG_PATH = 'images/goods/'
+# PRODUCT_IMG_PATH = 'images/goods/'
