@@ -188,7 +188,8 @@ def new_event(request):
             # print('add_user: ', request.GET.get('add_user'))
             try:
                  # saadan user, jolla on sama storage id kuin staffilla. Jos storage_id on NULL niin ei tarkistetaan storage_id (Adminilla ei ole storage_id)
-                changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) if storage_id else CustomUser.objects.get(code=request.GET.get('add_user'))
+                changed_user = CustomUser.objects.get(code=request.GET.get('add_user')) # FIXED we can add all people from database
+                # changed_user = CustomUser.objects.get(Q(code=request.GET.get('add_user')) & Q(storage_id=storage_id)) if storage_id else CustomUser.objects.get(code=request.GET.get('add_user'))
             except:
                 error[1] = "Lainaaja ei löydetty"
         if add_items: # jos item codes kirjoitetiin
@@ -391,7 +392,8 @@ def getProduct(request):
 def getProducts(request):
     data = []
     if is_ajax(request=request):
-        items = Goods.objects.all().order_by("id")
+        # items = Goods.objects.all().order_by("id")
+        items = Goods.objects.filter(storage=request.user.storage).order_by("id")
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
@@ -535,6 +537,7 @@ def rental_events_goods(request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
 def rental_events(request):
+    # BUG When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
@@ -616,7 +619,7 @@ def edit_item(request, idx):
             print('item.picture=', item.picture)
             try:
                 if not item.picture:
-                    new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                    new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
                 else:
                     new_picture = request.FILES['picture']
                 item.picture = new_picture
@@ -683,7 +686,7 @@ def new_item(request):
             print('FORM is VALID')
             item = form.save(commit=False)
             if camera_picture:
-                new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
             elif 'picture' in request.FILES:
                 new_picture = request.FILES['picture']
             else:
@@ -726,6 +729,7 @@ def take_pacture(request):
 
 @login_required()
 def products(request):
+    # TODO Create a checkbox that filters according to storage
     items = Goods.objects.all().order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
