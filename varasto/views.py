@@ -677,25 +677,28 @@ def new_item(request):
 
     if request.method == "POST":
         print('request.POST')
+        print("csrfmiddlewaretoken", request.POST.get('csrfmiddlewaretoken'))
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
             print('FORM is VALID')
             item = form.save(commit=False)
-            if not item.picture:
+            if camera_picture:
                 new_picture = settings.PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
-            else:
+            elif 'picture' in request.FILES:
                 new_picture = request.FILES['picture']
+            else:
+                new_picture = None
 
             if item.cat_name:
                 if not item.cat_name.id == CATEGORY_CONSUMABLES_ID: # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet eri kentään
                     l += item.amount * [item] # luo toistuva luettelo syötetystä (item.amount) määrästä tuotteita
                     item.amount = 1 # Nollataan amount
-                    item.contents = None
+                    item.contents = 1
                     item.picture = new_picture
                     item.amount_x_contents = None
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
-                    item.cat_name = None
+                    # item.cat_name = None
                     # item.contents = None
                     item.picture = new_picture
                     item.amount_x_contents = Decimal(request.POST.get('amount')) * Decimal(request.POST.get('contents'))
