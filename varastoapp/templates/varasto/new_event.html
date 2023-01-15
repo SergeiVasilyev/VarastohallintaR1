@@ -112,10 +112,11 @@ $(document).ready(function() {
                 // 'csrfmiddlewaretoken': csrf,
             },
             success: (response)=> {
-                if (response.persons[0]){
-                    //response.persons.forEach(element => console.log(element.id))
+                console.log(response.goods)
+                if (response.goods[0]){
+                    //response.goods.forEach(element => console.log(element.id))
                     $('#add_item_list').html('')
-                    response.persons.forEach(element => $('#add_item_list').append(`<option style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model}</option>`))
+                    response.goods.forEach(element => $('#add_item_list').append(`<option style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model}</option>`))
                 }
             }
         })
