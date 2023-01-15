@@ -308,5 +308,10 @@ form {
 /* // MODAL */
 
 
+#add_user_list {
+    font-family: 'rubik' !important;
+    font-size: 2em !important;
+    border: 1px solid red !important;
+}
 
 

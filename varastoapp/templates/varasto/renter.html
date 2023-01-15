@@ -102,7 +102,7 @@
                                     {{rental_event.amount|default_if_none:"--"}} kpl
                                 {% else %}
                                     {% if rental_event.units %}
-                                    {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                                    {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.unit|default_if_none:"-"}}
                                     {% else %}
                                     {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
                                     {% endif %}
@@ -130,7 +130,7 @@
                                     {{rental_event.returned|normalize_dec|default_if_none:"-"}} kpl
                                 {% else %}
                                     {% if rental_event.units %}
-                                    {{rental_event.returned|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                                    {{rental_event.returned|normalize_dec|default_if_none:"-"}} {{rental_event.item.unit|default_if_none:"-"}}
                                     {% else %}
                                     {{rental_event.returned|normalize_dec|default_if_none:"-"}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
                                     {% endif %}

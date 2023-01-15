@@ -131,7 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = '/varastoapp/static/'
+STATIC_URL = 'varastoapp/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -149,4 +149,4 @@ MEDIA_URL = '/images/'
 
 UPLOAD_IMG = '/upload_img/'
 
-PRODUCT_IMG_PATH = 'images/goods/'
+# PRODUCT_IMG_PATH = 'images/goods/'

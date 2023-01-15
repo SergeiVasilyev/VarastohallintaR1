@@ -76,6 +76,56 @@ $(document).ready(function() {
     }
     // --Errors
 
+    // AJAX Get persons
+    const getPersons = (name) => {
+        $.ajax({
+            type: 'GET',
+            url: '/get_persons/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'name': name,
+                // 'csrfmiddlewaretoken': csrf,
+            },
+            success: (response)=> {
+                if (response.persons[0]){
+                    //response.persons.forEach(element => console.log(element.id))
+                    $('#add_user_list').html('')
+                    response.persons.forEach(element => $('#add_user_list').append(`<option style="border:1px solid red !important;" value='${element.code}'>${element.first_name} ${element.last_name}</option>`))
+                }
+            }
+        })
+    }
+    $('#add_user').keyup(function(e) {
+        //console.log('e.target.value', e.target.value)
+        getPersons(e.target.value)
+    })
+    //// AJAX Get persons
+
+    // AJAX Get product
+    const getProduct = (name) => {
+        $.ajax({
+            type: 'GET',
+            url: '/get_product/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'name': name,
+                // 'csrfmiddlewaretoken': csrf,
+            },
+            success: (response)=> {
+                console.log(response.goods)
+                if (response.goods[0]){
+                    //response.goods.forEach(element => console.log(element.id))
+                    $('#add_item_list').html('')
+                    response.goods.forEach(element => $('#add_item_list').append(`<option style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model}</option>`))
+                }
+            }
+        })
+    }
+    $('#add_item').keyup(function(e) {
+        //console.log('e.target.value', e.target.value)
+        getProduct(e.target.value)
+    })
+    //// AJAX Get product
 
     // AJAX modal-body add_product
     // const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
@@ -277,9 +327,11 @@ $(document).ready(function() {
                             <div class="me-3 w-100">
                                 <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
                                 {% if not changed_user %}
-                                <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi">
+                                <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi" list="add_user_list" autocomplete="off" >
+                                <datalist id="add_user_list"></datalist>
                                 {% else %}
-                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="add_user" >
+                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="add_user" list="add_user_list" autocomplete="off" >
+                                <datalist id="add_user_list"></datalist>
                                 {% endif %}
                                 
                             </div>
@@ -314,7 +366,8 @@ $(document).ready(function() {
                         <div class="d-flex align-items-end">
                             <div class="me-3 w-100">
                                 <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
-                                <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
+                                <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero" list="add_item_list" autocomplete="off" >
+                                <datalist id="add_item_list"></datalist>
                             </div>
                             <!-- Сделать по нажатию кнопки "добавить" проверку на JS и затем добавить новый товар в неотображаемый input ниже, а затем сделать уже Get запрос
                             Таким образом сможем сохранить правильный порядок добавляемых товаров -->
