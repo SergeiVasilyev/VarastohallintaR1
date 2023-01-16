@@ -141,48 +141,4 @@ $(document).ready(function() {
         document.querySelector("#date_submit").click()
     })
 
-
-    // GRANT PERMISSIONS PAGE
-
-    $('#opiskelijat').click(function(){
-        alert('opiskelijat');
-        
-        if (user.role == student || user.role == student_extended){
-            return True
-        }
-        else{
-            return False
-        } 
-    });
-
-
-    $('#henkilöstö').click(function(){
-        alert('henkilöstö');
-        
-        if (user.role == student || user.role == student_extended){
-            return False
-        }
-        else{
-            return True
-        } 
-    });
-
-
-    function is_student () {
-        alert('opiskelijat')
-        var $role = $('.list__item').attr('role') 
-        if (user.role == student || user.role == student_extended)
-           return True
-        else
-           return False
-        } 
-
-     
-        if (is_student()) {}
-        alert('opiskelijat') 
-        
-        if (is_staff())
-        alert('henkilöstö') 
-
-
 })
