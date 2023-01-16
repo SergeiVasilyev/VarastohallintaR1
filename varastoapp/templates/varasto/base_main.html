@@ -12,12 +12,15 @@
     <header>
         <div class="warp">
             <div class="logos item_left">
-                <span>
+                <span class="logos_burger">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                     </svg>
                 </span>
-                <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
+                <div>
+                    <span><img class="image" src="{% static 'varasto/pics/varasto_logo.png' %}" alt="varasto_logo.png"></span>
+                    {% if user.storage %}<span class="storage">{{ user.storage }}</span>{% endif %}
+                </div>
             </div>
             <div class="page_name item_left">
                 {% comment %} <span>Kotisivu / Vuokraaminen</span> {% endcomment %}
@@ -26,12 +29,12 @@
                 <span>{% block page %}{% endblock %}</span>
             </div>
             <div class="search">
-                <form action="" method="get">
+                <!-- <form action="" method="get">
                     <input name="search_form" type="text" class="form-control size" placeholder="Hae opiskelioita tai tavaroita">
                     <button class="btn btn-secondary">
                         <i class="bi bi-search"></i>
                     </button>  
-                </form>
+                </form> -->
             </div>
             <div class="account item_right">
                 <span>
@@ -88,7 +91,7 @@
                 <a class="nodecor" href="{% url 'grant_permissions' %}">
                     <button type="button" class="button resize mb-2 {% if request.path == '/grant_permissions/' %}button_bg_gray{% else %}button_bg_white{% endif %}">
                         <span class="button__text resize border1">Oikeuksia</span>
-                        <span class="bi bi-person-check button__i"></span>
+                        <span class="bi bi-shield-exclamation button__i"></span>
                     </button>
                 </a>
                 <a class="nodecor" href="{% url 'inventory' %}">
