@@ -331,7 +331,9 @@ def new_event(request):
     # print('changed_user ', changed_user)
     # print('changed_items ', changed_items)
 
-    items = Goods.objects.all().order_by("id")
+    # items = Goods.objects.all().order_by("id")
+    storage_filter = storage_f(request.user)
+    items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
@@ -393,7 +395,8 @@ def getProducts(request):
     data = []
     if is_ajax(request=request):
         # items = Goods.objects.all().order_by("id")
-        items = Goods.objects.filter(storage=request.user.storage).order_by("id")
+        storage_filter = storage_f(request.user)
+        items = Goods.objects.filter(**storage_filter).order_by("id") # FIXED for admin user, who has no storage
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
@@ -537,7 +540,7 @@ def rental_events_goods(request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
 def rental_events(request):
-    # BUG When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
+    # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
