@@ -263,8 +263,17 @@
                             {{form.parameters}}
                         </div>
                     </div>
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label"> VARASTO</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {{form.storage}}
+                        </div>
+                    </div>
                 </div>
-
+                
+                {% comment %} {% if perms.user.change_varasto_settings %}{{ perms.user }}{% endif %} {% endcomment %}
+                {% if request.user.role == 'management' %}
                 <div class="new_bottom">
                     <div class="div10" style="display: flex; justify-content: center;">
                         <div>
@@ -308,16 +317,10 @@
                             {{form.reg_number}}
                         </div>
                     </div>
-                    <div class="div16" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> VARASTO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {{form.storage}}
-                        </div>
-                    </div>
+                    
                 </div>
+                {% endif %}
             </div>
-            
         </div>
     
     <div class="new_button_bottom pb-2 pe-2">
