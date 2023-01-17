@@ -236,21 +236,21 @@
                     </div>
                     <div class="div2" style="display: flex; justify-content: center;"> 
                         <div>
-                            <label class="form-label"> NIMI</label>
+                            <label class="form-label">NIMI</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.item_name}}
                         </div>
                     </div>
                     <div class="div3" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> MERKKI</label>
+                            <label class="form-label">MERKKI</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.brand}}
                         </div>
                     </div>
                     <div class="div4" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> MALLI</label>
+                            <label class="form-label">MALLI</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.model}}
                         </div>
@@ -272,62 +272,14 @@
                     
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TEKNISET TIEDOT</label>
+                            <label class="form-label">TEKNISET TIEDOT</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.parameters}}
                         </div>
                     </div>
-                </div>
-
-                <div class="new_bottom">
-                    <div class="div10" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> LASKUN NUMERO</label>
-                            {% comment %} {{form.invoice_number}} {% endcomment %}
-                            {% render_field form.invoice_number|append_attr:is_storage_employee.0 %}
-                                
-                        </div> 
-                    </div>
-                    <div class="div11" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> HANKINTAPAIKKA</label>
-                            {% comment %} {{form.purchase_place}} {% endcomment %}
-                            {% render_field form.purchase_place|append_attr:is_storage_employee.0 %}
-                        </div>
-                    </div>
-                    <div class="div12" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> HANKINTAHINTA</label>
-                            {% comment %} {{form.purchase_price}} {% endcomment %}
-                            {% render_field form.purchase_price|append_attr:is_storage_employee.0 %}
-
-                        </div>
-                    </div>
-                    <div class="div13" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> HANKINTA PÄIVÄMÄÄRÄ</label>
-                            {% comment %} {{form.purchase_data}} {% endcomment %}
-                            {% render_field form.purchase_data|append_attr:is_storage_employee.0 %}
-                        </div>
-                    </div>
-                    <div class="div15" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> KUSTANNUSPAIKKA</label>
-                            {% comment %} {{form.cost_centre}} {% endcomment %}
-                            {% render_field form.cost_centre|append_attr:is_storage_employee.0 %}
-                        </div>
-                    </div>
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> REKISTERINUMERO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {% comment %} {{form.reg_number}} {% endcomment %}
-                            {% render_field form.reg_number|append_attr:is_storage_employee.0 %}
-                        </div>
-                    </div>
-                    <div class="div16" style="display: flex; justify-content: center;">
-                        <div>
-                            <label class="form-label"> VARASTO</label>
+                            <label class="form-label">VARASTO</label>
                             <!-- <input class="form-control" type="text"> -->
                             {% comment %} {{form.storage}} {% endcomment %}
                             <!-- FIXME -->
@@ -338,6 +290,55 @@
                             {% endif %}
                         </div>
                     </div>
+                </div>
+
+                <div class="new_bottom">
+                    <div class="div10" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">LASKUN NUMERO</label>
+                            {% comment %} {{form.invoice_number}} {% endcomment %}
+                            {% render_field form.invoice_number|append_attr:is_storage_employee.0 %}
+                                
+                        </div> 
+                    </div>
+                    <div class="div11" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">HANKINTAPAIKKA</label>
+                            {% comment %} {{form.purchase_place}} {% endcomment %}
+                            {% render_field form.purchase_place|append_attr:is_storage_employee.0 %}
+                        </div>
+                    </div>
+                    <div class="div12" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">HANKINTAHINTA</label>
+                            {% comment %} {{form.purchase_price}} {% endcomment %}
+                            {% render_field form.purchase_price|append_attr:is_storage_employee.0 %}
+
+                        </div>
+                    </div>
+                    <div class="div13" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">HANKINTA PÄIVÄMÄÄRÄ</label>
+                            {% comment %} {{form.purchase_data}} {% endcomment %}
+                            {% render_field form.purchase_data|append_attr:is_storage_employee.0 %}
+                        </div>
+                    </div>
+                    <div class="div15" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">KUSTANNUSPAIKKA</label>
+                            {% comment %} {{form.cost_centre}} {% endcomment %}
+                            {% render_field form.cost_centre|append_attr:is_storage_employee.0 %}
+                        </div>
+                    </div>
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">REKISTERINUMERO</label>
+                            <!-- <input class="form-control" type="text"> -->
+                            {% comment %} {{form.reg_number}} {% endcomment %}
+                            {% render_field form.reg_number|append_attr:is_storage_employee.0 %}
+                        </div>
+                    </div>
+                    
                 </div>
 
             </div>
