@@ -193,6 +193,7 @@
                             <label class="form-label">MÄÄRÄ PAKKAUKSESSA</label>
                             {% comment %} {{form.contents}} {% endcomment %}
                             {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
+                            <!-- <input data-suffix="°C" value="50" min="0" max="100" type="number" /> -->
                             {% comment %} {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
                                 {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
                             {% else %}
