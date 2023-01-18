@@ -47,14 +47,17 @@ from decimal import *
 
 
 
-
+# FUNC inventaario_side_window
 def inventaario_side_window(request):
     return render(request, 'varasto/inventaario_side_window.html')
 
+
+# FUNC person_view
 def person_view(request):
     return render(request, 'varasto/person.html')
 
 
+# FUNC renter
 @login_required()
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
@@ -157,6 +160,8 @@ def renter(request, idx):
     }
     return render(request, 'varasto/renter.html', context)
 
+
+# FUNC new_event
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
@@ -264,8 +269,6 @@ def new_event(request):
             if idx == int(request.GET.get(inp_fix)):
                 return True
 
-
-    # TODO Automatisesti tarkista ja vähentää Goods taulussa content tai amount määrä
     if request.method == 'POST': # Jos painettiin Talenna nappi
         if changed_user and changed_items and estimated_date: # tarkistetaan että kaikki kentät oli täytetty
             try:
@@ -350,9 +353,13 @@ def new_event(request):
     # print(context)
     return render(request, 'varasto/new_event.html', context)
 
+
+# FUNC is_ajax
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+
+# FUNC getPersons
 def getPersons(request):
     json_persons = []
     if is_ajax(request=request):
@@ -371,6 +378,8 @@ def getPersons(request):
                 json_persons.append(item) # Make response in json 
     return JsonResponse({'persons': json_persons})
 
+
+# FUNC getProduct
 def getProduct(request):
     json_goods = []
     if is_ajax(request=request):
@@ -391,12 +400,14 @@ def getProduct(request):
                 json_goods.append(item) # Make response in json 
     return JsonResponse({'goods': json_goods})
 
+
+# FUNC getProducts
 def getProducts(request):
     data = []
     if is_ajax(request=request):
         # items = Goods.objects.all().order_by("id")
         storage_filter = storage_f(request.user)
-        items = Goods.objects.filter(**storage_filter).order_by("id") # FIXED for admin user, who has no storage
+        items = Goods.objects.filter(**storage_filter).order_by("id")
         paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
@@ -427,7 +438,7 @@ def getProducts(request):
     return JsonResponse({'items': data, })
 
 
-
+# FUNC login_view
 def login_view(request):
     if not request.user.is_authenticated:
         if request.method == 'POST':
@@ -466,7 +477,7 @@ def login_view(request):
             # return redirect('logout')
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä järjestelmään</h1><a href='/logout'>Logout2</a></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
-
+# FUNC logout
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -489,7 +500,7 @@ def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
 
-
+# FUNC rental_events_goods
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 def rental_events_goods(request):
@@ -509,6 +520,7 @@ def rental_events_goods(request):
     return render(request, 'varasto/rental_events_goods.html', context)
 
 
+# FUNC rental_events
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
@@ -550,20 +562,22 @@ def rental_events(request):
     return render(request, 'varasto/rental_events.html', context)
 
 
-
+# FUNC new_user
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 def new_user(request):
     return render(request, 'varasto/new_user.html')
 
 
-
+# FUNC get_photo
 def get_photo(request):
     picData = request.POST.get('picData')
     img = _save_image(picData)
     print(img)
     return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
 
+
+# FUNC edit_item
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
@@ -590,8 +604,6 @@ def edit_item(request, idx):
     amount = get_item.amount
     contents = get_item.contents
 
-    # FIXME if SELECT INPUT DISABLED we don't get value from html. So need to get all SELECT fields get from database
-    # form = GoodsForm(request.POST, request.FILES)
     if request.method == "POST":
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
@@ -652,6 +664,7 @@ def edit_item(request, idx):
     }
     return render(request, 'varasto/edit_item.html', context)
 
+# FUNC new_item
 @login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
 def new_item(request):
@@ -702,26 +715,21 @@ def new_item(request):
     return render(request, 'varasto/new_item.html', context)
 
 
-@csrf_exempt
-def take_pacture(request):
-    pic = VideoCamera().take()
-    return HttpResponse(pic)
-
-
+# FUNC products
 @login_required()
 def products(request):
-    # TODO Make try exept for int(request.GET.get('show_all')) -> all simbols means 1, 0 or '' means 0
-    # Mayby have to make function for checking requests
-    if 'show_all' in request.GET: # Jos checkbox "Näytä kaikki" on valittu näytetään kaikki tavarat
-        if int(request.GET.get('show_all')):
-            is_show_all = 1
-            storage_filter = {}
-        else:
-            is_show_all = 0
-            storage_filter = storage_f(request.user)# Jos checkbox "Näytä kaikki" ei ole valittu näytetään tavarat sama varastossa, jossa varastotyöntekijällä on valittu
-    else:
+    # Try get a number from checkbox "näytä kaikki"
+    try:
+        get_show_all = int(request.GET.get('show_all'))
+    except:
+        get_show_all = 1 # If got exeption, then we show all products from db
+    
+    if get_show_all: # if got any simbol(s), then show all products
+        is_show_all = 1
+        storage_filter = {}
+    else: # if got 0 show products from same storage where storage employee from
         is_show_all = 0
-        storage_filter = storage_f(request.user)
+        storage_filter = storage_f(request.user)# Jos checkbox "Näytä kaikki" ei ole valittu näytetään tavarat sama varastossa, jossa varastotyöntekijällä on valittu
     
     items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -735,6 +743,8 @@ def products(request):
     }
     return render(request, 'varasto/products.html', context)
 
+
+# FUNC product
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 # @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
@@ -756,6 +766,8 @@ def product(request, idx):
     }
     return render(request, 'varasto/product.html', context)
 
+
+# FUNC set_rental_event_view
 @login_required()
 def set_rental_event_view(request):
     # if 'name' in request.GET:
@@ -767,6 +779,8 @@ def set_rental_event_view(request):
 
     return redirect (request.GET.get('name'))
 
+
+# FUNC set_ordering
 @login_required()
 def set_ordering(request):
     set = Settings.objects.get(set_name='rental_page_ordering')
@@ -777,6 +791,8 @@ def set_ordering(request):
     page = Settings.objects.get(set_name='rental_page_view')
     return redirect (page.set_value)
 
+
+# FUNC set_order_field
 @login_required()
 def set_order_field(request):
     set = Settings.objects.get(set_name='rental_page_field_ordering')
@@ -787,6 +803,7 @@ def set_order_field(request):
     return redirect (page.set_value)
 
 
+# FUNC filling_storage_place
 # storage_place sarakkeen täyttäminen
 def filling_storage_place(request):
     items = Goods.objects.all().order_by("ean")
@@ -815,7 +832,9 @@ def filling_storage_place(request):
         # item.save()
     
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
-    
+
+
+# FUNC filling_goods_description
  # Adding description to products from 2-12 fields
 def filling_goods_description(request):
     items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
