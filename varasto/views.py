@@ -36,14 +36,14 @@ from django.db.models import Q
 from .alerts import email_alert
 from .storage_settings import *
 from .services import _save_image
+from .services import *
+
 import PIL.Image as Image
 
 from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
 
-
-# STATIC_URL = '/static/'
 
 
 
@@ -139,12 +139,11 @@ def renter(request, idx):
             email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
 
     selected_user = CustomUser.objects.get(id=idx)
-    user = CustomUser.objects.get(username=request.user) # Otetaan kirjautunut järjestelmään käyttäjä, sen jälkeen otetaan kaikki tapahtumat samasta varastosta storage_id=user.storage_id
-    
-    if user.role == 'super':
-        rental_events = Rental_event.objects.filter(renter__id=idx).order_by('-start_date')
-    else:
-        rental_events = Rental_event.objects.filter(renter__id=idx).filter(storage_id=user.storage_id).order_by('-start_date') 
+
+    storage_filter = storage_f(request.user)
+    rental_events = Rental_event.objects.filter(renter__id=idx).filter(**storage_filter).order_by('-start_date')
+
+    is_staff_user_has_permission_to_edit = request.user.has_perm('varasto.change_rental_event')
 
     paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -154,6 +153,7 @@ def renter(request, idx):
         'rental_events': page_obj,
         'selected_user': selected_user,
         'idx': idx,
+        'is_staff_user_has_permission_to_edit': is_staff_user_has_permission_to_edit,
     }
     return render(request, 'varasto/renter.html', context)
 
@@ -427,10 +427,6 @@ def getProducts(request):
     return JsonResponse({'items': data, })
 
 
-def get_rental_events_page():
-    page = Settings.objects.get(set_name='rental_page_view')
-    return page.set_value
-
 
 def login_view(request):
     if not request.user.is_authenticated:
@@ -440,12 +436,15 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user) # не логинить, если не прошел проверку
-                if user_check(user) and is_not_student(user):
+                # if user_check(user) and is_not_student(user):
+                if user.is_authenticated and user.is_staff:
                     return redirect(get_rental_events_page())
                     # return redirect('rental_events')
+                # elif not is_not_student(request.user):
+                #     return redirect('products')
                 else:
                     # return redirect('logout')
-                    return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
+                    return HttpResponse(f"<html><body><h1>Ei ole okeuksia päästä järjestelmään</h1><a href='/logout'>Logout1</a></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
                 # Pitää rakentaa frontendilla vastaus, että kirjoitettu salasana tai tunnus oli väärin
                 return redirect('login')
@@ -457,12 +456,15 @@ def login_view(request):
                 }
             return render(request, 'varasto/login.html', context)
     else:
-        if user_check(request.user) and is_not_student(request.user):
+        # if user_check(request.user) and is_not_student(request.user):
+        if request.user.is_authenticated and request.user.is_staff:
             return redirect(get_rental_events_page())
             # return redirect('rental_events')
+        # elif not is_not_student(request.user):
+        #     return redirect('products')
         else:
             # return redirect('logout')
-            return HttpResponse("<html><body><h1>Ei ole okeuksia päästä tähän sivuun</h1></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
+            return HttpResponse("<html><body><h1>Ei ole okeuksia päästä järjestelmään</h1><a href='/logout'>Logout2</a></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
 
 def logout_view(request):
@@ -486,39 +488,10 @@ def base_main(request):
 def update_rental_status(request):
     return render(request, 'varasto/update_rental_status.html')
 
-def storage_f(user):
-    # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
-    storage_filter = {}
-    try:
-        user_group = str(user.groups.get())
-    except:
-        user_group = ''
 
-    if not user.is_superuser and user_group != 'management':
-        storage_filter = { 'storage_id' : user.storage_id }
-    return storage_filter
 
-def start_date_filter(start, end):
-    if bool(start) & bool(end): # if rental_start and rental_end not NULL
-        date_formated = datetime.strptime(start, '%Y-%m-%d') # Make format stringed date to datetime format
-        start_date = pytz.utc.localize(date_formated) # Add localize into datetime date
-
-        date_formated = datetime.strptime(end, '%Y-%m-%d') # Make format stringed date to datetime format
-        end_date = pytz.utc.localize(date_formated) + timedelta(days=1) # Add 1 day to include this all last day to the list
-        start_date_range = { 'start_date__range' : [start_date, end_date] }
-    else:
-        start_date_range = {} # start_date range is empty if request.GET is empty
-    return start_date_range
-
-def order_filter_switch():
-    get_ordering = Settings.objects.get(set_name='rental_page_ordering')
-    return int(get_ordering.set_value)
-
-def order_field():
-    get_order_field = Settings.objects.get(set_name='rental_page_field_ordering')
-    order_field_key = list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[list(RENTAL_PAGE_ORDERING_FIELDS_D.values()).index(get_order_field.set_value)]
-    return [order_field_key, RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]]
-
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
     storage_filter = storage_f(request.user)
@@ -538,7 +511,8 @@ def rental_events_goods(request):
 
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.view_goods'))
+@user_passes_test(lambda user:user.is_staff)
+# @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 def rental_events(request):
     # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
@@ -577,20 +551,12 @@ def rental_events(request):
 
 
 
-# def new_event_goods(request):
-#     return render(request, 'varasto/new_event_goods.html')
-
-# def inventory(request):
-#     return render(request, 'varasto/inventory.html')
-
-# def report(request):
-#     return render(request, 'varasto/report.html')
-
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def new_user(request):
     return render(request, 'varasto/new_user.html')
 
-# def grant_permissions(request):
-#     return render(request, 'varasto/grant_permissions.html')
+
 
 def get_photo(request):
     picData = request.POST.get('picData')
@@ -599,8 +565,20 @@ def get_photo(request):
     return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
 
 @login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
+@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
+# @user_passes_test(is_same_storage, redirect_field_name='product')
 def edit_item(request, idx):
+    storage_filter = storage_f(request.user) # if storage_filter is empty means superuser, management or student
+    try:
+        item = Goods.objects.get(id=idx)
+        print(item.storage, request.user.storage)
+        if item.storage != request.user.storage and storage_filter: 
+            error = "Voi muokata vain tavaroita sijäitsevä sama varastossa"
+            return redirect('product', idx=idx)
+    except:
+        pass
+    
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
@@ -615,7 +593,6 @@ def edit_item(request, idx):
     # FIXME if SELECT INPUT DISABLED we don't get value from html. So need to get all SELECT fields get from database
     # form = GoodsForm(request.POST, request.FILES)
     if request.method == "POST":
-        print('request.POST')
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
             item = form.save(commit=False)
@@ -653,6 +630,7 @@ def edit_item(request, idx):
     
     # permission_group = request.user.groups.get()
     
+    # storage_employee and student_ext can't edit all fields
     if request.user.groups.filter(name='storage_employee').exists() or request.user.groups.filter(name='student_ext').exists():
         is_storage_employee = ['readonly', 'disabled']
     else:
@@ -715,7 +693,7 @@ def new_item(request):
         
         return redirect('new_item')
     else:
-        form = GoodsForm(use_required_attribute=False)
+        form = GoodsForm(use_required_attribute=False, initial={'storage': request.user.storage})
 
     context = {
         'form': form,
@@ -727,13 +705,25 @@ def new_item(request):
 @csrf_exempt
 def take_pacture(request):
     pic = VideoCamera().take()
-    
     return HttpResponse(pic)
+
 
 @login_required()
 def products(request):
-    # TODO Create a checkbox that filters according to storage
-    items = Goods.objects.all().order_by("id")
+    # TODO Make try exept for int(request.GET.get('show_all')) -> all simbols means 1, 0 or '' means 0
+    # Mayby have to make function for checking requests
+    if 'show_all' in request.GET: # Jos checkbox "Näytä kaikki" on valittu näytetään kaikki tavarat
+        if int(request.GET.get('show_all')):
+            is_show_all = 1
+            storage_filter = {}
+        else:
+            is_show_all = 0
+            storage_filter = storage_f(request.user)# Jos checkbox "Näytä kaikki" ei ole valittu näytetään tavarat sama varastossa, jossa varastotyöntekijällä on valittu
+    else:
+        is_show_all = 0
+        storage_filter = storage_f(request.user)
+    
+    items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
@@ -741,16 +731,19 @@ def products(request):
 
     context = {
         'items': page_obj,
+        'is_show_all': is_show_all,
     }
     return render(request, 'varasto/products.html', context)
 
 @login_required()
+@user_passes_test(lambda user:user.is_staff)
+# @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
 def product(request, idx):
     user = request.user
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
-    if user.has_perm('varasto.view_customuser'):
-        rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
+    # if user.has_perm('varasto.view_customuser'):
+    rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
 
     paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
