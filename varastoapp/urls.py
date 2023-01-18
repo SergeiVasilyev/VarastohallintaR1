@@ -62,7 +62,7 @@ urlpatterns = [
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
 
     # path('video_stream', views.video_stream, name='video_stream'),
-    path('new_item/take_pacture', views.take_pacture, name='take_pacture'),
+    # path('new_item/take_pacture', views.take_pacture, name='take_pacture'),
     path('products/', views.products, name='products'),
     path('get_products/', views.getProducts, name='getProducts'),
     path('get_photo/', views.get_photo, name='get_photo'),
