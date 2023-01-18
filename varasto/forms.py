@@ -102,6 +102,7 @@ class GoodsForm(ModelForm):
                 'step': 0.001,
                 'data-decimals': 4,
                 'placeholder': '0',
+                # 'data-suffix': l,
             }),
             'parameters': TextInput(attrs={
                 'class': 'form-control ',
