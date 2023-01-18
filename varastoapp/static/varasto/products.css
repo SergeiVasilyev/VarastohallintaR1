@@ -142,14 +142,31 @@
 }
 
 
-
+.filter_panel {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    /* border: 1px solid red; */
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+}
+.filter_panel > div{
+    /* border: 1px solid red; */
+}
+.checkbox_filters {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    font-size: 0.875em;
+}
 
 /* PAGINATION */
 .pagination{
     display: flex;
     justify-content: center;
     color: #2D3748;
-    /* border: 1px solid red; */
+    /* border: 1px solid green; */
 }
 .pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
     text-decoration: none;
@@ -160,6 +177,7 @@
     justify-content: center;
     align-items: center;
     gap: 0.875em;
+    /* border: 1px solid green; */
 }
 .current {
     width: 10em;
