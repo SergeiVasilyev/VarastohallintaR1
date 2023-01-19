@@ -90,8 +90,8 @@ def grant_permissions(request):
     return render(request, 'varasto/grant_permissions.html', context)
 
 def save_permision(request, idx):
-    user = CustomUser.objects.get()
-
-    print (request.POST.get('roles'))
+    user = CustomUser.objects.get(id=idx)
+    user.role = (request.POST.get('roles'))
+    user.save()
 
     return redirect('grant_permissions')
