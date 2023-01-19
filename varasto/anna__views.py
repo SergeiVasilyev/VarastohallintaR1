@@ -78,7 +78,6 @@ def inventory (request):
 @login_required()
 @user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
 def grant_permissions(request):
-    print (request.user.role)
     users = CustomUser.objects.all().order_by("id")
     if request.user.is_superuser:
         context = {"users": users}
@@ -89,3 +88,10 @@ def grant_permissions(request):
     else:
         context = {}
     return render(request, 'varasto/grant_permissions.html', context)
+
+def save_permision(request, idx):
+    user = CustomUser.objects.get()
+
+    print (request.POST.get('roles'))
+
+    return redirect('grant_permissions')
