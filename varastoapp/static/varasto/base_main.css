@@ -85,6 +85,26 @@ header .warp {
     .logos {
         font-size: 1.5em;
     }
+
+    .logos_burger {
+        display: flex;
+        align-items: center;
+    }
+
+    .logos_burger:hover {
+        background-color: #dedede;
+        cursor: pointer;
+    }
+
+    .logos > div {
+        display: flex;
+        flex-direction: column;
+        /* border: 1px solid red; */
+    }
+    
+    .logos .storage{
+        font-size: 0.65em;
+    }
     .account {
         display: flex;
         flex-direction: column;

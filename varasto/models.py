@@ -282,7 +282,7 @@ class Rental_event(models.Model):
         result = 0
         now = datetime.now()
         now = pytz.utc.localize(now)
-        event = Rental_event.objects.filter(renter = self.renter)
+        event = Rental_event.objects.filter(renter = self.renter).filter(storage = self.storage)
         for e in event:
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
                 # print(e.estimated_date, now)
