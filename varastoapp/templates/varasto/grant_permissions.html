@@ -13,28 +13,64 @@
 {% block path %}Oikeuksija{% endblock %}
 {% block page %}Oikeuksija{% endblock %}
 
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#staff').click(function(){
+        if ($('#students').is(':checked')){
+            $('#students').prop('checked', false)
+            toggle_students()
+        }
+        toggle_staff()
+    })
+
+    $('#students').click(function(){
+        console.log('staff',$('#staff').is(':checked'))
+        if ($('#staff').is(':checked')){
+            $('#staff').prop('checked', false)
+            toggle_staff()
+        }
+        toggle_students() 
+    })
+    function toggle_students(){
+        $("#user_list > [role]").filter(function(){
+            console.log(this.role)
+            if (this.role!='student' && this.role!='student_extended'){
+                $(this).toggle()
+            }
+        })  
+    }
+    function toggle_staff(){
+        $("#user_list > [role='student'], #user_list > [role='student_extended']").toggle()
+    }
+})
+</script>
+{% endblock %}
+
 {% block main_content %}
 
 <div class="sort">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
+        <input class="form-check-input" type="checkbox" id="students">
+        <label class="form-check-label" for="students">
             Opiskelijat
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-        <label class="form-check-label" for="flexCheckChecked">
+        <input class="form-check-input" type="checkbox" id="staff">
+        <label class="form-check-label" for="staff">
             Henkilöstö
         </label>
     </div>
 
 </div> 
 
-<div class="list">
+<div class="list" id="user_list">
 {% if users %}
 {% for usr in users %}  
-    <div class="list__item brd_top">
+<form method="post" action="{% url 'save_permision' usr.id %}">
+    {% csrf_token %}
+    <div class="list__item brd_top" id="user_id_{{usr.id}}" role="{{usr.role}}">
         <div class="list__item_photo">
             <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
             <div>
@@ -66,13 +102,14 @@
         </div>
 
         <div class="list__item_button">
-            <button class="list__button list__button_bg_blue btn_strech">
+            <button class="list__button list__button_bg_blue btn_strech" type="submit">
                 <span class="list__button__text ">Tallenna</span>
             </button>
         </div>
         
 
     </div>
+</form>
 {% endfor %}
 {% endif %}
 
