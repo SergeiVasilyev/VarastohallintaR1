@@ -68,6 +68,8 @@ urlpatterns = [
     path('get_photo/', views.get_photo, name='get_photo'),
     path('get_persons/', views.getPersons, name='getPersons'),
     path('get_product/', views.getProduct, name='getProduct'),
+    path('save_permision/<int:idx>/', views.save_permision, name='save_permision'),
+
 
     path('filling_goods_description/', views.filling_goods_description, name='filling_goods_description'),
 

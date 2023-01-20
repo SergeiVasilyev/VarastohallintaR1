@@ -188,27 +188,30 @@
                         </div>
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
+                        {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
                         <div data-bs-toggle="tooltip" data-bs-custom-class="tooltip_align" data-bs-delay="500"
                         title="Pakkauksessa olevien tavaroiden määrä antaa varastotyöntekijöille mahdollisuuden hallita kulutustarvikkeita tarkemmin.">
                             <label class="form-label">MÄÄRÄ PAKKAUKSESSA</label>
-                            {% comment %} {{form.contents}} {% endcomment %}
-                            {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
-                            <!-- <input data-suffix="°C" value="50" min="0" max="100" type="number" /> -->
-                            {% comment %} {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
-                                {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly" %}
-                            {% else %}
-                                {% render_field form.contents|append_attr:"id:contents" %}
-                            {% endif %} {% endcomment %}
-                            
+                            {% comment %} {{form.contents|get_unit_filter}} {% endcomment %}
+                                {% render_field form.contents|append_attr:"id:contents"|append_attr:"readonly"|modify_input:item.unit %}
                         </div>
+                        {% endif %}
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
+                        <div>
+                            {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                            <label class="form-label">Tavara yhteensä</label>
+                                {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- <div class="div1" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">YKSIKKÖ</label>
                             {% comment %} {{form.unit}} {% endcomment %}
                             {% render_field form.unit|append_attr:"id:unit"|append_attr:"disabled" %}
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
 
