@@ -182,12 +182,12 @@
                 <div class="update_event">
                     <div class="buttons">
                         <!-- При обновлении даты, нельзя дать возможность менять дату в меньшую сторону!!! -->
-                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.id}}" >
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date or not is_staff_user_has_permission_to_edit %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#p{{rental_event.id}}" >
                             <span class="list__button__text ">Päivitä</span>
                         </button>
                     </div>
                     <div class="buttons">
-                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.id}}">
+                        <button type="button" class="list__button btn_strech {% if rental_event.returned_date or not is_staff_user_has_permission_to_edit %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.id}}">
                             <span class="list__button__text ">Lopeta</span>
                         </button>
                     </div>

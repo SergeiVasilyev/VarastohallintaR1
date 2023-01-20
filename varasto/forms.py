@@ -56,7 +56,7 @@ class GoodsForm(ModelForm):
                 'model', 'item_type', 'size', 'parameters', 'contents', 
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
-                'invoice_number', 'amount', 'unit']
+                'invoice_number', 'amount', 'unit', 'amount_x_contents']
         widgets ={
             'ean': TextInput(attrs={
                 'class': 'form-control',
@@ -102,6 +102,7 @@ class GoodsForm(ModelForm):
                 'step': 0.001,
                 'data-decimals': 4,
                 'placeholder': '0',
+                # 'data-suffix': model.get_unit,
             }),
             'parameters': TextInput(attrs={
                 'class': 'form-control ',
@@ -138,6 +139,13 @@ class GoodsForm(ModelForm):
             }),
             'unit': widgets.Select(attrs={
                 'class': 'form-select',
+            }),
+            'amount_x_contents': NumberInput(attrs={
+                'min': 0, # Min value doesn't work
+                'max': 1000000,
+                'step': 1,
+                'data-decimals': 4,
+                'placeholder': '0',
             }),
         }
 

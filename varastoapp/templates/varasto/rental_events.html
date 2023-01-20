@@ -16,23 +16,7 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
-    // const setRentalView = (page) => {
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/set_rental_event_view/',
-    //         data: {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'page': page,
-    //         },
-    //         success: (response)=> {
-    //             // console.log(response)
-    //         }
-    //     })
-    // }
 
-    // $('#rental_view_switch').click(function(){
-    //     setRentalView('rental_events_goods')
-    // })
 })
 </script>
 {% endblock %}
@@ -133,7 +117,12 @@ $(document).ready(function() {
                     <span>{{grouped_event.renter.group|default_if_none:""}}</span>
                 </div>
                 <div class="list__item_status {% if not grouped_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
-                    <span></span>
+                    {% if not grouped_event.is_user_have_non_returned_item %}
+                        <span><i class="bi bi-record"></i></span>
+                    {% else %}
+                        <span><i class="bi bi-exclamation"></i></span>
+                    {% endif %}
+                    <!-- <span><i class="bi bi-slash"></i></span> -->
                 </div>
                 <div class="list__item_st-time">
                     <!-- <span>Ensimmäinen vuokrattu esine</span> -->

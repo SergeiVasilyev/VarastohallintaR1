@@ -136,6 +136,18 @@ class Goods(models.Model):
     #     if event:
     #         return event.estimated_date
     #     return None
+    
+    def get_unit(self):
+        print('self.unit', self.unit)
+        return self.unit
+
+    @register.filter
+    def modify_input(str1, val):
+        # str1 = f'<input type="number" name="contents" value="3.0000" min="0" max="1000000" step="0.001" data-decimals="4" placeholder="0" readonly id="contents" data-suffix={val}>'
+        new_str = str(str1)
+        # print(type(new_str), new_str)
+        new_str = f"{new_str[:-1]} data-suffix={val}>"
+        return new_str
 
     @property
     def decrease_items(self, is_сonsumables, amount):
@@ -282,7 +294,7 @@ class Rental_event(models.Model):
         result = 0
         now = datetime.now()
         now = pytz.utc.localize(now)
-        event = Rental_event.objects.filter(renter = self.renter)
+        event = Rental_event.objects.filter(renter = self.renter).filter(storage = self.storage)
         for e in event:
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
                 # print(e.estimated_date, now)
