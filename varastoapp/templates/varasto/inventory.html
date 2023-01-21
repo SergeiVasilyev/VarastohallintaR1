@@ -14,7 +14,7 @@
 {% block page %}Inventaario{% endblock %}
 
 {% block main_content %}
-<div class="pagination">
+<div class="pagination mt-3">
     <span class="step-links">
         <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
         <a href="{% if items.has_previous %}?page={{ items.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
