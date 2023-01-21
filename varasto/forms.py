@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods, Staff_event, Units
+from .models import CustomUser, Category, Goods, Staff_audit, Units
 from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
@@ -149,9 +149,9 @@ class GoodsForm(ModelForm):
             }),
         }
 
-class Staff_eventForm(ModelForm):
+class Staff_auditForm(ModelForm):
     class Meta:
-        model = Staff_event
+        model = Staff_audit
         fields = ['staff', 'item', 'from_storage', 'to_storage', 'event_date', 'remarks']
         widgets = {
             'staff': widgets.Select(attrs={

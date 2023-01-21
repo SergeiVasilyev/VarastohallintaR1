@@ -16,13 +16,13 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm, GoodsForm, Staff_eventForm, Staff_eventForm
+from .forms import CustomUserForm, GoodsForm, Staff_auditForm
 from .checkUser import *
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
 from django.db.models import Count
 from django.contrib.auth.models import Group
 

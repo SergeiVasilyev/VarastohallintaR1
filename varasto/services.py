@@ -10,7 +10,7 @@ from pathlib import Path
 
 from django.conf import settings
 from .storage_settings import *
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
 from datetime import datetime, timedelta
 
 
