@@ -312,18 +312,18 @@ class Rental_event(models.Model):
 
 
 class Staff_audit(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)
-    item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
+    staff = models.CharField(max_length=300, blank=True, null=True)
+    item = models.CharField(max_length=500, blank=True, null=True)
     event_process = models.CharField(max_length=100, blank=True, null=True)
+    person = models.CharField(max_length=300, blank=True, null=True)
     # We need to use related_name if we have 2 ForegnKey to same table.
-    from_storage = models.ForeignKey(Storage_name, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
-    to_storage = models.ForeignKey(Storage_name, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
+    from_storage = models.CharField(max_length=100, blank=True, null=True)
+    to_storage = models.CharField(max_length=100, blank=True, null=True)
     event_date = models.DateTimeField(blank=True, null=True)
-    remarks = models.CharField(max_length=100, blank=True, null=True)
+    remarks = models.CharField(max_length=300, blank=True, null=True)
 
     def __str__(self):
-         return '%s %s %s %s %s %s' % (self.staff, self.item, self.from_storage,
-         self.to_storage, self.event_date, self.remarks)
+         return '%s' % (self.staff)
 
 
 class Settings(models.Model):
