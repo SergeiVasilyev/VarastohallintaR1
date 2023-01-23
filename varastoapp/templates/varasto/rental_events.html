@@ -16,7 +16,9 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
-
+    $('#chk-04').click(function(){
+        $(".list__item[is_overdue='0']").toggle()
+    })
 })
 </script>
 {% endblock %}
@@ -102,7 +104,7 @@ $(document).ready(function() {
     <div class="list">
         {% for grouped_event in grouped_events %}
             {% comment %} {{grouped_event.renter}} - {{grouped_event.renter.first_name}} - {{grouped_event.item}} - {{grouped_event.start_date}} {% endcomment %}
-            <div class="list__item brd_top" userid="{{grouped_event.renter.id}}">
+            <div class="list__item brd_top" userid="{{grouped_event.renter.id}}" {% if not grouped_event.is_user_have_non_returned_item %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
                 <div class="list__item_photo">
                     <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
                     <div><a href="{% url 'renter' grouped_event.renter_id %}"><img src="{% static grouped_event.renter.photo %}" alt="{{grouped_event.renter.photo}}"></a></div>
