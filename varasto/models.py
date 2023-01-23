@@ -67,6 +67,17 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
     def roles(self):
         return dict(CustomUser.ROLE)
+    
+    @register.filter
+    def roles_by_permission(roles_dict, user):
+        if user.role=="management":
+            roles_dict.pop('super')
+        elif user.role=="storage_employee":
+            roles_dict.pop('super')
+            roles_dict.pop('management')
+        elif user.role=="teacher" or user.role=="student" or user.role=="student_extended":
+            roles_dict = {'student': 'Oppilas'}
+        return roles_dict
 
 
 
