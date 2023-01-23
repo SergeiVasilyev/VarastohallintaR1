@@ -95,3 +95,10 @@ def save_permision(request, idx):
     user.save()
 
     return redirect('grant_permissions')
+
+
+#FUNC new_user
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
+def new_user(request):
+    return render(request, 'varasto/new_user.html')
