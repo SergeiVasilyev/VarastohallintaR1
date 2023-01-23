@@ -511,8 +511,9 @@ def rental_events_goods(request):
     print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
-    first_date = events[0].start_date
-    last_date = events.reverse()[0].start_date
+
+    first_date = events[0].start_date if not order_filter_switch() else events.reverse()[0].start_date
+    last_date = events.reverse()[0].start_date if not order_filter_switch() else events[0].start_date
 
     paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -520,8 +521,8 @@ def rental_events_goods(request):
 
     context = {
         'events': page_obj,
-        'first_date': last_date if order_filter_switch() else first_date,
-        'last_date': first_date if order_filter_switch() else last_date,
+        'first_date': first_date,
+        'last_date': last_date,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
         'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
@@ -560,7 +561,7 @@ def rental_events(request):
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
 
-    paginator = Paginator(grouped_events, 5) # Siirtää muuttujan asetukseen
+    paginator = Paginator(grouped_events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
