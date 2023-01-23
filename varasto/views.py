@@ -29,7 +29,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions, save_permision
+from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions, save_permision, new_user
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -508,11 +508,20 @@ def rental_events_goods(request):
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
+    print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
+    first_date = events[0].start_date
+    last_date = events.reverse()[0].start_date
+
+    paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'events': events,
+        'events': page_obj,
+        'first_date': last_date if order_filter_switch() else first_date,
+        'last_date': first_date if order_filter_switch() else last_date,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
         'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
@@ -551,9 +560,12 @@ def rental_events(request):
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
 
-    
+    paginator = Paginator(grouped_events, 5) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'grouped_events': grouped_events,
+        'grouped_events': page_obj,
         'events': events,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
@@ -563,10 +575,10 @@ def rental_events(request):
 
 
 # FUNC new_user
-@login_required()
-@user_passes_test(lambda user:user.is_staff)
-def new_user(request):
-    return render(request, 'varasto/new_user.html')
+# @login_required()
+# @user_passes_test(lambda user:user.is_staff)
+# def new_user(request):
+#     return render(request, 'varasto/new_user.html')
 
 
 # FUNC get_photo

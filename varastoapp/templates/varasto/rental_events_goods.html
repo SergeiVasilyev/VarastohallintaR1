@@ -71,12 +71,12 @@ $(document).ready(function() {
                 </a>
             </div>
         </div>
-
+        
         <div class="date_selection">
             <form action="" method="get">
-                <input name="rental_start" id="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_first_date|date:'Y-m-d'}}" />
+                <input name="rental_start" id="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{first_date|date:'Y-m-d'}}" />
                 <span class="ms-2 me-2"> - </span>
-                <input name="rental_end" id="rental_end" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_last_date|date:'Y-m-d'}}" />
+                <input name="rental_end" id="rental_end" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{last_date|date:'Y-m-d'}}" />
                 <button type="submit" id="date_submit" class="btn btn-secondary" hidden></button>
             </form>
         </div>
@@ -166,7 +166,19 @@ $(document).ready(function() {
             
         {% endfor %}
     </div>
+    <div class="pagination mt-5 mb-5">
+        <span class="step-links">
+            <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+            <a href="?{% if events.has_previous %}page={{ events.previous_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+            
+            <span class="current">
+                Sivu {{ events.number }} / {{ events.paginator.num_pages }}
+            </span>
 
+            <a href="?{% if events.has_next %}page={{ events.next_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+            <a href="?page={{ events.paginator.num_pages }}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+        </span>
+    </div>
 
 
 
