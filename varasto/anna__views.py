@@ -101,4 +101,15 @@ def save_permision(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 def new_user(request):
-    return render(request, 'varasto/new_user.html')
+    person = ''
+    if request.method == 'GET':
+        search_person = (request.GET.get('search_user'))
+        print(search_person)
+        if search_person and search_person.isnumeric():
+            person = CustomUser.objects.get(code=search_person)
+        
+
+    context = {
+        'person': person,
+    }
+    return render(request, 'varasto/new_user.html', context)

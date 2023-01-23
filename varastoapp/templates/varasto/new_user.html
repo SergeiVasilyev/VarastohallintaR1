@@ -16,21 +16,27 @@
 <div class="cont">
 <div class="new_user_warp">
     <div>
-        <label for="search_user" class="form-label">Hae opiskelijaa tai työntekijää:</label>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="search_user" placeholder="Kirjoita opiskelija- opettajanumero tai nimi">
-            <div class="input-group-append">
-                <button class="btn btn-secondary bi bi-search" type="button"></button>
+        <form method="get">
+            <label for="search_person" class="form-label">Hae opiskelijaa tai työntekijää:</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="search_person" name="search_person" placeholder="Kirjoita opiskelija- opettajanumero tai nimi">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary bi bi-search" type="submit" name="search"></button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <div class="user_info mb-3">
         <h5>Erkki Esimerkki</h5>
-        <p><b>status:</b> Opiskelija</p>
         <p><b>koodi:</b> 34562</p>
         <p><b>puhelin:</b> +358 34 256 78 34</p>
         <p><b>e-mail:</b> erkkiesimerkki@raseko.fi</p>
+    </div>
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Käyttäjän nimi:</label>
+        <input type="text" class="form-control" id="username">
     </div>
 
     <div class="mb-3">
@@ -40,12 +46,12 @@
 
     <div class="mb-3">
         <label for="pass1" class="form-label">Salasana:</label>
-        <input type="text" class="form-control" id="pass1">
+        <input type="password" class="form-control" id="pass1">
     </div>
 
     <div class="mb-3">
         <label for="pass2" class="form-label">Salasana uudelleen:</label>
-        <input type="text" class="form-control" id="pass2">
+        <input type="password" class="form-control" id="pass2">
     </div>
 
     <div class="main_buttons">
