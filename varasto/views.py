@@ -699,8 +699,7 @@ def edit_item(request, idx):
     is_rented = False
     if event:
         is_rented = True
-    # TODO Send user permission in context. Can't edit laskunnumer etc..
-    # TODO Send rental event, if this product is not returned yet staff can't edit varasto field.
+
     context = {
         'form': form,
         'item': get_item,
