@@ -103,7 +103,7 @@ def save_permision(request, idx):
 def new_user(request):
     person = ''
     if request.method == 'GET':
-        search_person = (request.GET.get('search_user'))
+        search_person = (request.GET.get('search_person'))
         print(search_person)
         if search_person and search_person.isnumeric():
             person = CustomUser.objects.get(code=search_person)
