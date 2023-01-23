@@ -121,9 +121,8 @@
         
             <div class="row01">
                 <div class="item_name">
-                    <span class="header">{{item.item_name}} {{item.brand}}</span>
-                    <span class="paragraph">{{item.model}}</span>
-                    
+                    <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand}}</a></span>
+                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model}}</a></span>
                 </div>
             </div>
         
