@@ -803,6 +803,47 @@ def set_order_field(request):
     return redirect (page.set_value)
 
 
+def delete_product(request, idx):
+    staff = CustomUser.objects.get(id=request.user.id)
+    item = Goods.objects.get(id=idx)
+    item_data_dict = item.__dict__.copy() # Make copy of product instance
+
+    # Delete unnecessary fields in product info
+    entries_to_remove = ('_state', 'cat_name_id', 'item_type', 'size', 'parameters', 'item_description', 'picture', 'storage_place', 'item_status', 'cost_centre', 'purchase_data', 'purchase_price', 'purchase_place', 'storage_id', 'cat_name_id', 'ean')
+    for k in entries_to_remove:
+        item_data_dict.pop(k, None)
+    item_data_dict['contents'] = str(item.contents.normalize()) if item.contents else ''
+    item_data_dict['amount_x_contents'] = str(item.amount_x_contents.normalize()) if item.amount_x_contents else ''
+    print(item_data_dict)
+
+    user_dict = staff.__dict__.copy() # Make copy of staff instance
+    # Delete unnecessary fields in product info
+    entries_to_remove = ('_state', 'username', 'password', 'email', 'last_login', 'date_joined', 'is_superuser', 'is_staff', 'is_active', 'group', 'photo', 'role', 'responsible_teacher_id', 'storage_id')
+    for k in entries_to_remove:
+        user_dict.pop(k, None)
+    print(user_dict)
+
+    # Create record about event in Staff_audit table
+    storage = request.user.storage.name if request.user.storage else None
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    staff_audit = Staff_audit.objects.create(
+        staff = user_dict,
+        item = item_data_dict,
+        event_process = 'Delete item',
+        to_storage = storage,
+        event_date = datenow,
+    )
+    staff_audit.save()
+    
+    item.delete()
+
+    # TODO Redirect to same page where product was
+    return redirect("products")
+
+
+
+
 # FUNC filling_storage_place
 # storage_place sarakkeen täyttäminen
 def filling_storage_place(request):
