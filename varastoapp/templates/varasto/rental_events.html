@@ -88,6 +88,8 @@ $(document).ready(function() {
         </div>
     </div>
 
+    
+
     <div class="column_names">
         <div class="column"><span>lainaaja</span></div>
         <div class="column"><span>Koulun RYHMÄ</span></div>
@@ -197,7 +199,19 @@ $(document).ready(function() {
             {% endfor %}
         {% endfor %}
     </div>
+    <div class="pagination mt-5 mb-5">
+        <span class="step-links">
+            <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+            <a href="?{% if grouped_events.has_previous %}page={{ grouped_events.previous_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+            
+            <span class="current">
+                Sivu {{ grouped_events.number }} / {{ grouped_events.paginator.num_pages }}
+            </span>
 
+            <a href="?{% if grouped_events.has_next %}page={{ grouped_events.next_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+            <a href="?page={{ grouped_events.paginator.num_pages }}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+        </span>
+    </div>
 
 
 

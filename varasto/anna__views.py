@@ -12,7 +12,7 @@ from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
@@ -95,3 +95,10 @@ def save_permision(request, idx):
     user.save()
 
     return redirect('grant_permissions')
+
+
+#FUNC new_user
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
+def new_user(request):
+    return render(request, 'varasto/new_user.html')
