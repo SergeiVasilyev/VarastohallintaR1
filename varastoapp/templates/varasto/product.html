@@ -76,14 +76,45 @@
                         <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
                     </button>
                 </a>
-                <a class="nodecor {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                <a class="nodecor pb-3 {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
                     <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
                 </a>
+                <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="#" >
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#delete_confirm_modal" {% if selected_item.rentable_at %} class="button button_bg_gray resize" {% else %} class="button button_bg_red resize" {% endif %}> 
+                        <span class="button__text resize">Poista tavara</span>
+                        <span class="button__icon">X</span>
+                    </button>
+                </a>
             </div>
         </div>
+
+        <!-- Modal 1-->
+        <div class="modal fade" id="delete_confirm_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Poista {{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} tuotte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{% url 'delete_product' selected_item.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p><b> Haluatko varmasti poistaa tämän tuotteen?</b></p>
+                            <p>Poistettua tuottetta ei mahdotonta palata takaisin järjestelmään.</p>
+                            <p>Tiedot tästä tapahtumasta tallennetaan järjestelmään.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">sulje</button>
+                            <button type="submit" class="btn btn-danger">POISTA</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
 
         <div class="product_description mt-3 mb-3">
             <div>
