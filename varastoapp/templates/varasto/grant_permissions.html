@@ -50,6 +50,19 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block main_content %}
+<div class="pagination mt-3">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ users.number }} / {{ users.paginator.num_pages }}
+        </span>
+
+        <a href="{% if users.has_next %}?page={{ users.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ users.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
 
 <div class="sort">
     <div class="form-check">
@@ -96,7 +109,7 @@ $(document).ready(function() {
         <div class="list__item_role">
             <div class="dropdown">
                 <select class="form-select" name="roles">
-                {% for entry in usr.roles %} 
+                {% for entry in usr.roles|roles_by_permission:request.user %} 
                 <option value="{{entry}}" {% if entry == usr.role %} selected {% endif %}>{{entry}}</option>
                 {% endfor %}
                 </select>
@@ -117,4 +130,17 @@ $(document).ready(function() {
 
 </div>
 
+<div class="pagination mt-5 mb-3">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ users.number }} / {{ users.paginator.num_pages }}
+        </span>
+
+        <a href="{% if users.has_next %}?page={{ users.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ users.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
 {% endblock %}

@@ -29,7 +29,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions, save_permision, new_user
+from .anna__views import report, new_event_goods, product_report, inventory, new_user
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -44,6 +44,39 @@ from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
 
+
+
+
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
+def grant_permissions(request):
+    users = CustomUser.objects.all().order_by("id")
+    if request.user.is_superuser:
+        pass
+    elif request.user.role=="management":
+        users = users.exclude(is_superuser=True)
+    elif request.user.role=="storage_employee":
+        users = users.exclude(is_superuser=True).exclude(role="management")
+    else:
+        users = {}
+
+    print(users)
+    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "users": page_obj
+    }
+
+    return render(request, 'varasto/grant_permissions.html', context)
+
+def save_permision(request, idx):
+    user = CustomUser.objects.get(id=idx)
+    user.role = (request.POST.get('roles'))
+    user.save()
+
+    return redirect('grant_permissions')
 
 
 
