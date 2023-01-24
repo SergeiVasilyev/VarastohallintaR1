@@ -101,6 +101,28 @@ def save_permision(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 def new_user(request):
+    if request.method == 'POST':
+        username = (request.POST.get('username'))
+        email = (request.POST.get('email'))
+        pass1 = (request.POST.get('pass1'))
+        pass2 = (request.POST.get('pass2'))
+        got_person_id = (request.POST.get('got_person'))
+
+        if pass1 == pass2:
+            try:
+                person = CustomUser.objects.get(id=got_person_id)
+                person.username = username
+                person.email = email
+                person.password = pass1
+                person.save()
+            else:
+                error = "пароли не совпадают"
+                    
+                    except:
+                    error = "Käyttäjää ei löydy"
+            
+        
+
     person = ''
     if request.method == 'GET':
         search_person = (request.GET.get('search_person'))
