@@ -114,12 +114,11 @@ def new_user(request):
                 person.username = username
                 person.email = email
                 person.password = pass1
-                person.save()
+                person.save()     
+            except:
+                error = "Käyttäjää ei löydy"
             else:
-                error = "пароли не совпадают"
-                    
-                    except:
-                    error = "Käyttäjää ei löydy"
+                error = "Salasanat eivät täsmää"
             
         
 
