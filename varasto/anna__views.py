@@ -107,20 +107,22 @@ def new_user(request):
         pass1 = (request.POST.get('pass1'))
         pass2 = (request.POST.get('pass2'))
         got_person_id = (request.POST.get('got_person'))
-
-        if pass1 == pass2:
+        person = CustomUser.objects.filter(username=username)
+        if pass1 == pass2 and not person:
             try:
                 person = CustomUser.objects.get(id=got_person_id)
-                person.username = username
-                person.email = email
+                if username:
+                    person.username = username
+                if email:
+                    person.email = email
                 person.password = pass1
-                person.save()     
+                person.save() 
+                return redirect('new_user')   
             except:
                 error = "Käyttäjää ei löydy"
-            else:
-                error = "Salasanat eivät täsmää"
-            
-        
+        else:
+            error = "Salasanat eivät täsmää tai käyttäjä on jo olemassa."
+                
 
     person = ''
     if request.method == 'GET':
@@ -129,7 +131,6 @@ def new_user(request):
         if search_person and search_person.isnumeric():
             person = CustomUser.objects.get(code=search_person)
         
-
     context = {
         'person': person,
     }

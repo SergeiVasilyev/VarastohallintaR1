@@ -27,7 +27,8 @@
             </form>
         </div>
 
-        <form method='post' ></form>
+        <form method='post'>
+            {% csrf_token %}
             <div class="user_info mb-3">
                 <h5>{{person.first_name}} {{person.last_name}}</h5>
                 <p><b>koodi:</b> {{person.code}}</p>
@@ -57,7 +58,7 @@
             </div>
 
             <div class="main_buttons">
-                <button type="button" class="button_s">
+                <button type="submit" class="button_s">
                     <span class="button_s__text">TALLENNA</span>  
                 </button>
             </div>
