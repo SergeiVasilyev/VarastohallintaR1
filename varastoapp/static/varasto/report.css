@@ -19,7 +19,7 @@
 }
 
 .report_logo img{
-    max-width: 150px;
+    max-width: 120px;
 }
 
 .center{
@@ -51,33 +51,6 @@
     /* border: 1px solid green; */
 } 
 
-/* BUTTON */
-/* .button_props{
-    display: inline-flex;
-    width: 100px;
-    height: 30px;
-    padding: 0;
-    border: none;
-    outline: none;
-    border-radius: 2px;
-    overflow: hidden;
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-    justify-content:center ;
-} */
-
-/* .button__text{
-    display: inline-flex;
-    align-items: center;
-    padding: 0 24px;
-    height: 100%;
-} */
-
-/* .button_active{
-    color: #FFFFFF;
-    background: #325288;
-} */
 
 .logo_header, .subhead, .subhead01{
     justify-content:space-between;
