@@ -33,7 +33,7 @@ from .anna__views import report, new_event_goods, product_report, inventory, new
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
-from .alerts import email_alert
+# from .alerts import email_alert
 from .storage_settings import *
 from .services import _save_image
 from .services import *
@@ -61,7 +61,7 @@ def grant_permissions(request):
         users = {}
 
     print(users)
-    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(users, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -76,7 +76,10 @@ def save_permision(request, idx):
     user.role = (request.POST.get('roles'))
     user.save()
 
-    return redirect('grant_permissions')
+    page_number = request.POST.get('page')
+
+    # return redirect('grant_permissions', page=page_number)
+    return redirect(f'/grant_permissions?page={page_number}')
 
 
 
