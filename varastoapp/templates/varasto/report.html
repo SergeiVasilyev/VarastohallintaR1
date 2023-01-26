@@ -13,7 +13,7 @@
 
 {% block content %}
 
-<div class="px-5">
+<div class="page_size">
 
 <div class="logo_header">
     <div class="left">
@@ -27,7 +27,7 @@
     </div>
     
     <div class="right">
-        <span class="">Sivu 1/2</span>
+        <!-- <span class="">Sivu 1/2</span> -->
     </div>
 </div>
 
@@ -80,7 +80,7 @@
 
 </div>
 
-<div class="column_name">
+<div class="column_name mt-3">
 
     <div class="row01">
         <div class="">
@@ -108,13 +108,13 @@
     
     <div class="row01">
         <div class="">
-            <span class="">Tavaran vuokrannut henkilö</span>
+            <span class="">Varastotyöntekijä</span>
         </div>
     </div>
 </div>
 
 {% for rental_event in rental_events %}
-<div class="line_content">
+<div class="line_content" >
 
     <div class="row01">
         <div class="item_name">
@@ -126,7 +126,7 @@
 
     <div class="row01">
         <div class="">
-            <span class="">{{rental_event.id_start_null}}</span>
+            <span class="">{{rental_event.id}}</span>
         </div>
     </div>
 
@@ -145,7 +145,6 @@
     <div class="row01">
         <div class="interval">
             <span class="">{{rental_event.staff.first_name}} {{rental_event.staff.last_name}}</span>
-            <span class="">{{rental_event.staff.role}}</span>
         </div>
     </div>
 
