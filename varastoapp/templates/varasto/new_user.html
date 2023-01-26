@@ -14,45 +14,55 @@
 
 {% block main_content %}
 <div class="cont">
-<div class="new_user_warp">
-    <div>
-        <label for="search_user" class="form-label">Hae opiskelijaa tai työntekijää:</label>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="search_user" placeholder="Kirjoita opiskelija- opettajanumero tai nimi">
-            <div class="input-group-append">
-                <button class="btn btn-secondary bi bi-search" type="button"></button>
-            </div>
+    <div class="new_user_warp">
+        <div>
+            <form method="get">
+                <label for="search_person" class="form-label">Hae opiskelijaa tai työntekijää:</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="search_person" name="search_person" placeholder="Kirjoita opiskelija- opettajanumero tai nimi">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary bi bi-search" type="submit" name="search"></button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
 
-    <div class="user_info mb-3">
-        <h5>Erkki Esimerkki</h5>
-        <p><b>status:</b> Opiskelija</p>
-        <p><b>koodi:</b> 34562</p>
-        <p><b>puhelin:</b> +358 34 256 78 34</p>
-        <p><b>e-mail:</b> erkkiesimerkki@raseko.fi</p>
-    </div>
+        <form method='post'>
+            {% csrf_token %}
+            <div class="user_info mb-3">
+                <h5>{{person.first_name}} {{person.last_name}}</h5>
+                <p><b>koodi:</b> {{person.code}}</p>
+                <p><b>puhelin:</b> {{person.phone}}</p>
+                <p><b>e-mail:</b> {{person.email}}</p>
+            </div>
 
-    <div class="mb-3">
-        <label for="email" class="form-label">Sähköposti:</label>
-        <input type="text" class="form-control" id="email">
-    </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Käyttäjän nimi:</label>
+                <input type="text" class="form-control" id="username" name="username">
+                <input name="got_person" value="{{person.id}}" hidden>
+            </div>
 
-    <div class="mb-3">
-        <label for="pass1" class="form-label">Salasana:</label>
-        <input type="text" class="form-control" id="pass1">
-    </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Sähköposti:</label>
+                <input type="text" class="form-control" id="email" name="email">
+            </div>
 
-    <div class="mb-3">
-        <label for="pass2" class="form-label">Salasana uudelleen:</label>
-        <input type="text" class="form-control" id="pass2">
-    </div>
+            <div class="mb-3">
+                <label for="pass1" class="form-label">Salasana:</label>
+                <input type="password" class="form-control" id="pass1" name="pass1">
+            </div>
 
-    <div class="main_buttons">
-        <button type="button" class="button_s">
-            <span class="button_s__text">TALLENNA</span>  
-        </button>
+            <div class="mb-3">
+                <label for="pass2" class="form-label">Salasana uudelleen:</label>
+                <input type="password" class="form-control" id="pass2" name="pass2">
+            </div>
+
+            <div class="main_buttons">
+                <button type="submit" class="button_s">
+                    <span class="button_s__text">TALLENNA</span>  
+                </button>
+            </div>
+        </form>
     </div>
-</div>
 </div>
 {% endblock %}

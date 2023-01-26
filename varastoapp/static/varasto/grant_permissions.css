@@ -89,3 +89,90 @@
     display: flex;
     justify-content: center;
 }
+
+
+/* PAGINATION */
+.pagination{
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
+    /* border: 1px solid red; */
+}
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/
+
+
+/* BUTTON IN LIST */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center;
+    
+}
+
+    .button_link, .button_link:hover, .button_link:visited {
+        text-decoration: none;
+        /* border: 1px solid blue; */
+    }
+
+    .btn_strech {
+        place-self: center stretch;
+    }
+    
+
+    .list__button__text {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+        /* border: 1px solid blue; */
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #325288;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    .font-size{
+        font-size: 1em;
+        padding: 0 0.9em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }

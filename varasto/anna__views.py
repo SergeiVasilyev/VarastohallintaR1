@@ -12,7 +12,7 @@ from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser
 from django.db.models import Count
 from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
@@ -95,3 +95,43 @@ def save_permision(request, idx):
     user.save()
 
     return redirect('grant_permissions')
+
+
+#FUNC new_user
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
+def new_user(request):
+    if request.method == 'POST':
+        username = (request.POST.get('username'))
+        email = (request.POST.get('email'))
+        pass1 = (request.POST.get('pass1'))
+        pass2 = (request.POST.get('pass2'))
+        got_person_id = (request.POST.get('got_person'))
+        person = CustomUser.objects.filter(username=username)
+        if pass1 == pass2 and not person:
+            try:
+                person = CustomUser.objects.get(id=got_person_id)
+                if username:
+                    person.username = username
+                if email:
+                    person.email = email
+                person.password = pass1
+                person.save() 
+                return redirect('new_user')   
+            except:
+                error = "Käyttäjää ei löydy"
+        else:
+            error = "Salasanat eivät täsmää tai käyttäjä on jo olemassa."
+                
+
+    person = ''
+    if request.method == 'GET':
+        search_person = (request.GET.get('search_person'))
+        print(search_person)
+        if search_person and search_person.isnumeric():
+            person = CustomUser.objects.get(code=search_person)
+        
+    context = {
+        'person': person,
+    }
+    return render(request, 'varasto/new_user.html', context)

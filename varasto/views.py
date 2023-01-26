@@ -16,20 +16,20 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm, GoodsForm, Staff_eventForm, Staff_eventForm
+from .forms import CustomUserForm, GoodsForm, Staff_auditForm
 from .checkUser import *
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_event, CustomUser, Settings, Units
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
 from django.db.models import Count
 from django.contrib.auth.models import Group
 
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions, save_permision
+from .anna__views import report, new_event_goods, product_report, inventory, new_user
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -44,6 +44,39 @@ from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
 
+
+
+
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
+def grant_permissions(request):
+    users = CustomUser.objects.all().order_by("id")
+    if request.user.is_superuser:
+        pass
+    elif request.user.role=="management":
+        users = users.exclude(is_superuser=True)
+    elif request.user.role=="storage_employee":
+        users = users.exclude(is_superuser=True).exclude(role="management")
+    else:
+        users = {}
+
+    print(users)
+    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "users": page_obj
+    }
+
+    return render(request, 'varasto/grant_permissions.html', context)
+
+def save_permision(request, idx):
+    user = CustomUser.objects.get(id=idx)
+    user.role = (request.POST.get('roles'))
+    user.save()
+
+    return redirect('grant_permissions')
 
 
 
@@ -508,11 +541,21 @@ def rental_events_goods(request):
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
+    print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
+    first_date = events[0].start_date if not order_filter_switch() else events.reverse()[0].start_date
+    last_date = events.reverse()[0].start_date if not order_filter_switch() else events[0].start_date
+
+    paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'events': events,
+        'events': page_obj,
+        'first_date': first_date,
+        'last_date': last_date,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
         'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
@@ -551,9 +594,12 @@ def rental_events(request):
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
 
-    
+    paginator = Paginator(grouped_events, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'grouped_events': grouped_events,
+        'grouped_events': page_obj,
         'events': events,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
@@ -563,10 +609,10 @@ def rental_events(request):
 
 
 # FUNC new_user
-@login_required()
-@user_passes_test(lambda user:user.is_staff)
-def new_user(request):
-    return render(request, 'varasto/new_user.html')
+# @login_required()
+# @user_passes_test(lambda user:user.is_staff)
+# def new_user(request):
+#     return render(request, 'varasto/new_user.html')
 
 
 # FUNC get_photo
@@ -653,8 +699,7 @@ def edit_item(request, idx):
     is_rented = False
     if event:
         is_rented = True
-    # TODO Send user permission in context. Can't edit laskunnumer etc..
-    # TODO Send rental event, if this product is not returned yet staff can't edit varasto field.
+
     context = {
         'form': form,
         'item': get_item,
@@ -801,6 +846,47 @@ def set_order_field(request):
 
     page = Settings.objects.get(set_name='rental_page_view')
     return redirect (page.set_value)
+
+
+def delete_product(request, idx):
+    staff = CustomUser.objects.get(id=request.user.id)
+    item = Goods.objects.get(id=idx)
+    item_data_dict = item.__dict__.copy() # Make copy of product instance
+
+    # Delete unnecessary fields in product info
+    entries_to_remove = ('_state', 'cat_name_id', 'item_type', 'size', 'parameters', 'item_description', 'picture', 'storage_place', 'item_status', 'cost_centre', 'purchase_data', 'purchase_price', 'purchase_place', 'storage_id', 'cat_name_id', 'ean')
+    for k in entries_to_remove:
+        item_data_dict.pop(k, None)
+    item_data_dict['contents'] = str(item.contents.normalize()) if item.contents else ''
+    item_data_dict['amount_x_contents'] = str(item.amount_x_contents.normalize()) if item.amount_x_contents else ''
+    print(item_data_dict)
+
+    user_dict = staff.__dict__.copy() # Make copy of staff instance
+    # Delete unnecessary fields in product info
+    entries_to_remove = ('_state', 'username', 'password', 'email', 'last_login', 'date_joined', 'is_superuser', 'is_staff', 'is_active', 'group', 'photo', 'role', 'responsible_teacher_id', 'storage_id')
+    for k in entries_to_remove:
+        user_dict.pop(k, None)
+    print(user_dict)
+
+    # Create record about event in Staff_audit table
+    storage = request.user.storage.name if request.user.storage else None
+    now = datetime.now()
+    datenow = pytz.utc.localize(now)
+    staff_audit = Staff_audit.objects.create(
+        staff = user_dict,
+        item = item_data_dict,
+        event_process = 'Delete item',
+        to_storage = storage,
+        event_date = datenow,
+    )
+    staff_audit.save()
+    
+    item.delete()
+
+    # TODO Redirect to same page where product was
+    return redirect("products")
+
+
 
 
 # FUNC filling_storage_place

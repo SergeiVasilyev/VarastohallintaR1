@@ -16,25 +16,9 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
-    // const setRentalView = (page) => {
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/set_rental_event_view/',
-    //         data: {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'page': page,
-    //         },
-    //         success: (response)=> {
-    //             console.log(window.location.hostname)
-    //             // window.location.href = page
-    //             window.location.replace(window.location.hostname + '/' + page)
-    //         }
-    //     })
-    // }
-
-    // $('#rental_view_switch').click(function(){
-    //     setRentalView('rental_events')
-    // })
+    $('#chk-04').click(function(){
+        $(".list__item[is_overdue='0']").toggle()
+    })
 })
 </script>
 {% endblock %}
@@ -71,12 +55,12 @@ $(document).ready(function() {
                 </a>
             </div>
         </div>
-
+        
         <div class="date_selection">
             <form action="" method="get">
-                <input name="rental_start" id="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_first_date|date:'Y-m-d'}}" />
+                <input name="rental_start" id="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{first_date|date:'Y-m-d'}}" />
                 <span class="ms-2 me-2"> - </span>
-                <input name="rental_end" id="rental_end" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{events|get_last_date|date:'Y-m-d'}}" />
+                <input name="rental_end" id="rental_end" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{last_date|date:'Y-m-d'}}" />
                 <button type="submit" id="date_submit" class="btn btn-secondary" hidden></button>
             </form>
         </div>
@@ -117,7 +101,7 @@ $(document).ready(function() {
 
     <div class="list">
         {% for event in events %}
-            <div class="list__item brd_top" userid="{{event.item.id}}">
+            <div class="list__item brd_top" userid="{{event.item.id}}" {% if not event.returned_date and not event.is_past_due %}is_overdue="1"{% else %}is_overdue="0"{% endif %}>
                 <div class="list__item_photo">
                     <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
                     <div><a href="{% url 'product' event.item_id %}"><img src="{% static event.item.picture %}" alt="{{event.item.picture}}"></a></div>
@@ -166,7 +150,19 @@ $(document).ready(function() {
             
         {% endfor %}
     </div>
+    <div class="pagination mt-5 mb-5">
+        <span class="step-links">
+            <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+            <a href="?{% if events.has_previous %}page={{ events.previous_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+            
+            <span class="current">
+                Sivu {{ events.number }} / {{ events.paginator.num_pages }}
+            </span>
 
+            <a href="?{% if events.has_next %}page={{ events.next_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+            <a href="?page={{ events.paginator.num_pages }}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+        </span>
+    </div>
 
 
 

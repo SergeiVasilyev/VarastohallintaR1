@@ -331,6 +331,13 @@
     padding: 0.7em 1em !important;
     transition-duration: 0,4s;
 }
+.btn-danger, .btn-danger:active, .btn-danger:visited {
+    text-transform: uppercase;
+    background-color: #D96098 !important;
+    border: #D96098 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
 
 /* // MODAL */
 

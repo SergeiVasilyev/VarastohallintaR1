@@ -175,6 +175,10 @@ header .warp {
     color: white;
     background: #24A19C;
 }
+.button_bg_red {
+    color: white;
+    background: #D96098;
+}
 .button_bg_blue {
     color: white;
     background: #325288;
