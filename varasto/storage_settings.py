@@ -1,7 +1,7 @@
 # ITEMES_LETTER_CODE = 'A'
 
 
-# -----------------
+# ======================================================
 # DATA FOR DATABASE GENERATOR (generator is not created)
 
 # Units
@@ -13,7 +13,8 @@ CATEGORY_CONSUMABLES_ID = 1
 # CONSUMABLES name in database
 CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
 
-# -----------------
+# / DATA FOR DATABASE GENERATOR (generator is not created)
+# ======================================================
 
 
 RENTAL_PAGE_VIEW = 'rental_events'
@@ -31,6 +32,13 @@ RENTAL_PAGE_ORDERING_FIELDS_D = {
 PRODUCT_IMG_PATH = 'images/goods/'
 
 
+# ====================================================
+# Email consts
+
+STORAGE_EMAIL = "info.varasto@gmail.com"
+EMAIL_PASS ="mbmxdxuhmjkojukb" 
+EMAIL_SERVER = "smtp.gmail.com"
 
 
-
+# / Email consts
+# ====================================================

@@ -13,9 +13,37 @@ from .storage_settings import *
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
 from datetime import datetime, timedelta
 
+from email.message import EmailMessage
+import smtplib
+from .storage_settings import *
 
-# ---------------------------------------------
+
+# ======================================================
+# EMAIL ALERT
+
+# https://betterdatascience.com/send-emails-with-python/
+def email_alert(subject, body, to):
+    msg = EmailMessage()
+    msg.set_content(body, subtype='html')
+    msg['subject'] = subject
+
+    msg['from'] = STORAGE_EMAIL
+    msg['to'] = to
+
+    server = smtplib.SMTP(EMAIL_SERVER, 587)
+    server.starttls()
+    server.login(STORAGE_EMAIL, EMAIL_PASS)
+    server.send_message(msg)
+
+    server.quit()
+
+# END EMAIL ALERT
+# ======================================================
+
+
+# ===========================================
 # FILE SAVE FUNCTION
+
 def _save_image(byte_data, csrf_token) -> str:
     """Save picture to image/goods directory,
     if generated filename does not exist
@@ -48,7 +76,8 @@ def filename_generator() -> dict:
     img_path_name = path+img_name
     return {'file_path': img_path_name, 'image_name': img_name}
 
-# ---------------------------------------------/
+# END FILE SAVE FUNCTION
+# ==============================================
 
 
 # GET RENTAL PAGE VIEW
@@ -57,7 +86,7 @@ def get_rental_events_page() -> str:
     return page.set_value
 
 
-# ---------------------------------------------
+# =============================================
 # FILTERS
 # ---------------------------------------------
 # Storage filter
@@ -120,7 +149,7 @@ def order_field() -> list:
 
 # ---------------------------------------------
 # END OF FILTERS
-# ---------------------------------------------
+# =============================================
 
 
 
