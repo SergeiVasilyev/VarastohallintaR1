@@ -29,7 +29,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory, grant_permissions, save_permision, new_user
+from .anna__views import report, new_event_goods, product_report, inventory, new_user
 
 from .capture_picture import VideoCamera
 from django.db.models import Q
@@ -44,6 +44,39 @@ from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
 
+
+
+
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
+def grant_permissions(request):
+    users = CustomUser.objects.all().order_by("id")
+    if request.user.is_superuser:
+        pass
+    elif request.user.role=="management":
+        users = users.exclude(is_superuser=True)
+    elif request.user.role=="storage_employee":
+        users = users.exclude(is_superuser=True).exclude(role="management")
+    else:
+        users = {}
+
+    print(users)
+    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "users": page_obj
+    }
+
+    return render(request, 'varasto/grant_permissions.html', context)
+
+def save_permision(request, idx):
+    user = CustomUser.objects.get(id=idx)
+    user.role = (request.POST.get('roles'))
+    user.save()
+
+    return redirect('grant_permissions')
 
 
 
@@ -511,8 +544,9 @@ def rental_events_goods(request):
     print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
-    first_date = events[0].start_date
-    last_date = events.reverse()[0].start_date
+
+    first_date = events[0].start_date if not order_filter_switch() else events.reverse()[0].start_date
+    last_date = events.reverse()[0].start_date if not order_filter_switch() else events[0].start_date
 
     paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -520,8 +554,8 @@ def rental_events_goods(request):
 
     context = {
         'events': page_obj,
-        'first_date': last_date if order_filter_switch() else first_date,
-        'last_date': first_date if order_filter_switch() else last_date,
+        'first_date': first_date,
+        'last_date': last_date,
         'order_switcher': order_filter_switch(),
         'order_field': order_field()[1],
         'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
@@ -560,7 +594,7 @@ def rental_events(request):
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
 
-    paginator = Paginator(grouped_events, 5) # Siirtää muuttujan asetukseen
+    paginator = Paginator(grouped_events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -665,8 +699,7 @@ def edit_item(request, idx):
     is_rented = False
     if event:
         is_rented = True
-    # TODO Send user permission in context. Can't edit laskunnumer etc..
-    # TODO Send rental event, if this product is not returned yet staff can't edit varasto field.
+
     context = {
         'form': form,
         'item': get_item,
