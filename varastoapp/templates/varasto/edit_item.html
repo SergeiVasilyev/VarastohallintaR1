@@ -61,12 +61,12 @@
 
             $('#video').toggle()
             $('#canvas').toggle()
-            if ($(this).val() == "OTA KUVA") {
+            if ($(this).val() == "KUVAA") {
                 $(this).val("CAMERA")
                 $(this).addClass('btn-success')
                 $(this).removeClass('btn-danger')
             } else {
-                $(this).val("OTA KUVA")
+                $(this).val("KUVAA")
                 $(this).removeClass('btn-success')
                 $(this).addClass('btn-danger')
             }
@@ -110,9 +110,9 @@
 </script>
 {% endblock script %}
 
-{% block title %}Tavaran muokkaminen{% endblock %}
+{% block title %}Tavaran muokkaaminen{% endblock %}
 {% block path %}Tavaran muokkaminen{% endblock %}
-{% block page %}Tavaran muokkaminen{% endblock %}
+{% block page %}Tavaran muokkaaminen{% endblock %}
 
 
 {% block main_content %}
@@ -131,9 +131,9 @@
                 <div class="new_button_top">
                     <div class="new_button_take">
                         {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
-                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Kuvaa</button> -->
                         <button id="start_cam" type="button" class="list__button list__button_bg_blue btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#cam">
-                            <span class="list__button__text">Ota kuva</span>
+                            <span class="list__button__text">Kuvaa</span>
                         </button>
                     </div>
                     <div class="divider"></div>
@@ -141,7 +141,7 @@
                         <div class="list__button list__button_bg_blue btn_strech btn-small btn-file">
                             <!-- {{ form.picture }} -->
                             <input type="file" name="picture" class="" onchange="showPreview(event);" accept="image/*" id="id_picture">
-                            <span class="list__button__text">Selaa kuva</span>
+                            <span class="list__button__text">Selaa kuvia</span>
                         </div>
                         <input type="hidden" id="canvasData" name="canvasData"/>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
@@ -179,7 +179,7 @@
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">PAKKAUKSEN MÄÄRÄ, KPL</label>
+                            <label class="form-label">PAKKAUKSIEN MÄÄRÄ, KPL</label>
                             {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
                                 {% render_field form.amount|append_attr:"readonly" %}
                             {% else %}
