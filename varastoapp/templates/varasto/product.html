@@ -44,7 +44,7 @@
                 <span class="personal_field_data">{{ selected_item.storage_place|default:"-" }}</span>
                 <span class="personal_field_name">määrä pakkauksessa</span>
                 <span class="personal_field_data">{{ selected_item.contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
-                <span class="personal_field_name">pakkauksen määrä</span>
+                <span class="personal_field_name">pakkauksien määrä</span>
                 <span class="personal_field_data">{{ selected_item.amount|default:"-" }} kpl</span>
                 <span class="personal_field_name">kaikki yhteensä</span>
                 <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
@@ -103,7 +103,7 @@
                         {% csrf_token %}
                         <div class="modal-body">
                             <p><b> Haluatko varmasti poistaa tämän tuotteen?</b></p>
-                            <p>Poistettua tuottetta ei mahdotonta palata takaisin järjestelmään.</p>
+                            <p>Poistettu tuote on mahdollista palautttaa takaisin järjestelmään.</p>
                             <p>Tiedot tästä tapahtumasta tallennetaan järjestelmään.</p>
                         </div>
                         <div class="modal-footer">
@@ -139,10 +139,10 @@
         <div class="history_header_wrap">
             <div class="column_names">
                 <div><span></span></div>
-                <div><span>Vuokrajan tiedot</span></div>
-                <div><span>Tapahtuma tiedot</span></div>
+                <div><span>Vuokraajan tiedot</span></div>
+                <div><span>Tapahtuman tiedot</span></div>
                 <div><span>Vuokra-aika</span></div>
-                <!-- <div><span>Vastuulinen henkilö</span></div> -->
+                <!-- <div><span>Vastuuhenkilö</span></div> -->
                 <div><span>Kommentit</span></div>
                 
             </div>
