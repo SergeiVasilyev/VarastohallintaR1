@@ -1,0 +1,84 @@
+{% extends "varasto/base_main.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/storage_settings.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Asetukset{% endblock %}
+{% block path %}Asetukset{% endblock %}
+{% block page %}Asetukset{% endblock %}
+
+{% block main_content %}
+
+<div class="page_size">
+
+<div class="head mt-3">
+    <head>
+        DATA FOR DATABASE GENERATOR
+    </head>
+</div>
+<div class="new_middle mt-2">
+    <div>
+        <label class="form-label">Työkäluryhmän lista</label>
+        <input type="text" class="form-control" id="" name="">
+    </div>
+    <div>
+        <label class="form-label">Kulutusmateriaali id</label>
+        <input type="text" class="form-control" id="" name="">  
+    </div>
+    <div>
+        <label class="form-label">Yksikkö lista</label>
+        <input type="text" class="form-control" id="" name="">
+    </div>
+</div>
+
+<div class="head mt-5">
+    <head>
+        CHANGE MAIL
+    </head>
+</div>
+
+<div class="new_middle mt-2">
+    <div>
+        <label class="form-label">Varastonhallinnan sähköposti</label>
+        <input type="email" class="form-control" id="" name="">
+    </div>
+
+
+
+    <div>
+        <label class="form-label">Salasana</label>
+        <input type="password" class="form-control" id="" name=""> 
+    </div>
+
+
+
+    <div>
+        <label class="form-label">Palvelin sähköposti</label>
+        <input type="email" class="form-control" id="" name="">
+    </div>
+
+</div>
+
+<div class="head mt-5">
+    <head>
+        PRODUCT IMG PATH
+    </head>
+</div>
+
+<div class="new_middle mt-2">
+    <div>
+        <label class="form-label">Polku tuotekuviin</label>
+        <input type="url" class="form-control" id="" name="">
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

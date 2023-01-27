@@ -135,3 +135,9 @@ def new_user(request):
         'person': person,
     }
     return render(request, 'varasto/new_user.html', context)
+
+
+def storage_settings(request):
+    
+
+    return render(request, 'varasto/storage_settings.html')
