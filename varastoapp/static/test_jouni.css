@@ -42,7 +42,7 @@
     outline: none;
     border-radius: 0.40em;
     overflow: hidden;
-    cursor: pointer;
+    cursor: pointer;    
     justify-content:center;
     align-items:center;
 }
