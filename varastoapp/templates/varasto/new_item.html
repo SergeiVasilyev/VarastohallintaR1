@@ -61,12 +61,12 @@
 
             $('#video').toggle()
             $('#canvas').toggle()
-            if ($(this).val() == "OTA KUVA") {
+            if ($(this).val() == "KUVAA") {
                 $(this).val("CAMERA")
                 $(this).addClass('btn-success')
                 $(this).removeClass('btn-danger')
             } else {
-                $(this).val("OTA KUVA")
+                $(this).val("KUVAA")
                 $(this).removeClass('btn-success')
                 $(this).addClass('btn-danger')
             }
@@ -131,9 +131,9 @@
                 <div class="new_button_top">
                     <div class="new_button_take">
                         {% comment %} <a href="#" name="_take_picture" ><button type="button" class="btn btn-primary1">Take</button></a> {% endcomment %}
-                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Ota kuva</button> -->
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cam">Kuvaa</button> -->
                         <button id="start_cam" type="button" class="list__button list__button_bg_blue btn_strech btn-small font_size_1-2 btn_width_10" data-bs-toggle="modal" data-bs-target="#cam">
-                            <span class="list__button__text">OTA KUVA</span>
+                            <span class="list__button__text">KUVAA</span>
                         </button>
                     </div>
                     <div class="divider"></div>
@@ -356,7 +356,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ota kuva</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Kuvaa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -364,8 +364,8 @@
                 <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
             </div>
             <div class="modal-footer">
-                {% comment %} <button type="button" class="btn btn-success" id="take_picture" value="OTA KUVA">OTA KUVA</button> {% endcomment %}
-                <input type="button" class="btn btn-danger" id="take_picture" value="OTA KUVA" />
+                {% comment %} <button type="button" class="btn btn-success" id="take_picture" value="KUVAA">KUVAA</button> {% endcomment %}
+                <input type="button" class="btn btn-danger" id="take_picture" value="KUVAA" />
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">SULJE</button>
                 <button type="button" class="btn btn-primary" id="save">TALLENNA</button>
             </div>
