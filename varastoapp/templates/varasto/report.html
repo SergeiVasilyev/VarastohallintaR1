@@ -1,16 +1,19 @@
-{% extends "varasto/base_main.html" %}
+{% extends "varasto/base.html" %}
 
 {% load static %}
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/report.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
 
 {% block title %}Raportti{% endblock %}
 
-{% block main_content %}
+{% block content %}
+
+<div class="page_size">
 
 <div class="logo_header">
     <div class="left">
@@ -24,7 +27,7 @@
     </div>
     
     <div class="right">
-        <span class="">Sivu 1/2</span>
+        <!-- <span class="">Sivu 1/2</span> -->
     </div>
 </div>
 
@@ -50,8 +53,9 @@
     </div>
 
     <div class="row01 button_right">
-        <button type="button" class="button_props button_active">
-            <span class="button__text">Tulosta</span>
+        <button type="button" class="list__button list__button_bg_blue btn_strech">
+            <span class="button__icon"><i class="bi bi-printer"></i>
+            </span>
         </button>
     </div>
 </div>
@@ -76,7 +80,7 @@
 
 </div>
 
-<div class="column_name">
+<div class="column_name mt-3">
 
     <div class="row01">
         <div class="">
@@ -104,13 +108,13 @@
     
     <div class="row01">
         <div class="">
-            <span class="">Tavaran vuokrannut henkilö</span>
+            <span class="">Varastotyöntekijä</span>
         </div>
     </div>
 </div>
 
 {% for rental_event in rental_events %}
-<div class="line_content">
+<div class="line_content" >
 
     <div class="row01">
         <div class="item_name">
@@ -122,13 +126,13 @@
 
     <div class="row01">
         <div class="">
-            <span class="">{{rental_event.id_start_null}}</span>
+            <span class="">{{rental_event.id}}</span>
         </div>
     </div>
 
     <div class="row01">
         <div class="">
-            <span class="">{{rental_event.package}}</span>
+            <span class="">{{rental_event.amount}}</span>
         </div>
     </div>
 
@@ -141,7 +145,6 @@
     <div class="row01">
         <div class="interval">
             <span class="">{{rental_event.staff.first_name}} {{rental_event.staff.last_name}}</span>
-            <span class="">{{rental_event.staff.role}}</span>
         </div>
     </div>
 
@@ -153,5 +156,5 @@
 </div> -->
 {% endfor %}
 
-
+</div>
 {% endblock %}

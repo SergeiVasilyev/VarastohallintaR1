@@ -1,6 +1,6 @@
 .columns_name{
     display: grid;
-    grid-template-columns: minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    grid-template-columns: minmax(16em, 2fr) 1fr 1fr 1fr 1fr 1fr 150px;
     margin-left: 50px;
     align-items: center;
     text-transform: uppercase;
@@ -16,6 +16,21 @@
     /* border: 1px solid blue; */
 }
 
+.list__item_photo > div{
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    margin-left: 0.5em;
+}
+.list__item_photo img {
+    width: 50px;
+    height: 50px;
+    object-fit:cover;
+    /* object-position: -38px 10%; */
+    object-position: 50% 50%; /* kuva keskellä */
+}
+
 .est_date{
     display: flex;
     justify-content: center;
@@ -24,7 +39,7 @@
 
 .new_event_wrap{
     display: grid;
-    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 1fr 1fr 150px;
+    grid-template-columns: 50px minmax(16em, 2fr) 1fr 1fr 1fr 1fr 1fr 150px;
     border-top: 1px solid #E2E8F0;
     align-items: center;
 }
@@ -60,7 +75,7 @@
     color: #718096;
 }
 
-.code_number{
+.code_number, .EAN_number{
     font-weight: 400;
     color: #2D3748;
 }
@@ -81,7 +96,11 @@
     border: 1px solid #24A19C;
     color: white;
 }
-
+.status_orange {
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 .status_red{
     background-color: #D96098;
     border: 1px solid #D96098;
@@ -123,14 +142,31 @@
 }
 
 
-
+.filter_panel {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    /* border: 1px solid red; */
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+}
+.filter_panel > div{
+    /* border: 1px solid red; */
+}
+.checkbox_filters {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    font-size: 0.875em;
+}
 
 /* PAGINATION */
 .pagination{
     display: flex;
     justify-content: center;
     color: #2D3748;
-    /* border: 1px solid red; */
+    /* border: 1px solid green; */
 }
 .pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
     text-decoration: none;
@@ -141,6 +177,7 @@
     justify-content: center;
     align-items: center;
     gap: 0.875em;
+    /* border: 1px solid green; */
 }
 .current {
     width: 10em;

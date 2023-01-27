@@ -1,0 +1,245 @@
+{% extends "varasto/base_main.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/new_event.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/new_event_goods.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block title %}Uusi tapahtuma{% endblock %}
+{% block path %}Uusi tapahtuma{% endblock %}
+{% block page %}Uusi tapahtuma{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+
+$(document).ready(function() {
+    var barcode = ""
+    $(document).keypress(function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        // console.log('check ' + checkSpeed(count))
+        x = checkSpeed()
+        console.log('check ' + x)
+        if (x < 20 & x != 0) {
+            if(code==13)// Enter key hit
+            {
+                $('#add_user').val(barcode)
+                count = 0
+                // document.querySelector("button[name=_add_user]").click()
+            }
+            else
+            {
+                // barcode=barcode+String.fromCharCode(code);
+                // barcode=barcode+String.fromCodePoint(e.keyCode); e.key
+                barcode=barcode+String.fromCharCode(e.keyCode)
+            }
+        }
+    });
+
+    document.addEventListener('focusin', function(event) { 
+        console.log(event.target.className + ' ' + event.target.className + ' focusin!')
+        event.target.style.background = 'pink';
+        $(event).keyup(checkSpeed)
+    })
+    document.addEventListener('focusout', function(event) { 
+        console.log(event.target.className + ' ' + event.target.className + ' focuout!')
+        event.target.style.background = '';
+    })
+    // var $focused = $(':focus');
+    // console.log($('#add_user').is(':focus'))
+    
+    // if (!$('#barcode').is(':focus') & !$('#add_user').is(':focus') & !$('#add_item').is(':focus')){
+    //     document.getElementById('barcode').focus()
+    // }
+
+    // $('body').click(function(){
+    //     if (!$('#barcode').is(':focus') & !$('#add_user').is(':focus') & !$('#add_item').is(':focus')){
+    //     document.getElementById('barcode').focus()
+    // }
+    // })
+    // сделать проверку - если чтото набирается с клавиатуры и быстро, то скорее всего это штрих код
+    // проверить его на соответствие коду товара или юзера
+
+});
+
+
+
+
+$(function () {
+    $('#add_user').keyup(checkSpeed)
+});
+var lastTime = 0
+var speed = 0
+var count = 0
+function checkSpeed() { // 10 olisi hyvä nopeus
+    count += 1
+    iTime = new Date().getTime()
+    if (lastTime != 0){ 
+        lastTime = iTime - lastTime
+        speed = lastTime
+        console.log(lastTime)
+    }
+    else {
+        speed = 0
+    }
+    lastTime = iTime
+    return speed
+}
+</script>
+{% endblock %}
+
+{% block main_content %}
+
+<div class="new_event_warp">
+    <form method="get" action="">
+        <input name="barcode" id="barcode" type="hidden" class="aq" />
+        <input name="barcode1" id="barcode1" type="hidden" class="aq" />
+        <div class="d-flex justify-content-center pt-5" style="">
+            <div class="d-flex flex-column align-items-end w-50">
+                <div class="row g-3 w-100">
+
+                    <div class="dates_choice col-auto w-100 mb-5">
+                        <div class="dates mt-2 ms-1 d-flex">
+                            <div>
+                                <span class="small">Alkamisaika</span>
+                                <input name="rental_start" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{datenow|date:'Y-m-d'}}" style="" disabled />
+                                {% comment %} {{datenow|date:'Y-m-d'}} {% endcomment %}
+                            </div>
+                            <div>
+                                <span class="small">Päättymisaika</span>
+                                <input name="estimated_date" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{request.GET.estimated_date}}"  style="" />
+                                {% comment %} {{request.GET.estimated_date}} {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto w-100">
+                        {% comment %} {% csrf_token %} {% endcomment %}
+                        <div class="d-flex align-items-end">
+                            <div class="mb-3 me-3 w-100">
+                                <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
+                                {% if not changed_user %}
+                                <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi">
+                                {% else %}
+                                <input name="add_user" value="{{changed_user.code}}" type="text" class="form-control" id="add_user" >
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <button name="_add_user" type="submit" class="list__button list__button_bg_green btn_strech" id="_add_user">
+                                    <span class="bi bi-plus font-size"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-auto w-100" style="{% if changed_user %}display: block{%else%}display: none{%endif%};">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="mb-3 me-3">
+                                <h4>{{changed_user.first_name}} {{changed_user.last_name}}</h4>
+                                <p>{{changed_user.email}}</p>
+                            </div>
+                            <div class="mb-3 d-flex">
+                                <button name="_remove_user" type="submit" class="list__button list__button_bg_red btn_strech">
+                                    <span class="bi bi-dash font-size"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-3 w-100 mb-4">
+                    <div class="col-auto w-100">
+                        <div class="d-flex align-items-end">
+                            <div class="mb-3 me-3 w-100">
+                                <label for="add_item" class="form-label">skannaa tuote, kirjoita tuotenumero tai lisää napilla.</label>
+                                <input name="add_item{{changed_items|length}}" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero">
+                            </div>
+                            <div class="mb-3 me-3">
+                                <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
+                                    <span class="list__button__text">Lisää tuote</span>
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="list__button list__button_bg_green btn_strech">
+                                    <span class="bi bi-plus font-size"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% comment %} {{changed_items|length}} {% endcomment %}
+                {% for changed_item in changed_items %}
+                <div class="col-auto w-100" style="{% if changed_items %}display: block{%else%}display: none{%endif%};">
+                    <div class="d-flex flex-row justify-content-between px-2" >
+                        <div class="mb-3 me-3">
+                            <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                            <h4>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h4>
+                            <p>{{changed_item.item_type}} {{changed_item.parameters}} {{changed_item.size}}</p>
+                        </div>
+                        <div class="mb-3 d-flex">
+                            <button type="submit" name="_remove_item" value="{{forloop.counter0}}" class="list__button list__button_bg_red btn_strech">
+                                <span class="bi bi-dash font-size"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </form>
+    
+    <div class="main_buttons right pb-2 pe-2">
+        <div>
+            <form action="" method="post">
+                <div>
+                    {% csrf_token %}
+                    <input name="add_user" value="{{changed_user}}" type="hidden" class="form-control" id="exampleFormControlInput1" >
+                    {% for changed_item in changed_items %}
+                    <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" id="exampleFormControlInput1" placeholder="kirjoita tuotenumero">
+                    {% endfor %}
+                    <button type="button" class="btn btn-primary me-2">
+                        <span class="button_s__text">PERUUTA</span>
+                    </button> 
+                    <button type="submit" class="btn btn-primary">
+                        <span class="button_s__text">TALLENNA</span>  
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1-->
+<div class="modal fade" id="goods" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Valitse tuotteita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                {% include 'varasto/new_event_goods.html' with items=items %}
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">sulje</button>
+                <button type="submit" class="btn btn-secondary">TALLENNA</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+// const elem = document.querySelector('input');
+// if (elem === document.activeElement) {
+//     console.log('Element has focus!');
+// } else {
+//     console.log(`Element is not focused.`);
+// }
+
+</script>
+{% endblock %}

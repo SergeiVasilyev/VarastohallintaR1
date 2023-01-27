@@ -2,6 +2,7 @@ from email.message import EmailMessage
 import smtplib
 from datetime import datetime
 from django.db import models
+from .storage_settings import *
 
 
 # https://betterdatascience.com/send-emails-with-python/
@@ -10,15 +11,13 @@ def email_alert(subject, body, to):
     msg = EmailMessage()
     msg.set_content(body, subtype='html')
     msg['subject'] = subject
+
+    msg['from'] = STORAGE_EMAIL
     msg['to'] = to
 
-    user = "info.varasto@gmail.com"
-    msg['from'] = user
-    password ="mbmxdxuhmjkojukb" 
-
-    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server = smtplib.SMTP(EMAIL_SERVER, 587)
     server.starttls()
-    server.login(user, password)
+    server.login(STORAGE_EMAIL, EMAIL_PASS)
     server.send_message(msg)
 
     server.quit()

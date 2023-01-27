@@ -1,0 +1,299 @@
+.new_item_wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    /* border: 1px solid red; */
+}
+
+.new {
+    padding: 0.5em;
+    /* min-height: 100%; */
+    /* border: 1px solid blueviolet; */
+}
+
+form {
+    padding: 0 !important;
+}
+
+.new_img_desc {
+    display: grid;
+    grid-template-columns: 333px 0.6fr 2fr 2fr;
+    grid-column-gap: 10px;
+    
+    color: #2D3748;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    font-weight: 600;
+    /* border: 1px solid blue; */
+}
+.new_img_desc > div {
+    /* border: 1px solid blue; */
+}
+.new_product_img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* max-width: 250px; */
+    width: 333px;
+    height: 250px;
+    object-fit: cover;
+    border: 1px solid #cecece;
+}
+
+.new_product_img img {
+    max-width: 150px;
+    height: 150px;
+    opacity: 0.25;
+    /* border: 1px solid black; */
+}
+
+
+.divider {
+    height: 10px;
+}
+
+
+.input_content_wrap{
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    /* border: 1px solid purple; */
+}
+
+
+
+.new_middle {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    grid-column-gap: 22px;
+    /* grid-row-gap: 18px; */
+    /* border: 1px solid purple; */
+    /* justify-content: space-evenly; */
+    /* height: 15rem; */
+    color: #2D3748;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    font-weight: 600;
+}
+
+.new_middle > div{
+    margin-bottom: 1.8em;
+    /* border: 1px solid red; */
+}
+.new_middle > div > div, .new_bottom > div > div{
+    display: flex; 
+    flex-direction: column; 
+    text-align: left; 
+    width: 95%;
+}
+
+.new_bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    grid-column-gap: 20px;
+    text-align: center;
+    align-content: center;
+    margin-top: 3em;
+    color: #2D3748;
+    font-size: 0.75em;
+    font-weight: 600;
+}
+
+.new_bottom > div{
+    margin-bottom: 1.8em;
+    /* border: 1px solid red; */
+}
+
+
+.new_button_bottom {
+    display: flex;
+    justify-content: end;
+    /* border: 1px solid red; */
+}
+.new_button_bottom > div{
+    display: flex;
+    /* border: 3px solid blue; */
+}
+
+.btn-primary1, .btn-primary1:active, .btn-primary1:visited {
+    text-transform: uppercase;
+    color: white !important;
+    background-color: #325288 !important;
+    /* border: #28314B !important; */
+    padding: 0.7em 2em !important;
+    transition-duration: 0,4s;
+}
+
+.btn-primary1:hover {
+    /* background-color: #252d3a !important; */
+    color: white !important;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+/* BUTTONS IN CONTENT */
+.list__button {
+    display: inline-flex;
+    height: 39px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 1.2em;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: center; 
+    text-transform: uppercase;
+    
+    width: 10em;
+}
+    .btn-small{
+        min-width: 8em;
+    }
+    .btn-sq{
+
+    }
+    .btn_strech {
+        place-self: center stretch;
+    }
+    .list__button_bg_green {
+        color: white;
+        background: #24A19C;
+    }
+    .list__button_bg_white {
+        background: white;
+    }
+    .list__button_bg_red {
+        color: white;
+        background: #D96098;
+    }
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    .list__collapse button div {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 100%;
+    }
+
+    .list__button__text{
+        padding: 0 1.2em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }
+    .list__button, .list__button:hover, .list__button:visited {
+        text-decoration: none;
+        color: white;
+    }
+
+    
+/* / BUTTONS IN CONTENT */
+
+/* MAIN BUTTONS */
+.button_s {
+    display: inline-flex;
+    height: 39px;
+    width: 130px;
+    padding: 0;
+    background: #325288;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    overflow: hidden;
+    font-family: 'rubik';
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content:center ;
+}
+
+.button_s__text{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #FFFFFF;
+    height: 100%;
+    /* border: 1px solid red; */
+}
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    text-transform: uppercase;
+    background-color: #325288 !important;
+    border: #325288 !important;
+    padding: 0.7em 1em !important;
+    transition-duration: 0,4s;
+}
+.btn-success, .btn-success:active, .btn-success:visited {
+    text-transform: uppercase;
+    background-color: #24A19C !important;
+    border: #24A19C !important;
+    /* padding: 0.7em 1em !important; */
+    width: 8rem;
+    height: 2.9rem;
+    transition-duration: 0.4s;
+}
+.btn-danger, .btn-danger:active, .btn-danger:visited {
+    text-transform: uppercase;
+    /* padding: 0.7em 1em !important; */
+    width: 8rem;
+    height: 2.9rem;
+    transition-duration: 0.4s;
+}
+
+/* / MAIN BUTTONS */
+
+
+
+.modal-dialog {
+    /* border: 1px solid blue; */
+    max-width: 680px !important;
+}
+.modal-body img{
+    max-width: 640px;
+}
+.modal-footer {
+    text-align: center;
+}
+
+
+
+
+
+/* INPUT IMAGE */
+
+.file-input {
+    /* border: 1px solid red; */
+    /* width: 230px; */
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .btn-file input {
+    position: absolute;
+    max-width: 100%;
+    min-height: 100%;
+    margin: 0;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    transform: translate(-100%, 0) scale(3);
+    direction: ltr;
+    cursor: pointer;
+  }
+  
+  /* Hack for forcing webkit to show a cursor all the time */
+  .btn-file input::-webkit-file-upload-button {
+    cursor: pointer;
+  }
+
+/* INPUT IMAGE */

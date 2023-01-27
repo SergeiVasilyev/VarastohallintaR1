@@ -1,0 +1,58 @@
+{% load static %}
+<div class="refund_page">
+    <div class="row01">
+        <img src="{% static rental_event.item.picture %}" class="img-thumbnail" alt="{{ rental_event.item.picture }}">
+    </div>
+    <div class="row01">
+        <div class="span_warp">
+            <span class="largest">{{ rental_event.item.item_name }} {{ rental_event.item.brand }}</span>
+            <span class="small_medium">
+                {{rental_event.item.model|default_if_none:""}} 
+                {{rental_event.item.item_type|default_if_none:""}} 
+                {{rental_event.item.size|default_if_none:""}}
+                {{rental_event.item.parameters|default_if_none:""}}
+                {{rental_event.item.package|default_if_none:""}}
+            </span>
+            <!-- <span class="middle_medium">Tuotetiedot</span> -->
+            {% comment %} {{rental_event.id_start_null}} {% endcomment %}
+            <span class="small mt-3">Tuotenumero</span>
+            <span class="middle">{{rental_event.item.id}}</span>
+            <span class="small mt-3">Tuotepaikka</span>
+            <span class="middle">{{rental_event.item.storage_place|default_if_none:"-"}}</span>
+        </div>
+    </div>
+
+
+    <div class="row02 mt-4">
+        <div class="form-check">
+            <div class="boxes">
+                <input name="everything_returned" class="form-check-input" type="checkbox" value="" id="everything_returned{{rental_event.id}}" checked>
+                <label class="form-check-label ms-2" for="everything_returned{{rental_event.id}}">
+                    Palautettu kaikki
+                </label>
+            </div>
+        </div>
+        <div class="form-check mt-2">
+            <div class="boxes">
+                <input type="number" name="return_amount{{rental_event.id}}" id="return_amount{{rental_event.id}}"
+                    style="text-align: center" class="form-control"
+
+                    {% if rental_event.units == None %} 
+                        value="{{ rental_event.amount }}"
+                        data-decimals="0"
+                        min="1" step="1"
+                        max="{{ rental_event.amount }}"
+                        data-suffix="paketti kpl"
+                    {% else %} 
+                        value="{{ rental_event.contents|normalize_dec }}"
+                        data-decimals="4"
+                        min="0.001" step="0.001"
+                        max="{{ rental_event.contents }}"
+                        data-suffix="{{ rental_event.units }}"
+                    {% endif %}
+                    
+                />
+            </div>
+        </div>
+    </div>
+</div>

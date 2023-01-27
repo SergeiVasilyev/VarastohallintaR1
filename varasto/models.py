@@ -1,13 +1,42 @@
+# from asyncio.windows_events import NULL
 from datetime import datetime
-from django.contrib.auth.models import AbstractUser, User
+from email.policy import default
+from pickle import NONE
+from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext as _
 import pytz
 from django.template.defaulttags import register
+import operator
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import *
+from .storage_settings import *
 
 
 
-class CustomUser(AbstractUser):
+
+# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
+# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
+# Нужно добавить Foreign key на Storage в Goods
+class Storage_place(models.Model):
+    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
+    shelf = models.CharField(max_length=20, blank=True, null=True)
+    place = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return '%s %s %s' % (self.rack, self.shelf, self.place)
+
+class Storage_name(models.Model):
+    name = models.CharField(max_length=30)
+    storage_code = models.CharField(max_length=2, blank=True, null=True)
+    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+class CustomUser(AbstractUser, PermissionsMixin):
     # _() gettext:n kautta django voi kääntää tekstit muille kielille 
     ROLE = [
         ("student", _("Oppilas")), # Opiskelia ei voi kirjautua ja tehdä mitään palvelussa
@@ -24,32 +53,33 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
-
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
         return '%s' % (self.username,)
         # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
         # self.phone, self.email, self.code, self.photo)
+    
+    def get_group_permission(self):
+        user = CustomUser.objects.get(username=self)
+        return user.groups.get()
 
-# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
-# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    def roles(self):
+        return dict(CustomUser.ROLE)
+    
+    @register.filter
+    def roles_by_permission(roles_dict, user):
+        if user.role=="management":
+            roles_dict.pop('super')
+        elif user.role=="storage_employee":
+            roles_dict.pop('super')
+            roles_dict.pop('management')
+        elif user.role=="teacher" or user.role=="student" or user.role=="student_extended":
+            roles_dict = {'student': 'Oppilas'}
+        return roles_dict
 
-# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
-# Нужно добавить Foreign key на Storage в Goods
-class Storage_place(models.Model):
-    rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
-    shelf = models.CharField(max_length=20, blank=True, null=True)
-    place = models.CharField(max_length=20, blank=True, null=True)
-    def __str__(self):
-        return '%s %s %s %s %s %s' % (self.rack, self.shelf, self.place)
 
-class Storage_name(models.Model):
-    name = models.CharField(max_length=30)
-    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
-
-    def __str__(self):
-        return '%s' % (self.name)
 
 
 class Category(models.Model):
@@ -58,12 +88,22 @@ class Category(models.Model):
     def __str__(self):
         return '%s' % (self.cat_name)
 
+class IntegerRangeField(models.IntegerField):
+    # https://stackoverflow.com/questions/849142/how-to-limit-the-maximum-value-of-a-numeric-field-in-a-django-model
+    def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        models.IntegerField.__init__(self, verbose_name, name, **kwargs)
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value':self.max_value}
+        defaults.update(kwargs)
+        return super(IntegerRangeField, self).formfield(**defaults)
+
+class Units(models.Model):
+    unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.unit_name)
+
 class Goods(models.Model):
-    UNITS = [
-        ("unit", _("kpl")),
-        ("litre", _("l")),
-        ("kilogram", _("kg")),
-    ]
     ITEM_STATUS = [
         ("available", _("saatavilla")),
         ("not_available", _("ei saatavilla")),
@@ -76,12 +116,16 @@ class Goods(models.Model):
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    pack = models.CharField(max_length=50, blank=True, null=True) # 
-    amount = models.PositiveIntegerField(default=1, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    units = models.CharField(max_length=50, choices=UNITS, default='unit', blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    picture = models.ImageField(upload_to='images/goods/', blank=True, null=True) # Сделать подпапки
-    item_description = models.CharField(max_length=255, blank=True, null=True) # Kuvaus
-    ean = models.CharField(max_length=50, null=True)
+    # pack = models.CharField(max_length=50, blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    # Created new Class IntegerRangeField to limit values from min to max 
+    amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
+    # units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
+    amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    picture = models.ImageField(upload_to=PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
+    item_description = models.TextField(blank=True, null=True) # Kuvaus
+    ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
     reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
@@ -89,18 +133,108 @@ class Goods(models.Model):
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True)
+    storage_place = models.CharField(max_length=5, blank=True, null=True)
+    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
+    # Packages amount, package contents, units
+    # Pakkausten määrä, pakkauksen sisältö, yksiköt
+
+    # @property
+    # def rentable_at(self):
+    #     rental_events = Rental_event.objects.all().order_by("item")
+    #     event = rental_events.filter(item=self).first()
+    #     # event = Rental_event.objects.filter(item=self).order_by("id").first()
+    #     print(self.id, event)
+    #     if event:
+    #         return event.estimated_date
+    #     return None
+    
+    def get_unit(self):
+        print('self.unit', self.unit)
+        return self.unit
+
+    @register.filter
+    def modify_input(str1, val):
+        # str1 = f'<input type="number" name="contents" value="3.0000" min="0" max="1000000" step="0.001" data-decimals="4" placeholder="0" readonly id="contents" data-suffix={val}>'
+        new_str = str(str1)
+        # print(type(new_str), new_str)
+        new_str = f"{new_str[:-1]} data-suffix={val}>"
+        return new_str
 
     @property
+    def decrease_items(self, is_сonsumables, amount):
+        try:
+            if is_сonsumables:
+                self.contents -= amount
+                return self.contents
+            else:
+                self.amount -= amount
+                return self.amount
+        except:
+            return False
+
+    @property
+    def amount_x_pack(self):
+        # return "%.1d" % Decimal(self.pack * self.amount)
+        # return "%.1f" % Decimal(self.pack * self.amount)
+        if not self.contents:
+            self.contents = 0
+        return Decimal(self.contents * self.amount).normalize()
+
+    @register.filter
+    def normalize_dec(num):
+        if num:
+            return Decimal(num).normalize()
+        else:
+            return None
+        
+    @register.filter
+    def get_key(dictionary, key):
+        # try:
+        #     is_true = dictionary[key]
+        # except:
+        #     is_true = False
+        # return is_true
+        # return dictionary.get(key)
+        # print(key)
+        return dictionary.get(key)
+    
+    @register.filter
+    def get_item_inp_amount(dictionary, key):
+        try:
+            k = dictionary['inp_amount'+str(key)]
+        except:
+            k = ''
+        # print('inp_amount'+str(key), k)
+        return k
+
+    @register.filter
+    def get_item_radioUnit(dictionary, key):
+        try:
+            k = dictionary['radioUnit'+str(key)]
+        except:
+            k = ''
+        # print('radioUnit'+str(key), k)
+        return k
+    
+    @property
     def rentable_at(self):
-        rental_events = Rental_event.objects.all().order_by("item")
-        event = rental_events.filter(item=self).first()
-        # event = Rental_event.objects.filter(item=self).order_by("id").first()
+        # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         # print(self.id, event)
         if event:
+            # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
 
+    # This property is modificate of rentable_at 
+    @property
+    def is_possible_to_rent(self):
+        event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
+        if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
+            return [False, event.estimated_date, 'Item is not consumables but it is rented now']
+        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+            return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        return [True, None, 'Item is not rented yet']
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -114,14 +248,17 @@ class Goods(models.Model):
 
 class Rental_event(models.Model):
     item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
-    storage = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
     staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
-    amount = models.IntegerField # Ei tarvitse, koska lainaamisella käytetään Yksi Unikki Tuote
-    start_date = models.DateTimeField(datetime.now(), blank=True, null=True)
+    amount = models.IntegerField(blank=True, null=True)
+    contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
+    units = models.ForeignKey(Units, on_delete=models.PROTECT, blank=True, null=True) # Goods, to_field='unit',
+    start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+    returned = models.DecimalField(max_digits=11, decimal_places=4, default=0, blank=True, null=True)
 
     @property
     def id_start_null (self):
@@ -132,6 +269,24 @@ class Rental_event(models.Model):
     def get_item(dictionary, key):
         # return dictionary.get(key)
         return dictionary[key]
+
+    @register.filter
+    def get_first_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            first_date = sorted_events[0].start_date
+        else:
+            first_date = ''
+        return first_date
+
+    @register.filter
+    def get_last_date(dictionary):
+        if dictionary:
+            sorted_events = sorted(dictionary, key=operator.attrgetter('start_date'))
+            last_date = sorted_events[-1].start_date
+        else:
+            last_date = ''
+        return last_date
 
     @property
     def is_past_due(self):
@@ -150,7 +305,7 @@ class Rental_event(models.Model):
         result = 0
         now = datetime.now()
         now = pytz.utc.localize(now)
-        event = Rental_event.objects.filter(renter = self.renter)
+        event = Rental_event.objects.filter(renter = self.renter).filter(storage = self.storage)
         for e in event:
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
                 # print(e.estimated_date, now)
@@ -167,17 +322,23 @@ class Rental_event(models.Model):
     #     self.estimated_date, self.returned_date, self.remarks)
 
 
-class Staff_event(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)
-    item = models.ForeignKey(Goods, on_delete=models.PROTECT, blank=True, null=True)
+class Staff_audit(models.Model):
+    staff = models.CharField(max_length=300, blank=True, null=True)
+    item = models.CharField(max_length=500, blank=True, null=True)
+    event_process = models.CharField(max_length=100, blank=True, null=True)
+    person = models.CharField(max_length=300, blank=True, null=True)
     # We need to use related_name if we have 2 ForegnKey to same table.
-    from_storage = models.ForeignKey(Storage_name, related_name='from_storage', on_delete=models.PROTECT, blank=True, null=True)
-    to_storage = models.ForeignKey(Storage_name, related_name='to_storage', on_delete=models.PROTECT, blank=True, null=True)
+    from_storage = models.CharField(max_length=100, blank=True, null=True)
+    to_storage = models.CharField(max_length=100, blank=True, null=True)
     event_date = models.DateTimeField(blank=True, null=True)
-    remarks = models.CharField(max_length=100, blank=True, null=True)
+    remarks = models.CharField(max_length=300, blank=True, null=True)
 
     def __str__(self):
-         return '%s %s %s %s %s %s' % (self.staff, self.item, self.from_storage,
-         self.to_storage, self.event_date, self.remarks)
+         return '%s' % (self.staff)
 
 
+class Settings(models.Model):
+    set_name = models.CharField(max_length=50, blank=True, null=True)
+    set_value = models.CharField(max_length=50, blank=True, null=True)
+    def __str__(self):
+        return '%s' % (self.set_name)

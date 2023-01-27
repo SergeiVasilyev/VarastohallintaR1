@@ -28,7 +28,7 @@
     /* Checkbox filters */
     .checkbox_filters {
         display: flex;
-        justify-content: center;
+        justify-content: end;
         align-items: center;
         font-size: 0.875em;
     }
@@ -36,7 +36,14 @@
     .date_selection {
         display: flex;
         justify-content: center;
+    }
+
+    .date_selection form{
+        display: flex;
+        justify-content: center;
         align-items: center;
+        max-width: 19rem;
+        /* border: 1px solid blue; */
     }
     .date_selection button {
         background-color: white !important;
@@ -64,6 +71,7 @@
     justify-content: center;
     
 }
+
     .button_link, .button_link:hover, .button_link:visited {
         text-decoration: none;
         /* border: 1px solid blue; */
@@ -94,7 +102,19 @@
         padding: 0 24px;
         height: 100%;
     }
-
+    .list__button_bg_blue {
+        color: white;
+        background: #325288;
+    }
+    .font-size{
+        font-size: 1em;
+        padding: 0 0.9em;
+    }
+    .list__button span {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+    }
 
 
 
@@ -207,7 +227,7 @@
 }
 
 .list__item_student span {
-    padding-left: 1em;
+    padding-left: 1rem;
     text-align: left;
 }
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
@@ -284,11 +304,40 @@
     border: 1px solid #D96098;
     color: white;
 } 
-
+.status_orange > span {
+    /* background-color: #d9a00f;
+    border: 1px solid #d9a00f;
+    color: white; */
+    background-color: #24A19C;
+    border: 1px solid #24A19C;
+    color: #fbe4aa;
+}
 
 /* /----MAIN---- */
 
 
-
+/* PAGINATION */
+.pagination{
+    display: flex;
+    justify-content: center;
+    color: #2D3748;
+    /* border: 1px solid red; */
+}
+.pagination a, .pagination a:hover, .pagination a:visited, .pagination a:active {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.step-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.875em;
+}
+.current {
+    width: 10em;
+    text-align: center;
+    /* border: 1px solid red; */
+}
+/* // PAGINATION*/
 
 

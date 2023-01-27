@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/grant_permissions.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock stylesheet %}
@@ -12,90 +13,134 @@
 {% block path %}Oikeuksija{% endblock %}
 {% block page %}Oikeuksija{% endblock %}
 
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#staff').click(function(){
+        if ($('#students').is(':checked')){
+            $('#students').prop('checked', false)
+            toggle_students()
+        }
+        toggle_staff()
+    })
+
+    $('#students').click(function(){
+        //console.log('staff', $('#staff').is(':checked'))
+        if ($('#staff').is(':checked')){
+            $('#staff').prop('checked', false)
+            toggle_staff()
+        }
+        toggle_students() 
+    })
+    function toggle_students(){
+        console.log("STUDENT")
+        $("#user_list > form > [role]").filter(function(){
+            console.log(this.role)
+            if (this.role!='student' && this.role!='student_extended'){
+                $(this).toggle()
+            }
+        })  
+    }
+    function toggle_staff(){
+        console.log("STAFF")
+        $("#user_list > form > [role='student'], #user_list > [role='student_extended']").toggle()
+    }
+})
+</script>
+{% endblock %}
+
 {% block main_content %}
+<div class="pagination mt-3">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ users.number }} / {{ users.paginator.num_pages }}
+        </span>
+
+        <a href="{% if users.has_next %}?page={{ users.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ users.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
 
 <div class="sort">
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
+        <input class="form-check-input" type="checkbox" id="students">
+        <label class="form-check-label" for="students">
             Opiskelijat
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-        <label class="form-check-label" for="flexCheckChecked">
+        <input class="form-check-input" type="checkbox" id="staff">
+        <label class="form-check-label" for="staff">
             Henkilöstö
         </label>
     </div>
 
 </div> 
 
-<div class="list">
-    <div class="list__item brd_top">
+<div class="list" id="user_list">
+{% if users %}
+{% for usr in users %}  
+<form method="post" action="{% url 'save_permision' usr.id %}">
+    {% csrf_token %}
+    <div class="list__item brd_top" id="user_id_{{usr.id}}" role="{{usr.role}}">
         <div class="list__item_photo">
             <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-            <div><img src="{% static 'images/students/Cory_henry.jpg' %}" alt="Cory_henry.jpg"></div>
+            <div>
+                {% if usr.photo %}
+                <img src="{% static usr.photo %}" alt="usr.photo">
+                {% else %}
+                <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
+                {% endif %}
+            </div>
         </div>
-        
+             
         <div class="list__item_student">
-            <span>Sami Mäkitalo</span>
-            <span>25255@edu.raseko.com</span>
+            <span><a href="{% url 'renter' usr.id %}">{{usr.first_name}} {{usr.last_name}}</a></span>
+            <span><a href="{% url 'renter' usr.id %}">{{usr.email}}</a></span>
         </div>
         <div class="list__item_group">
-            <span>Opettaja</span>
-            <span>Developer</span>
+            <span>{{usr.role}}</span>
+            <span>{{usr.group|default:""}}</span>
         </div>
 
         <div class="list__item_role">
             <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                    Valitse
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button">Student</button></li>
-                    <li><button class="dropdown-item" type="button">Student extended</button></li>
-                    <li><button class="dropdown-item" type="button">Storage employee</button></li>
-                    <li><button class="dropdown-item" type="button">Management</button></li>
-                    <li><button class="dropdown-item" type="button">Teacher</button></li>
-                    <li><button class="dropdown-item" type="button">Super</button></li>
-                </ul>
+                <select class="form-select" name="roles">
+                {% for entry in usr.roles|roles_by_permission:request.user %} 
+                <option value="{{entry}}" {% if entry == usr.role %} selected {% endif %}>{{entry}}</option>
+                {% endfor %}
+                </select>
             </div>
         </div>
-    </div>
-
-    <div class="list__item brd_top">
-        <div class="list__item_photo">
-            <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-            <div><img src="{% static 'images/students/daniel-monteiro-iK2MdOKSmj8-unsplash.jpg' %}" alt="daniel-monteiro-iK2MdOKSmj8-unsplash.jpg"></div>
+        <input type="hidden" name="page" value="{{users.number}}"></input>
+        <div class="list__item_button">
+            <button class="list__button list__button_bg_blue btn_strech" type="submit">
+                <span class="list__button__text ">Tallenna</span>
+            </button>
         </div>
         
-        <div class="list__item_student">
-            <span>Jani Virtanen</span>
-            <span>13135@edu.raseko.com</span>
-        </div>
-        <div class="list__item_group">
-            <span>Student</span>
-            <span>Tivi20oa</span>
-        </div>
 
-        <div class="list__item_role">
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                    Valitse
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><button class="dropdown-item" type="button">Student</button></li>
-                    <li><button class="dropdown-item" type="button">Student extended</button></li>
-                    <li><button class="dropdown-item" type="button">Storage employee</button></li>
-                    <li><button class="dropdown-item" type="button">Management</button></li>
-                    <li><button class="dropdown-item" type="button">Teacher</button></li>
-                    <li><button class="dropdown-item" type="button">Super</button></li>
-                </ul>
-            </div>
-        </div>
     </div>
+</form>
+{% endfor %}
+{% endif %}
 
-    
 </div>
 
+<div class="pagination mt-5 mb-3">
+    <span class="step-links">
+        <a href="?page=1"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
+        <a href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
+        
+        <span class="current">
+            Sivu {{ users.number }} / {{ users.paginator.num_pages }}
+        </span>
+
+        <a href="{% if users.has_next %}?page={{ users.next_page_number }}{% endif %}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+        <a href="?page={{ users.paginator.num_pages }}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
+    </span>
+</div>
 {% endblock %}
