@@ -16,6 +16,7 @@ CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut
 # / DATA FOR DATABASE GENERATOR (generator is not created)
 # ======================================================
 
+ITEMS_ON_A_PAGE = 20
 
 RENTAL_PAGE_VIEW = 'rental_events'
 
@@ -42,3 +43,6 @@ EMAIL_SERVER = "smtp.gmail.com"
 
 # / Email consts
 # ====================================================
+
+
+
