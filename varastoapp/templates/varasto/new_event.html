@@ -400,7 +400,7 @@ $(document).ready(function() {
                                 <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                                 <p>
                                     {% if changed_item.cat_name.id == 1 %}
-                                        {{changed_item.amount|default:""}} laatikoa
+                                        {{changed_item.amount|default:""}} laatikkoa
                                         | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
                                         | {{changed_item.amount_x_contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} yhteensä
                                     {% endif %}
@@ -462,7 +462,7 @@ $(document).ready(function() {
                                         {% endif %}
                                             />
                                         <label class="form-check-label" for="radioUnit1-{{changed_item.id}}">
-                                            laatikoa, kpl
+                                            laatikkoa, kpl
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
