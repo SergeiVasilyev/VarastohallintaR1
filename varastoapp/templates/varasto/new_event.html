@@ -34,7 +34,7 @@ $(document).ready(function() {
             return
         }
         if (e.key != 'Shift')
-            barcode += e.key // Tarkista, että barcode on ainakin 3 kirjainta (Letter, num, chr13)
+            barcode += e.key // Tarkista, että viivakoodissa on ainakin 3 kirjainta (Letter, num, chr13)
         interval = setInterval(() => barcode = '', 20) // interval min 20ms
     })
     function checkBarcode(scanned_barcode){
@@ -42,7 +42,7 @@ $(document).ready(function() {
 
         if (parseInt(scanned_barcode, 10))
             document.querySelector('#add_user').value = scanned_barcode
-        // first Letter in a barcodes. Etsitään varastossa varasto koodin mukaan, 
+        // first Letter in a barcodes. Etsitään varastosta varastokoodin mukaan, 
         //Adminilla ei ole storage_code sama kuin hallinnoilla, siksi pitää tarkista NOLLaksi storage_id kentä
         else if (scanned_barcode[0]=='{{ user.storage.storage_code }}' || !storage_code) 
         //else if (scanned_barcode[0]=='a') // first Letter in a barcodes
@@ -325,7 +325,7 @@ $(document).ready(function() {
                         <!-- style="border: 1px solid red;" -->
                         <div class="d-flex align-items-end" >
                             <div class="me-3 w-100">
-                                <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoittaa opiskelijanumero.</label>
+                                <label for="add_user" class="form-label">Skannaa opiskelijakortti tai kirjoita opiskelijanumero.</label>
                                 {% if not changed_user %}
                                 <input name="add_user" type="text" class="form-control" id="add_user" placeholder="kirjoita opiskelijanumero tai nimi" list="add_user_list" autocomplete="off" >
                                 <datalist id="add_user_list"></datalist>
