@@ -305,7 +305,13 @@ class Rental_event(models.Model):
         result = 0
         now = datetime.now()
         now = pytz.utc.localize(now)
-        event = Rental_event.objects.filter(renter = self.renter).filter(storage = self.storage)
+        # print(self.renter, self.storage)
+        if self.staff.is_superuser: 
+            # Kun superuser antaa lainaaksi tavara, hänellä voi olla tyhjä storage_id kenttä, siksi ei tarvitse laittaa filteriin storage=self.storage.
+            # Managerilla myös voi olla tyhjä storage_id kenttä, mutta Manager ei voi antaa lainaaksi tavaroita, siksi ehdolla emme laiteta self.staff.has_perm('manager')
+            event = Rental_event.objects.filter(renter=self.renter)
+        else:
+            event = Rental_event.objects.filter(renter=self.renter).filter(storage=self.storage)
         for e in event:
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
                 # print(e.estimated_date, now)
