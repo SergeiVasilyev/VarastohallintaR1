@@ -8,11 +8,16 @@ $(document).ready(function() {
         $(this).find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
 
+    // =========================================
     // RENTAL EVENTS PAGE
-    // Expand/collapse the entire list of goods
+    // Expand/collapse the entire list of goods on rental_events.html
     $('#chk-05').click(function(){
         if ($("#chk-05").is(':checked')) {
-            $(".sublist_warp").slideDown('fast')  // checked
+            if ($('#chk-04').is(':checked')) {
+                $(".sublist_warp[is_overdue='1']").slideDown('fast')
+            } else {
+                $(".sublist_warp").slideDown('fast')  // checked
+            }
             $('.list__collapse').find('.bi').addClass('bi-caret-down')
             $('.list__collapse').find('.bi').removeClass('bi-caret-left')
         }
@@ -24,6 +29,27 @@ $(document).ready(function() {
         // $(`.sublist_warp`).slideToggle('fast')
         // $('.list__collapse').find('.bi').toggleClass('bi-caret-down bi-caret-left', 5000);
     })
+
+    // Erääntynyt checkbox on rental_events.html
+    $('#chk-04').click(function(){
+        if ($('#chk-04').is(':checked')) {
+            $(".list__item[is_overdue='0']").hide()
+            $(".sublist_warp[is_overdue='0']").hide()
+        } else {
+            $(".list__item[is_overdue='0']").show()
+            if ($("#chk-05").is(':checked')) {
+                $(".sublist_warp[is_overdue='0']").show()
+            }
+        }
+    })
+
+    // Erääntynyt checkbox on rental_events_goods.html
+    $('#chk-04-1').click(function(){
+        $(".list__item[is_overdue='0']").toggle()
+    })
+
+    // / RENTAL EVENTS PAGE
+    // =========================================
 
 
     // NUMBER SPINNER

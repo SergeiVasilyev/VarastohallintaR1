@@ -16,12 +16,7 @@
 {% block script %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#chk-04').click(function(){
-        $(".list__item[is_overdue='0']").toggle()
-        $(".sublist_warp[is_overdue='0']").toggle()
-        
-        // FIXME Toggle when login user5
-    })
+    
 })
 </script>
 {% endblock %}
@@ -157,7 +152,7 @@ $(document).ready(function() {
                         <div class="list__rented_item">
                             <div class="list__nameof_rented_item brd_left">
                                 <a href="{% url 'product' event.item.id %}" class="nodecor item_info">
-                                    <span>{{event.item.item_name|default_if_none:""}} {{event.item.brand|default_if_none:""}}</span>
+                                    <span>{{event.item.id}} {{event.item.item_name|default_if_none:""}} {{event.item.brand|default_if_none:""}}</span>
                                 </a>
                                 <span>
                                     {{event.item.model|default_if_none:""}} 
