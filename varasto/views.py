@@ -43,6 +43,8 @@ import PIL.Image as Image
 from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
+from django.core.serializers import serialize
+import json
 
 
 
@@ -60,7 +62,6 @@ def grant_permissions(request):
     else:
         users = {}
 
-    print(users)
     paginator = Paginator(users, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -889,6 +890,23 @@ def delete_product(request, idx):
     # TODO Redirect to same page where product was
     return redirect("products")
 
+
+def burger_settings(request):
+    show_full = request.POST.get('show_full')
+
+    try:
+        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+        burger_setting_dict.set_value = show_full
+    except Settings.DoesNotExist:
+        burger_setting_dict = Settings(set_name='show_full_burger', set_value=show_full)
+    finally:
+        burger_setting_dict.save()
+
+    show_full_burger = burger_setting_dict.set_value
+    # burger_dict = burger_dict.replace("\'", "\"")
+    # burger_settings_json = json.loads(burger_dict)
+
+    return JsonResponse({'show_full_burger': show_full_burger, })
 
 
 

@@ -338,7 +338,7 @@ class Staff_audit(models.Model):
 
 
 class Settings(models.Model):
-    set_name = models.CharField(max_length=50, blank=True, null=True)
-    set_value = models.CharField(max_length=50, blank=True, null=True)
+    set_name = models.CharField(max_length=150, blank=True, null=True)
+    set_value = models.CharField(max_length=300, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.set_name)
