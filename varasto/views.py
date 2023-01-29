@@ -50,7 +50,7 @@ import json
 
 
 @login_required()
-@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
+@user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def grant_permissions(request):
     users = CustomUser.objects.all().order_by("id")
     if request.user.is_superuser:
@@ -340,23 +340,19 @@ def new_event(request):
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
                     unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
                     item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
-                    print('GET unit', str(item.id), unit)
-                    print('GET item_amount', str(item.id), item_amount)
+                    # print('GET unit', str(item.id), unit)
+                    # print('GET item_amount', str(item.id), item_amount)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
                                 item.amount = int(item.amount) - item_amount
                                 kwargs['amount'] = item_amount
-                                print('item.amount', item.amount)
                             else: # Jos yksikkö on sisällön määrää
                                 # amount_x_contents = item.amount * item.contents # formula
-                                print('item.amount_x_contents', item.amount_x_contents)
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
-                                print('remaining_contents', remaining_contents)
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
-                                print('new_amount', new_amount)
                                 remainder = remaining_contents - (item.contents * new_amount)
-                                print('remainder', remainder.normalize())
+                                # print('remainder', remainder.normalize())
 
                                 item.amount = new_amount
                                 item.amount_x_contents = remaining_contents
@@ -382,7 +378,6 @@ def new_event(request):
     # print('changed_user ', changed_user)
     # print('changed_items ', changed_items)
 
-    # items = Goods.objects.all().order_by("id")
     storage_filter = storage_f(request.user)
     items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -398,7 +393,6 @@ def new_event(request):
         'items': page_obj,
         'feedback_status': feedback_status,
     }
-    # print(context)
     return render(request, 'varasto/new_event.html', context)
 
 
@@ -485,7 +479,7 @@ def getProducts(request):
                 'unit': obj.unit.unit_name if obj.unit else '',
             }
             data.append(item)
-            print(settings.STATIC_URL + str(obj.picture))
+            # print(settings.STATIC_URL + str(obj.picture))
     return JsonResponse({'items': data, })
 
 
@@ -559,7 +553,6 @@ def rental_events_goods(request):
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
-    print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
@@ -593,7 +586,6 @@ def rental_events(request):
     select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
     all_order_fields_nolast = RENTAL_PAGE_ORDERING_FIELDS_D.copy() # Kloonataan dictionary
     all_order_fields_nolast.pop(list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[-1]) # Poistetaan viimeinen elementti sanakirjasta (item__brand). Koska emme voi lajitella groupiroitu lista brandin kentän mukaan
-    # print(RENTAL_PAGE_ORDERING_FIELDS_D)
 
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).annotate(mindate=Max('start_date')).order_by('renter')
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by('renter', '-start_date')
@@ -626,12 +618,6 @@ def rental_events(request):
     return render(request, 'varasto/rental_events.html', context)
 
 
-# FUNC new_user
-# @login_required()
-# @user_passes_test(lambda user:user.is_staff)
-# def new_user(request):
-#     return render(request, 'varasto/new_user.html')
-
 
 # FUNC get_photo
 def get_photo(request):
@@ -650,7 +636,7 @@ def edit_item(request, idx):
     storage_filter = storage_f(request.user) # if storage_filter is empty means superuser, management or student
     try:
         item = Goods.objects.get(id=idx)
-        print(item.storage, request.user.storage)
+        # print(item.storage, request.user.storage)
         if item.storage != request.user.storage and storage_filter: 
             error = "Voi muokata vain tavaroita sijäitsevä sama varastossa"
             return redirect('product', idx=idx)
@@ -672,7 +658,7 @@ def edit_item(request, idx):
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
             item = form.save(commit=False)
-            print('item.picture=', item.picture)
+            # print('item.picture=', item.picture)
             try:
                 if not item.picture:
                     new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -711,7 +697,6 @@ def edit_item(request, idx):
         is_storage_employee = ['readonly', 'disabled']
     else:
         is_storage_employee = ['', '']
-    print(is_storage_employee)
 
     event = Rental_event.objects.filter(item_id=idx).filter(returned_date=None)
     is_rented = False
@@ -736,11 +721,8 @@ def new_item(request):
     camera_picture = request.POST.get('canvasData')
 
     if request.method == "POST":
-        print('request.POST')
-        print("csrfmiddlewaretoken", request.POST.get('csrfmiddlewaretoken'))
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
-            print('FORM is VALID')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -758,8 +740,6 @@ def new_item(request):
                     item.amount_x_contents = None
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
-                    # item.cat_name = None
-                    # item.contents = None
                     item.picture = new_picture
                     item.amount_x_contents = Decimal(request.POST.get('amount')) * Decimal(request.POST.get('contents'))
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
@@ -812,10 +792,9 @@ def products(request):
 @user_passes_test(lambda user:user.is_staff)
 # @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
 def product(request, idx):
-    user = request.user
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
-    # if user.has_perm('varasto.view_customuser'):
+
     rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
 
     paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
@@ -833,9 +812,6 @@ def product(request, idx):
 # FUNC set_rental_event_view
 @login_required()
 def set_rental_event_view(request):
-    # if 'name' in request.GET:
-    #     print('request.GET name =', request.GET.get('name'))
-
     set = Settings.objects.get(set_name='rental_page_view')
     set.set_value = request.GET.get('name')
     set.save()
@@ -877,14 +853,14 @@ def delete_product(request, idx):
         item_data_dict.pop(k, None)
     item_data_dict['contents'] = str(item.contents.normalize()) if item.contents else ''
     item_data_dict['amount_x_contents'] = str(item.amount_x_contents.normalize()) if item.amount_x_contents else ''
-    print(item_data_dict)
+    # print(item_data_dict)
 
     user_dict = staff.__dict__.copy() # Make copy of staff instance
     # Delete unnecessary fields in product info
     entries_to_remove = ('_state', 'username', 'password', 'email', 'last_login', 'date_joined', 'is_superuser', 'is_staff', 'is_active', 'group', 'photo', 'role', 'responsible_teacher_id', 'storage_id')
     for k in entries_to_remove:
         user_dict.pop(k, None)
-    print(user_dict)
+    # print(user_dict)
 
     # Create record about event in Staff_audit table
     storage = request.user.storage.name if request.user.storage else None

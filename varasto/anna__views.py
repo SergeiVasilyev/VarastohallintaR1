@@ -18,15 +18,16 @@ from django.db.models.functions import TruncMonth, Trunc
 from django.db.models import Min, Max
 from django.core.paginator import Paginator
 
+
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def report(request, idx):
     rental_events = Rental_event.objects.filter(renter_id=idx).order_by("-start_date")
     renter = rental_events[0].renter
-    print(rental_events)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     
-
     context = {
         'rental_events': rental_events,
         'renter': renter,
@@ -34,14 +35,18 @@ def report(request, idx):
         'datenow': datenow,
     }
 
-
     return render(request, 'varasto/report.html', context)
 
 
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def new_event_goods(request):
     items = Goods.objects.all().order_by("id")
     return render(request, 'varasto/new_event_goods.html', {'items': items})
 
+
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def product_report(request, idx):
     try:
         item = Goods.objects.get(id=idx)
@@ -51,12 +56,9 @@ def product_report(request, idx):
     if item:
         rental_events = Rental_event.objects.filter(item=item).order_by("-start_date")
 
-    print(rental_events)
-
     now = datetime.now()
     datenow = pytz.utc.localize(now)
     
-
     context = {
         'rental_events': rental_events,
         'item': item,
@@ -66,6 +68,9 @@ def product_report(request, idx):
     
     return render(request, 'varasto/product_report.html', context)
 
+
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def inventory (request):
     items = Goods.objects.all().order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -75,31 +80,11 @@ def inventory (request):
 
     return render(request, 'varasto/inventory.html', {"items": page_obj})
 
-@login_required()
-@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
-def grant_permissions(request):
-    users = CustomUser.objects.all().order_by("id")
-    if request.user.is_superuser:
-        context = {"users": users}
-    elif request.user.role=="management":
-        context = {"users": users.exclude(is_superuser=True)}
-    elif request.user.role=="storage_employee":
-        context = {"users": users.exclude(is_superuser=True).exclude(role="management")}
-    else:
-        context = {}
-    return render(request, 'varasto/grant_permissions.html', context)
-
-def save_permision(request, idx):
-    user = CustomUser.objects.get(id=idx)
-    user.role = (request.POST.get('roles'))
-    user.save()
-
-    return redirect('grant_permissions')
 
 
 #FUNC new_user
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def new_user(request):
     if request.method == 'POST':
         username = (request.POST.get('username'))
@@ -123,7 +108,6 @@ def new_user(request):
         else:
             error = "Salasanat eivät täsmää tai käyttäjä on jo olemassa."
                 
-
     person = ''
     if request.method == 'GET':
         search_person = (request.GET.get('search_person'))
@@ -137,7 +121,9 @@ def new_user(request):
     return render(request, 'varasto/new_user.html', context)
 
 
+
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
 def storage_settings(request):
     
-
     return render(request, 'varasto/storage_settings.html')
