@@ -321,6 +321,30 @@ class Rental_event(models.Model):
         # return f"{self.renter.first_name} {self.renter.last_name}"
 
 
+    # TODO replace if not grouped_event.is_user_have_non_returned_item to grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user
+    @property
+    def get_elements_by_renter(self):
+        event = Rental_event.objects.filter(renter=self.renter)
+        return event
+
+    @register.filter
+    def is_renter_has_not_returned_item_and_same_storage(events, staff):
+        # print(events, staff)
+        result = 0
+        now = datetime.now()
+        now = pytz.utc.localize(now)
+        for e in events:
+            # if the item has not been returned yet and the estimated date is greater than the current date, and if staff.storage has a warehouse ID and these warehouses match the rental_event or if staff.storage is empty then don't praise the warehouses.
+            # ((e.storage == staff.storage and staff.storage) if staff.storage has ID then mutch storages in event and in logined user
+            # (e.storage != -1 and not staff.storage) if staff.storage is empty then don't need mutch storages (equal e.storage != -1)
+            if not e.returned_date and e.estimated_date < now and ((e.storage == staff.storage and staff.storage) or (e.storage != -1 and not staff.storage)): 
+                result += 1
+                return 1 # if at least one element is found, return 1. If comment this line we will get same result in template, but we return number of found elements or 0 if don't find nothing
+        return result
+
+
+
+
     def __str__(self):
         return '%s %s %s' % (self.item, self.estimated_date, self.returned_date)
     # def __str__(self):

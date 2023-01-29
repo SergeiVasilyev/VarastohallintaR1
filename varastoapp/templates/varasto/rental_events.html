@@ -98,11 +98,11 @@ $(document).ready(function() {
         <div class="column"><span>arvioitu palautuspäivä</span></div>
         <div class="column"><span></span></div>
     </div>
-
+    
     <div class="list">
         {% for grouped_event in grouped_events %}
-            {% comment %} {{grouped_event.renter}} - {{grouped_event.renter.first_name}} - {{grouped_event.item}} - {{grouped_event.start_date}} {% endcomment %}
-            <div class="list__item brd_top" userid="{{grouped_event.renter.id}}" {% if not grouped_event.is_user_have_non_returned_item %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
+            <!-- FIXED replace if not grouped_event.is_user_have_non_returned_item to grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user -->
+            <div class="list__item brd_top" userid="{{grouped_event.renter.id}}" {% if not grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
                 <div class="list__item_photo">
                     <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
                     <div><a href="{% url 'renter' grouped_event.renter_id %}"><img src="{% static grouped_event.renter.photo %}" alt="{{grouped_event.renter.photo}}"></a></div>
@@ -118,8 +118,8 @@ $(document).ready(function() {
                     <span>{{ grouped_event.renter.get_group_permission }}</span>
                     <span>{{grouped_event.renter.group|default_if_none:""}}</span>
                 </div>
-                <div class="list__item_status {% if not grouped_event.is_user_have_non_returned_item %}status_green{% else %}status_red{% endif %}">
-                    {% if not grouped_event.is_user_have_non_returned_item %}
+                <div class="list__item_status {% if not grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user %}status_green{% else %}status_red{% endif %}">
+                    {% if not grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user %}
                         <span><i class="bi bi-record"></i></span>
                     {% else %}
                         <span><i class="bi bi-exclamation"></i></span>
@@ -148,7 +148,7 @@ $(document).ready(function() {
             </div>
             {% for event in events %}
                 {% if event.renter.id == grouped_event.renter_id %}
-                    <div class="sublist_warp" userid="{{grouped_event.renter.id}}" style="display: none;" {% if not grouped_event.is_user_have_non_returned_item %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
+                    <div class="sublist_warp" userid="{{grouped_event.renter.id}}" style="display: none;" {% if not grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
                         <div class="list__rented_item">
                             <div class="list__nameof_rented_item brd_left">
                                 <a href="{% url 'product' event.item.id %}" class="nodecor item_info">
