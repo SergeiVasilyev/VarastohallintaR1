@@ -72,9 +72,20 @@ def grant_permissions(request):
 
     return render(request, 'varasto/grant_permissions.html', context)
 
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def save_permision(request, idx):
     user = CustomUser.objects.get(id=idx)
     user.role = (request.POST.get('roles'))
+    print(user.role)
+    if request.POST.get('roles') == 'student_extended' or request.POST.get('roles') == 'storage_employee' or request.POST.get('roles') == 'management':
+        user.is_staff = True
+    elif request.POST.get('roles') == 'super':
+        user.is_staff = True
+        user.is_superuser = True
+    else:
+        user.is_staff = False
+        user.is_superuser = False
     user.save()
 
     page_number = request.POST.get('page')
@@ -397,6 +408,7 @@ def is_ajax(request):
 
 
 # FUNC getPersons
+@login_required()
 def getPersons(request):
     json_persons = []
     if is_ajax(request=request):
@@ -417,6 +429,7 @@ def getPersons(request):
 
 
 # FUNC getProduct
+@login_required()
 def getProduct(request):
     json_goods = []
     if is_ajax(request=request):
@@ -439,6 +452,7 @@ def getProduct(request):
 
 
 # FUNC getProducts
+@login_required()
 def getProducts(request):
     data = []
     if is_ajax(request=request):
@@ -851,7 +865,7 @@ def set_order_field(request):
     page = Settings.objects.get(set_name='rental_page_view')
     return redirect (page.set_value)
 
-
+@login_required()
 def delete_product(request, idx):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
@@ -890,7 +904,7 @@ def delete_product(request, idx):
     # TODO Redirect to same page where product was
     return redirect("products")
 
-
+@login_required()
 def burger_settings(request):
     show_full = request.POST.get('show_full')
 
