@@ -6,12 +6,9 @@ from datetime import datetime
 from .storage_settings import *
 
 from django.contrib.auth.models import Group, Permission
-import json
 
-def say_hello(request):
-    return {
-        'say_hello':"Hello",
-    }
+
+
 
 def get_rental_events_page(request):
     page = Settings.objects.get(set_name='rental_page_view')

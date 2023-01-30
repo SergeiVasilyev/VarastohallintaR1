@@ -1,16 +1,9 @@
 # from asyncio.windows_events import NULL
 import operator
 import re
-from django.forms import inlineformset_factory, modelformset_factory
 from django.http import (
     HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseRedirect,
     JsonResponse,
-    StreamingHttpResponse,
-    HttpRequest,
-    QueryDict
 )
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -23,28 +16,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
-from django.db.models import Count
-from django.contrib.auth.models import Group
 
 from django.db.models import Min, Max
 from .test_views import test
 
 from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
-from .capture_picture import VideoCamera
 from django.db.models import Q
 # from .alerts import email_alert
 from .storage_settings import *
 from .services import _save_image
 from .services import *
 
-import PIL.Image as Image
-
-from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
-from django.core.serializers import serialize
-import json
+
 
 
 
@@ -77,7 +63,7 @@ def grant_permissions(request):
 def save_permision(request, idx):
     user = CustomUser.objects.get(id=idx)
     user.role = (request.POST.get('roles'))
-    print(user.role)
+    # print(user.role)
     if request.POST.get('roles') == 'student_extended' or request.POST.get('roles') == 'storage_employee' or request.POST.get('roles') == 'management':
         user.is_staff = True
     elif request.POST.get('roles') == 'super':
@@ -106,8 +92,8 @@ def person_view(request):
 
 
 # FUNC renter
-@login_required()
 # @user_passes_test(is_not_student, redirect_field_name=None)
+@login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
     error = {}
@@ -119,7 +105,7 @@ def renter(request, idx):
         product = Goods.objects.get(id=item.item_id)
 
         if request.POST.get('rental_close'): # UPDATE DATE
-            print('RENTAL CLOSE')
+            # print('RENTAL CLOSE')
             sended_date = request.POST.get('rental_close') 
             date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
             date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
@@ -149,7 +135,7 @@ def renter(request, idx):
 
         if request.POST.getlist('_close_rent_cons'):
             # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
-            print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
+            # print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
             if not item.returned_date: # Need to prevent form resubmission
                 if update_amount_data():
                     now = datetime.now()
@@ -163,7 +149,7 @@ def renter(request, idx):
                     return redirect('renter', idx=item.renter_id)
 
         if request.POST.getlist('set_end_date'): # CLOSE RENT
-            print('set_end_date')
+            # print('set_end_date')
             item.returned = 1
             now = datetime.now()
             datenow = pytz.utc.localize(now)
@@ -310,14 +296,14 @@ def new_event(request):
     # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
-    print('radioUnit', inp_fixes)
+    # print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
             # fix_item = '_fix_item'+str(idx_inp_fix)
             # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
-            print('idxf', idxf)
+            # print('idxf', idxf)
 
             if idxf != -1:
                 changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
@@ -603,10 +589,10 @@ def rental_events_goods(request):
 
 
 # FUNC rental_events
+# @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
-# @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 def rental_events(request):
     # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
@@ -651,7 +637,7 @@ def rental_events(request):
 def get_photo(request):
     picData = request.POST.get('picData')
     img = _save_image(picData)
-    print(img)
+    # print(img)
     return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
 
 
@@ -697,7 +683,7 @@ def edit_item(request, idx):
                 print('get_item.picture=', get_item.picture)
             # FIXME Yksikko перенести в поле MÄÄRÄ PAKKAUKSESSA, а на освободившееся место поставить поле amount_x_contents
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
-                print('item.amount_x_contents', item.amount_x_contents)
+                # print('item.amount_x_contents', item.amount_x_contents)
                 if (item.amount - amount) > 0:
                     new_amount_x_contents = (item.amount - amount) * contents
                     item.amount_x_contents += new_amount_x_contents
@@ -931,30 +917,30 @@ def burger_settings(request):
 # FUNC filling_storage_place
 # storage_place sarakkeen täyttäminen
 def filling_storage_place(request):
-    items = Goods.objects.all().order_by("ean")
-    rack = ['A', 'B', 'C']
-    rackid = 0
-    unit = 1
-    shelf = 0
+    # items = Goods.objects.all().order_by("ean")
+    # rack = ['A', 'B', 'C']
+    # rackid = 0
+    # unit = 1
+    # shelf = 0
 
-    for item in items:
-        if shelf < 9:
-            shelf += 1
-        elif unit < 9:
-            unit += 1
-            shelf = 1
-        elif rackid < 3:
-            rackid += 1
-            unit = 1
-            shelf = 1
-        else:
-            rackid = 1
-            unit = 1
-            shelf = 1
+    # for item in items:
+    #     if shelf < 9:
+    #         shelf += 1
+    #     elif unit < 9:
+    #         unit += 1
+    #         shelf = 1
+    #     elif rackid < 3:
+    #         rackid += 1
+    #         unit = 1
+    #         shelf = 1
+    #     else:
+    #         rackid = 1
+    #         unit = 1
+    #         shelf = 1
 
-        print(rack[rackid]+str(unit)+str(shelf))
-        # item.storage_place = rack[rackid]+str(unit)+str(shelf)
-        # item.save()
+    #     print(rack[rackid]+str(unit)+str(shelf))
+    #     # item.storage_place = rack[rackid]+str(unit)+str(shelf)
+    #     # item.save()
     
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
 
@@ -962,22 +948,22 @@ def filling_storage_place(request):
 # FUNC filling_goods_description
  # Adding description to products from 2-12 fields
 def filling_goods_description(request):
-    items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
-    # for item in items:
-    #     print(item.id)
-    #     print(item.item_description)
+    # items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
+    # # for item in items:
+    # #     print(item.id)
+    # #     print(item.item_description)
 
-    n = 0
-    new_items = Goods.objects.all().order_by("id")
-    for new_item in new_items:
-        if new_item.id > 12:
-            # new_item.item_description = items[n].item_description
-            # new_item.save()
-            print(items[n].item_description)
-        if n < 10:
-            n += 1
-        else:
-            n = 0
+    # n = 0
+    # new_items = Goods.objects.all().order_by("id")
+    # for new_item in new_items:
+    #     if new_item.id > 12:
+    #         # new_item.item_description = items[n].item_description
+    #         # new_item.save()
+    #         print(items[n].item_description)
+    #     if n < 10:
+    #         n += 1
+    #     else:
+    #         n = 0
 
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
     

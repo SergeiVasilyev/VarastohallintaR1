@@ -1,21 +1,11 @@
 import operator
-from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-)
 from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login, logout
 import pytz
-from .forms import CustomUserForm
 from .checkUser import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser
-from django.db.models import Count
-from django.db.models.functions import TruncMonth, Trunc
-from django.db.models import Min, Max
 from django.core.paginator import Paginator
 
 
@@ -111,7 +101,7 @@ def new_user(request):
     person = ''
     if request.method == 'GET':
         search_person = (request.GET.get('search_person'))
-        print(search_person)
+        # print(search_person)
         if search_person and search_person.isnumeric():
             person = CustomUser.objects.get(code=search_person)
         

@@ -55,7 +55,7 @@ def _save_image(byte_data, csrf_token) -> str:
     img = Image.open(io.BytesIO(b))
 
     while True:
-        print('While loop')
+        # print('While loop')
         new_filename = filename_generator()
         is_file_exist = Path(new_filename['file_path']).is_file()
         if not is_file_exist:
@@ -144,8 +144,8 @@ def order_field() -> list:
     """
     get_order_field = Settings.objects.get(set_name='rental_page_field_ordering')
     order_field_key = list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[list(RENTAL_PAGE_ORDERING_FIELDS_D.values()).index(get_order_field.set_value)]
-    print('order_field_key', order_field_key)
-    print('RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]', RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key])
+    # print('order_field_key', order_field_key)
+    # print('RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]', RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key])
     return [order_field_key, RENTAL_PAGE_ORDERING_FIELDS_D[order_field_key]]
 
 # ---------------------------------------------
