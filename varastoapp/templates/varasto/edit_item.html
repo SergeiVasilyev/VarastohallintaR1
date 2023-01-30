@@ -110,9 +110,9 @@
 </script>
 {% endblock script %}
 
-{% block title %}Tavaran muokkaminen{% endblock %}
-{% block path %}Tavaran muokkaminen{% endblock %}
-{% block page %}Tavaran muokkaminen{% endblock %}
+{% block title %}Tavaran muokkaaminen{% endblock %}
+{% block path %}Tavaran muokkaaminen{% endblock %}
+{% block page %}Tavaran muokkaaminen{% endblock %}
 
 
 {% block main_content %}
@@ -179,7 +179,7 @@
                     </div>
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label">PAKKAUKSEN MÄÄRÄ, KPL</label>
+                            <label class="form-label">PAKKAUKSIEN MÄÄRÄ, KPL</label>
                             {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
                                 {% render_field form.amount|append_attr:"readonly" %}
                             {% else %}

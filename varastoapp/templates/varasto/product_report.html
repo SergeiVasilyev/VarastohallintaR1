@@ -13,7 +13,7 @@
 
 {% block content %}
 
-<div class="px-5">
+<div class="page_size">
 
 <div class="logo_header">
     <div class="left">
@@ -35,7 +35,7 @@
 
 </div>
 {% if item %}
-<div class="subhead">
+<div class="subhead mt-3">
     <div>
         <div class="renter_img">
             <img src="{% static 'images/goods/1.jpg'%}" alt="">
@@ -47,9 +47,9 @@
             <span class="bold">Tuotteen tiedot:</span>
             <span class="">{{item.item_name}} {{item.brand}} {{item.model|default_if_none:""}}</span>
             <span class="">{{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
-            <span class="">ID/Tuotenumero</span>
+            <span class="mt-2">ID/Tuotenumero</span>
             <span class="">{{item.id}}</span>
-            <span class="">EAN-koodi</span>
+            <span class="mt-2">EAN-koodi</span>
             <span class="">{{item.ean}}</span>
         </div>
     </div>
@@ -59,13 +59,13 @@
             <span class="bold">Ostoksen tiedot:</span>
             <span class="">Laskun numero</span>
             <span class="">{{item.invoice_number|default:"-" }}</span>
-            <span class="">Hankitapaikka</span>
+            <span class="mt-2">Hankintapaikka</span>
             <span class="">{{item.purchase_place|default:"-" }}</span>
-            <span class="">Kustannuspaikka</span>
+            <span class="mt-2">Kustannuspaikka</span>
             <span class="">{{item.cost_centre|default:"-" }}</span>
-            <span class="">Hankitahinta</span>
+            <span class="mt-2">Hankintahinta</span>
             <span class="">{{item.purchase_price|default:"-" }} euro</span>
-            <span class="">Hankita Päivämäärä</span>
+            <span class="mt-2">Hankinta Päivämäärä</span>
             <span class="">{{item.purchase_data|date:'d.m.Y' }}</span>
         </div>
     </div>
@@ -80,7 +80,7 @@
 
 </div>
 
-<div class="column_name">
+<div class="column_name mt-3">
 
     <div class="row01">
         <div class="">
@@ -96,13 +96,13 @@
     
     <!-- <div class="row01">
         <div class="">
-            <span class="">Tuoten tapahtuneet toimet</span>
+            <span class="">Tuotteen tapahtuma tiedot</span>
         </div>
     </div> -->
     
     <div class="row01">
         <div class="">
-            <span class="">Toiminut/Vastuulinen henkilö</span>
+            <span class="">Varastotyöntekijä</span>
         </div>
     </div>
     
@@ -134,7 +134,6 @@
     <div class="row01">
         <div class="interval">
             <span class="">{{rental_event.staff.first_name}} {{rental_event.staff.last_name}}</span>
-            <span class="">{{rental_event.staff.role}}</span>
         </div>
     </div>
 

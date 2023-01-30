@@ -1,7 +1,4 @@
-# from asyncio.windows_events import NULL
 from datetime import datetime
-from email.policy import default
-from pickle import NONE
 from django.contrib.auth.models import AbstractUser, User, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext as _
@@ -16,11 +13,7 @@ from .storage_settings import *
 
 
 
-# Сделать три таблицы места, где будут сделаны константы RACK = [A, B, C...], SHELF[0-9], PLACE[0-20]
-# Из Storage_place на них будет ссылка, а также ссылка на Storage_name !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# Tietäkö työntekija tavaran paikka kun hän lisää uusi tavara? 
-# Нужно добавить Foreign key на Storage в Goods
 class Storage_place(models.Model):
     rack = models.CharField(max_length=20, blank=True, null=True) # Voi olla työntekija, joilla on oikeuksia lisätä tavara ei tiedä paikan numero
     shelf = models.CharField(max_length=20, blank=True, null=True)
@@ -31,7 +24,6 @@ class Storage_place(models.Model):
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
     storage_code = models.CharField(max_length=2, blank=True, null=True)
-    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -49,17 +41,14 @@ class CustomUser(AbstractUser, PermissionsMixin):
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
-    photo = models.ImageField(upload_to='images/students/', blank=True, null=True) # Сделать подпапки
+    photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
-    # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
         return '%s' % (self.username,)
-        # return '%s %s %s %s %s %s %s %s' % (self.first_name, self.last_name, self.username, self.password,
-        # self.phone, self.email, self.code, self.photo)
     
     def get_group_permission(self):
         user = CustomUser.objects.get(username=self)
@@ -79,6 +68,10 @@ class CustomUser(AbstractUser, PermissionsMixin):
             roles_dict = {'student': 'Oppilas'}
         return roles_dict
 
+    @property
+    def get_storage_staff(self):
+        staff = CustomUser.objects.filter(storage=self.storage).filter(role='storage_employee').first()
+        return staff.email
 
 
 
@@ -87,6 +80,8 @@ class Category(models.Model):
 
     def __str__(self):
         return '%s' % (self.cat_name)
+
+
 
 class IntegerRangeField(models.IntegerField):
     # https://stackoverflow.com/questions/849142/how-to-limit-the-maximum-value-of-a-numeric-field-in-a-django-model
@@ -98,10 +93,14 @@ class IntegerRangeField(models.IntegerField):
         defaults.update(kwargs)
         return super(IntegerRangeField, self).formfield(**defaults)
 
+
+
 class Units(models.Model):
     unit_name = models.CharField(max_length=25, unique=True, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.unit_name)
+
+
 
 class Goods(models.Model):
     ITEM_STATUS = [
@@ -116,11 +115,8 @@ class Goods(models.Model):
     item_type = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     parameters = models.CharField(max_length=100, blank=True, null=True)
-    # pack = models.CharField(max_length=50, blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
-    # Created new Class IntegerRangeField to limit values from min to max 
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    # units = models.CharField(max_length=50, choices=UNITS, blank=True, null=True) # TODO pitää poistaa
     unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
@@ -149,14 +145,12 @@ class Goods(models.Model):
     #     return None
     
     def get_unit(self):
-        print('self.unit', self.unit)
         return self.unit
 
     @register.filter
     def modify_input(str1, val):
         # str1 = f'<input type="number" name="contents" value="3.0000" min="0" max="1000000" step="0.001" data-decimals="4" placeholder="0" readonly id="contents" data-suffix={val}>'
         new_str = str(str1)
-        # print(type(new_str), new_str)
         new_str = f"{new_str[:-1]} data-suffix={val}>"
         return new_str
 
@@ -189,13 +183,6 @@ class Goods(models.Model):
         
     @register.filter
     def get_key(dictionary, key):
-        # try:
-        #     is_true = dictionary[key]
-        # except:
-        #     is_true = False
-        # return is_true
-        # return dictionary.get(key)
-        # print(key)
         return dictionary.get(key)
     
     @register.filter
@@ -220,9 +207,7 @@ class Goods(models.Model):
     def rentable_at(self):
         # Etsitään tavara, joka oleva Rental_event taulussa ja sillä returned_date on None
         event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
-        # print(self.id, event)
         if event:
-            # print(self.id, event.item.brand, event.estimated_date)
             return event.estimated_date
         return None
 
@@ -238,9 +223,6 @@ class Goods(models.Model):
 
     def __str__(self):
         return '%s' % (self.item_name)
-        # return '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.cat_name, self.item_name, self.brand, 
-        # self.model, self.item_type, self.size, self.parameters, self.package, self.picture,
-        # self.item_description, self.cost_centre, self.reg_number, self.purchase_data, self.purchase_price, self.purchase_place, self.invoice_number)
 
 
 
@@ -293,33 +275,54 @@ class Rental_event(models.Model):
         now = datetime.now()
         now = pytz.utc.localize(now)
         # self.estimated_date имеет смещение часового пояся, datetime.now() нет.
-        # print(type(self.estimated_date))
-        # print(f"{self.estimated_date}>{now}")
-        # print(self.renter.first_name)
-        # print(self.estimated_date > now)
         return self.estimated_date > now
 
-    # Tarkistaminen 
+
+    # Tarkistaminen
+    # This function was raplased to get_elements_by_renter and is_renter_has_not_returned_item_and_same_storage filter
     @property
     def is_user_have_non_returned_item(self):
         result = 0
         now = datetime.now()
         now = pytz.utc.localize(now)
-        event = Rental_event.objects.filter(renter = self.renter).filter(storage = self.storage)
+        if self.staff.is_superuser: 
+            # Kun superuser antaa lainaaksi tavara, hänellä voi olla tyhjä storage_id kenttä, siksi ei tarvitse laittaa filteriin storage=self.storage.
+            # Managerilla myös voi olla tyhjä storage_id kenttä, mutta Manager ei voi antaa lainaaksi tavaroita, siksi ehdolla emme laiteta self.staff.has_perm('manager')
+            event = Rental_event.objects.filter(renter=self.renter)
+        else:
+            event = Rental_event.objects.filter(renter=self.renter).filter(storage=self.storage)
         for e in event:
             if not e.returned_date and e.estimated_date < now: # если товар не вернули еще, и предполаг. дата больше текущей даты, то +1
                 # print(e.estimated_date, now)
                 result += 1
         # print (self.renter.first_name, ' - ', result)
         return result
-        # return f"{self.renter.first_name} {self.renter.last_name}"
 
+
+    # get_elements_by_renter and is_renter_has_not_returned_item_and_same_storage
+    # Nämä funktiot yhdessä palauttavat 1, jos henkilollä on eräntyneitä tavaroita tai 0, jos kaikki on kunnossa ja palautusaika ei ole vielä tullut
+    @property
+    def get_elements_by_renter(self):
+        event = Rental_event.objects.filter(renter=self.renter)
+        return event
+
+    @register.filter
+    def is_renter_has_not_returned_item_and_same_storage(events, staff):
+        result = 0
+        now = datetime.now()
+        now = pytz.utc.localize(now)
+        for e in events:
+            # if the item has not been returned yet and the estimated date is greater than the current date, and if staff.storage has a warehouse ID and these warehouses match the rental_event or if staff.storage is empty then don't praise the warehouses.
+            # ((e.storage == staff.storage and staff.storage) if staff.storage has ID then mutch storages in event and in logined user
+            # (e.storage != -1 and not staff.storage) if staff.storage is empty then don't need mutch storages (equal e.storage != -1)
+            if not e.returned_date and e.estimated_date < now and ((e.storage == staff.storage and staff.storage) or (e.storage != -1 and not staff.storage)): 
+                result += 1
+                return 1 # if at least one element is found, return 1. If comment this line we will get same result in template, but we return number of found elements or 0 if don't find nothing
+        return result
 
     def __str__(self):
         return '%s %s %s' % (self.item, self.estimated_date, self.returned_date)
-    # def __str__(self):
-    #     return '%s %s %s %s %s %s %s %s %s' % (self.item, self.storage, self.renter, self.staff, self.amount, self.start_date,
-    #     self.estimated_date, self.returned_date, self.remarks)
+
 
 
 class Staff_audit(models.Model):
@@ -338,7 +341,7 @@ class Staff_audit(models.Model):
 
 
 class Settings(models.Model):
-    set_name = models.CharField(max_length=50, blank=True, null=True)
-    set_value = models.CharField(max_length=50, blank=True, null=True)
+    set_name = models.CharField(max_length=150, blank=True, null=True)
+    set_value = models.CharField(max_length=300, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.set_name)

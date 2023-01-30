@@ -1,16 +1,9 @@
 # from asyncio.windows_events import NULL
 import operator
 import re
-from django.forms import inlineformset_factory, modelformset_factory
 from django.http import (
     HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseRedirect,
     JsonResponse,
-    StreamingHttpResponse,
-    HttpRequest,
-    QueryDict
 )
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -23,32 +16,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
-from django.db.models import Count
-from django.contrib.auth.models import Group
 
 from django.db.models import Min, Max
 from .test_views import test
 
-from .anna__views import report, new_event_goods, product_report, inventory, new_user
+from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
-from .capture_picture import VideoCamera
 from django.db.models import Q
-from .alerts import email_alert
+# from .alerts import email_alert
 from .storage_settings import *
 from .services import _save_image
 from .services import *
 
-import PIL.Image as Image
-
-from django.middleware.csrf import get_token
 from django.conf import settings
 from decimal import *
 
 
 
 
+
 @login_required()
-@user_passes_test(lambda user: user.has_perm("varasto.view_customuser"))
+@user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def grant_permissions(request):
     users = CustomUser.objects.all().order_by("id")
     if request.user.is_superuser:
@@ -60,8 +48,7 @@ def grant_permissions(request):
     else:
         users = {}
 
-    print(users)
-    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(users, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -71,12 +58,26 @@ def grant_permissions(request):
 
     return render(request, 'varasto/grant_permissions.html', context)
 
+@login_required()
+@user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def save_permision(request, idx):
     user = CustomUser.objects.get(id=idx)
     user.role = (request.POST.get('roles'))
+    # print(user.role)
+    if request.POST.get('roles') == 'student_extended' or request.POST.get('roles') == 'storage_employee' or request.POST.get('roles') == 'management':
+        user.is_staff = True
+    elif request.POST.get('roles') == 'super':
+        user.is_staff = True
+        user.is_superuser = True
+    else:
+        user.is_staff = False
+        user.is_superuser = False
     user.save()
 
-    return redirect('grant_permissions')
+    page_number = request.POST.get('page')
+
+    # return redirect('grant_permissions', page=page_number)
+    return redirect(f'/grant_permissions?page={page_number}')
 
 
 
@@ -91,8 +92,8 @@ def person_view(request):
 
 
 # FUNC renter
-@login_required()
 # @user_passes_test(is_not_student, redirect_field_name=None)
+@login_required()
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
     error = {}
@@ -104,7 +105,7 @@ def renter(request, idx):
         product = Goods.objects.get(id=item.item_id)
 
         if request.POST.get('rental_close'): # UPDATE DATE
-            print('RENTAL CLOSE')
+            # print('RENTAL CLOSE')
             sended_date = request.POST.get('rental_close') 
             date_formated = datetime.strptime(sended_date, '%Y-%m-%d') # Make format stringed date to datetime format
             date_localized = pytz.utc.localize(date_formated) # Add localize into datetime date
@@ -134,7 +135,7 @@ def renter(request, idx):
 
         if request.POST.getlist('_close_rent_cons'):
             # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
-            print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
+            # print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
             if not item.returned_date: # Need to prevent form resubmission
                 if update_amount_data():
                     now = datetime.now()
@@ -148,7 +149,7 @@ def renter(request, idx):
                     return redirect('renter', idx=item.renter_id)
 
         if request.POST.getlist('set_end_date'): # CLOSE RENT
-            print('set_end_date')
+            # print('set_end_date')
             item.returned = 1
             now = datetime.now()
             datenow = pytz.utc.localize(now)
@@ -158,21 +159,49 @@ def renter(request, idx):
             print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
+
         if request.POST.getlist('send_email_to_teacher'):
-            subject = "Automaattinen muistutus!"
-            text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
-            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
-            # to = item.renter.responsible_teacher.email
-            # print(subject, text + body, to)
-            email_alert(subject, text + body, 'tino.cederholm@gmail.com')
+            # print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
+
+            subject = PRODUCT_NOT_RETURNED_MSG.subject
+            msg = PRODUCT_NOT_RETURNED_MSG.message.format(
+                renter_first_name=item.renter.first_name, 
+                renter_last_name=item.renter.last_name, 
+                renter_code=item.renter.code, 
+                storage_name=item.storage.name, 
+                item_name=item.item.item_name, 
+                item_brand=item.item.brand, 
+                item_model=item.item.model, 
+                item_size=item.item.size, 
+                item_parameters=item.item.parameters, 
+                item_id=item.item.id, 
+                staff_email=item.staff.get_storage_staff)
+            to = item.renter.responsible_teacher.email
+
+            email_alert(subject, msg, to)
+            return redirect('renter', idx=item.renter_id)
+
         if request.POST.getlist('send_email_item_is_damaged'):
-            subject = "Automaattinen muistutus!"
-            text = f"henkilö {item.renter.first_name} {item.renter.last_name} on paluttanut varioittuneen tuotteen: <br>"
-            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
-            remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
-            # to = item.renter.responsible_teacher.email
-            print(subject, text + body + remarks)
-            email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
+            damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
+            subject = DEFECT_IN_PRODUCT_MSG.subject
+            msg = DEFECT_IN_PRODUCT_MSG.message.format(
+                renter_first_name=item.renter.first_name, 
+                renter_last_name=item.renter.last_name, 
+                renter_code=item.renter.code, 
+                storage_name=item.storage.name, 
+                item_name=item.item.item_name, 
+                item_brand=item.item.brand, 
+                item_model=item.item.model, 
+                item_size=item.item.size, 
+                item_parameters=item.item.parameters, 
+                item_id=item.item.id, 
+                staff_email=item.staff.get_storage_staff,
+                damaged_remarks=damaged_remarks)
+            to = item.renter.responsible_teacher.email
+
+            email_alert(subject, msg, to)
+            return redirect('renter', idx=item.renter_id)
+
 
     selected_user = CustomUser.objects.get(id=idx)
 
@@ -267,14 +296,14 @@ def new_event(request):
     # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
-    print('radioUnit', inp_fixes)
+    # print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
             # fix_item = '_fix_item'+str(idx_inp_fix)
             # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
-            print('idxf', idxf)
+            # print('idxf', idxf)
 
             if idxf != -1:
                 changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
@@ -325,23 +354,19 @@ def new_event(request):
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
                     unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
                     item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
-                    print('GET unit', str(item.id), unit)
-                    print('GET item_amount', str(item.id), item_amount)
+                    # print('GET unit', str(item.id), unit)
+                    # print('GET item_amount', str(item.id), item_amount)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
                                 item.amount = int(item.amount) - item_amount
                                 kwargs['amount'] = item_amount
-                                print('item.amount', item.amount)
                             else: # Jos yksikkö on sisällön määrää
                                 # amount_x_contents = item.amount * item.contents # formula
-                                print('item.amount_x_contents', item.amount_x_contents)
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
-                                print('remaining_contents', remaining_contents)
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
-                                print('new_amount', new_amount)
                                 remainder = remaining_contents - (item.contents * new_amount)
-                                print('remainder', remainder.normalize())
+                                # print('remainder', remainder.normalize())
 
                                 item.amount = new_amount
                                 item.amount_x_contents = remaining_contents
@@ -367,7 +392,6 @@ def new_event(request):
     # print('changed_user ', changed_user)
     # print('changed_items ', changed_items)
 
-    # items = Goods.objects.all().order_by("id")
     storage_filter = storage_f(request.user)
     items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
@@ -383,7 +407,6 @@ def new_event(request):
         'items': page_obj,
         'feedback_status': feedback_status,
     }
-    # print(context)
     return render(request, 'varasto/new_event.html', context)
 
 
@@ -393,6 +416,7 @@ def is_ajax(request):
 
 
 # FUNC getPersons
+@login_required()
 def getPersons(request):
     json_persons = []
     if is_ajax(request=request):
@@ -413,6 +437,7 @@ def getPersons(request):
 
 
 # FUNC getProduct
+@login_required()
 def getProduct(request):
     json_goods = []
     if is_ajax(request=request):
@@ -435,6 +460,7 @@ def getProduct(request):
 
 
 # FUNC getProducts
+@login_required()
 def getProducts(request):
     data = []
     if is_ajax(request=request):
@@ -467,7 +493,7 @@ def getProducts(request):
                 'unit': obj.unit.unit_name if obj.unit else '',
             }
             data.append(item)
-            print(settings.STATIC_URL + str(obj.picture))
+            # print(settings.STATIC_URL + str(obj.picture))
     return JsonResponse({'items': data, })
 
 
@@ -541,7 +567,6 @@ def rental_events_goods(request):
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
     order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
-    print(start_date_range)
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
@@ -564,10 +589,10 @@ def rental_events_goods(request):
 
 
 # FUNC rental_events
+# @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
-# @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 def rental_events(request):
     # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
@@ -575,7 +600,6 @@ def rental_events(request):
     select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
     all_order_fields_nolast = RENTAL_PAGE_ORDERING_FIELDS_D.copy() # Kloonataan dictionary
     all_order_fields_nolast.pop(list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[-1]) # Poistetaan viimeinen elementti sanakirjasta (item__brand). Koska emme voi lajitella groupiroitu lista brandin kentän mukaan
-    # print(RENTAL_PAGE_ORDERING_FIELDS_D)
 
     renters_by_min_startdate = Rental_event.objects.values('renter').filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).annotate(mindate=Max('start_date')).order_by('renter')
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by('renter', '-start_date')
@@ -608,18 +632,12 @@ def rental_events(request):
     return render(request, 'varasto/rental_events.html', context)
 
 
-# FUNC new_user
-# @login_required()
-# @user_passes_test(lambda user:user.is_staff)
-# def new_user(request):
-#     return render(request, 'varasto/new_user.html')
-
 
 # FUNC get_photo
 def get_photo(request):
     picData = request.POST.get('picData')
     img = _save_image(picData)
-    print(img)
+    # print(img)
     return HttpResponse("<html><body><h1>SAVED</h1></body></html>") 
 
 
@@ -632,7 +650,7 @@ def edit_item(request, idx):
     storage_filter = storage_f(request.user) # if storage_filter is empty means superuser, management or student
     try:
         item = Goods.objects.get(id=idx)
-        print(item.storage, request.user.storage)
+        # print(item.storage, request.user.storage)
         if item.storage != request.user.storage and storage_filter: 
             error = "Voi muokata vain tavaroita sijäitsevä sama varastossa"
             return redirect('product', idx=idx)
@@ -654,7 +672,7 @@ def edit_item(request, idx):
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
             item = form.save(commit=False)
-            print('item.picture=', item.picture)
+            # print('item.picture=', item.picture)
             try:
                 if not item.picture:
                     new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -665,7 +683,7 @@ def edit_item(request, idx):
                 print('get_item.picture=', get_item.picture)
             # FIXME Yksikko перенести в поле MÄÄRÄ PAKKAUKSESSA, а на освободившееся место поставить поле amount_x_contents
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
-                print('item.amount_x_contents', item.amount_x_contents)
+                # print('item.amount_x_contents', item.amount_x_contents)
                 if (item.amount - amount) > 0:
                     new_amount_x_contents = (item.amount - amount) * contents
                     item.amount_x_contents += new_amount_x_contents
@@ -693,7 +711,6 @@ def edit_item(request, idx):
         is_storage_employee = ['readonly', 'disabled']
     else:
         is_storage_employee = ['', '']
-    print(is_storage_employee)
 
     event = Rental_event.objects.filter(item_id=idx).filter(returned_date=None)
     is_rented = False
@@ -718,11 +735,8 @@ def new_item(request):
     camera_picture = request.POST.get('canvasData')
 
     if request.method == "POST":
-        print('request.POST')
-        print("csrfmiddlewaretoken", request.POST.get('csrfmiddlewaretoken'))
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
-            print('FORM is VALID')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -740,8 +754,6 @@ def new_item(request):
                     item.amount_x_contents = None
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
                 else:
-                    # item.cat_name = None
-                    # item.contents = None
                     item.picture = new_picture
                     item.amount_x_contents = Decimal(request.POST.get('amount')) * Decimal(request.POST.get('contents'))
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
@@ -794,10 +806,9 @@ def products(request):
 @user_passes_test(lambda user:user.is_staff)
 # @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
 def product(request, idx):
-    user = request.user
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
-    # if user.has_perm('varasto.view_customuser'):
+
     rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
 
     paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
@@ -815,9 +826,6 @@ def product(request, idx):
 # FUNC set_rental_event_view
 @login_required()
 def set_rental_event_view(request):
-    # if 'name' in request.GET:
-    #     print('request.GET name =', request.GET.get('name'))
-
     set = Settings.objects.get(set_name='rental_page_view')
     set.set_value = request.GET.get('name')
     set.save()
@@ -847,7 +855,7 @@ def set_order_field(request):
     page = Settings.objects.get(set_name='rental_page_view')
     return redirect (page.set_value)
 
-
+@login_required()
 def delete_product(request, idx):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
@@ -859,14 +867,14 @@ def delete_product(request, idx):
         item_data_dict.pop(k, None)
     item_data_dict['contents'] = str(item.contents.normalize()) if item.contents else ''
     item_data_dict['amount_x_contents'] = str(item.amount_x_contents.normalize()) if item.amount_x_contents else ''
-    print(item_data_dict)
+    # print(item_data_dict)
 
     user_dict = staff.__dict__.copy() # Make copy of staff instance
     # Delete unnecessary fields in product info
     entries_to_remove = ('_state', 'username', 'password', 'email', 'last_login', 'date_joined', 'is_superuser', 'is_staff', 'is_active', 'group', 'photo', 'role', 'responsible_teacher_id', 'storage_id')
     for k in entries_to_remove:
         user_dict.pop(k, None)
-    print(user_dict)
+    # print(user_dict)
 
     # Create record about event in Staff_audit table
     storage = request.user.storage.name if request.user.storage else None
@@ -886,36 +894,53 @@ def delete_product(request, idx):
     # TODO Redirect to same page where product was
     return redirect("products")
 
+@login_required()
+def burger_settings(request):
+    show_full = request.POST.get('show_full')
+
+    try:
+        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+        burger_setting_dict.set_value = show_full
+    except Settings.DoesNotExist:
+        burger_setting_dict = Settings(set_name='show_full_burger', set_value=show_full)
+    finally:
+        burger_setting_dict.save()
+
+    show_full_burger = burger_setting_dict.set_value
+    # burger_dict = burger_dict.replace("\'", "\"")
+    # burger_settings_json = json.loads(burger_dict)
+
+    return JsonResponse({'show_full_burger': show_full_burger, })
 
 
 
 # FUNC filling_storage_place
 # storage_place sarakkeen täyttäminen
 def filling_storage_place(request):
-    items = Goods.objects.all().order_by("ean")
-    rack = ['A', 'B', 'C']
-    rackid = 0
-    unit = 1
-    shelf = 0
+    # items = Goods.objects.all().order_by("ean")
+    # rack = ['A', 'B', 'C']
+    # rackid = 0
+    # unit = 1
+    # shelf = 0
 
-    for item in items:
-        if shelf < 9:
-            shelf += 1
-        elif unit < 9:
-            unit += 1
-            shelf = 1
-        elif rackid < 3:
-            rackid += 1
-            unit = 1
-            shelf = 1
-        else:
-            rackid = 1
-            unit = 1
-            shelf = 1
+    # for item in items:
+    #     if shelf < 9:
+    #         shelf += 1
+    #     elif unit < 9:
+    #         unit += 1
+    #         shelf = 1
+    #     elif rackid < 3:
+    #         rackid += 1
+    #         unit = 1
+    #         shelf = 1
+    #     else:
+    #         rackid = 1
+    #         unit = 1
+    #         shelf = 1
 
-        print(rack[rackid]+str(unit)+str(shelf))
-        # item.storage_place = rack[rackid]+str(unit)+str(shelf)
-        # item.save()
+    #     print(rack[rackid]+str(unit)+str(shelf))
+    #     # item.storage_place = rack[rackid]+str(unit)+str(shelf)
+    #     # item.save()
     
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
 
@@ -923,22 +948,22 @@ def filling_storage_place(request):
 # FUNC filling_goods_description
  # Adding description to products from 2-12 fields
 def filling_goods_description(request):
-    items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
-    # for item in items:
-    #     print(item.id)
-    #     print(item.item_description)
+    # items = Goods.objects.filter(id__in=[2,3,4,5,6,7,8,9,10,11,12])
+    # # for item in items:
+    # #     print(item.id)
+    # #     print(item.item_description)
 
-    n = 0
-    new_items = Goods.objects.all().order_by("id")
-    for new_item in new_items:
-        if new_item.id > 12:
-            # new_item.item_description = items[n].item_description
-            # new_item.save()
-            print(items[n].item_description)
-        if n < 10:
-            n += 1
-        else:
-            n = 0
+    # n = 0
+    # new_items = Goods.objects.all().order_by("id")
+    # for new_item in new_items:
+    #     if new_item.id > 12:
+    #         # new_item.item_description = items[n].item_description
+    #         # new_item.save()
+    #         print(items[n].item_description)
+    #     if n < 10:
+    #         n += 1
+    #     else:
+    #         n = 0
 
     return HttpResponse("<html><body><h1>RENDERED</h1></body></html>")
     

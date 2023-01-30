@@ -21,7 +21,16 @@
     <title>{% block title %}{% endblock %}</title>
 
     <script type="text/javascript">
-        $(document).ready( function(){   
+        $(document).ready( function(){
+            // // Set scroll postion with session storage
+            // var pathName = document.location.pathname
+            // var selector = '#wb'
+            // $(selector).on('scroll', function(){
+            //     sessionStorage['scrollTop' + pathName] = $(selector).scrollTop();
+            // });
+            // $(selector).scrollTop(sessionStorage['scrollTop' + pathName]);
+            // -- Set scroll postion with session storage
+            
             //https://bitcoden.com/answers/how-can-i-retain-the-scroll-position-of-a-scrollable-area-when-pressing-back-button
             // Set scroll postion with browser history api
             var selector = '#wb'
@@ -36,72 +45,90 @@
             // -- Set scroll position with browser history api
 
             // AJAX burger_settings
-            const setBurger = (show_full) => {
+            const setBurger = (btn_text_display, has_btn_resize_class, is_aside_thin) => {
                 $.ajax({
                     type: 'POST',
                     url: '/burger_settings/',
                     data: {
                         'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'show_full': show_full,
+                        'btn_text_display': btn_text_display,
+                        'has_btn_resize_class': has_btn_resize_class,
+                        'is_aside_thin': is_aside_thin,
                     },
                     success: (response)=> {
-                        // console.log(response)
+                        console.log(response)
                     },
                     complete: function(response) {
-                        // console.log(response.responseJSON.burger_settings_json)
+                        console.log(response.responseJSON.burger_settings_json)
 					}
                 })
             }
 
-            // function update_burger(show_full_burger){
-            //     show_full_burger = parseInt(show_full_burger)
-            //     console.log(show_full_burger)
-            //     if (show_full_burger) {
-            //         $('.button__text').show()
-            //         $('.main_container').css('grid-template-columns', '280px 1fr 1fr 1fr')
-            //     } else {
-            //         $('.button__text').hide()
-            //         $('.main_container').css('grid-template-columns', '100px 1fr 1fr 1fr')
-            //     }
-            // }
-            // update_burger('{{show_full_burger}}')
+            function set_burger(btn_text_display, has_btn_resize_class, is_aside_thin){
+                $('.button__text').css('display', btn_text_display)
+                if (has_btn_resize_class=='true'){
+                    $('.button').addClass('resize')
+                } else {
+                    $('.button').removeClass('resize')
+                }
+                if (is_aside_thin=='true'){
+                    $('.main_container').removeClass('container_grid_wide').addClass('container_grid_thin')
+                } else {
+                    $('.main_container').removeClass('container_grid_thin').addClass('container_grid_wide')
+                }
+            }
+
+            set_burger('{{burger_settings_json.btn_text_display}}', '{{burger_settings_json.has_btn_resize_class}}', '{{burger_settings_json.is_aside_thin}}')
 
             $('.logos_burger').click(function(){
-                console.log($('.main_container').css('grid-template-columns').slice(0, 3))
-                var show_full = 0
-                // $('.button__text').toggle()
-                if ($('.main_container').css('grid-template-columns').slice(0, 3)=='100') {
-                    $('.main_container').css('grid-template-columns', '280px 1fr 1fr 1fr')
-                    show_full = 1
-                    $('.button__text').css('display', 'flex')
-                    $('.button__text').css('align-items', 'center')
+                // console.log($('.button__text').css('display'))
+                // console.log($('.button').hasClass('resize'))
+                // console.log($('.main_container').hasClass('container_grid_thin'))
+                
+                $('.button__text').toggle()
+                $('.button').toggleClass('resize')
+                if ($('.main_container').hasClass('container_grid_thin')) {
+                    $('.main_container').toggleClass('container_grid_wide')
+                    $('.main_container').removeClass('container_grid_thin')
                 } else {
-                    $('.main_container').css('grid-template-columns', '100px 1fr 1fr 1fr')
-                    $('.button__text').css('display', 'none')
+                    $('.main_container').toggleClass('container_grid_thin')
+                    $('.main_container').removeClass('container_grid_wide')
                 }
+                var btn_text_display = $('.button__text').css('display')
+                var has_btn_resize_class = $('.button').hasClass('resize')
+                var is_aside_thin = $('.main_container').hasClass('container_grid_thin')
 
-                setBurger(show_full)
+                setBurger(btn_text_display, has_btn_resize_class, is_aside_thin)
             })
         });
 
     </script>
-    <style>
-        {% if show_full_burger %}
+    <!-- <style>
+        {% if burger_settings %}
             .button__text{
-                display: inline-flex;
+                display: flex;
             }
-            .main_container{
-                grid-template-columns: 280px 1fr 1fr 1fr;
+            .resize {
+                width: 100%;
+            }
+            .container_grid_wide{
+                grid-template-columns: 280px 1fr 1fr 1fr; 
+            }
+            .container_grid_thin{
             }
         {% else %}
             .button__text{
                 display: none;
             }
-            .main_container{
+            .resize {
+            }
+            .container_grid_wide{
+            }
+            .container_grid_thin{
                 grid-template-columns: 100px 1fr 1fr 1fr; 
             }
         {% endif %}
-    </style>
+    </style> -->
     {% block script %}{% endblock %}
 
 </head>

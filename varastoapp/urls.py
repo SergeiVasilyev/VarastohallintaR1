@@ -61,7 +61,7 @@ urlpatterns = [
 
     path('new_user/', views.new_user, name='new_user'),
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
-
+    path('storage_settings/', views.storage_settings, name='storage_settings'),
     # path('video_stream', views.video_stream, name='video_stream'),
     # path('new_item/take_pacture', views.take_pacture, name='take_pacture'),
     path('products/', views.products, name='products'),
@@ -70,6 +70,7 @@ urlpatterns = [
     path('get_persons/', views.getPersons, name='getPersons'),
     path('get_product/', views.getProduct, name='getProduct'),
     path('save_permision/<int:idx>/', views.save_permision, name='save_permision'),
+    path('burger_settings/', views.burger_settings, name='burger_settings'),
 
 
     path('filling_goods_description/', views.filling_goods_description, name='filling_goods_description'),

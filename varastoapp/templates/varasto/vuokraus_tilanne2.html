@@ -26,8 +26,8 @@
     <div class="row02 mt-4">
         <div class="form-check">
             <div class="boxes">
-                <input name="set_end_date" class="form-check-input" type="checkbox" value="" id="checkbox_back" checked>
-                <label class="form-check-label ms-2" for="checkbox_back">
+                <input name="set_end_date" class="form-check-input" type="checkbox" value="" id="checkbox_back_{{rental_event.id}}" checked>
+                <label class="form-check-label ms-2" for="checkbox_back_{{rental_event.id}}">
                     Palautettu
                 </label>
             </div>
@@ -35,8 +35,8 @@
         <div class="form-check mt-2">
             <div class="boxes">
                 <!-- checkbox ei toimii, koska sivulla on paljon sama modal ikkunoita ja niillä kaikkilla on sama id=check_back !!!!!!!!! -->
-                <input name="send_email_item_is_damaged" class="form-check-input" type="checkbox" value="" id="check_problem">
-                <label class="form-check-label ms-2" for="check_problem">
+                <input name="send_email_item_is_damaged" class="form-check-input" type="checkbox" value="" id="check_problem_{{rental_event.id}}">
+                <label class="form-check-label ms-2" for="check_problem_{{rental_event.id}}">
                     Tavarassa / työkalussa on vika
                 </label>
             </div>
