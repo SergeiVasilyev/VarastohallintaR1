@@ -62,6 +62,7 @@ LINE2 = "Henkilöllä {renter_first_name} {renter_last_name} (koodi: {renter_cod
 LINE3 = "<b> - {item_name} {item_brand} {item_model} </b> {item_size} {item_parameters}, tuotteen koodi: {item_id} <br><br>"
 LINE4 = "Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {staff_email}"
 MESSAGE = LINE1 + LINE2 + LINE3 + LINE4
+SIGNATURE = ''
 PRODUCT_NOT_RETURNED_MSG = Email_msg(subject=SUBJECT, message=MESSAGE)
 
 
@@ -70,9 +71,10 @@ SUBJECT = "Automaattinen muistutus!"
 LINE1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
 LINE2 = "Henkilö {renter_first_name} {renter_last_name} (koodi: {renter_code}) on palauttanut vaurioituneen tuotteen: <br>"
 LINE3 = "<b> - {item_name} {item_brand} {item_model} </b> {item_size} {item_parameters}, tuotteen koodi: {item_id} <br><br>"
-LINE4 = "Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {staff_email} <br><br>"
-REMARKS = "Vaurion kuvaus: <br> {damaged_remarks}"
-MESSAGE = LINE1 + LINE2 + LINE3 + LINE4 + REMARKS
+REMARKS = "Vaurion kuvaus: <br> {damaged_remarks} <br><br>"
+LINE4 = "Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {staff_email}"
+SIGNATURE = ''
+MESSAGE = LINE1 + LINE2 + LINE3 + REMARKS + LINE4
 DEFECT_IN_PRODUCT_MSG = Email_msg(subject=SUBJECT, message=MESSAGE)
 
 

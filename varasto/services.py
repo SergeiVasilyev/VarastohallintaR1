@@ -14,7 +14,7 @@ from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staf
 from datetime import datetime, timedelta
 
 from email.message import EmailMessage
-import smtplib, ssl
+import smtplib
 from .storage_settings import *
 
 

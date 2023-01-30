@@ -173,33 +173,50 @@ def renter(request, idx):
             print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
+
         if request.POST.getlist('send_email_to_teacher'):
-            print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
+            # print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
 
             subject = PRODUCT_NOT_RETURNED_MSG.subject
-            line1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
-            line2 = f"Henkilöllä {item.renter.first_name} {item.renter.last_name} (koodi: {item.renter.code}) on erääntynyt laina {item.storage.name} varastossa: <br>"
-            line3 = f"<b> - {item.item.item_name} {item.item.brand} {item.item.model} </b> {item.item.size} {item.item.parameters}, tuotteen koodi: {item.item.id}<br><br>"
-            line4 = f"Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {item.staff.get_storage_staff}"
+            msg = PRODUCT_NOT_RETURNED_MSG.message.format(
+                renter_first_name=item.renter.first_name, 
+                renter_last_name=item.renter.last_name, 
+                renter_code=item.renter.code, 
+                storage_name=item.storage.name, 
+                item_name=item.item.item_name, 
+                item_brand=item.item.brand, 
+                item_model=item.item.model, 
+                item_size=item.item.size, 
+                item_parameters=item.item.parameters, 
+                item_id=item.item.id, 
+                staff_email=item.staff.get_storage_staff)
             to = item.renter.responsible_teacher.email
-            # print(subject, line1 + line2 + line3 + line4, to)
-            # email_alert(subject, line1 + line2 + line3 + line4, to)
-            return redirect('renter', idx=item.renter_id)
-        if request.POST.getlist('send_email_item_is_damaged'):
-            subject = "Automaattinen muistutus!"
-            line1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
-            line2 = f"Henkilö {item.renter.first_name} {item.renter.last_name} (koodi: {item.renter.code}) on palauttanut vaurioituneen tuotteen: <br>"
-            line3 = f"<b> - {item.item.item_name} {item.item.brand} {item.item.model} {item.item.item_type} </b> {item.item.size} {item.item.parameters}, tuotteen koodi: {item.item.id}<br><br>"
-            line4 = f"Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {item.staff.get_storage_staff} <br><br>"
-            remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
-            to = item.renter.responsible_teacher.email
-            print(subject, line1 + line2 + line3 + remarks)
-            email_alert(subject, line1 + line2 + line3 + line4 + remarks, to)
+
+            email_alert(subject, msg, to)
             return redirect('renter', idx=item.renter_id)
 
-    # print(MESSAGE.format(staff_email=idx, item_id=idx))
-    
-    
+        if request.POST.getlist('send_email_item_is_damaged'):
+            damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
+            subject = DEFECT_IN_PRODUCT_MSG.subject
+            msg = DEFECT_IN_PRODUCT_MSG.message.format(
+                renter_first_name=item.renter.first_name, 
+                renter_last_name=item.renter.last_name, 
+                renter_code=item.renter.code, 
+                storage_name=item.storage.name, 
+                item_name=item.item.item_name, 
+                item_brand=item.item.brand, 
+                item_model=item.item.model, 
+                item_size=item.item.size, 
+                item_parameters=item.item.parameters, 
+                item_id=item.item.id, 
+                staff_email=item.staff.get_storage_staff,
+                damaged_remarks=damaged_remarks)
+            to = item.renter.responsible_teacher.email
+
+            email_alert(subject, msg, to)
+            return redirect('renter', idx=item.renter_id)
+
+
     selected_user = CustomUser.objects.get(id=idx)
 
     storage_filter = storage_f(request.user)
