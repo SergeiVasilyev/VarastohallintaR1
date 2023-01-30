@@ -51,7 +51,7 @@ class GoodsAdmin(admin.ModelAdmin):
 
 @admin.register(Storage_name)
 class Storage_nameAdmin(admin.ModelAdmin):
-    list_display = ['name', 'storage_place']
+    list_display = ['name', 'storage_code']
 
 @admin.register(Storage_place)
 class Storage_placeAdmin(admin.ModelAdmin):
