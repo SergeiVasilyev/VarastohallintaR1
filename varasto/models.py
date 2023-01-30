@@ -31,7 +31,6 @@ class Storage_place(models.Model):
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
     storage_code = models.CharField(max_length=2, blank=True, null=True)
-    storage_place = models.ForeignKey(Storage_place, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -49,7 +48,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
-    photo = models.ImageField(upload_to='images/students/', blank=True, null=True) # Сделать подпапки
+    photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
     # Lisää funktio tässä, joka tarkistaa responsible_teacher kentä ja laitaa sinne vain USER:t joilla role=teacher or storage_employee (storage_employee voi olla teacher)
@@ -79,6 +78,10 @@ class CustomUser(AbstractUser, PermissionsMixin):
             roles_dict = {'student': 'Oppilas'}
         return roles_dict
 
+    @property
+    def get_storage_staff(self):
+        staff = CustomUser.objects.filter(storage=self.storage).filter(role='storage_employee').first()
+        return staff.email
 
 
 
