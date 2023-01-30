@@ -174,21 +174,32 @@ def renter(request, idx):
             item.remarks = request.POST.get('remarks')
             item.save()
         if request.POST.getlist('send_email_to_teacher'):
-            subject = "Automaattinen muistutus!"
-            text = f"henkilöllä {item.renter.first_name} {item.renter.last_name} on erääntynyt laina: <br>"
-            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}"
-            # to = item.renter.responsible_teacher.email
-            # print(subject, text + body, to)
-            email_alert(subject, text + body, 'tino.cederholm@gmail.com')
+            print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
+
+            subject = PRODUCT_NOT_RETURNED_MSG.subject
+            line1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
+            line2 = f"Henkilöllä {item.renter.first_name} {item.renter.last_name} (koodi: {item.renter.code}) on erääntynyt laina {item.storage.name} varastossa: <br>"
+            line3 = f"<b> - {item.item.item_name} {item.item.brand} {item.item.model} </b> {item.item.size} {item.item.parameters}, tuotteen koodi: {item.item.id}<br><br>"
+            line4 = f"Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {item.staff.get_storage_staff}"
+            to = item.renter.responsible_teacher.email
+            # print(subject, line1 + line2 + line3 + line4, to)
+            # email_alert(subject, line1 + line2 + line3 + line4, to)
+            return redirect('renter', idx=item.renter_id)
         if request.POST.getlist('send_email_item_is_damaged'):
             subject = "Automaattinen muistutus!"
-            text = f"henkilö {item.renter.first_name} {item.renter.last_name} on paluttanut varioittuneen tuotteen: <br>"
-            body = f" Tuotteen koodi: {item.item.id} <br> Tuotteen nimi: {item.item.item_name} {item.item.brand} <br> Tuotteen malli: {item.item.model} {item.item.item_type} <br> Tuotteen parametrit: {item.item.size} {item.item.parameters}<br>"
+            line1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
+            line2 = f"Henkilö {item.renter.first_name} {item.renter.last_name} (koodi: {item.renter.code}) on palauttanut vaurioituneen tuotteen: <br>"
+            line3 = f"<b> - {item.item.item_name} {item.item.brand} {item.item.model} {item.item.item_type} </b> {item.item.size} {item.item.parameters}, tuotteen koodi: {item.item.id}<br><br>"
+            line4 = f"Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {item.staff.get_storage_staff} <br><br>"
             remarks = f"Vaurion kuvaus: <br> {request.POST.get('damaged_remarks')}"
-            # to = item.renter.responsible_teacher.email
-            print(subject, text + body + remarks)
-            email_alert(subject, text + body + remarks, 'tino.cederholm@gmail.com')
+            to = item.renter.responsible_teacher.email
+            print(subject, line1 + line2 + line3 + remarks)
+            email_alert(subject, line1 + line2 + line3 + line4 + remarks, to)
+            return redirect('renter', idx=item.renter_id)
 
+    # print(MESSAGE.format(staff_email=idx, item_id=idx))
+    
+    
     selected_user = CustomUser.objects.get(id=idx)
 
     storage_filter = storage_f(request.user)

@@ -14,7 +14,7 @@ from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staf
 from datetime import datetime, timedelta
 
 from email.message import EmailMessage
-import smtplib
+import smtplib, ssl
 from .storage_settings import *
 
 
@@ -22,6 +22,7 @@ from .storage_settings import *
 # EMAIL ALERT
 
 # https://betterdatascience.com/send-emails-with-python/
+# https://www.letscodemore.com/blog/smtplib-smtpauthenticationerror-username-and-password-not-accepted/
 def email_alert(subject, body, to):
     msg = EmailMessage()
     msg.set_content(body, subtype='html')
@@ -34,8 +35,8 @@ def email_alert(subject, body, to):
     server.starttls()
     server.login(STORAGE_EMAIL, EMAIL_PASS)
     server.send_message(msg)
-
     server.quit()
+
 
 # END EMAIL ALERT
 # ======================================================
