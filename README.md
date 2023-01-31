@@ -2,13 +2,16 @@
 ### Rasekon varastonhallintajärjestelmä.
 
 ## Demo
-http://109.204.232.228
+http://109.204.232.228:8880
 
 Administrator: Login: admin, Pass: admin
-
+Student_ext: user3, Q2wertyy
 Management: user4, Q2wertyy
 
 Storage employee: user5, Q2wertyy
+Storage employee2: user25, Q2wertyy
+Storage employee3: user26, Q2wertyy
+Storage employee3: user27, Q2wertyy
 
 
 ## Päätavoitteet:
