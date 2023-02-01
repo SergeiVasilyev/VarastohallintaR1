@@ -508,7 +508,7 @@ def login_view(request):
                 login(request, user) # не логинить, если не прошел проверку
                 # if user_check(user) and is_not_student(user):
                 if user.is_authenticated and user.is_staff:
-                    return redirect(get_rental_events_page())
+                    return redirect(get_rental_events_page(user))
                     # return redirect('rental_events')
                 # elif not is_not_student(request.user):
                 #     return redirect('products')
@@ -528,7 +528,7 @@ def login_view(request):
     else:
         # if user_check(request.user) and is_not_student(request.user):
         if request.user.is_authenticated and request.user.is_staff:
-            return redirect(get_rental_events_page())
+            return redirect(get_rental_events_page(request.user))
             # return redirect('rental_events')
         # elif not is_not_student(request.user):
         #     return redirect('products')
@@ -566,12 +566,12 @@ def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    order_filter = ['-'+order_field()[0], 'renter'] if order_filter_switch() else [order_field()[0], 'renter']
+    order_filter = ['-'+order_field(request.user)[0], 'renter'] if order_filter_switch(request.user) else [order_field(request.user)[0], 'renter']
 
     events = Rental_event.objects.filter(returned_date__isnull=True).filter(**storage_filter).filter(**start_date_range).order_by(*order_filter)
 
-    first_date = events[0].start_date if not order_filter_switch() else events.reverse()[0].start_date
-    last_date = events.reverse()[0].start_date if not order_filter_switch() else events[0].start_date
+    first_date = events[0].start_date if not order_filter_switch(request.user) else events.reverse()[0].start_date
+    last_date = events.reverse()[0].start_date if not order_filter_switch(request.user) else events[0].start_date
 
     paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -581,8 +581,8 @@ def rental_events_goods(request):
         'events': page_obj,
         'first_date': first_date,
         'last_date': last_date,
-        'order_switcher': order_filter_switch(),
-        'order_field': order_field()[1],
+        'order_switcher': order_filter_switch(request.user),
+        'order_field': order_field(request.user)[1],
         'all_order_fields': RENTAL_PAGE_ORDERING_FIELDS_D,
     }
     return render(request, 'varasto/rental_events_goods.html', context)
@@ -597,7 +597,7 @@ def rental_events(request):
     # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
     start_date_range = start_date_filter(request.GET.get('rental_start'), request.GET.get('rental_end'))
-    select_order_field = order_field()[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
+    select_order_field = order_field(request.user)[0].replace("__", ".") # Korvataan __ merkki . :hin, koska myöhemmin käytetään sorted()
     all_order_fields_nolast = RENTAL_PAGE_ORDERING_FIELDS_D.copy() # Kloonataan dictionary
     all_order_fields_nolast.pop(list(RENTAL_PAGE_ORDERING_FIELDS_D.keys())[-1]) # Poistetaan viimeinen elementti sanakirjasta (item__brand). Koska emme voi lajitella groupiroitu lista brandin kentän mukaan
 
@@ -616,7 +616,7 @@ def rental_events(request):
         .distinct('renter')
     )
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
-    grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch())
+    grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch(request.user))
 
     paginator = Paginator(grouped_events, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -625,8 +625,8 @@ def rental_events(request):
     context = {
         'grouped_events': page_obj,
         'events': events,
-        'order_switcher': order_filter_switch(),
-        'order_field': order_field()[1],
+        'order_switcher': order_filter_switch(request.user),
+        'order_field': order_field(request.user)[1],
         'all_order_fields': all_order_fields_nolast,
     }
     return render(request, 'varasto/rental_events.html', context)
@@ -846,24 +846,29 @@ def set_rental_event_view(request):
 # FUNC set_ordering
 @login_required()
 def set_ordering(request):
-    set = Settings.objects.get(set_name='rental_page_ordering')
+    set_name = Settings.objects.get(set_name='rental_page_ordering')
+    set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
+    print(set)
     order = 0 if int(set.set_value) else 1
     set.set_value = order
     set.save()
 
-    page = Settings.objects.get(set_name='rental_page_view')
-    return redirect (page.set_value)
+    # page = Settings.objects.get(set_name='rental_page_view')
+    rental_page = get_rental_events_page(request.user)
+    return redirect (rental_page)
 
 
 # FUNC set_order_field
 @login_required()
 def set_order_field(request):
-    set = Settings.objects.get(set_name='rental_page_field_ordering')
+    set_name = Settings.objects.get(set_name='rental_page_field_ordering')
+    set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
     set.set_value = request.GET.get('order')
     set.save()
 
-    page = Settings.objects.get(set_name='rental_page_view')
-    return redirect (page.set_value)
+    # page = Settings.objects.get(set_name='rental_page_view')
+    rental_page = get_rental_events_page(request.user)
+    return redirect (rental_page)
 
 @login_required()
 def delete_product(request, idx):
