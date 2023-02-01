@@ -1,9 +1,12 @@
 import pytz
 
 from multiprocessing import context
-from .models import Settings, CustomUser
+from .models import Settings, CustomUser, Settings_CustomUser
 from datetime import datetime
 from .storage_settings import *
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth.models import Group, Permission
 
@@ -11,7 +14,13 @@ from django.contrib.auth.models import Group, Permission
 
 
 def get_rental_events_page(request):
-    page = Settings.objects.get(set_name='rental_page_view')
+    # page = Settings.objects.get(set_name='rental_page_view')
+    user = request.user if request.user.is_authenticated else 1
+    try:
+        page = Settings_CustomUser.objects.filter(user=user).get(setting_name__set_name='rental_page_view')
+    except:
+        set_name = Settings.objects.get(set_name='rental_page_view')
+        page = Settings_CustomUser.objects.create(user=user, setting_name=set_name, set_value=RENTAL_PAGE_VIEW)
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)

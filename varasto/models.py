@@ -345,3 +345,14 @@ class Settings(models.Model):
     set_value = models.CharField(max_length=300, blank=True, null=True)
     def __str__(self):
         return '%s' % (self.set_name)
+
+
+
+class Settings_CustomUser(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='staff_user', on_delete=models.CASCADE)
+    setting_name = models.ForeignKey(Settings, related_name='setting_name', on_delete=models.CASCADE)
+    set_value = models.CharField(max_length=300, blank=True, null=True)
+
+    def __str__(self):
+        return self.set_value
+

@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units, Settings_CustomUser
 
 from django.db.models import Min, Max
 from .test_views import test
@@ -824,9 +824,19 @@ def product(request, idx):
 
 
 # FUNC set_rental_event_view
+# @login_required()
+# def set_rental_event_view(request):
+#     set = Settings.objects.get(set_name='rental_page_view')
+#     set.set_value = request.GET.get('name')
+#     set.save()
+
+#     return redirect (request.GET.get('name'))
+
+# FUNC set_rental_event_view
 @login_required()
 def set_rental_event_view(request):
-    set = Settings.objects.get(set_name='rental_page_view')
+    set_name = Settings.objects.get(set_name='rental_page_view')
+    set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
     set.set_value = request.GET.get('name')
     set.save()
 
