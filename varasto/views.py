@@ -910,24 +910,40 @@ def delete_product(request, idx):
     # TODO Redirect to same page where product was
     return redirect("products")
 
+# @login_required()
+# def burger_settings1(request):
+#     show_full = request.POST.get('show_full')
+
+#     try:
+#         burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+#         burger_setting_dict.set_value = show_full
+#     except Settings.DoesNotExist:
+#         burger_setting_dict = Settings(set_name='show_full_burger', set_value=show_full)
+#     finally:
+#         burger_setting_dict.save()
+
+#     show_full_burger = burger_setting_dict.set_value
+#     # burger_dict = burger_dict.replace("\'", "\"")
+#     # burger_settings_json = json.loads(burger_dict)
+
+#     return JsonResponse({'show_full_burger': show_full_burger, })
+
+
 @login_required()
 def burger_settings(request):
     show_full = request.POST.get('show_full')
 
-    try:
-        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
-        burger_setting_dict.set_value = show_full
-    except Settings.DoesNotExist:
-        burger_setting_dict = Settings(set_name='show_full_burger', set_value=show_full)
-    finally:
-        burger_setting_dict.save()
 
-    show_full_burger = burger_setting_dict.set_value
+    burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+    set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=burger_setting_dict, user=request.user)
+    set.set_value = show_full
+    set.save()
+
+    show_full_burger = set.set_value
     # burger_dict = burger_dict.replace("\'", "\"")
     # burger_settings_json = json.loads(burger_dict)
 
     return JsonResponse({'show_full_burger': show_full_burger, })
-
 
 
 # FUNC filling_storage_place
