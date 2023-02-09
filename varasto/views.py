@@ -832,6 +832,7 @@ def product(request, idx):
 
 #     return redirect (request.GET.get('name'))
 
+
 # FUNC set_rental_event_view
 @login_required()
 def set_rental_event_view(request):
