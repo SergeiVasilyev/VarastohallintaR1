@@ -343,5 +343,20 @@ class Staff_audit(models.Model):
 class Settings(models.Model):
     set_name = models.CharField(max_length=150, blank=True, null=True)
     set_value = models.CharField(max_length=300, blank=True, null=True)
+    label = models.CharField(max_length=300, blank=True, null=True)
+
     def __str__(self):
         return '%s' % (self.set_name)
+
+
+
+class Settings_CustomUser(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='staff_user', blank=True, null=True, on_delete=models.CASCADE)
+    setting_name = models.ForeignKey(Settings, related_name='setting_name', on_delete=models.CASCADE)
+    set_value = models.CharField(max_length=300, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, related_name='storage', default=None, blank=True, null=True, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return self.set_value
+

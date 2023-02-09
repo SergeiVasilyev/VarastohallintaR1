@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods, Staff_audit, Units
+from .models import CustomUser, Category, Goods, Staff_audit, Units, Settings_CustomUser, Settings
 from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
@@ -176,4 +176,20 @@ class Staff_auditForm(ModelForm):
             }),
 
         }
+
+
+class Settings_CustomUserForm(ModelForm):
+
+    class Meta:
+        model = Settings_CustomUser
+        fields = ['user', 'setting_name', 'set_value', 'storage']
+        widgets = {
+            'user': forms.HiddenInput(),
+            'setting_name': forms.HiddenInput(),
+            'storage': forms.HiddenInput(),
+            'set_value': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+            }),
+    }
 
