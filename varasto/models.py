@@ -351,7 +351,7 @@ class Settings(models.Model):
 
 
 class Settings_CustomUser(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='staff_user', on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, related_name='staff_user', blank=True, null=True, on_delete=models.CASCADE)
     setting_name = models.ForeignKey(Settings, related_name='setting_name', on_delete=models.CASCADE)
     set_value = models.CharField(max_length=300, blank=True, null=True)
     storage = models.ForeignKey(Storage_name, related_name='storage', default=None, blank=True, null=True, on_delete=models.CASCADE)

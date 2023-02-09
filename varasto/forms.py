@@ -182,10 +182,11 @@ class Settings_CustomUserForm(ModelForm):
 
     class Meta:
         model = Settings_CustomUser
-        fields = ['user', 'setting_name', 'set_value']
+        fields = ['user', 'setting_name', 'set_value', 'storage']
         widgets = {
             'user': forms.HiddenInput(),
             'setting_name': forms.HiddenInput(),
+            'storage': forms.HiddenInput(),
             'set_value': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '',

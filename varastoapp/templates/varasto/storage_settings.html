@@ -39,13 +39,12 @@
             </div>
         </div>
 
+        {% if formset %}
         <div class="head mt-5">
             <head>
                 CHANGE MAIL
             </head>
         </div>
-
-        
         <div class="new_middle mt-2">
             {% for form in formset %}
             <div>
@@ -56,7 +55,7 @@
             </div>
             {% endfor %}
         </div>
-        
+        {% endif %}
 
         <!-- <div class="new_middle mt-2">
             <div>
