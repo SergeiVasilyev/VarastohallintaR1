@@ -124,8 +124,8 @@ def storage_settings(request):
 
         if len(filter_by_user) != 3: # if storage_email, email_pass, email_server not found for this request.user then create them with empty set_value
             for n in range(5, 8):
-                obj, item = Settings_CustomUser.objects.get_or_create(setting_name_id=n, user=request.user.storage_id, storage_id=request.user.storage_id, set_value='')
-                # print(item, obj)
+                item = Settings_CustomUser.objects.create(setting_name_id=n, user=request.user, storage_id=request.user.storage_id, set_value='')
+                # print(item)
 
         filter_by_user = Settings_CustomUser.objects.filter(storage_id=request.user.storage_id).filter(Q(setting_name__set_name='storage_email') | Q(setting_name__set_name='email_pass') | Q(setting_name__set_name='email_server')).order_by('setting_name_id')
 
