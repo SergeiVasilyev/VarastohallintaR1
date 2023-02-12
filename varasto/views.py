@@ -176,7 +176,7 @@ def renter(request, idx):
                 item_parameters=item.item.parameters, 
                 item_id=item.item.id, 
                 staff_email=item.staff.get_storage_staff)
-            to = item.renter.responsible_teacher.email
+            to = [item.renter.responsible_teacher.email, item.renter.email]
 
             email_alert(subject, msg, to)
             return redirect('renter', idx=item.renter_id)
@@ -197,7 +197,7 @@ def renter(request, idx):
                 item_id=item.item.id, 
                 staff_email=item.staff.get_storage_staff,
                 damaged_remarks=damaged_remarks)
-            to = item.renter.responsible_teacher.email
+            to = [item.renter.responsible_teacher.email, item.renter.email]
 
             email_alert(subject, msg, to)
             return redirect('renter', idx=item.renter_id)

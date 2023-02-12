@@ -71,7 +71,8 @@ class CustomUser(AbstractUser, PermissionsMixin):
     @property
     def get_storage_staff(self):
         staff = CustomUser.objects.filter(storage=self.storage).filter(role='storage_employee').first()
-        return staff.email
+        staff_email = staff.email if staff else ''
+        return staff_email
 
 
 
@@ -220,6 +221,7 @@ class Goods(models.Model):
         if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
             return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
         return [True, None, 'Item is not rented yet']
+
 
     def __str__(self):
         return '%s' % (self.item_name)
