@@ -213,6 +213,12 @@ header .warp {
     padding: 0 18px;
     height: 100%;
 }
+.button__text_main_menu {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 18px;
+    height: 100%;
+}
 .button__icon {
     display: inline-flex;
     align-items: center;
