@@ -17,6 +17,10 @@ from email.message import EmailMessage
 import smtplib
 from .storage_settings import *
 
+import barcode
+from barcode import Code128, EAN13, generate
+from barcode.writer import ImageWriter, SVGWriter
+
 
 # ======================================================
 # EMAIL ALERT
@@ -165,6 +169,26 @@ def order_field(user) -> list:
 # ---------------------------------------------
 # END OF FILTERS
 # =============================================
+
+
+
+# =============================================
+# BARCODE GENERATOR
+# ---------------------------------------------
+
+def barcode_gen(num):
+    rv = io.BytesIO()
+    # Code128(str(num), writer=SVGWriter()).write(rv) # To SVG
+    Code128(str(num), writer=ImageWriter()).write(rv)
+    byte_data = base64.b64encode(rv.getvalue()).decode()
+    # print(rv.getvalue())
+    return byte_data
+
+# ---------------------------------------------
+# END OF BARCODE GENERATOR
+# =============================================
+
+
 
 
 

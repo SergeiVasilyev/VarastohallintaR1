@@ -39,7 +39,7 @@ urlpatterns = [
 
     path('renter/<int:idx>/', views.renter, name='renter'),
     path('product/<int:idx>/', views.product, name='product'),
-
+    path('product_barcode/<int:idx>/', views.product_barcode, name='product_barcode'),
     path('new_event/', views.new_event, name='new_event'),
     # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
     # re_path(r'.*/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),

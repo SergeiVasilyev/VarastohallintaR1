@@ -24,6 +24,8 @@
             <div class="photo">
                 <!-- <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div> -->
                 <div><img src="{% static selected_item.picture %}" alt="{{selected_item.picture}}"></div>
+                <!-- <div><img src="data:image/png;base64,{{product_barcode}}" alt="barcode"></div> -->
+                <!-- <div><input type="hidden" id="canvasData" name="canvasData" value="{{product_barcode}}"/></div> -->
             </div>
             
             <div class="information ps-3">
@@ -115,10 +117,14 @@
             </div>
         </div>
 
-
-        <div class="product_description mt-3 mb-3">
-            <div>
-                {{ selected_item.item_description|default:"-" }}
+        <div class="barcode_desc">
+            <div class="barcode">
+                <a href="{% url 'product_barcode' idx %}"><img src="data:image/png;base64,{{product_barcode}}" alt="barcode"></a>
+            </div>
+            <div class="product_description mt-3 mb-3">
+                <div>
+                    {{ selected_item.item_description|default:"-" }}
+                </div>
             </div>
         </div>
         
