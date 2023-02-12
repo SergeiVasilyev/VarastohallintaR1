@@ -1,3 +1,6 @@
+from .keys import *
+
+
 # ITEMES_LETTER_CODE = 'A'
 
 
@@ -36,8 +39,8 @@ PRODUCT_IMG_PATH = 'images/goods/'
 # ====================================================
 # Email consts
 
-STORAGE_EMAIL = "office.varasto@gmail.com"
-EMAIL_PASS ="ztjzeaeqtddelbwq" 
+STORAGE_EMAIL = EMAIL_FROM_KEY
+EMAIL_PASS = EMAIL_PASS_FROM_KEY
 EMAIL_SERVER = "smtp.gmail.com"
 
 # TODO Create letter template %
