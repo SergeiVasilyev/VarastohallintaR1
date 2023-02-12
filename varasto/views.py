@@ -815,10 +815,13 @@ def product(request, idx):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    product_barcode = barcode_gen(idx)
+
     context = {
         'rental_events': page_obj,
         'selected_item': selected_item,
         'idx': idx,
+        'product_barcode': product_barcode,
     }
     return render(request, 'varasto/product.html', context)
 
@@ -944,6 +947,16 @@ def burger_settings(request):
     # burger_settings_json = json.loads(burger_dict)
 
     return JsonResponse({'show_full_burger': show_full_burger, })
+
+
+def product_barcode(request, idx):
+    item = Goods.objects.get(id=idx)
+    product_barcode = barcode_gen(idx)
+    context = {
+        'product_barcode': product_barcode,
+        'item': item,
+    }
+    return render(request, 'varasto/product_barcode.html', context)
 
 
 # FUNC filling_storage_place

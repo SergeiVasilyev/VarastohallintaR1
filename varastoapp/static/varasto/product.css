@@ -80,6 +80,19 @@
     /* width: 15em; */
 }
 
+.barcode_desc{
+    display: flex;
+}
+
+.barcode img{
+}
+
+.barcode img{
+    max-width: 100px;
+    padding: 20px;
+
+}
+
 .product_description {
     padding: 1em;
     border: 1px solid gainsboro;
