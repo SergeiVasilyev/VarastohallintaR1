@@ -102,7 +102,10 @@ def renter(request, idx):
         # print('search_form: ', request.POST.get('rental_event_id')) # Get rental_event id from hidden Input (renter.html)
         # print("BUTTON", request.POST.get('_close_rent_cons'))
         item = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
+        event = Rental_event.objects.get(id=request.POST.get('rental_event_id'))
         product = Goods.objects.get(id=item.item_id)
+        now = datetime.now()
+        datenow = pytz.utc.localize(now)
 
         if request.POST.get('rental_close'): # UPDATE DATE
             # print('RENTAL CLOSE')
@@ -113,40 +116,104 @@ def renter(request, idx):
             item.estimated_date = date_localized # Save new estimated date into database
             item.save()
 
-        def return_products(got_amount):
-            if item.amount and (item.amount - got_amount) >= 0 and isinstance(got_amount, int):
-                product.amount = product.amount + got_amount
-            elif item.contents and (item.contents - got_amount) >= 0:
-                product.amount_x_contents = product.amount_x_contents + got_amount
+        # TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        def add_to_goods(returned_num, is_amount):
+            if is_amount:
+                product.amount += returned_num
+                product.amount_x_contents = product.amount * product.contents
             else:
-                return False
-            item.returned = got_amount
+                product.amount_x_contents += returned_num
+            product.save()
             return True
 
-        def update_amount_data():
-            if request.POST.getlist('everything_returned'):
-                got_amount = item.amount if item.amount else item.contents 
-                if not return_products(got_amount):
-                    return False
-            if not request.POST.getlist('everything_returned') and request.POST.getlist('return_amount'+str(item.id)):
-                got_amount = Decimal(request.POST.get('return_amount'+str(item.id))) if item.contents else int(request.POST.get('return_amount'+str(item.id)))
-                return_products(got_amount)
-            return True
-
-        if request.POST.getlist('_close_rent_cons'):
-            # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
-            # print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))         
-            if not item.returned_date: # Need to prevent form resubmission
-                if update_amount_data():
-                    now = datetime.now()
-                    datenow = pytz.utc.localize(now)
-                    item.returned_date = datenow # Save new estimated date into database
-                    item.save()
-                    product.save()
-                    return redirect('renter', idx=item.renter_id)
+        def substruct_from_rental_event():
+            if return_all:
+                if event.amount:
+                    event.returned = event.amount
+                    event.amount = 0
+                    event.returned_date = datenow
+                    add_to_goods(event.returned, 1)
+                elif event.contents:
+                    event.returned = event.contents
+                    event.contents = 0
+                    event.returned_date = datenow
+                    add_to_goods(event.returned, 0)
                 else:
-                    error[0] = "Tapahtuman päivitys epäonnistui, yritä uudelleen"
-                    return redirect('renter', idx=item.renter_id)
+                    return redirect('renter', idx)
+                event.save()
+            else:
+                if event.amount:
+                    print('part amount')
+                    if (event.amount - return_part_of_product) >= 0:
+                        event.amount -= return_part_of_product
+                        event.returned = return_part_of_product
+                        event.returned_date = datenow
+                        add_to_goods(event.returned, 1)
+                    else:
+                        return redirect('renter', idx)
+                elif event.contents:
+                    print('part amount')
+                    if (event.contents - return_part_of_product) >= 0:
+                        event.contents -= return_part_of_product
+                        event.returned = return_part_of_product
+                        event.returned_date = datenow
+                        add_to_goods(event.returned, 0)
+                    else:
+                        return redirect('renter', idx)
+                else:
+                    return redirect('renter', idx)
+                event.save()
+            return True
+        
+        if request.POST.getlist('_close_rent_cons'):
+            return_all = request.POST.get('everything_returned')
+            return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
+            print(return_part_of_product)
+            if substruct_from_rental_event():
+                return redirect('renter', idx)
+
+
+        
+
+
+        # def return_products(got_amount):
+        #     if item.amount and (item.amount - got_amount) >= 0 and isinstance(got_amount, int):
+        #         product.amount = product.amount + got_amount
+        #     elif item.contents and (item.contents - got_amount) >= 0:
+        #         product.amount_x_contents = product.amount_x_contents + got_amount
+        #     else:
+        #         return False
+        #     item.returned = got_amount
+        #     return True
+
+        # def update_amount_data():
+        #     print(request.POST.getlist('everything_returned'))
+        #     if request.POST.getlist('everything_returned'):
+        #         got_amount = item.amount if item.amount else item.contents
+        #         print(got_amount)
+        #         if not return_products(got_amount):
+        #             print('return_products')
+        #             return False
+        #     if not request.POST.getlist('everything_returned') and request.POST.getlist('return_amount'+str(item.id)):
+        #         got_amount = Decimal(request.POST.get('return_amount'+str(item.id))) if item.contents else int(request.POST.get('return_amount'+str(item.id)))
+        #         return_products(got_amount)
+        #     return True
+
+        # if request.POST.getlist('_close_rent_cons'):
+        #     print(request.POST.getlist('_close_rent_cons'))
+        #     # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
+        #     print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))
+        #     if not item.returned_date: # Need to prevent form resubmission
+        #         if update_amount_data():
+        #             now = datetime.now()
+        #             datenow = pytz.utc.localize(now)
+        #             item.returned_date = datenow # Save new estimated date into database
+        #             item.save()
+        #             product.save()
+        #             return redirect('renter', idx=item.renter_id)
+        #         else:
+        #             error[0] = "Tapahtuman päivitys epäonnistui, yritä uudelleen"
+        #             return redirect('renter', idx=item.renter_id)
 
         if request.POST.getlist('set_end_date'): # CLOSE RENT
             # print('set_end_date')
