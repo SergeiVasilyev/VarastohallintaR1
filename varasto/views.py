@@ -335,6 +335,8 @@ def new_event(request):
                     # if new_item.rentable_at: print(new_item, ' rented')
                     if new_item not in changed_items and new_item.is_possible_to_rent[0] == True: # Onko lisättävä tavara jo lisätty and item not consumable
                         changed_items.append(new_item) # Lisätään jos ei 
+                        changed_items[-1].radioUnit = '0' if not new_item.amount else '1'
+                        print(changed_items[-1].id, changed_items[-1].radioUnit)
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
                     error[2] = "Tavaraa ei löydetty"
