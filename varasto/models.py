@@ -218,8 +218,10 @@ class Goods(models.Model):
         event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
             return [False, event.estimated_date, 'Item is not consumables but it is rented now']
-        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount > 0 or event.item.amount_x_contents > 0):
             return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount == 0 and event.item.amount_x_contents == 0):
+            return [False, event.estimated_date, 'Item are consumable and storage is empty']
         return [True, None, 'Item is not rented yet']
 
 
