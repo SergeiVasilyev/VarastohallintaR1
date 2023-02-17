@@ -143,7 +143,7 @@ class GoodsForm(ModelForm):
             'amount_x_contents': NumberInput(attrs={
                 'min': 0, # Min value doesn't work
                 'max': 1000000,
-                'step': 1,
+                'step': 0.0001, # Ei saa laittaa step 1, jos user halua laittaa float number. Saadaan virhe jos tietokannalta tulee float.
                 'data-decimals': 4,
                 'placeholder': '0',
             }),
