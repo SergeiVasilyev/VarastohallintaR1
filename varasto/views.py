@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from datetime import datetime, timedelta
-from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units, Settings_CustomUser
+from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units, Settings_CustomUser, Category
 
 from django.db.models import Min, Max
 from .test_views import test
@@ -957,6 +957,22 @@ def product_barcode(request, idx):
         'item': item,
     }
     return render(request, 'varasto/product_barcode.html', context)
+
+@login_required()
+@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user: user.is_superuser)
+def initilize(request):
+    for n in range(len(CATEGORIES)):
+        cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
+        print(cats)
+
+    for n in range(len(UNITS_LIST)):
+        units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
+
+
+    return HttpResponse('INITIALIZE COMPLETE')
+
+
 
 
 # FUNC filling_storage_place

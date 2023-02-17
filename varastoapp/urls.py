@@ -71,7 +71,7 @@ urlpatterns = [
     path('get_product/', views.getProduct, name='getProduct'),
     path('save_permision/<int:idx>/', views.save_permision, name='save_permision'),
     path('burger_settings/', views.burger_settings, name='burger_settings'),
-
+    path('initilize/', views.initilize, name='initilize'),
 
     path('filling_goods_description/', views.filling_goods_description, name='filling_goods_description'),
 
