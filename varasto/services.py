@@ -140,7 +140,11 @@ def order_filter_switch(user) -> int:
     """Ordering filter
     Return: 1 or 0
     """
-    get_ordering_name = Settings.objects.get(set_name='rental_page_ordering')
+    try:
+        get_ordering_name = Settings.objects.get(set_name='rental_page_ordering')
+    except:
+        get_ordering_name = Settings.objects.create(set_name='rental_page_ordering')
+
     try:
         get_ordering = Settings_CustomUser.objects.filter(user=user).get(setting_name=get_ordering_name)
     except:
@@ -155,7 +159,11 @@ def order_field(user) -> list:
         [0]: Goods table field name
         [1]: Same name in Finnish
     """
-    get_order_field_name = Settings.objects.get(set_name='rental_page_field_ordering')
+    try:
+        get_order_field_name = Settings.objects.get(set_name='rental_page_field_ordering')
+    except:
+        get_order_field_name = Settings.objects.create(set_name='rental_page_field_ordering')
+
     try:
         get_order_field = Settings_CustomUser.objects.filter(user=user).get(setting_name=get_order_field_name)
     except:
