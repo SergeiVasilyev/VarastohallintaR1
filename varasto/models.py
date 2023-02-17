@@ -39,7 +39,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         ("super", _("Super user")),
     ]
     group = models.CharField(max_length=15, blank=True, null=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
     photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
