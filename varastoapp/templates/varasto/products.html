@@ -144,7 +144,8 @@ $(document).ready(function() {
     <div class="row01">
         <div class="item_status">
             {% comment %} {% if item.item_status != 'available'  %} {% endcomment %}
-            {% if item.rentable_at and item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
+            {% comment %} {% if item.rentable_at and item.cat_name_id != CATEGORY_CONSUMABLES_ID %} {% endcomment %}
+            {% if not item.is_possible_to_rent.0 %}
             <span class="status_red">Ei saatavilla</span>
             {% else %}
                 {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
@@ -161,8 +162,8 @@ $(document).ready(function() {
             {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
             <span class="est_date">{{ item.rentable_at|date:'d.m.Y' }}</span>
             {% else %}
-            <span class="est_date">{{ item.amount }} pakkausta,</span>
-            <span class="est_date">{{ item.amount_x_contents|normalize_dec }} {{ item.unit }} yhteensä</span>
+            <span class="est_date">{{ item.amount|default:"0" }} pakkausta,</span>
+            <span class="est_date">{{ item.amount_x_contents|normalize_dec|default:"0" }} {{ item.unit }} yhteensä</span>
             {% endif %} 
         </div>
     </div>
