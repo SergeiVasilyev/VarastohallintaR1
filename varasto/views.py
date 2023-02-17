@@ -116,7 +116,7 @@ def renter(request, idx):
             item.estimated_date = date_localized # Save new estimated date into database
             item.save()
 
-        # TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # TODO Make exceptions to these functions
         def add_to_goods(returned_num, is_amount):
             if is_amount:
                 product.amount += returned_num
@@ -165,55 +165,13 @@ def renter(request, idx):
                 event.save()
             return True
         
-        if request.POST.getlist('_close_rent_cons'):
+        if request.POST.getlist('_close_rent_cons'): # Close rent for consumables
             return_all = request.POST.get('everything_returned')
             return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
             print(return_part_of_product)
             if substruct_from_rental_event():
                 return redirect('renter', idx)
 
-
-        
-
-
-        # def return_products(got_amount):
-        #     if item.amount and (item.amount - got_amount) >= 0 and isinstance(got_amount, int):
-        #         product.amount = product.amount + got_amount
-        #     elif item.contents and (item.contents - got_amount) >= 0:
-        #         product.amount_x_contents = product.amount_x_contents + got_amount
-        #     else:
-        #         return False
-        #     item.returned = got_amount
-        #     return True
-
-        # def update_amount_data():
-        #     print(request.POST.getlist('everything_returned'))
-        #     if request.POST.getlist('everything_returned'):
-        #         got_amount = item.amount if item.amount else item.contents
-        #         print(got_amount)
-        #         if not return_products(got_amount):
-        #             print('return_products')
-        #             return False
-        #     if not request.POST.getlist('everything_returned') and request.POST.getlist('return_amount'+str(item.id)):
-        #         got_amount = Decimal(request.POST.get('return_amount'+str(item.id))) if item.contents else int(request.POST.get('return_amount'+str(item.id)))
-        #         return_products(got_amount)
-        #     return True
-
-        # if request.POST.getlist('_close_rent_cons'):
-        #     print(request.POST.getlist('_close_rent_cons'))
-        #     # FIXED inaccuracy of decimal numbers in bootstrap-input-spinner https://www.codingem.com/javascript-how-to-limit-decimal-places/
-        #     print('_close_rent_cons', request.POST.get('return_amount'+str(item.id)))
-        #     if not item.returned_date: # Need to prevent form resubmission
-        #         if update_amount_data():
-        #             now = datetime.now()
-        #             datenow = pytz.utc.localize(now)
-        #             item.returned_date = datenow # Save new estimated date into database
-        #             item.save()
-        #             product.save()
-        #             return redirect('renter', idx=item.renter_id)
-        #         else:
-        #             error[0] = "Tapahtuman päivitys epäonnistui, yritä uudelleen"
-        #             return redirect('renter', idx=item.renter_id)
 
         if request.POST.getlist('set_end_date'): # CLOSE RENT
             # print('set_end_date')
@@ -437,8 +395,7 @@ def new_event(request):
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
                                 print('new_amount', new_amount, remaining_contents, item.contents)
-                                remainder = remaining_contents - (item.contents * new_amount)
-                                # print('remainder', remainder.normalize())
+                                # remainder = remaining_contents - (item.contents * new_amount)
                                 
                                 # Vähennetään jos amount arvo tietokannassa on suurempi kuin uusi new_amount arvo. 
                                 # Se tarvitse koska, jos palautetaan sisältö emme lisätään pakkausta, jos se oli nolla pitäisi pysyä samana
@@ -755,7 +712,7 @@ def edit_item(request, idx):
                 item.picture = new_picture
             except:
                 print('get_item.picture=', get_item.picture)
-            # FIXME Yksikko перенести в поле MÄÄRÄ PAKKAUKSESSA, а на освободившееся место поставить поле amount_x_contents
+
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)
                 if (item.amount - amount) > 0:
@@ -777,7 +734,6 @@ def edit_item(request, idx):
     else:        
         form = GoodsForm(instance=get_item)
 
-    
     # permission_group = request.user.groups.get()
     
     # storage_employee and student_ext can't edit all fields
@@ -883,7 +839,8 @@ def product(request, idx):
     rental_events = None
     selected_item = Goods.objects.get(id=idx)
 
-    rental_events = Rental_event.objects.filter(item=selected_item).order_by('-start_date')
+    storage_filter = storage_f(request.user)
+    rental_events = Rental_event.objects.filter(item=selected_item).filter(**storage_filter).order_by('-start_date')
 
     paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
@@ -899,15 +856,6 @@ def product(request, idx):
     }
     return render(request, 'varasto/product.html', context)
 
-
-# FUNC set_rental_event_view
-# @login_required()
-# def set_rental_event_view(request):
-#     set = Settings.objects.get(set_name='rental_page_view')
-#     set.set_value = request.GET.get('name')
-#     set.save()
-
-#     return redirect (request.GET.get('name'))
 
 
 # FUNC set_rental_event_view
@@ -988,23 +936,6 @@ def delete_product(request, idx):
     # TODO Redirect to same page where product was
     return redirect("products")
 
-# @login_required()
-# def burger_settings1(request):
-#     show_full = request.POST.get('show_full')
-
-#     try:
-#         burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
-#         burger_setting_dict.set_value = show_full
-#     except Settings.DoesNotExist:
-#         burger_setting_dict = Settings(set_name='show_full_burger', set_value=show_full)
-#     finally:
-#         burger_setting_dict.save()
-
-#     show_full_burger = burger_setting_dict.set_value
-#     # burger_dict = burger_dict.replace("\'", "\"")
-#     # burger_settings_json = json.loads(burger_dict)
-
-#     return JsonResponse({'show_full_burger': show_full_burger, })
 
 
 @login_required()
