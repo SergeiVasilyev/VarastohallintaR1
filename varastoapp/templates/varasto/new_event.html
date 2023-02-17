@@ -181,10 +181,12 @@ $(document).ready(function() {
             btnonclick = ""
         }
         if (item.cat_name_id == {{CATEGORY_CONSUMABLES_ID}}){
-            rentable_at = '<span class="est_date">'+item.amount+' pakkausta,</span><span class="est_date">'+item.amount_x_contents+' '+item.unit+' yhteensä</span>'
+            var item_amount = item.amount ? item.amount : 0
+            var item_amount_x_contents = item.amount_x_contents ? item.amount_x_contents : 0
+            rentable_at = '<span class="est_date">'+item_amount+' pakkausta,</span><span class="est_date">'+item_amount_x_contents+' '+item.unit+' yhteensä</span>'
         }
         
-        console.log(rentable_at)
+        // console.log(rentable_at)
         $('#modal-body').append(
             `
             <div class="new_event_wrap">
