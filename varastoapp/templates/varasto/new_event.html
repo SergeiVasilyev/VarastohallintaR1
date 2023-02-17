@@ -395,14 +395,14 @@ $(document).ready(function() {
                         <div class="items">
                             <div class="">
                                 <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                                <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
+                                <h5>{{changed_item.item_name|default:""}} {{changed_item.brand|default:""}} {{changed_item.model|default:""}}</h5>
                                 <p>Tuotekoodi {{changed_item.id}}</p>
                                 <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                                 <p>
                                     {% if changed_item.cat_name.id == 1 %}
-                                        {{changed_item.amount|default:""}} laatikkoa
+                                        {{changed_item.amount|default:"0"}} laatikkoa
                                         | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
-                                        | {{changed_item.amount_x_contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} yhteensä
+                                        | {{changed_item.amount_x_contents|normalize_dec|default:"0"}} {{changed_item.unit|default:""}} yhteensä
                                     {% endif %}
                                 </p>
                             </div>
@@ -456,9 +456,13 @@ $(document).ready(function() {
                                     <div class="form-check form-check-inline">
                                         <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
                                         value="1"
-                                        {% if changed_item.radioUnit == '1' or not hanged_item.radioUnit %}
+                                        {% comment %} {% if changed_item.radioUnit == '1' or not changed_item.radioUnit %} {% endcomment %}
+                                        {% if changed_item.radioUnit == '1' or not changed_item.radioUnit %}
                                             checked
                                         {% else %}
+                                        {% endif %}
+                                        {% if changed_item.amount == 0 %}
+                                        disabled
                                         {% endif %}
                                             />
                                         <label class="form-check-label" for="radioUnit1-{{changed_item.id}}">
