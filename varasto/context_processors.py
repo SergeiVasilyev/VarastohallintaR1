@@ -33,7 +33,7 @@ def get_rental_events_page(request):
 
     # ==============================
     # SET BURGER MENU
-    set_name = Settings.objects.get(set_name='show_full_burger')
+    # set_name = Settings.objects.get(set_name='show_full_burger')
     try:
         set = Settings_CustomUser.objects.filter(user=user).get(setting_name__set_name='show_full_burger')
         show_full_burger = int(set.set_value)
