@@ -369,6 +369,7 @@ def new_event(request):
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
+            print(idx_inp_fix)
             # fix_item = '_fix_item'+str(idx_inp_fix)
             # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
@@ -423,21 +424,25 @@ def new_event(request):
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
                     unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
                     item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
-                    # print('GET unit', str(item.id), unit)
-                    # print('GET item_amount', str(item.id), item_amount)
+                    print('GET unit', str(item.id), unit)
+                    print('GET item_amount', str(item.id), item_amount, int(item.amount), item.amount_x_contents)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
                                 item.amount = int(item.amount) - item_amount
+                                item.amount_x_contents = item.amount * item.contents
                                 kwargs['amount'] = item_amount
                             else: # Jos yksikkö on sisällön määrää
                                 # amount_x_contents = item.amount * item.contents # formula
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
+                                print('new_amount', new_amount, remaining_contents, item.contents)
                                 remainder = remaining_contents - (item.contents * new_amount)
                                 # print('remainder', remainder.normalize())
-
-                                item.amount = new_amount
+                                
+                                # Vähennetään jos amount arvo tietokannassa on suurempi kuin uusi new_amount arvo. 
+                                # Se tarvitse koska, jos palautetaan sisältö emme lisätään pakkausta, jos se oli nolla pitäisi pysyä samana
+                                item.amount = new_amount if item.amount >= new_amount else item.amount 
                                 item.amount_x_contents = remaining_contents
                                 kwargs['amount'] = None
                                 kwargs['contents'] = item_amount
@@ -944,6 +949,7 @@ def set_order_field(request):
     return redirect (rental_page)
 
 @login_required()
+@user_passes_test(lambda user:user.is_staff)
 def delete_product(request, idx):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
