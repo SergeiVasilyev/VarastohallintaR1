@@ -852,7 +852,7 @@ def products(request):
     try:
         get_show_all = int(request.GET.get('show_all'))
     except:
-        get_show_all = 1 # If got exeption, then we show all products from db
+        get_show_all = 0 # If got exeption, then we show all products from db
     
     if get_show_all: # if got any simbol(s), then show all products
         is_show_all = 1
