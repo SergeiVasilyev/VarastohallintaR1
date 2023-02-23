@@ -57,14 +57,16 @@ $(document).ready(function() {
     })
 
     // AJAX Get product
+
     
+    // https://select2.org/dropdown
     $("#mySelect2").select2()
     $('.js-example-basic-single').on('select2:select', function (e) {
         console.log(e.params.data.id)
         window.location.pathname = `/product/${e.params.data.id}/`
         // window.location = `?selected_item=${e.params.data.id}`
     })
-    // https://select2.org/dropdown
+    
     $(".js-example-basic-single").select2({
         ajax: {
             delay: 250,
@@ -115,16 +117,11 @@ $(document).ready(function() {
     </div>
     <div class="checkbox_filters px-3">
         <div class="form-check me-4" id="show_all_wrap">
-            <!-- <a href="{% url 'products' %}?show_all=1"> -->
-                <input class="form-check-input" type="checkbox" value="" id="show_all" {% if is_show_all %} checked {% endif %}>
-                <label class="form-check-label" for="show_all">Näytä kaikki</label>
-            <!-- </a> -->
+            <input class="form-check-input" type="checkbox" value="" id="show_all" {% if is_show_all %} checked {% endif %}>
+            <label class="form-check-label" for="show_all">Näytä kaikki</label>
         </div>
     </div>
 </div>
-
-
-<!-- <select class="js-example-basic-single form-control" name="state" id="mySelect2" style="width: 25%;"></select> -->
 
 <div class="columns_name">
 
@@ -260,36 +257,5 @@ $(document).ready(function() {
         <a href="?page={{ items.paginator.num_pages }}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
     </span>
 </div>
-<!-- <script type="text/javascript">
-    function update_page(num){
-        console.log(123)
-        // window.location.pathname = `/product/${num}/`
-        // document.querySelector("button[name=search]").click()
-    }
-</script> -->
-
-<!-- <div class="me-3 w-100">
-    <form method="get">
-    <label for="search_item" class="form-label">SEARCH PRODUCT</label>
-    <input name="search_item" type="text" class="form-control" id="search_item" placeholder="kirjoita tuotenumero" list="search_item_list" autocomplete="off" >
-    <datalist id="search_item_list">
-        <option value="5555" onclick="update_page(2)"></option>
-    </datalist>
-    <button type="submit" name="search">search</button>
-    </form>
-</div>
-
-<div class="input-group mb-3">
-    <div class="input-group-text">Prepend</div>
-    <input name="search_item" type="text" class="form-control" id="search_item" placeholder="kirjoita tuotenumero" list="search_item_list" autocomplete="off" >
-    <select class="form-select" id="prepend-text-single-field" data-placeholder="Choose one thing" onclick="update_page(2)">
-        <option></option>
-        <option onclick="update_page(2)">Reactive</option>
-        <option>Solution</option>
-        <option>Conglomeration</option>
-        <option>Algoritm</option>
-        <option>Holistic</option>
-    </select>
-</div> -->
 
 {% endblock %}
