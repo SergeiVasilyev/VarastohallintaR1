@@ -1,5 +1,6 @@
 # from asyncio.windows_events import NULL
 import operator
+import pprint
 import re
 from django.http import (
     HttpResponse,
@@ -30,6 +31,7 @@ from .services import *
 
 from django.conf import settings
 from decimal import *
+from django.core.serializers import serialize
 
 
 
@@ -470,6 +472,7 @@ def getPersons(request):
 # FUNC getProduct
 @login_required()
 def getProduct(request):
+    print(request.GET)
     json_goods = []
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
@@ -488,6 +491,46 @@ def getProduct(request):
                 }
                 json_goods.append(item) # Make response in json 
     return JsonResponse({'goods': json_goods})
+
+# FUNC getProduct
+@login_required()
+def getProduct2(request):
+    print(request.GET)
+    json_goods = []
+    json_goods2 = []
+    req_name = len(request.GET.get('name')) if request.GET.get('name') else 0
+
+    storage_filter = storage_f(request.user)
+    
+    if req_name > 0:
+        products = Goods.objects.filter(**storage_filter).filter(
+            Q(id__icontains=request.GET.get('name')) | 
+            Q(item_name__icontains=request.GET.get('name')) | 
+            Q(brand__icontains=request.GET.get('name')) | 
+            Q(model__icontains=request.GET.get('name'))).order_by("id")
+        for product in products:
+            item = {
+                'id': product.id,
+                'item_name': product.item_name,
+                'brand': product.brand,
+                'model': product.model,
+                'ean': product.ean,
+            }
+            json_goods.append(item) # Make response in json
+
+        json_goods2 = serialize('json', products, fields=('item_name'))
+        data = [
+                {
+                "id": 1,
+                "text": "Option 1"
+                },
+                {
+                "id": 2,
+                "text": "Option 2"
+                }
+            ]
+    return JsonResponse(json_goods, safe=False)
+    # return JsonResponse(json_goods2, safe=False)
 
 
 # FUNC getProducts
@@ -818,6 +861,8 @@ def products(request):
         is_show_all = 0
         storage_filter = storage_f(request.user)# Jos checkbox "Näytä kaikki" ei ole valittu näytetään tavarat sama varastossa, jossa varastotyöntekijällä on valittu
     
+    # selected_item = request.GET.get('selected_item')
+
     items = Goods.objects.filter(**storage_filter).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
@@ -874,7 +919,7 @@ def set_rental_event_view(request):
 def set_ordering(request):
     set_name = Settings.objects.get(set_name='rental_page_ordering')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
-    print(set)
+    # print(set)
     order = 0 if int(set.set_value) else 1
     set.set_value = order
     set.save()

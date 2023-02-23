@@ -69,6 +69,7 @@ urlpatterns = [
     path('get_photo/', views.get_photo, name='get_photo'),
     path('get_persons/', views.getPersons, name='getPersons'),
     path('get_product/', views.getProduct, name='getProduct'),
+    path('get_product2/', views.getProduct2, name='getProduct2'),
     path('save_permision/<int:idx>/', views.save_permision, name='save_permision'),
     path('burger_settings/', views.burger_settings, name='burger_settings'),
     path('initilize/', views.initilize, name='initilize'),
