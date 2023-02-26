@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/products.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<script type="text/javascript" src="{% static 'varasto/products_list_c.js' %}"></script>
 {% endblock %}
 
 {% block title %}Tavarat{% endblock %}
@@ -27,13 +28,15 @@ $(document).ready(function() {
     })
 
     // AJAX Get product
-    const getProduct = (name) => {
+    const getProduct2 = (name, page, show_all_product) => {
         $.ajax({
             type: 'GET',
-            url: '/get_product/',
+            url: '/get_product2/',
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 'name': name,
+                'page': page,
+                'show_all_product': show_all_product
             },
             success: (response)=> {
                 // console.log(response.goods)
@@ -42,58 +45,28 @@ $(document).ready(function() {
             },
             complete: function(response) {
                 // console.log(response.responseJSON)
+                $('.products_content').html('')
                 res = response.responseJSON
-                if (res.goods[0]){
-                    //response.goods.forEach(element => console.log(element.id))
-                    $('#search_item_list').html('')
-                    res.goods.forEach(element => $('#search_item_list').append(`<option onclick="update_page(2)" style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model}</option>`))
-                }
+                // console.log(res)
+                res.forEach(element => printElements(element))
             }
         })
+        
+        function printElements(element){
+            static_url = '{{static_url}}'
+            // console.log(list_el_f(element, static_url))
+            
+            $('.products_content').append(list_el_f(element, static_url, '{{CATEGORY_CONSUMABLES_ID}}'))
+        }
     }
+
     $('#search_item').keyup(function(e) {
         //console.log('e.target.value', e.target.value)
-        getProduct(e.target.value)
+        getProduct2(e.target.value, 1, 0)
     })
-
+    getProduct2('', 12, 1)
     // AJAX Get product
 
-    
-    // https://select2.org/dropdown
-    $("#mySelect2").select2()
-    $('.js-example-basic-single').on('select2:select', function (e) {
-        console.log(e.params.data.id)
-        window.location.pathname = `/product/${e.params.data.id}/`
-        // window.location = `?selected_item=${e.params.data.id}`
-    })
-    
-    $(".js-example-basic-single").select2({
-        ajax: {
-            delay: 250,
-            url: '/get_product2/',
-            data: function (params) {
-                console.log('params', params)
-                return {
-                    name: params.term, 
-                }
-            },
-            processResults: function(response) {
-                console.log(response)
-                var data = $.map(response, function (obj) {
-                    console.log(obj)
-                    obj.id = obj.id || obj.pk
-                    obj.text = obj.text || obj.id + ' ' + obj.item_name + ' ' + obj.brand + ' ' + obj.model + ' ' + obj.parameters
-                    return obj
-                })
-                console.log(data)
-                return {
-                    results: data
-                }
-            }
-        },
-        placeholder: 'Syötä koodi tai tuotteen nimi',
-        selectOnClose: true
-    })
 })
 
 </script>
@@ -101,7 +74,8 @@ $(document).ready(function() {
 
 {% block main_content %}
 <div class="filter_panel">
-    <div><select class="js-example-basic-single form-control" name="state" id="mySelect2" style="width: 60%;"></select></div>
+    <!-- <div><select class="js-example-basic-single form-control" name="state" id="mySelect2" style="width: 60%;"></select></div> -->
+    <div><input class="form-control" id="search_item" type="text" style="width: 50%;" placeholder="Syötä koodi tai tuotteen nimi"></div>
     <div class="pagination">
         <span class="step-links">
             <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
@@ -124,125 +98,48 @@ $(document).ready(function() {
 </div>
 
 <div class="columns_name">
-
     <div class="row02">
         <div>
             <span>Tuote</span>
         </div>
     </div>
-    
     <div class="row01">
         <div>
             <span>ID / Tuotenumero</span>
         </div>
     </div>
-
     <div class="row01">
         <div>
             <span>Tuotepaikka</span>
         </div>
     </div>
-    
     <div class="row01">
         <div>
             <span>EAN</span>
         </div>
     </div>
-    
     <div class="row01">
         <div>
             <span>Saatavuus</span>
         </div>
     </div>
-
     <div class="row01">
         <div>
             <span>Arvioitu Palautuspäivä</span>
         </div>
     </div>
-    
     <div class="row01">
         <div>
             <span></span>
         </div>
     </div>
 </div>
-
-{% for item in items %}
-
-<div class="new_event_wrap">
-
-    <div class="list__item_photo">
-        <div><a href="{% url 'product' item.id %}" class="nodecor"><img src="{% static item.picture %}" alt="{{item.renter.photo}}"></a></div>
-        <!-- <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="chekbox{{item.id}}" {% if item.rentable_at %}disabled{% endif %}>
-        </div> -->
-    </div>
-    <div class="row02">
-        
-        <div class="item_name">
-            <a href="{% url 'product' item.id %}" class="nodecor">
-                <span class="header" for="chekbox{{item.id}}">{{item.item_name|default_if_none:""}} {{item.brand|default_if_none:""}}</span>
-                <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
-                {% comment %} {{forloop.counter}} {% endcomment %}
-            </a>
-        </div>
-        
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.id}}</span></a>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="d-flex flex-column">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name|default_if_none:"-"}}</span></a>
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place|default_if_none:"-"}}</span></a>
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean|default_if_none:"-"}}</span></a>
-        </div>
-    </div>
-    
-    <div class="row01">
-        <div class="item_status">
-            {% comment %} {% if item.item_status != 'available'  %} {% endcomment %}
-            {% comment %} {% if item.rentable_at and item.cat_name_id != CATEGORY_CONSUMABLES_ID %} {% endcomment %}
-            {% if not item.is_possible_to_rent.0 %}
-            <span class="status_red">Ei saatavilla</span>
-            {% else %}
-                {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
-                    <span class="status_orange">Saatavilla</span>
-                {% else %}
-                    <span class="status_green">Saatavilla</span>
-                {% endif %}
-            {% endif %} 
-        </div>
-    </div>
-
-    <div class="row01">
-        <div class="">
-            {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
-            <span class="est_date">{{ item.rentable_at|date:'d.m.Y' }}</span>
-            {% else %}
-            <span class="est_date">{{ item.amount|default:"0" }} pakkausta,</span>
-            <span class="est_date">{{ item.amount_x_contents|normalize_dec|default:"0" }} {{ item.unit }} yhteensä</span>
-            {% endif %} 
-        </div>
-    </div>
-
-    <div class="row01">
-        <!-- <button type="button" class="button_props {% if item.item_status == 'available' %}button_active{% else %}button_inactive{% endif %}">
-            <span class="button__text">Valitse</span>
-        </button> -->
-    </div>
+<div class="products_content2">
+    {% include 'varasto/products_list_c.html' with items=items %}
 </div>
-{% endfor %}
+<div class="products_content">
+    <!-- {% include 'varasto/products_list_c.html' with items=items %} -->
+</div>
 
 <div class="pagination mt-4 mb-5">
     <span class="step-links">

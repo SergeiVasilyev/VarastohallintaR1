@@ -1,0 +1,58 @@
+{% load static %}
+{% for item in items %}
+
+<div class="new_event_wrap">
+    <div class="list__item_photo">
+        <div><a href="{% url 'product' item.id %}" class="nodecor"><img src="{% static item.picture %}" alt="{{item.renter.photo}}"></a></div>
+    </div>
+    <div class="row02">
+        <div class="item_name">
+            <a href="{% url 'product' item.id %}" class="nodecor">
+                <span class="header" for="chekbox{{item.id}}">{{item.item_name|default_if_none:""}} {{item.brand|default_if_none:""}}</span>
+                <span class="paragraph" for="chekbox{{item.id}}">{{item.model|default_if_none:""}} {{item.item_type|default_if_none:""}} {{item.parameters|default_if_none:""}} {{item.size|default_if_none:""}} {{item.package|default_if_none:""}}</span>
+            </a>
+        </div>
+    </div>
+    <div class="row01">
+        <div class="">
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.id}}</span></a>
+        </div>
+    </div>
+    <div class="row01">
+        <div class="d-flex flex-column">
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage.name|default_if_none:"-"}}</span></a>
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="code_number">{{item.storage_place|default_if_none:"-"}}</span></a>
+        </div>
+    </div>
+    <div class="row01">
+        <div class="">
+            <a href="{% url 'product' item.id %}" class="nodecor"><span class="EAN_number">{{item.ean|default_if_none:"-"}}</span></a>
+        </div>
+    </div>
+    <div class="row01">
+        <div class="item_status">
+            {% if not item.is_possible_to_rent.0 %}
+            <span class="status_red">Ei saatavilla</span>
+            {% else %}
+                {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                    <span class="status_orange">Saatavilla</span>
+                {% else %}
+                    <span class="status_green">Saatavilla</span>
+                {% endif %}
+            {% endif %} 
+        </div>
+    </div>
+    <div class="row01">
+        <div class="">
+            {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
+            <span class="est_date">{{ item.rentable_at|date:'d.m.Y' }}</span>
+            {% else %}
+            <span class="est_date">{{ item.amount|default:"0" }} pakkausta,</span>
+            <span class="est_date">{{ item.amount_x_contents|normalize_dec|default:"0" }} {{ item.unit }} yhteensä</span>
+            {% endif %} 
+        </div>
+    </div>
+    <div class="row01">
+    </div>
+</div>
+{% endfor %}
