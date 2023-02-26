@@ -514,32 +514,6 @@ def getProduct2(request):
 
     rental_events = Rental_event.objects.filter(item__in=goods).filter(returned_date__isnull=True)
     new_goods = goods.filter(id__in=Subquery(rental_events.values('item')))
-    # diff = goods.difference(new_goods).order_by('id')
-    new_goods2 = goods.annotate(is_possible_to_rent_field=Case(
-        When(Q(
-        Q(id__in=new_goods) 
-             & ~Q(id__in=rental_events.filter(item__cat_name_id=CATEGORY_CONSUMABLES_ID).values('item_id'))
-             )
-             | Q(
-        Q(id__in=new_goods) 
-             & Q(id__in=rental_events.filter(item__cat_name_id=CATEGORY_CONSUMABLES_ID).values('item_id'))
-             & Q(Q(id__in=rental_events.filter(item__amount=0).values('item_id')) & Q(id__in=rental_events.filter(item__amount_x_contents=0).values('item_id')))
-             ), then=Value(0)),
-        When(Q(id__in=new_goods), then=Value(1)),
-        default=Value(1)))
-    new_goods3 = Goods.objects.filter(id__in=new_goods2)
-
-    # print(goods.difference(new_goods).order_by('id'))
-    # print(goods, goods.count())
-    # print(rental_events, rental_events.count())
-    # print(new_goods, new_goods.count())
-    # # print(new_goods2, new_goods.count())
-    # print(new_goods2[0].is_possible_to_rent_field, new_goods2.count())
-    # for x in new_goods2:
-    #     print(x.id, x.is_possible_to_rent_field)
-    # goods_intersection = set(goods).intersection(set(rental_events))
-    # print(goods_intersection)
-    # print(rental_events)
 
     paginator = Paginator(goods, 20)
     page_number = request.GET.get('page')
@@ -554,23 +528,14 @@ def getProduct2(request):
                 & Q(id__in=rental_events.filter(item__cat_name_id=CATEGORY_CONSUMABLES_ID).values('item_id'))
                 & Q(Q(id__in=rental_events.filter(item__amount=0).values('item_id')) & Q(id__in=rental_events.filter(item__amount_x_contents=0).values('item_id')))
                 ), then=rental_events.filter(item_id=OuterRef('id'))[:1].values('estimated_date')),
-            When(Q(id__in=new_goods), then=rental_events.filter(item_id=OuterRef('id'))[:1].values('estimated_date')),
-            default=rental_events.filter(item_id=OuterRef('id'))[:1].values('estimated_date'))).values('id', 
+            When(Q(id__in=new_goods), then=None),
+            default=None)).values('id', 
                 'ean','storage__name', 'storage_place', 'cat_name', 'item_name', 'brand', 
                 'model', 'item_type', 'size', 'parameters', 'contents', 
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents', 'is_possible_to_rent_field'))
     
-
-    # rental_events.filter(item_id=OuterRef('id'))[:1].values('estimated_date')
-    # goods_by_page = list(paginator.get_page(page_number).object_list.values('id', 
-    #             'ean','storage__name', 'storage_place', 'cat_name', 'item_name', 'brand', 
-    #             'model', 'item_type', 'size', 'parameters', 'contents', 
-    #             'picture', 'item_description', 'cost_centre', 'reg_number', 
-    #             'purchase_data', 'purchase_price', 'purchase_place', 
-    #             'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents'))
-
 
     return JsonResponse(goods_by_page, safe=False)
     # return JsonResponse(list(goods_intersection), safe=False)

@@ -1,4 +1,11 @@
 function list_el_f(item, static_url, CATEGORY_CONSUMABLES_ID){
+    const d = new Date(item.is_possible_to_rent_field)
+    let date = d.getDate()
+    let month = d.getMonth()
+    let fullYear = d.getFullYear()
+    if (d.getDate() < 10) date = '0' + d.getDate()
+    if (d.getMonth() < 10) month = '0' + d.getMonth()
+
 const list_el = `
 <div class="new_event_wrap">
     <div class="list__item_photo">
@@ -30,19 +37,19 @@ const list_el = `
     </div>
     <div class="row01">
         <div class="item_status">
-            ${item.is_possible_to_rent_field}
-            ${item.is_possible_to_rent_field ? item.cat_name==CATEGORY_CONSUMABLES_ID ? '<span class="status_orange">Saatavilla</span>' : '<span class="status_green">Saatavilla</span>' : '<span class="status_red">Ei saatavilla</span>'}
+
+            ${item.is_possible_to_rent_field ? '<span class="status_red">Ei saatavilla</span>' : item.cat_name==CATEGORY_CONSUMABLES_ID ? '<span class="status_orange">Saatavilla</span>' : '<span class="status_green">Saatavilla</span>'}
 
         </div>
     </div>
     <div class="row01">
         <div class="">
-            {% if item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
-                <span class="est_date">${item.rentable_at}</span>
-            {% else %}
-                <span class="est_date">${item.amount ? item.amount : 0} pakkausta,</span>
-                <span class="est_date">${item.amount_x_contents ? item.amount : 0} ${item.unit__unit_name ? item.unit__unit_name : ''} yhteensä</span>
-            {% endif %} 
+
+            ${item.cat_name==CATEGORY_CONSUMABLES_ID ? 
+                '<span class="est_date">'+(item.amount ? item.amount : 0)+' pakkausta,</span>'+
+                '<span class="est_date">'+(item.amount_x_contents ? item.amount : 0) + (item.unit__unit_name ? item.unit__unit_name : '')+' yhteensä</span>' : 
+                '<span class="est_date">'+(item.is_possible_to_rent_field ? (date+'.'+month+'.'+fullYear) : '')+'</span>'}
+            
         </div>
     </div>
     <div class="row01">
