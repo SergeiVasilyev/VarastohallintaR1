@@ -18,17 +18,20 @@
 $(document).ready(function() {
     $('#show_all_wrap').click(function(){
         var page = '{{items.number}}'
+        var search_item = $('#search_item').val()
         if ($("#show_all").is(':checked')) {
             show_all = 1
         } 
         else {
             show_all = 0
         }
-        window.location = "{% url 'products' %}?show_all="+show_all+"&page="+page
+        window.location = "{% url 'products' %}?show_all="+show_all+"&page="+page+"&search_text="+search_item
     })
 
     // AJAX Get product
     const getProduct2 = (name, page, show_all_product) => {
+        // name = name!='None' ? name : ''
+        
         $.ajax({
             type: 'GET',
             url: '/get_product2/',
@@ -46,8 +49,11 @@ $(document).ready(function() {
             complete: function(response) {
                 // console.log(response.responseJSON)
                 $('.products_content').html('')
-                res = response.responseJSON
-                // console.log(res)
+                res = response.responseJSON.goods_by_page
+                num_pages = response.responseJSON.num_pages
+                page = response.responseJSON.page > num_pages ? num_pages : response.responseJSON.page
+                // console.log(page, num_pages)
+                $('.current').html(`Sivu ${page} / ${num_pages}`)
                 res.forEach(element => printElements(element))
             }
         })
@@ -55,17 +61,43 @@ $(document).ready(function() {
         function printElements(element){
             static_url = '{{static_url}}'
             // console.log(list_el_f(element, static_url))
-            
             $('.products_content').append(list_el_f(element, static_url, '{{CATEGORY_CONSUMABLES_ID}}'))
         }
     }
 
-    $('#search_item').keyup(function(e) {
-        //console.log('e.target.value', e.target.value)
-        getProduct2(e.target.value, 1, 0)
+    function updateHref(e){
+        $('.pagination a').each(function(){
+            var $this = $(this)
+            var _href = $this.attr('href')
+
+            params_list = _href.split('&')
+            var _params_list = params_list.filter(el => el.search("search_text"))
+            _params_list.push('search_text='+e.target.value)
+            var new_href = _params_list.join("&")
+            
+            $this.attr('href', new_href)
+        })
+    }
+
+    $('#search_item').keyup(function(e) { 
+        if( e.which != 9 ) { // if key is not TAB do...
+            getProduct2(e.target.value, '{{items.number}}', '{{is_show_all}}')
+            $('#search_item').val(e.target.value)
+            updateHref(e)
+        }
     })
-    getProduct2('', 12, 1)
     // AJAX Get product
+
+    var search_text = '{{search_text}}'
+    console.log('search_text', search_text)
+    getProduct2(search_text, '{{items.number}}', '{{is_show_all}}')
+    $('.pagination a').each(function(){
+        var $this = $(this)
+        var _href = $this.attr('href')
+        $this.attr('href', _href+'&search_text={{search_text}}')
+    })
+
+    
 
 })
 
@@ -75,17 +107,17 @@ $(document).ready(function() {
 {% block main_content %}
 <div class="filter_panel">
     <!-- <div><select class="js-example-basic-single form-control" name="state" id="mySelect2" style="width: 60%;"></select></div> -->
-    <div><input class="form-control" id="search_item" type="text" style="width: 50%;" placeholder="Syötä koodi tai tuotteen nimi"></div>
+    <div><input class="form-control" id="search_item" name="search_item" type="text" style="width: 50%;" value="{{search_text}}" placeholder="Syötä koodi tai tuotteen nimi"></div>
     <div class="pagination">
         <span class="step-links">
             <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>
             <a href="?{% if items.has_previous %}page={{ items.previous_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-left font-size"></span></button></a>
-            
+
             <span class="current">
                 Sivu {{ items.number }} / {{ items.paginator.num_pages }}
             </span>
 
-            <a href="?{% if items.has_next %}page={{ items.next_page_number }}&{% endif %}show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
+            <a href="?{% if items.has_next %}page={{ items.next_page_number }}&{% else %}page={{ items.number }}&{% endif %}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-right font-size"></span></button></a>
             <a href="?page={{ items.paginator.num_pages }}&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-right font-size"></span></button></a>
         </span>
     </div>
@@ -137,9 +169,11 @@ $(document).ready(function() {
 <!-- <div class="products_content2">
     {% include 'varasto/products_list_c.html' with items=items %} 
 </div> -->
-<div class="products_content">
+<!-- <div class="products_content3" hx-get="/get_product2/" hx-vals='{"name": "", "page": "1", "show_all_product": "1"}'>
+    <a data-hx-get="/click">Click Me!</a>
+</div> -->
 
-</div>
+<div class="products_content"></div>
 
 <div class="pagination mt-4 mb-5">
     <span class="step-links">

@@ -501,13 +501,14 @@ def getProduct2(request):
     print(request.GET)
     req_name = len(request.GET.get('name')) if request.GET.get('name') else 0
     show_all_product = int(request.GET.get('show_all_product'))
-    storage_filter = storage_f(request.user)
-    
-    if req_name > 0 and not show_all_product:
+    storage_filter = storage_f(request.user) if not show_all_product else {}
+
+    if req_name > 0:
         goods = Goods.objects.filter(**storage_filter).filter(
             Q(id__icontains=request.GET.get('name')) | 
             Q(item_name__icontains=request.GET.get('name')) | 
             Q(brand__icontains=request.GET.get('name')) | 
+            Q(ean__icontains=request.GET.get('name')) |
             Q(model__icontains=request.GET.get('name'))).order_by("id")
     else:
         goods = Goods.objects.filter(**storage_filter).order_by("id")
@@ -535,9 +536,9 @@ def getProduct2(request):
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents', 'is_possible_to_rent_field'))
-    
 
-    return JsonResponse(goods_by_page, safe=False)
+
+    return JsonResponse({'goods_by_page': goods_by_page, 'page': page_number, 'num_pages': paginator.num_pages}, safe=False)
     # return JsonResponse(list(goods_intersection), safe=False)
 
 
@@ -857,6 +858,9 @@ def new_item(request):
 # FUNC products
 @login_required()
 def products(request):
+    search_text = request.GET.get('search_text') if request.GET.get('search_text') else ''
+    # print('search_text', search_text)
+
     # Try get a number from checkbox "näytä kaikki"
     try:
         get_show_all = int(request.GET.get('show_all'))
@@ -872,7 +876,12 @@ def products(request):
     
     # selected_item = request.GET.get('selected_item')
 
-    items = Goods.objects.filter(**storage_filter).order_by("id")
+    items = Goods.objects.filter(**storage_filter).filter(
+            Q(id__icontains=search_text) | 
+            Q(item_name__icontains=search_text) | 
+            Q(brand__icontains=search_text) | 
+            Q(ean__icontains=search_text) |
+            Q(model__icontains=search_text)).order_by("id")
     paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
@@ -882,7 +891,8 @@ def products(request):
     context = {
         'items': page_obj,
         'is_show_all': is_show_all,
-        'static_url': static_url
+        'static_url': static_url,
+        'search_text': search_text
     }
     return render(request, 'varasto/products.html', context)
 
