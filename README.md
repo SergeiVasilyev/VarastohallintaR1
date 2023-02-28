@@ -4,8 +4,6 @@
 ## Demo
 http://109.204.232.228:8880
 
-Administrator: Login: admin, Pass: admin
-
 Student_ext: user3, Q2wertyy
 
 Management: user4, Q2wertyy
