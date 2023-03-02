@@ -314,4 +314,7 @@ form {
     border: 1px solid red !important;
 }
 
-
+.user_link, .user_link:hover, .user_link:visited {
+    text-decoration: none;
+    color:#325288;
+}
