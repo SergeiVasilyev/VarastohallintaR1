@@ -2,6 +2,7 @@
 import operator
 import pprint
 import re
+import time
 from django.forms import DateTimeField, IntegerField
 from django.http import (
     HttpResponse,
@@ -503,6 +504,8 @@ def getProduct2(request):
     show_all_product = int(request.GET.get('show_all_product'))
     storage_filter = storage_f(request.user) if not show_all_product else {}
 
+    time.sleep(0.1)
+
     if req_name > 0:
         goods = Goods.objects.filter(**storage_filter).filter(
             Q(id__icontains=request.GET.get('name')) | 
@@ -537,6 +540,23 @@ def getProduct2(request):
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents', 'is_possible_to_rent_field'))
 
+    # Same query in PostgreSQL 
+    # WITH full_list AS (
+	# SELECT * FROM VARASTO_GOODS where STORAGE_ID = 4 ORDER BY ID
+    # ), rental_events AS(
+    #     SELECT * FROM VARASTO_RENTAL_EVENT VRE WHERE ITEM_ID IN (SELECT id FROM full_list) AND VRE.RETURNED_DATE isnull ORDER by item_id
+    # ), rented_goods AS (
+    #     SELECT * FROM full_list WHERE ID IN (SELECT item_id FROM rental_events) order by id
+    # )
+    # SELECT *,
+    # CASE
+    #     WHEN full_list.id IN (SELECT item_id FROM rental_events vre INNER JOIN full_list vg on vg.id = vre.item_id inner join varasto_category vc on vc.ID = VG.CAT_NAME_ID where vc.id != 1)
+    #     then (select estimated_date from rental_events where item_id = full_list.id LIMIT 1)
+    #     WHEN full_list.id in (SELECT item_id FROM rental_events vre INNER JOIN full_list vg on vg.id = vre.item_id INNER JOIN VARASTO_CATEGORY VC on VC.ID = VG.CAT_NAME_ID where VC.ID = 1 and vg.amount = 0 and vg.amount_x_contents = 0 AND VRE.RETURNED_DATE isnull AND vg.STORAGE_ID = 4 ORDER BY vg.ID)
+    #     THEN (select estimated_date from rental_events where item_id = full_list.id LIMIT 1)
+    #     ELSE NULL
+    # end is_possible_to_rent
+    # FROM full_list ORDER BY id;
 
     return JsonResponse({'goods_by_page': goods_by_page, 'page': page_number, 'num_pages': paginator.num_pages}, safe=False)
     # return JsonResponse(list(goods_intersection), safe=False)
