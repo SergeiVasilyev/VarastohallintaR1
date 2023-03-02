@@ -505,7 +505,8 @@ def getProduct2(request):
     storage_filter = storage_f(request.user) if not show_all_product else {}
 
     time.sleep(0.1)
-
+    # if got symbol in search item looking for matches in id, item_name, brand, ean, model
+    # else get all products according to storage number
     if req_name > 0:
         goods = Goods.objects.filter(**storage_filter).filter(
             Q(id__icontains=request.GET.get('name')) | 
@@ -516,9 +517,14 @@ def getProduct2(request):
     else:
         goods = Goods.objects.filter(**storage_filter).order_by("id")
 
+    # Get all rental events according received products
     rental_events = Rental_event.objects.filter(item__in=goods).filter(returned_date__isnull=True)
     new_goods = goods.filter(id__in=Subquery(rental_events.values('item')))
 
+    # The request creates query whith all fields and creates a new field is_possible_to_rent, where came estimated_date from rental_event table if:
+    # - product is not consumable and product not rented yet,  
+    # - product is consumable and product not enough in storage,
+    # - Or get None
     paginator = Paginator(goods, 20)
     page_number = request.GET.get('page')
     goods_by_page = list(paginator.get_page(page_number).object_list.annotate(
@@ -539,7 +545,9 @@ def getProduct2(request):
                 'picture', 'item_description', 'cost_centre', 'reg_number', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents', 'is_possible_to_rent_field'))
+            # in all links to other fields instead of id query gets names (storage__name, unit__unit_name)
 
+    # ========================
     # Same query in PostgreSQL 
     # WITH full_list AS (
 	# SELECT * FROM VARASTO_GOODS where STORAGE_ID = 4 ORDER BY ID
@@ -557,9 +565,9 @@ def getProduct2(request):
     #     ELSE NULL
     # end is_possible_to_rent
     # FROM full_list ORDER BY id;
+    # ============================
 
     return JsonResponse({'goods_by_page': goods_by_page, 'page': page_number, 'num_pages': paginator.num_pages}, safe=False)
-    # return JsonResponse(list(goods_intersection), safe=False)
 
 
 
