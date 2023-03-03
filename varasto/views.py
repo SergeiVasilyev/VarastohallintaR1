@@ -147,7 +147,7 @@ def renter(request, idx):
                 event.save()
             else:
                 if event.amount:
-                    print('part amount')
+                    # print('part amount')
                     if (event.amount - return_part_of_product) >= 0:
                         event.amount -= return_part_of_product
                         event.returned = return_part_of_product
@@ -156,7 +156,7 @@ def renter(request, idx):
                     else:
                         return redirect('renter', idx)
                 elif event.contents:
-                    print('part amount')
+                    # print('part amount')
                     if (event.contents - return_part_of_product) >= 0:
                         event.contents -= return_part_of_product
                         event.returned = return_part_of_product
@@ -172,7 +172,7 @@ def renter(request, idx):
         if request.POST.getlist('_close_rent_cons'): # Close rent for consumables
             return_all = request.POST.get('everything_returned')
             return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
-            print(return_part_of_product)
+            # print(return_part_of_product)
             if substruct_from_rental_event():
                 return redirect('renter', idx)
 
@@ -185,7 +185,7 @@ def renter(request, idx):
             item.returned_date = datenow # Save new estimated date into database
             item.save()
         if request.POST.getlist('set_problem'):
-            print('PROBLEM')
+            # print('PROBLEM')
             item.remarks = request.POST.get('remarks')
             item.save()
 
@@ -299,7 +299,7 @@ def new_event(request):
                     if new_item not in changed_items and new_item.is_possible_to_rent[0] == True: # Onko lisättävä tavara jo lisätty and item not consumable
                         changed_items.append(new_item) # Lisätään jos ei 
                         changed_items[-1].radioUnit = '0' if not new_item.amount else '1'
-                        print(changed_items[-1].id, changed_items[-1].radioUnit)
+                        # print(changed_items[-1].id, changed_items[-1].radioUnit)
                     # changed_items.append(Goods.objects.get(Q(id=request.GET.get(add_item)) & Q(storage_id=storage_id))) # saadan kaikki Iteemit changed_items muuttujaan (iteemilla on sama storage id kuin staffilla)
                 except:
                     error[2] = "Tavaraa ei löydetty"
@@ -332,7 +332,7 @@ def new_event(request):
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
-            print(idx_inp_fix)
+            # print(idx_inp_fix)
             # fix_item = '_fix_item'+str(idx_inp_fix)
             # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
@@ -387,8 +387,8 @@ def new_event(request):
                 if item.cat_name_id == CATEGORY_CONSUMABLES_ID:  # Jos se on kulutusmateriaali
                     unit = int(request.GET.get('radioUnit'+str(item.id))) # Saadaan yksikköä 1 on pakkaus kpl, 0 on sisällön määrää
                     item_amount = Decimal(request.GET.get('inp_amount'+str(item.id))) # Saadaan tavaran määrä
-                    print('GET unit', str(item.id), unit)
-                    print('GET item_amount', str(item.id), item_amount, int(item.amount), item.amount_x_contents)
+                    # print('GET unit', str(item.id), unit)
+                    # print('GET item_amount', str(item.id), item_amount, int(item.amount), item.amount_x_contents)
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
@@ -399,7 +399,7 @@ def new_event(request):
                                 # amount_x_contents = item.amount * item.contents # formula
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
-                                print('new_amount', new_amount, remaining_contents, item.contents)
+                                # print('new_amount', new_amount, remaining_contents, item.contents)
                                 # remainder = remaining_contents - (item.contents * new_amount)
                                 
                                 # Vähennetään jos amount arvo tietokannassa on suurempi kuin uusi new_amount arvo. 
@@ -455,7 +455,7 @@ def is_ajax(request):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def getPersons(request):
-    print(request.GET)
+    # print(request.GET)
     json_persons = []
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
@@ -480,7 +480,7 @@ def getPersons(request):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def getProduct(request):
-    print(request.GET)
+    # print(request.GET)
     json_goods = []
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
@@ -504,7 +504,7 @@ def getProduct(request):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def getProduct2(request):
-    print(request.GET)
+    # print(request.GET)
     req_name = len(request.GET.get('name')) if request.GET.get('name') else 0
     show_all_product = int(request.GET.get('show_all_product'))
     storage_filter = storage_f(request.user) if not show_all_product else {}
@@ -792,7 +792,8 @@ def edit_item(request, idx):
                     new_picture = request.FILES['picture']
                 item.picture = new_picture
             except:
-                print('get_item.picture=', get_item.picture)
+                pass
+                # print('get_item.picture=', get_item.picture)
 
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)
@@ -1077,7 +1078,7 @@ def product_barcode_ean13(request, idx):
 def initilize(request):
     for n in range(len(CATEGORIES)):
         cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
-        print(cats)
+        # print(cats)
 
     for n in range(len(UNITS_LIST)):
         units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
