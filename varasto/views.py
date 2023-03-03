@@ -26,7 +26,7 @@ from .test_views import test
 from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
 from django.db.models import Q
-# from .alerts import email_alert
+
 from .storage_settings import *
 from .services import _save_image
 from .services import *
@@ -42,6 +42,7 @@ from django.db.models import F, Func, OuterRef, Subquery, Exists, When, Case, Va
 
 
 @login_required()
+@user_passes_test(lambda user:user.is_staff)
 @user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def grant_permissions(request):
     users = CustomUser.objects.all().order_by("id")
@@ -54,7 +55,7 @@ def grant_permissions(request):
     else:
         users = {}
 
-    paginator = Paginator(users, 10) # Siirtää muuttujan asetukseen
+    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -65,19 +66,25 @@ def grant_permissions(request):
     return render(request, 'varasto/grant_permissions.html', context)
 
 @login_required()
+@user_passes_test(lambda user: user.is_staff)
 @user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def save_permision(request, idx):
     user = CustomUser.objects.get(id=idx)
     user.role = (request.POST.get('roles'))
     # print(user.role)
-    if request.POST.get('roles') == 'student_extended' or request.POST.get('roles') == 'storage_employee' or request.POST.get('roles') == 'management':
+    if request.POST.get('roles') == 'storage_employee' or request.POST.get('roles') == 'management':
         user.is_staff = True
+        user.is_storage_staff = True
+    elif request.POST.get('roles') == 'student_extended':
+        user.is_storage_staff = True
     elif request.POST.get('roles') == 'super':
         user.is_staff = True
         user.is_superuser = True
+        user.is_storage_staff = True
     else:
         user.is_staff = False
         user.is_superuser = False
+        user.is_storage_staff = False
     user.save()
 
     page_number = request.POST.get('page')
@@ -87,19 +94,10 @@ def save_permision(request, idx):
 
 
 
-# FUNC inventaario_side_window
-def inventaario_side_window(request):
-    return render(request, 'varasto/inventaario_side_window.html')
-
-
-# FUNC person_view
-def person_view(request):
-    return render(request, 'varasto/person.html')
-
-
 # FUNC renter
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 @user_passes_test(lambda user: user.has_perm('varasto.view_customuser'))
 def renter(request, idx):
     error = {}
@@ -256,6 +254,7 @@ def renter(request, idx):
 
 # FUNC new_event
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 @user_passes_test(lambda user: user.has_perm('varasto.add_rental_event'))
 def new_event(request):
     error = {}
@@ -454,19 +453,23 @@ def is_ajax(request):
 
 # FUNC getPersons
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def getPersons(request):
+    print(request.GET)
     json_persons = []
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
             persons = CustomUser.objects.filter(
-                Q(first_name__icontains=request.GET.get('name')) | 
-                Q(last_name__icontains=request.GET.get('name')) | 
-                Q(code__icontains=request.GET.get('name')))[:10]
+                Q(first_name__icontains=request.GET.get('name')) |
+                Q(last_name__icontains=request.GET.get('name')) |
+                Q(username__icontains=request.GET.get('name')) |
+                Q(code__icontains=request.GET.get('name'))).order_by('code')[:10]
             for person in persons:
                 item = {
                     'id': person.id,
                     'first_name': person.first_name,
                     'last_name': person.last_name,
+                    'username': person.username,
                     'code': person.code,
                 }
                 json_persons.append(item) # Make response in json 
@@ -475,6 +478,7 @@ def getPersons(request):
 
 # FUNC getProduct
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def getProduct(request):
     print(request.GET)
     json_goods = []
@@ -498,6 +502,7 @@ def getProduct(request):
 
 # FUNC getProduct
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def getProduct2(request):
     print(request.GET)
     req_name = len(request.GET.get('name')) if request.GET.get('name') else 0
@@ -573,6 +578,7 @@ def getProduct2(request):
 
 # FUNC getProducts
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def getProducts(request):
     data = []
     if is_ajax(request=request):
@@ -619,13 +625,12 @@ def login_view(request):
             if user is not None:
                 login(request, user) # не логинить, если не прошел проверку
                 # if user_check(user) and is_not_student(user):
-                if user.is_authenticated and user.is_staff:
+                # if user.is_authenticated and user.is_staff:
+                if user.is_authenticated and user.is_storage_staff:
                     return redirect(get_rental_events_page(user))
-                    # return redirect('rental_events')
                 # elif not is_not_student(request.user):
                 #     return redirect('products')
                 else:
-                    # return redirect('logout')
                     return HttpResponse(f"<html><body><h1>Ei ole okeuksia päästä järjestelmään</h1><a href='/logout'>Logout1</a></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
             else:
                 # Pitää rakentaa frontendilla vastaus, että kirjoitettu salasana tai tunnus oli väärin
@@ -639,13 +644,11 @@ def login_view(request):
             return render(request, 'varasto/login.html', context)
     else:
         # if user_check(request.user) and is_not_student(request.user):
-        if request.user.is_authenticated and request.user.is_staff:
+        if request.user.is_authenticated and request.user.is_storage_staff:
             return redirect(get_rental_events_page(request.user))
-            # return redirect('rental_events')
         # elif not is_not_student(request.user):
         #     return redirect('products')
         else:
-            # return redirect('logout')
             return HttpResponse("<html><body><h1>Ei ole okeuksia päästä järjestelmään</h1><a href='/logout'>Logout2</a></body></html>") # Tässä voimme tehdä Timer, 10 sec jälkeen tehdään LOGOUT
 
 # FUNC logout
@@ -667,13 +670,10 @@ def user_recovery(request):
 def base_main(request):
     return render(request, 'varasto/base_main.html')
 
-def update_rental_status(request):
-    return render(request, 'varasto/update_rental_status.html')
-
 
 # FUNC rental_events_goods
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user:user.is_storage_staff)
 def rental_events_goods(request):
     # Filteroi storage nimen mukaan, jos käyttäjillä Superuser oikeus niin näytetään kaikki tapahtumat kaikista varastoista
     storage_filter = storage_f(request.user)
@@ -704,7 +704,7 @@ def rental_events_goods(request):
 # @user_passes_test(lambda user: user.has_perm('varasto.view_rental_event'))
 # @user_passes_test(is_not_student, redirect_field_name=None)
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user:user.is_storage_staff)
 def rental_events(request):
     # FIXID in is_user_have_non_returned_item property. When renter get product in another storage his mark may be red, if one of storage he has not returned products. Marker needs highlight by storage.
     storage_filter = storage_f(request.user)
@@ -755,7 +755,7 @@ def get_photo(request):
 
 # FUNC edit_item
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user:user.is_storage_staff)
 @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
 # @user_passes_test(is_same_storage, redirect_field_name='product')
 def edit_item(request, idx):
@@ -839,7 +839,7 @@ def edit_item(request, idx):
 
 # FUNC new_item
 @login_required()
-@user_passes_test(lambda user: user.has_perm('varasto.add_goods'))
+@user_passes_test(lambda user:user.is_storage_staff)
 def new_item(request):
     l = []
     error_massage = ''
@@ -927,7 +927,7 @@ def products(request):
 
 # FUNC product
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user:user.is_storage_staff)
 # @user_passes_test(lambda user: user.has_perm('varasto.change_goods'))
 def product(request, idx):
     rental_events = None
@@ -954,6 +954,7 @@ def product(request, idx):
 
 # FUNC set_rental_event_view
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def set_rental_event_view(request):
     set_name = Settings.objects.get(set_name='rental_page_view')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
@@ -965,6 +966,7 @@ def set_rental_event_view(request):
 
 # FUNC set_ordering
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def set_ordering(request):
     set_name = Settings.objects.get(set_name='rental_page_ordering')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
@@ -980,6 +982,7 @@ def set_ordering(request):
 
 # FUNC set_order_field
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def set_order_field(request):
     set_name = Settings.objects.get(set_name='rental_page_field_ordering')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
@@ -991,7 +994,7 @@ def set_order_field(request):
     return redirect (rental_page)
 
 @login_required()
-@user_passes_test(lambda user:user.is_staff)
+@user_passes_test(lambda user:user.is_storage_staff)
 def delete_product(request, idx):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
@@ -1033,6 +1036,7 @@ def delete_product(request, idx):
 
 
 @login_required()
+@user_passes_test(lambda user:user.is_storage_staff)
 def burger_settings(request):
     show_full = request.POST.get('show_full')
 
@@ -1057,6 +1061,15 @@ def product_barcode(request, idx):
         'item': item,
     }
     return render(request, 'varasto/product_barcode.html', context)
+
+def product_barcode_ean13(request, idx):
+    item = Goods.objects.get(id=idx)
+    product_barcode = barcode_gen_ean13(item.ean)
+    context = {
+        'product_barcode': product_barcode,
+        'item': item,
+    }
+    return render(request, 'varasto/product_barcode_ean13.html', context)
 
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
