@@ -74,6 +74,7 @@ class GoodsForm(ModelForm):
             }),
             'cat_name': widgets.Select(attrs={
                 'class': 'form-select',
+                'required': True
             }),
             'picture': widgets.FileInput(attrs={
                 'class': '',
