@@ -19,7 +19,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, inventaario_side_window, person_view, rental_events, inventory
+from varasto.views import index, login_view, logout_view, recovery_view, user_recovery, rental_events, inventory
 from varasto import views
 from django.urls import include, re_path
 
@@ -40,17 +40,18 @@ urlpatterns = [
     path('renter/<int:idx>/', views.renter, name='renter'),
     path('product/<int:idx>/', views.product, name='product'),
     path('product_barcode/<int:idx>/', views.product_barcode, name='product_barcode'),
+    path('product_barcode_ean13/<int:idx>/', views.product_barcode_ean13, name='product_barcode_ean13'),
     path('new_event/', views.new_event, name='new_event'),
     # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
     # re_path(r'.*/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
 
-    path('person/', views.person_view, name='person'),
-    path('inventaario_side_window/', views.inventaario_side_window, name='inventaario_side_window'),
+
+
     path('recovery/', views.user_recovery, name='recovery'),
     path('new_item/', views.new_item, name='new_item'),
     path('edit_item/<int:idx>/', views.edit_item, name='edit_item'),
     path('delete_product/<int:idx>/', views.delete_product, name='delete_product'),
-    path('update_rental_status/', views.update_rental_status, name='update_rental_status'),
+
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),

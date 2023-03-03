@@ -192,6 +192,14 @@ def barcode_gen(num):
     # print(rv.getvalue())
     return byte_data
 
+def barcode_gen_ean13(num):
+    rv = io.BytesIO()
+    # Code128(str(num), writer=SVGWriter()).write(rv) # To SVG
+    EAN13(str(num), writer=ImageWriter()).write(rv)
+    byte_data = base64.b64encode(rv.getvalue()).decode()
+    # print(rv.getvalue())
+    return byte_data
+
 # ---------------------------------------------
 # END OF BARCODE GENERATOR
 # =============================================

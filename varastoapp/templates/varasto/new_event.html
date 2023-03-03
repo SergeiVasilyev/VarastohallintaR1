@@ -351,7 +351,7 @@ $(document).ready(function() {
                     <div class="col-auto w-100" style="{% if changed_user %}display: block{%else%}display: none{%endif%};">
                         <div class="d-flex flex-row justify-content-between">
                             <div class="mb-3 me-3">
-                                <h4>{{changed_user.first_name}} {{changed_user.last_name}}</h4>
+                                <h4>{% if changed_user %}<span><a class="user_link" href="{% url 'renter' changed_user.id %}">{{changed_user.first_name}} {{changed_user.last_name}}</a></span>{% endif %}</h4>
                                 <p>{{changed_user.email}}</p>
                             </div>
                             <div class="mb-3 d-flex">
