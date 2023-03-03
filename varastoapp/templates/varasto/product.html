@@ -32,7 +32,7 @@
                 <span class="student_name">{{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} </span>
                 <span class="student_group">{{ selected_item.model|default:" " }} {{ selected_item.parameters|default:" " }}</span>
                 <span class="personal_field_name">EAN</span>
-                <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
+                <span class="personal_field_data"><a href="{% url 'product_barcode_ean13' idx %}">{{ selected_item.ean|default:"-" }}</a></span>
                 <span class="personal_field_name">saatavuus</span>
                 <span class="personal_field_data ">{% if selected_item.is_possible_to_rent.0 %}<span class="status_green round">Saatavilla</span>{% else %}<span class="status_red round">Ei saatavilla</span>{% endif %}</span>
                 <span class="personal_field_name">tuotekoodi</span>
