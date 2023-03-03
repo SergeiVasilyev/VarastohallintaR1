@@ -79,8 +79,10 @@ $(document).ready(function() {
         })
     }
 
-    $('#search_item').keyup(function(e) { 
-        if( e.which != 9 ) { // if key is not TAB do...
+    var not_symbol_keys = [9, 13, 16, 17, 18, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 91, 92, 93, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 144, 145, 173, 174, 175, 183]
+    $('#search_item').keyup(function(e) {
+        if (!not_symbol_keys.includes(e.which)) {
+            console.log('e.target.value', e.target.value, e.which)
             setTimeout(() => {  getProduct2(e.target.value, '{{items.number}}', '{{is_show_all}}') }, 50);
             $('#search_item').val(e.target.value)
             updateHref(e)
@@ -89,7 +91,6 @@ $(document).ready(function() {
     // AJAX Get product
 
     var search_text = '{{search_text}}'
-    console.log('search_text', search_text)
     getProduct2(search_text, '{{items.number}}', '{{is_show_all}}')
     $('.pagination a').each(function(){
         var $this = $(this)
