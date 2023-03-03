@@ -14,6 +14,7 @@
 
 {% block script %}
 <script type="text/javascript">
+    
 $(document).ready(function() {
     // AJAX Get persons
     const getPersons = (name) => {
@@ -29,14 +30,19 @@ $(document).ready(function() {
                 if (response.persons[0]){
                     //response.persons.forEach(element => console.log(element.id))
                     $('#add_user_list').html('')
-                    response.persons.forEach(element => $('#add_user_list').append(`<option style="border:1px solid red !important;" value='${element.code}'>${element.first_name} ${element.last_name}</option>`))
+                    response.persons.forEach(element => $('#add_user_list').append(`<option style="border:1px solid red !important;" value='${element.code}'> Username: ${element.username}, Nimi: ${element.first_name} ${element.last_name}, Koodi ${element.code}</option>`))
                 }
             }
         })
     }
+
+
+    var not_symbol_keys = [9, 13, 16, 17, 18, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 91, 92, 93, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 144, 145, 173, 174, 175, 183]
     $('#search_person').keyup(function(e) {
-        //console.log('e.target.value', e.target.value)
-        getPersons(e.target.value)
+        if (!not_symbol_keys.includes(e.which)) {
+            console.log('e.target.value', e.target.value, e.which)
+            getPersons(e.target.value)
+        }
     })
     //// AJAX Get persons
 
@@ -70,25 +76,38 @@ $(document).ready(function() {
                 <p><b>e-mail:</b> {{person.email}}</p>
             </div>
 
+            <input name="got_person" value="{{person.id}}" hidden>
+
+            <div class="mb-3 mt-5">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label for="is_storage_staff" class="form-label">Varasto oikeus</label>
+                        <input type="checkbox" class="form-check-input" id="is_storage_staff" name="is_storage_staff" {% if person.is_storage_staff %} checked {% endif %}>
+                    </div>
+                    <div>
+                        <label for="is_staff" class="form-label">Admin panel oikeus</label>
+                        <input type="checkbox" class="form-check-input" id="is_staff" name="is_staff" {% if person.is_staff %} checked {% endif %}>
+                    </div>
+                </div>
+            </div>
             <div class="mb-3">
                 <label for="username" class="form-label">Käyttäjän nimi:</label>
-                <input type="text" class="form-control" id="username" name="username">
-                <input name="got_person" value="{{person.id}}" hidden>
+                <input type="text" class="form-control" id="username" name="username" value="{{person.username}}">
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Sähköposti:</label>
-                <input type="text" class="form-control" id="email" name="email">
+                <input type="text" class="form-control" id="email" name="email" value="{{person.email}}">
             </div>
 
             <div class="mb-3">
                 <label for="pass1" class="form-label">Salasana:</label>
-                <input type="password" class="form-control" id="pass1" name="pass1">
+                <input type="password" class="form-control" id="pass1" name="pass1" required>
             </div>
 
             <div class="mb-3">
                 <label for="pass2" class="form-label">Salasana uudelleen:</label>
-                <input type="password" class="form-control" id="pass2" name="pass2">
+                <input type="password" class="form-control" id="pass2" name="pass2" required>
             </div>
 
             <div class="main_buttons">
