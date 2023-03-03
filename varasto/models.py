@@ -38,6 +38,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         ("teacher", _("Opettaja")),
         ("super", _("Super user")),
     ]
+    is_storage_staff = models.BooleanField(default=False)
     group = models.CharField(max_length=15, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
@@ -64,6 +65,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         elif user.role=="storage_employee":
             roles_dict.pop('super')
             roles_dict.pop('management')
+            roles_dict.pop('teacher')
         elif user.role=="teacher" or user.role=="student" or user.role=="student_extended":
             roles_dict = {'student': 'Oppilas'}
         return roles_dict
