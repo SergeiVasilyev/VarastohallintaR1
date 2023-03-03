@@ -181,10 +181,12 @@ $(document).ready(function() {
             btnonclick = ""
         }
         if (item.cat_name_id == {{CATEGORY_CONSUMABLES_ID}}){
-            rentable_at = '<span class="est_date">'+item.amount+' pakkausta,</span><span class="est_date">'+item.amount_x_contents+' '+item.unit+' yhteensä</span>'
+            var item_amount = item.amount ? item.amount : 0
+            var item_amount_x_contents = item.amount_x_contents ? item.amount_x_contents : 0
+            rentable_at = '<span class="est_date">'+item_amount+' pakkausta,</span><span class="est_date">'+item_amount_x_contents+' '+item.unit+' yhteensä</span>'
         }
         
-        console.log(rentable_at)
+        // console.log(rentable_at)
         $('#modal-body').append(
             `
             <div class="new_event_wrap">
@@ -349,7 +351,7 @@ $(document).ready(function() {
                     <div class="col-auto w-100" style="{% if changed_user %}display: block{%else%}display: none{%endif%};">
                         <div class="d-flex flex-row justify-content-between">
                             <div class="mb-3 me-3">
-                                <h4>{{changed_user.first_name}} {{changed_user.last_name}}</h4>
+                                <h4>{% if changed_user %}<span><a class="user_link" href="{% url 'renter' changed_user.id %}">{{changed_user.first_name}} {{changed_user.last_name}}</a></span>{% endif %}</h4>
                                 <p>{{changed_user.email}}</p>
                             </div>
                             <div class="mb-3 d-flex">
@@ -395,14 +397,14 @@ $(document).ready(function() {
                         <div class="items">
                             <div class="">
                                 <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                                <h5>{{changed_item.item_name}} {{changed_item.brand}} {{changed_item.model}}</h5>
+                                <h5>{{changed_item.item_name|default:""}} {{changed_item.brand|default:""}} {{changed_item.model|default:""}}</h5>
                                 <p>Tuotekoodi {{changed_item.id}}</p>
                                 <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                                 <p>
                                     {% if changed_item.cat_name.id == 1 %}
-                                        {{changed_item.amount|default:""}} laatikkoa
+                                        {{changed_item.amount|default:"0"}} laatikkoa
                                         | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
-                                        | {{changed_item.amount_x_contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} yhteensä
+                                        | {{changed_item.amount_x_contents|normalize_dec|default:"0"}} {{changed_item.unit|default:""}} yhteensä
                                     {% endif %}
                                 </p>
                             </div>
@@ -456,9 +458,13 @@ $(document).ready(function() {
                                     <div class="form-check form-check-inline">
                                         <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.units}}', '{{changed_item.amount}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit1-{{changed_item.id}}" 
                                         value="1"
-                                        {% if changed_item.radioUnit == '1' or not hanged_item.radioUnit %}
+                                        {% comment %} {% if changed_item.radioUnit == '1' or not changed_item.radioUnit %} {% endcomment %}
+                                        {% if changed_item.radioUnit == '1' or not changed_item.radioUnit %}
                                             checked
                                         {% else %}
+                                        {% endif %}
+                                        {% if changed_item.amount == 0 %}
+                                        disabled
                                         {% endif %}
                                             />
                                         <label class="form-check-label" for="radioUnit1-{{changed_item.id}}">

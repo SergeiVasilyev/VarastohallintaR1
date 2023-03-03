@@ -99,3 +99,8 @@
 .user_info {
     padding: 0 0.6em;
 }
+
+.user_info a, .user_info a:hover, .user_info a:visited{
+    text-decoration: none;
+    color:#325288;
+}

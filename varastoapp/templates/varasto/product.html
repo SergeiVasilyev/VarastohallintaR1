@@ -32,7 +32,7 @@
                 <span class="student_name">{{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} </span>
                 <span class="student_group">{{ selected_item.model|default:" " }} {{ selected_item.parameters|default:" " }}</span>
                 <span class="personal_field_name">EAN</span>
-                <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
+                <span class="personal_field_data"><a href="{% url 'product_barcode_ean13' idx %}">{{ selected_item.ean|default:"-" }}</a></span>
                 <span class="personal_field_name">saatavuus</span>
                 <span class="personal_field_data ">{% if selected_item.is_possible_to_rent.0 %}<span class="status_green round">Saatavilla</span>{% else %}<span class="status_red round">Ei saatavilla</span>{% endif %}</span>
                 <span class="personal_field_name">tuotekoodi</span>
@@ -78,8 +78,8 @@
                         <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
                     </button>
                 </a>
-                <a class="nodecor pb-3 {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
-                    <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
+                <a class="nodecor pb-3 {% if not selected_item.is_possible_to_rent.0 %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if not selected_item.is_possible_to_rent.0 %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
@@ -191,7 +191,7 @@
                         <span class="item_num_name">Määrä</span>
                         <span class="item_num">
                             {% if rental_event.units %}
-                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.unit|default_if_none:"-"}}
                             {% else %}
                             {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
                             {% endif %}

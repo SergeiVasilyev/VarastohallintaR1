@@ -38,8 +38,9 @@ class CustomUser(AbstractUser, PermissionsMixin):
         ("teacher", _("Opettaja")),
         ("super", _("Super user")),
     ]
+    is_storage_staff = models.BooleanField(default=False)
     group = models.CharField(max_length=15, blank=True, null=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
     photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
@@ -64,6 +65,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         elif user.role=="storage_employee":
             roles_dict.pop('super')
             roles_dict.pop('management')
+            roles_dict.pop('teacher')
         elif user.role=="teacher" or user.role=="student" or user.role=="student_extended":
             roles_dict = {'student': 'Oppilas'}
         return roles_dict
@@ -218,8 +220,10 @@ class Goods(models.Model):
         event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
             return [False, event.estimated_date, 'Item is not consumables but it is rented now']
-        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount > 0 or event.item.amount_x_contents > 0):
             return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount == 0 and event.item.amount_x_contents == 0):
+            return [False, event.estimated_date, 'Item are consumable and storage is empty']
         return [True, None, 'Item is not rented yet']
 
 

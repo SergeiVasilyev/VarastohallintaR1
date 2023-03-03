@@ -14,7 +14,7 @@ UNITS_LIST = ['kpl', 'l', 'kg', 'm', 'm³']
 CATEGORY_CONSUMABLES_ID = 1
 
 # CONSUMABLES name in database
-CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
+CATEGORIES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
 
 # / DATA FOR DATABASE GENERATOR (generator is not created)
 # ======================================================

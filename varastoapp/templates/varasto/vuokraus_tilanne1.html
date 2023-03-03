@@ -40,7 +40,7 @@
                     </div>
                     <div class="mx-3">
                         <span class="small">Päättymisaika</span>
-                        <input name="rental_close" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" value="{{rental_event.estimated_date|date:'Y-m-d'}}"  style="" />
+                        <input name="rental_close" class="d-flex flex-grow-1 flex-shrink-1 datepicker_input form-control" type="date" min="{{datenow|date:'Y-m-d'}}" value="{{rental_event.estimated_date|date:'Y-m-d'}}"  style="" />
                         <!-- {{datenow|date:'Y-m-d'}}  -->
                     </div>
 
