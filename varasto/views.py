@@ -548,7 +548,7 @@ def getProduct2(request):
             default=None)).values('id', 
                 'ean','storage__name', 'storage_place', 'cat_name', 'item_name', 'brand', 
                 'model', 'item_type', 'size', 'parameters', 'contents', 
-                'picture', 'item_description', 'cost_centre', 'reg_number', 
+                'picture', 'item_description', 'cost_centre',
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit__unit_name', 'amount_x_contents', 'is_possible_to_rent_field'))
             # in all links to other fields instead of id query gets names (storage__name, unit__unit_name)
