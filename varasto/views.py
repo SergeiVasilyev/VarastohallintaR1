@@ -24,7 +24,7 @@ from .test_views import test
 
 from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
-from django.db.models import Q
+from django.db.models import Q, CharField
 
 from .storage_settings import *
 from .services import _save_image
@@ -37,6 +37,9 @@ from django.core.serializers import serialize
 from django.db.models import F, Func, OuterRef, Subquery, Exists, When, Case, Value
 from django.urls import reverse
 from urllib.parse import urlencode
+from functools import reduce
+
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
 
 
@@ -511,15 +514,30 @@ def getProduct2(request):
     storage_filter = storage_f(request.user) if not show_all_product else {}
 
     time.sleep(0.1)
-    # if got symbol in search item looking for matches in id, item_name, brand, ean, model
-    # else get all products according to storage number
+
+    search_text = request.GET.get('name')
+    search_words = search_text.split(' ')
+
+    # vector = SearchVector('item_name', 'brand', 'model', weight='A') + SearchVector('item_type', 'size', 'parameters', weight='D') + SearchVector('id', 'ean', weight='A')
+    # vector = SearchVector('item_name', 'brand', 'model', 'item_type', 'size', 'parameters', 'id', 'ean',)
+    # query = SearchQuery(search_text, search_type='phrase')
     if req_name > 0:
-        goods = Goods.objects.filter(**storage_filter).filter(
-            Q(id__icontains=request.GET.get('name')) | 
-            Q(item_name__icontains=request.GET.get('name')) | 
-            Q(brand__icontains=request.GET.get('name')) | 
-            Q(ean__icontains=request.GET.get('name')) |
-            Q(model__icontains=request.GET.get('name'))).order_by("id")
+        # search by full words or text
+        goods = Goods.objects.filter(**storage_filter).annotate(search=SearchVector('item_name', 'brand', 'model', 'item_type', 'id', 'ean', 'storage_place'),).filter(search=search_text).order_by("id")
+        # goods = Goods.objects.filter(**storage_filter).annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.4).order_by("id")
+
+        # if the text is not found, search by letter. 
+        if not goods.all():
+            goods = Goods.objects.filter(**storage_filter).filter(
+            reduce(operator.or_, (Q(item_name__icontains=x) | 
+                                Q(brand__icontains=x) |
+                                Q(model__icontains=x) |
+                                Q(item_type__icontains=x) |
+                                Q(id__icontains=x) |
+                                Q(ean__icontains=x) |
+                                Q(storage_place__icontains=x)
+                                for x in search_words))
+            ).order_by("id")
     else:
         goods = Goods.objects.filter(**storage_filter).order_by("id")
 
