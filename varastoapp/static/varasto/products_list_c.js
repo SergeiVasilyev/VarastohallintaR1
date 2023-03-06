@@ -28,7 +28,10 @@ const list_el = `
         <div class="item_name">
             <a href="/product/${item.id}" class="nodecor">
                 <span class="header" for="chekbox${item.id}">${item.item_name} ${item.brand ? item.brand : ''}</span>
-                <span class="paragraph" for="chekbox{{item.id}}">${item.model ? item.model : ''} ${item.item_type ? item.item_type : ''} ${item.parameters ? item.parameters : ''} ${item.size ? item.size : ''}</span>
+                <span class="paragraph" for="chekbox{{item.id}}">
+                    ${!item.model && !item.item_type && !item.parameters && !item.size ? '-' : ''}
+                    ${item.model ? item.model : ''} ${item.item_type ? item.item_type : ''} ${item.parameters ? item.parameters : ''} ${item.size ? item.size : ''}
+                </span>
             </a>
         </div>
     </div>
