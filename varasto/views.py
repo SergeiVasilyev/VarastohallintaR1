@@ -485,14 +485,17 @@ def getPersons(request):
 @user_passes_test(lambda user:user.is_storage_staff)
 def getProduct(request):
     # print(request.GET)
+    storage_filter = storage_f(request.user)
+    search_text = request.GET.get('name')
+    search_words = search_text.split(' ')
     json_goods = []
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
-            products = Goods.objects.filter(
-                Q(id__icontains=request.GET.get('name')) | 
-                Q(item_name__icontains=request.GET.get('name')) | 
-                Q(brand__icontains=request.GET.get('name')) | 
-                Q(model__icontains=request.GET.get('name'))).order_by("id")[:10]
+            products = Goods.objects.filter(**storage_filter).filter(
+                reduce(operator.or_, (Q(id__icontains=x) | 
+                    Q(item_name__icontains=x) | 
+                    Q(brand__icontains=x) | 
+                    Q(model__icontains=x) for x in search_words))).order_by("id")
             for product in products:
                 item = {
                     'id': product.id,
