@@ -11,6 +11,7 @@ from .forms import Settings_CustomUserForm
 from django.forms import modelformset_factory, inlineformset_factory
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
+from .storage_settings import *
 
 
 @login_required()
@@ -67,7 +68,7 @@ def product_report(request, idx):
 @user_passes_test(lambda user:user.is_storage_staff)
 def inventory (request):
     items = Goods.objects.all().order_by("id")
-    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(items, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

@@ -35,6 +35,8 @@ from decimal import *
 from django.core.serializers import serialize
 
 from django.db.models import F, Func, OuterRef, Subquery, Exists, When, Case, Value
+from django.urls import reverse
+from urllib.parse import urlencode
 
 
 
@@ -54,7 +56,7 @@ def grant_permissions(request):
     else:
         users = {}
 
-    paginator = Paginator(users, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(users, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -133,12 +135,12 @@ def renter(request, idx):
             if return_all:
                 if event.amount:
                     event.returned = event.amount
-                    event.amount = 0 # TODO Check if delete this line
+                    # event.amount = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
                     add_to_goods(event.returned, 1)
                 elif event.contents:
                     event.returned = event.contents
-                    event.contents = 0 # TODO Check if delete this line
+                    # event.contents = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
                     add_to_goods(event.returned, 0)
                 else:
@@ -238,7 +240,7 @@ def renter(request, idx):
 
     is_staff_user_has_permission_to_edit = request.user.has_perm('varasto.change_rental_event')
 
-    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    paginator = Paginator(rental_events, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -429,7 +431,7 @@ def new_event(request):
 
     storage_filter = storage_f(request.user)
     items = Goods.objects.filter(**storage_filter).order_by("id")
-    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(items, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -529,7 +531,7 @@ def getProduct2(request):
     # - product is not consumable and product not rented yet,  
     # - product is consumable and product not enough in storage,
     # - Or get None
-    paginator = Paginator(goods, 20)
+    paginator = Paginator(goods, ITEMS_PER_PAGE)
     page_number = request.GET.get('page')
     goods_by_page = list(paginator.get_page(page_number).object_list.annotate(
         is_possible_to_rent_field=Case(
@@ -584,7 +586,7 @@ def getProducts(request):
         # items = Goods.objects.all().order_by("id")
         storage_filter = storage_f(request.user)
         items = Goods.objects.filter(**storage_filter).order_by("id")
-        paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+        paginator = Paginator(items, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
 
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -684,7 +686,7 @@ def rental_events_goods(request):
     first_date = events[0].start_date if not order_filter_switch(request.user) else events.reverse()[0].start_date
     last_date = events.reverse()[0].start_date if not order_filter_switch(request.user) else events[0].start_date
 
-    paginator = Paginator(events, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(events, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -729,7 +731,7 @@ def rental_events(request):
     # grouped_events = sorted(grouped_events1, key=operator.attrgetter('start_date'), reverse=order_filter_switch())
     grouped_events = sorted(grouped_events1, key=operator.attrgetter(select_order_field), reverse=order_filter_switch(request.user))
 
-    paginator = Paginator(grouped_events, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(grouped_events, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -910,12 +912,13 @@ def products(request):
             Q(brand__icontains=search_text) | 
             Q(ean__icontains=search_text) |
             Q(model__icontains=search_text)).order_by("id")
-    paginator = Paginator(items, 20) # Siirtää muuttujan asetukseen
+    paginator = Paginator(items, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     static_url = settings.STATIC_URL
+
     context = {
         'items': page_obj,
         'is_show_all': is_show_all,
@@ -936,17 +939,22 @@ def product(request, idx):
     storage_filter = storage_f(request.user)
     rental_events = Rental_event.objects.filter(item=selected_item).filter(**storage_filter).order_by('-start_date')
 
-    paginator = Paginator(rental_events, 10) # Siirtää muuttujan asetukseen
+    paginator = Paginator(rental_events, ITEMS_PER_PAGE) # Siirtää muuttujan asetukseen
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     product_barcode = barcode_gen(idx)
+
+    # Calculate the page number this product is on. After deleting the product, we can return to this page
+    len_to_self_item = Goods.objects.filter(**storage_filter).filter(id__lt=idx).order_by("id").__len__()
+    page_number = (len_to_self_item // ITEMS_PER_PAGE) + 1
 
     context = {
         'rental_events': page_obj,
         'selected_item': selected_item,
         'idx': idx,
         'product_barcode': product_barcode,
+        'next_page': page_number
     }
     return render(request, 'varasto/product.html', context)
 
@@ -995,7 +1003,7 @@ def set_order_field(request):
 
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
-def delete_product(request, idx):
+def delete_product(request, idx, next_page):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
     item_data_dict = item.__dict__.copy() # Make copy of product instance
@@ -1030,8 +1038,11 @@ def delete_product(request, idx):
     
     item.delete()
 
-    # TODO Redirect to same page where product was
-    return redirect("products")
+    base_url = reverse('products')  # 1 URL to reverse
+    query_string =  urlencode({'page': next_page})  # 2 page=next_page, save page number where product was
+    url = '{}?{}'.format(base_url, query_string)  # 3 /products/?category=42, create url with parameters
+    
+    return redirect(url)
 
 
 

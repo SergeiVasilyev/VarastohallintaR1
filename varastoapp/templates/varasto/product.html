@@ -101,7 +101,7 @@
                         <h5 class="modal-title" id="exampleModalLabel">Poista {{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} tuotte</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{% url 'delete_product' selected_item.id %}" method="post">
+                    <form action="{% url 'delete_product' selected_item.id next_page %}" method="post">
                         {% csrf_token %}
                         <div class="modal-body">
                             <p><b> Haluatko varmasti poistaa tämän tuotteen?</b></p>

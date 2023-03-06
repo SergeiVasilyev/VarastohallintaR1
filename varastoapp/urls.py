@@ -50,7 +50,7 @@ urlpatterns = [
     path('recovery/', views.user_recovery, name='recovery'),
     path('new_item/', views.new_item, name='new_item'),
     path('edit_item/<int:idx>/', views.edit_item, name='edit_item'),
-    path('delete_product/<int:idx>/', views.delete_product, name='delete_product'),
+    path('delete_product/<int:idx>/<int:next_page>', views.delete_product, name='delete_product'),
 
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
