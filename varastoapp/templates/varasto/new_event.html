@@ -397,7 +397,7 @@ $(document).ready(function() {
                         <div class="items">
                             <div class="">
                                 <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
-                                <h5>{{changed_item.item_name|default:""}} {{changed_item.brand|default:""}} {{changed_item.model|default:""}}</h5>
+                                <h5><a class="user_link" href="{% url 'product' changed_item.id %}">{{changed_item.item_name|default:""}} {{changed_item.brand|default:""}} {{changed_item.model|default:""}}</a></h5>
                                 <p>Tuotekoodi {{changed_item.id}}</p>
                                 <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                                 <p>
