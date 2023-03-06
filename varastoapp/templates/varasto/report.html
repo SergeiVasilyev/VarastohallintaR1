@@ -132,7 +132,17 @@
 
     <div class="row01">
         <div class="">
-            <span class="">{{rental_event.amount}}</span>
+            <span class="">
+            {% if rental_event.item.cat_name_id != CATEGORY_CONSUMABLES_ID %}
+                {{rental_event.amount|default_if_none:"--"}} kpl
+            {% else %}
+                {% if rental_event.units %}
+                    {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.unit|default_if_none:"-"}}
+                {% else %}
+                    {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
+                {% endif %}
+            {% endif %}
+            </span>
         </div>
     </div>
 
