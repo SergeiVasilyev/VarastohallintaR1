@@ -15,7 +15,10 @@
 .columns_name div, .new_event_wrap div{
     /* border: 1px solid blue; */
 }
-
+.list__item_photo a, .list__item_photo a:hover, .list__item_photo a:visited {
+    text-decoration: none;
+    color: black;
+}
 .list__item_photo > div{
     overflow: hidden;
     width: 50px;
@@ -29,6 +32,22 @@
     object-fit:cover;
     /* object-position: -38px 10%; */
     object-position: 50% 50%; /* kuva keskellä */
+}
+
+.list__item_photo > div a > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.7em;
+    border: 1px solid #dadada;
+}
+.list__item_photo > div a > div svg {
+    width: 50%;
+    height: 50%;
+    opacity: 95%;
+    
 }
 
 .est_date{

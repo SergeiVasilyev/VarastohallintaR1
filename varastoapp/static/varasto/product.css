@@ -58,13 +58,27 @@
     overflow: hidden;
     width: 240px;
     height: 250px;
-    border-radius: 0.7em; 
+    border-radius: 0.7em;
 }
 .photo > div img {
     width: 240px;
     height: 250px;
     object-fit:cover;
     object-position: 50% 50%; /* kuva keskellä */
+}
+.photo > div > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    height: 250px;
+    border-radius: 0.7em;
+    border: 1px solid #949494;
+}
+.photo > div > div svg {
+    width: 50%;
+    height: 50%;
+    opacity: 95%;
 }
 
 .new_rental {
