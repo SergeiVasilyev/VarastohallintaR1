@@ -106,12 +106,14 @@
                         <span class="bi bi-gear button__i"></span>
                     </button>
                 </a>
-                <a class="nodecor" href="{% url 'admin:index' %}">
+                {% if user.is_staff %}
+                <a class="nodecor" href="{% url 'admin:index' %}" target="_blank">
                     <button type="button" class="button button_bg_white resize mb-2">
                         <span class="button__text_main_menu resize border1">Administration</span>
-                        <span class="bi bi-gear button__i"></span>
+                        <span class="bi bi-key button__i"></span>
                     </button>
                 </a>
+                {% endif %}
             </nav>
         </div>
     </aside>
