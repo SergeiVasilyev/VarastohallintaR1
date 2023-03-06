@@ -47,7 +47,7 @@ const list_el = `
 
             ${item.cat_name==CATEGORY_CONSUMABLES_ID ? 
                 '<span class="est_date">'+(item.amount ? item.amount : 0)+' pakkausta,</span>'+
-                '<span class="est_date">'+(item.amount_x_contents ? item.amount : 0) + (item.unit__unit_name ? item.unit__unit_name : '')+' yhteensä</span>' : 
+                '<span class="est_date">'+(item.amount_x_contents ? parseFloat(item.amount_x_contents) : 0) + ' ' + (item.unit__unit_name ? item.unit__unit_name : '')+' yhteensä</span>' : 
                 '<span class="est_date">'+(item.is_possible_to_rent_field ? (date+'.'+month+'.'+fullYear) : '')+'</span>'}
             
         </div>
