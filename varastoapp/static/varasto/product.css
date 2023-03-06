@@ -46,6 +46,10 @@
 .student_group, .personal_field_data {
     font-size: 1.25em;
 }
+.personal_field_data a {
+    text-decoration: none;
+    color: #325288;
+}
 .personal_field_name {
     font-size: 0.875em;
     color: #718096;
