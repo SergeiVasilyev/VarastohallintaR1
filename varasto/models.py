@@ -126,14 +126,12 @@ class Goods(models.Model):
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
-    reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
 

@@ -54,7 +54,7 @@ class GoodsForm(ModelForm):
         model = Goods
         fields =['ean','storage', 'storage_place', 'cat_name', 'item_name', 'brand', 
                 'model', 'item_type', 'size', 'parameters', 'contents', 
-                'picture', 'item_description', 'cost_centre', 'reg_number', 
+                'picture', 'item_description', 'cost_centre', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit', 'amount_x_contents']
         widgets ={
@@ -118,10 +118,6 @@ class GoodsForm(ModelForm):
                 'rows': '6',
             }),
             'cost_centre': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '',
-            }),
-            'reg_number': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '',
             }),
