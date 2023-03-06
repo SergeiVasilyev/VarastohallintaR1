@@ -1,4 +1,3 @@
-# from asyncio.windows_events import NULL
 import operator
 import pprint
 import re
@@ -129,17 +128,17 @@ def renter(request, idx):
                 product.amount_x_contents += returned_num
             product.save()
             return True
-
+        
         def substruct_from_rental_event():
             if return_all:
                 if event.amount:
                     event.returned = event.amount
-                    event.amount = 0
+                    event.amount = 0 # TODO Check if delete this line
                     event.returned_date = datenow
                     add_to_goods(event.returned, 1)
                 elif event.contents:
                     event.returned = event.contents
-                    event.contents = 0
+                    event.contents = 0 # TODO Check if delete this line
                     event.returned_date = datenow
                     add_to_goods(event.returned, 0)
                 else:
