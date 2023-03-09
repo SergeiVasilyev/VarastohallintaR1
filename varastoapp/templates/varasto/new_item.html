@@ -24,6 +24,36 @@
     }
 
     $(document).ready(function() {
+        // Barcode reader
+        var barcode = ''
+        var interval
+        document.addEventListener('keydown', function(e) {
+            if (interval){
+                clearInterval(interval)
+            }
+            if (e.keyCode == 13){
+                if (barcode) {
+                    printBarcode(barcode)
+                }
+                barcode = ''
+                event.preventDefault() // Blocking default enter click on submit button handling
+                return false
+            }
+            if (e.key != 'Shift')
+                barcode += e.key
+
+            // The function limits the input of characters by time. So we limit the accidental input of characters from the keyboard.
+            interval = setInterval(() => barcode = '', 20) // interval min 20ms
+        })
+
+        function printBarcode(scanned_barcode){
+            // console.log('scanned_barcode ' + scanned_barcode)
+            document.querySelector('#id_ean').value = scanned_barcode
+        }
+        // --Barcode reader
+
+
+
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)

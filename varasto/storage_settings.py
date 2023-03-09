@@ -20,6 +20,7 @@ CATEGORIES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähk�
 # ======================================================
 
 ITEMS_ON_A_PAGE = 20
+ITEMS_PER_PAGE = 20
 
 RENTAL_PAGE_VIEW = 'rental_events'
 
@@ -43,7 +44,6 @@ STORAGE_EMAIL = EMAIL_FROM_KEY
 EMAIL_PASS = EMAIL_PASS_FROM_KEY
 EMAIL_SERVER = "smtp.gmail.com"
 
-# TODO Create letter template %
 
 # MESSAGE TEMPLATE
 class Email_msg:
