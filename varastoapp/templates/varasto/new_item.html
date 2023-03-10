@@ -59,7 +59,7 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
 
-        console.log('{{ csrf_token }}')
+        // console.log('{{ csrf_token }}')
         let camera_button = document.querySelector("#start_cam")
         let video = document.querySelector("#video")
         let take_picture = document.querySelector("#take_picture")
@@ -130,7 +130,7 @@
             preview.style.height = "250px";
             
             let dataURI = mycanvas.toDataURL().replace(/^data:image\/png;base64/, "")
-            console.log(dataURI)
+            // console.log(dataURI)
 
             // sendPic(dataURI)
             
@@ -171,7 +171,7 @@
                         <div class="list__button list__button_bg_blue btn_strech btn-small btn-file font_size_1-2 btn_width_10">
                             <!-- {{ form.picture }} -->
                             <input type="file" name="picture" class="" onchange="showPreview(event);" accept="image/*" id="id_picture">
-                            <span class="list__button__text">SELAA KUVIA</span>
+                            <span class="list__button__text">SELAA KUVAA</span>
                         </div>
                         <input type="hidden" id="canvasData" name="canvasData"/>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
