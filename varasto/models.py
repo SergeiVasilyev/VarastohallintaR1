@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import *
 from .storage_settings import *
+from html.parser import HTMLParser
 
 
 
@@ -154,6 +155,7 @@ class Goods(models.Model):
         new_str = str(str1)
         new_str = f"{new_str[:-1]} data-suffix={val}>"
         return new_str
+    
 
     @property
     def decrease_items(self, is_сonsumables, amount):
