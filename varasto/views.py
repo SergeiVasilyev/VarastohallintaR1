@@ -396,8 +396,10 @@ def new_event(request):
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
+                                print('unit', unit)
                                 item.amount = int(item.amount) - item_amount
-                                item.amount_x_contents = item.amount * item.contents
+                                contents = item.contents if item.contents else 1
+                                item.amount_x_contents = item.amount * contents
                                 kwargs['amount'] = item_amount
                             else: # Jos yksikkö on sisällön määrää
                                 # amount_x_contents = item.amount * item.contents # formula
@@ -467,7 +469,7 @@ def getPersons(request):
                 Q(first_name__icontains=request.GET.get('name')) |
                 Q(last_name__icontains=request.GET.get('name')) |
                 Q(username__icontains=request.GET.get('name')) |
-                Q(code__icontains=request.GET.get('name'))).order_by('code')[:10]
+                Q(code__icontains=request.GET.get('name'))).order_by('code')
             for person in persons:
                 item = {
                     'id': person.id,
@@ -492,9 +494,11 @@ def getProduct(request):
     if is_ajax(request=request):
         if len(request.GET.get('name')) > 1:
             products = Goods.objects.filter(**storage_filter).filter(
-                reduce(operator.or_, (Q(id__icontains=x) | 
+                reduce(operator.or_, (
+                    Q(id__icontains=x) | 
                     Q(item_name__icontains=x) | 
-                    Q(brand__icontains=x) | 
+                    Q(brand__icontains=x) |
+                    Q(ean__icontains=x) |
                     Q(model__icontains=x) for x in search_words))).order_by("id")
             for product in products:
                 item = {
@@ -887,9 +891,16 @@ def new_item(request):
                     item.picture = new_picture
                     item.amount_x_contents = None
                     Goods.objects.bulk_create(l) # Lähettää kaikki tietokantaan
-                else:
+                else: # TODO refactor
                     item.picture = new_picture
-                    item.amount_x_contents = Decimal(request.POST.get('amount')) * Decimal(request.POST.get('contents'))
+                    contents = item.contents if item.contents else 1
+                    if contents > 0 and item.unit:
+                        item.contents = contents
+                        item.amount_x_contents = item.amount * contents
+                    else:
+                        item.unit_id = None
+                        item.contents = 1
+                        item.amount_x_contents = item.amount
                     item.save() # Jos kategoria ei ole Kulutusmateriaali lähetetään kaikki kappalet sama kentään
                     form.save()
             else:
