@@ -201,7 +201,11 @@
                         <div>
                             {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
                             <label class="form-label">Tavara yhteensä</label>
-                                {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents" %}
+                                {% if item.unit_id != 1 %}
+                                    {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents" %}
+                                {% else %}
+                                    {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents"|attr:"data-decimals:0"|attr:"min:1"|attr:"step:1" %}
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
