@@ -80,16 +80,17 @@ $(document).ready(function() {
             $id_pack.prop("disabled", true)
         }
         //let accessAllowed = (age > 18) ? true : false;
-        console.log($id_units.val())
+        //console.log($id_units.val())
         if ($id_units.val() == '1') { // need to assign a variable for '1' as kpl
             unit_around = Math.round($id_pack.val())
+            //unit_around = !unit_around ? 1 : unit_around
             $id_pack.val(unit_around)
             $id_pack.attr('data-decimals', 0)
             $id_pack.attr('step', 1)           
         } else {
             let val = ($id_units.val()) ? null_is_empty($id_pack.val()) : ''
+            //val = !val ? 0.0001 : val
             $id_pack.val(val)
-
             $id_pack.attr('data-decimals', 4)
             $id_pack.attr('step', 0.001)
         }
