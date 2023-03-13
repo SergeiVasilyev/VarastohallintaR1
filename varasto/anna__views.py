@@ -12,6 +12,8 @@ from django.forms import modelformset_factory, inlineformset_factory
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 from .storage_settings import *
+from django.urls import reverse
+from urllib.parse import urlencode
 
 
 @login_required()
@@ -83,37 +85,55 @@ def inventory (request):
 @user_passes_test(lambda user: user.has_perm("varasto.change_customuser"))
 def new_user(request):
     error = ''
+    person = {}
+    approved = ''
     if request.method == 'POST':
-        username = (request.POST.get('username'))
-        email = (request.POST.get('email'))
-        pass1 = (request.POST.get('pass1'))
-        pass2 = (request.POST.get('pass2'))
-        is_storage_staff = (request.POST.get('is_storage_staff'))
-        is_staff = (request.POST.get('is_staff'))
-        got_person_id = int((request.POST.get('got_person')))
-        check_person = CustomUser.objects.filter(username=username).exclude(id=got_person_id).first()
-        if pass1 == pass2:
-            try:
-                person = CustomUser.objects.get(id=got_person_id)
-                if person and not check_person:
-                    person.username = username if username else person.username # if not username leave the old username
-                    person.email = email if email else person.email # if not email leave the old email
-                    person.is_storage_staff = 1 if is_storage_staff else 0
-                    person.is_staff = 1 if is_staff else 0
-                    person.password = make_password(pass1)
-                    person.save()
-                    return redirect('new_user')
-                else:
-                    error = "Käyttäjä on jo olemassa"
-            except:
-                error = "Käyttäjää ei löydy"
+        if request.POST.get('got_person'):
+            username = (request.POST.get('username'))
+            email = (request.POST.get('email'))
+            pass1 = (request.POST.get('pass1'))
+            pass2 = (request.POST.get('pass2'))
+            is_storage_staff = (request.POST.get('is_storage_staff'))
+            is_staff = (request.POST.get('is_staff'))
+            got_person_id = int((request.POST.get('got_person')))
+            check_person = CustomUser.objects.filter(username=username).exclude(id=got_person_id).first()
+            if pass1 == pass2:
+                try:
+                    person = CustomUser.objects.get(id=got_person_id)
+                    if person and not check_person:
+                        person.username = username if username else person.username # if not username leave the old username
+                        person.email = email if email else person.email # if not email leave the old email
+                        person.is_storage_staff = 1 if is_storage_staff else 0
+                        person.is_staff = 1 if is_staff else 0
+                        person.password = make_password(pass1)
+                        person.save()
+                        
+                        base_url = reverse('new_user')
+                        person_param = urlencode({'search_person': request.GET.get('search_person')})
+                        approved_param = urlencode({'approved': 'Tietoa tellennettu!'})
+                        url = '{}?{}&{}'.format(base_url, person_param, approved_param)
+                        return redirect(url)
+                    else:
+                        error = "Syötetty käyttäjän nimi on jo olemassa"
+                except:
+                    error = "Käyttäjää ei löydy"
+            else:
+                error = "Salasanat eivät täsmää"
         else:
-            error = "Salasanat eivät täsmää tai käyttäjä on jo olemassa."
-    print(error)
+            error = "Ensin pitää hakea käyttäjä, sen jälkeen on mahdollista muokata hänen kentää"
+        
+        base_url = reverse('new_user')
+        got_person = request.GET.get('search_person') if request.GET.get('search_person') else ''
+        person_param = urlencode({'search_person': got_person})
+        error_param = urlencode({'error': error})
+        url = '{}?{}&{}'.format(base_url, person_param, error_param)
+        return redirect(url)
+    
 
-    person = ''
     if request.method == 'GET':
         search_person = (request.GET.get('search_person'))
+        error = request.GET.get('error')
+        approved = request.GET.get('approved')
         # print(search_person)
         if search_person and search_person.isnumeric():
             try:
@@ -128,6 +148,8 @@ def new_user(request):
         
     context = {
         'person': person,
+        'error': error,
+        'approved': approved
     }
     return render(request, 'varasto/new_user.html', context)
 
