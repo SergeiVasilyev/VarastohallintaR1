@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'varastoapp.wsgi.application'
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.postgresql',
-         'HOST': 'localhost',
-         'PORT': 5432,
-         'USER': 'postgres',
-         'PASSWORD': 'Q2werty',
-         'NAME': 'varasto2',
+         'HOST': HOST,
+         'PORT': PORT,
+         'USER': DATABASE_USER,
+         'PASSWORD': DATABASE_PASSWORD,
+         'NAME': DATABASE_NAME,
      }
  }
 
