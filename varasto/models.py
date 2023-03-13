@@ -235,13 +235,13 @@ class Goods(models.Model):
 
 
 class Rental_event(models.Model):
-    item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
-    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
+    item = models.ForeignKey(Goods, related_name='item', on_delete=models.SET_NULL, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
+    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.SET_NULL, blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
-    units = models.ForeignKey(Units, on_delete=models.PROTECT, blank=True, null=True) # Goods, to_field='unit',
+    units = models.ForeignKey(Units, on_delete=models.SET_NULL, blank=True, null=True) # Goods, to_field='unit',
     start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)
