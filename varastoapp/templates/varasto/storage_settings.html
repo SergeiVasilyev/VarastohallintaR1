@@ -14,71 +14,90 @@
 {% block page %}Asetukset{% endblock %}
 
 {% block main_content %}
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <div class="page_size">
 
-<div class="page_size">
+        <div class="head mt-3">
+            <head>
+                DATA FOR DATABASE GENERATOR
+            </head>
+        </div>
+        <div class="new_middle mt-2">
+            <div>
+                <label class="form-label">Työkäluryhmän lista</label>
+                <input type="text" class="form-control" id="" name="">
+            </div>
+            <div>
+                <label class="form-label">Kulutusmateriaali id</label>
+                <input type="text" class="form-control" id="" name="">  
+            </div>
+            <div>
+                <label class="form-label">Yksikkö lista</label>
+                <input type="text" class="form-control" id="" name="">
+            </div>
+        </div>
 
-<div class="head mt-3">
-    <head>
-        DATA FOR DATABASE GENERATOR
-    </head>
-</div>
-<div class="new_middle mt-2">
-    <div>
-        <label class="form-label">Työkäluryhmän lista</label>
-        <input type="text" class="form-control" id="" name="">
+        {% if formset %}
+        <div class="head mt-5">
+            <head>
+                CHANGE MAIL
+            </head>
+        </div>
+        <div class="new_middle mt-2">
+            {% for form in formset %}
+            <div>
+                <label class="form-label">{{ form.new_label }}</label>
+                {% for field in form %}
+                {{ field }}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- <div class="new_middle mt-2">
+            <div>
+                <label class="form-label">Varastonhallinnan sähköposti</label>
+                {{storage_email_form.set_value}}
+                {{storage_email_form.user}}
+                {{storage_email_form.setting_name}}
+            </div>
+
+
+
+            <div>
+                <label class="form-label">Salasana</label>
+                {{storage_email_pass_form.set_value}}
+                {{storage_email_pass_form.user}}
+                {{storage_email_pass_form.setting_name}}
+            </div>
+
+
+
+            <div>
+                <label class="form-label">Palvelin sähköposti</label>
+                {{storage_email_server_form.set_value}}
+            </div>
+
+        </div> -->
+
+        <div class="head mt-5">
+            <head>
+                PRODUCT IMG PATH
+            </head>
+        </div>
+
+        <div class="new_middle mt-2">
+            <div>
+                <label class="form-label">Polku tuotekuviin</label>
+                <input type="url" class="form-control" id="" name="">
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-5">TALENNA</button>
     </div>
-    <div>
-        <label class="form-label">Kulutusmateriaali id</label>
-        <input type="text" class="form-control" id="" name="">  
-    </div>
-    <div>
-        <label class="form-label">Yksikkö lista</label>
-        <input type="text" class="form-control" id="" name="">
-    </div>
-</div>
-
-<div class="head mt-5">
-    <head>
-        CHANGE MAIL
-    </head>
-</div>
-
-<div class="new_middle mt-2">
-    <div>
-        <label class="form-label">Varastonhallinnan sähköposti</label>
-        <input type="email" class="form-control" id="" name="">
-    </div>
-
-
-
-    <div>
-        <label class="form-label">Salasana</label>
-        <input type="password" class="form-control" id="" name=""> 
-    </div>
-
-
-
-    <div>
-        <label class="form-label">Palvelin sähköposti</label>
-        <input type="email" class="form-control" id="" name="">
-    </div>
-
-</div>
-
-<div class="head mt-5">
-    <head>
-        PRODUCT IMG PATH
-    </head>
-</div>
-
-<div class="new_middle mt-2">
-    <div>
-        <label class="form-label">Polku tuotekuviin</label>
-        <input type="url" class="form-control" id="" name="">
-    </div>
-
-</div>
-
-</div>
-
+</form>
 {% endblock %}

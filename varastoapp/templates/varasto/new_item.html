@@ -24,12 +24,42 @@
     }
 
     $(document).ready(function() {
+        // Barcode reader
+        var barcode = ''
+        var interval
+        document.addEventListener('keydown', function(e) {
+            if (interval){
+                clearInterval(interval)
+            }
+            if (e.keyCode == 13){
+                if (barcode) {
+                    printBarcode(barcode)
+                }
+                barcode = ''
+                event.preventDefault() // Blocking default enter click on submit button handling
+                return false
+            }
+            if (e.key != 'Shift')
+                barcode += e.key
+
+            // The function limits the input of characters by time. So we limit the accidental input of characters from the keyboard.
+            interval = setInterval(() => barcode = '', 20) // interval min 20ms
+        })
+
+        function printBarcode(scanned_barcode){
+            // console.log('scanned_barcode ' + scanned_barcode)
+            document.querySelector('#id_ean').value = scanned_barcode
+        }
+        // --Barcode reader
+
+
+
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
 
-        console.log('{{ csrf_token }}')
+        // console.log('{{ csrf_token }}')
         let camera_button = document.querySelector("#start_cam")
         let video = document.querySelector("#video")
         let take_picture = document.querySelector("#take_picture")
@@ -100,7 +130,7 @@
             preview.style.height = "250px";
             
             let dataURI = mycanvas.toDataURL().replace(/^data:image\/png;base64/, "")
-            console.log(dataURI)
+            // console.log(dataURI)
 
             // sendPic(dataURI)
             
@@ -141,7 +171,7 @@
                         <div class="list__button list__button_bg_blue btn_strech btn-small btn-file font_size_1-2 btn_width_10">
                             <!-- {{ form.picture }} -->
                             <input type="file" name="picture" class="" onchange="showPreview(event);" accept="image/*" id="id_picture">
-                            <span class="list__button__text">SELAA KUVIA</span>
+                            <span class="list__button__text">SELAA KUVAA</span>
                         </div>
                         <input type="hidden" id="canvasData" name="canvasData"/>
                         {% comment %} <button type="browse" class="btn btn-primary1">Browse</button> {% endcomment %}
@@ -258,16 +288,24 @@
                     
                     <div class="div8" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> TEKNISET TIEDOT</label>
+                            <label class="form-label">TEKNISET TIEDOT</label>
                             <!-- <input class="form-control" type="text"> -->
                             {{form.parameters}}
                         </div>
                     </div>
+                    
+                </div>
+                <div class="new_bottom">
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
-                            <label class="form-label"> VARASTO</label>
-                            <!-- <input class="form-control" type="text"> -->
+                            <label class="form-label">VARASTO</label>
                             {{form.storage}}
+                        </div>
+                    </div>
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">PAIKKA VARASTOSSA (mm: A25, max 5 symbolia)</label>
+                            {{form.storage_place}}
                         </div>
                     </div>
                 </div>

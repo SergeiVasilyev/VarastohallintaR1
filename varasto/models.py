@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import *
 from .storage_settings import *
+from html.parser import HTMLParser
 
 
 
@@ -38,8 +39,9 @@ class CustomUser(AbstractUser, PermissionsMixin):
         ("teacher", _("Opettaja")),
         ("super", _("Super user")),
     ]
+    is_storage_staff = models.BooleanField(default=False)
     group = models.CharField(max_length=15, blank=True, null=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     code = models.CharField(max_length=10, blank=True, null=True) # Voi olla Null, koska opettajien ja työntekijoiden koodi asetetaan käsiin
     photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
@@ -64,6 +66,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         elif user.role=="storage_employee":
             roles_dict.pop('super')
             roles_dict.pop('management')
+            roles_dict.pop('teacher')
         elif user.role=="teacher" or user.role=="student" or user.role=="student_extended":
             roles_dict = {'student': 'Oppilas'}
         return roles_dict
@@ -71,7 +74,8 @@ class CustomUser(AbstractUser, PermissionsMixin):
     @property
     def get_storage_staff(self):
         staff = CustomUser.objects.filter(storage=self.storage).filter(role='storage_employee').first()
-        return staff.email
+        staff_email = staff.email if staff else ''
+        return staff_email
 
 
 
@@ -123,14 +127,12 @@ class Goods(models.Model):
     item_description = models.TextField(blank=True, null=True) # Kuvaus
     ean = models.CharField(max_length=13, blank=True, null=True)
     cost_centre = models.CharField(max_length=100, blank=True, null=True) # Kustannuspaikka
-    reg_number = models.CharField(max_length=50, blank=True, null=True) # ??? - poistetaan
     purchase_data = models.DateField(blank=True, null=True) # Hankitapäivä
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
     storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
-    item_status = models.CharField(max_length=50, choices=ITEM_STATUS, blank=True, null=True) # pitää poistaa taulu
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
 
@@ -153,6 +155,7 @@ class Goods(models.Model):
         new_str = str(str1)
         new_str = f"{new_str[:-1]} data-suffix={val}>"
         return new_str
+    
 
     @property
     def decrease_items(self, is_сonsumables, amount):
@@ -217,9 +220,12 @@ class Goods(models.Model):
         event = Rental_event.objects.filter(item=self).filter(returned_date=None).order_by("id").first()
         if event and event.item.cat_name_id != CATEGORY_CONSUMABLES_ID:
             return [False, event.estimated_date, 'Item is not consumables but it is rented now']
-        if event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID:
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount > 0 or event.item.amount_x_contents > 0):
             return [True, event.estimated_date, 'Item are consumable and some of them are currently rented']
+        elif event and event.item.cat_name_id == CATEGORY_CONSUMABLES_ID and (event.item.amount == 0 and event.item.amount_x_contents == 0):
+            return [False, event.estimated_date, 'Item are consumable and storage is empty']
         return [True, None, 'Item is not rented yet']
+
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -343,5 +349,20 @@ class Staff_audit(models.Model):
 class Settings(models.Model):
     set_name = models.CharField(max_length=150, blank=True, null=True)
     set_value = models.CharField(max_length=300, blank=True, null=True)
+    label = models.CharField(max_length=300, blank=True, null=True)
+
     def __str__(self):
         return '%s' % (self.set_name)
+
+
+
+class Settings_CustomUser(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='staff_user', blank=True, null=True, on_delete=models.CASCADE)
+    setting_name = models.ForeignKey(Settings, related_name='setting_name', on_delete=models.CASCADE)
+    set_value = models.CharField(max_length=300, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, related_name='storage', default=None, blank=True, null=True, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return self.set_value
+

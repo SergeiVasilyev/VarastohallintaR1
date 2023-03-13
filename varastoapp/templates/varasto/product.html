@@ -23,14 +23,28 @@
         <div class="person_info">
             <div class="photo">
                 <!-- <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div> -->
-                <div><img src="{% static selected_item.picture %}" alt="{{selected_item.picture}}"></div>
+                <div>
+                    {% if selected_item.picture %}
+                    <img src="{% static selected_item.picture %}" alt="{{selected_item.picture}}">
+                    {% else %}
+                    <div>
+                        <!-- <i class="bi bi-wrench-adjustable"></i><i class="bi bi-hammer"></i> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+                            <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
+                          </svg>
+                        
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- <div><img src="data:image/png;base64,{{product_barcode}}" alt="barcode"></div> -->
+                <!-- <div><input type="hidden" id="canvasData" name="canvasData" value="{{product_barcode}}"/></div> -->
             </div>
             
             <div class="information ps-3">
                 <span class="student_name">{{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} </span>
                 <span class="student_group">{{ selected_item.model|default:" " }} {{ selected_item.parameters|default:" " }}</span>
                 <span class="personal_field_name">EAN</span>
-                <span class="personal_field_data">{{ selected_item.ean|default:"-" }}</span>
+                <span class="personal_field_data">{% if selected_item.ean %}<a href="{% url 'product_barcode_ean13' idx %}">{{ selected_item.ean|default:"-" }}</a>{% else %}-{% endif %}</span>
                 <span class="personal_field_name">saatavuus</span>
                 <span class="personal_field_data ">{% if selected_item.is_possible_to_rent.0 %}<span class="status_green round">Saatavilla</span>{% else %}<span class="status_red round">Ei saatavilla</span>{% endif %}</span>
                 <span class="personal_field_name">tuotekoodi</span>
@@ -42,12 +56,12 @@
             <div class="information ps-3 valign_end">
                 <span class="personal_field_name">tuotepaikka</span>
                 <span class="personal_field_data">{{ selected_item.storage_place|default:"-" }}</span>
+                <span class="personal_field_name">pakkauksien määrä</span>
+                <span class="personal_field_data">{{ selected_item.amount|default:"0" }} kpl</span>
                 <span class="personal_field_name">määrä pakkauksessa</span>
                 <span class="personal_field_data">{{ selected_item.contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
-                <span class="personal_field_name">pakkauksien määrä</span>
-                <span class="personal_field_data">{{ selected_item.amount|default:"-" }} kpl</span>
                 <span class="personal_field_name">kaikki yhteensä</span>
-                <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
+                <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"0" }} {{ selected_item.unit|default:"" }}</span>
                 <span class="personal_field_name">kustannuspaikka</span>
                 <span class="personal_field_data">{{ selected_item.cost_centre|default:"-" }}</span>
             </div>
@@ -76,8 +90,8 @@
                         <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
                     </button>
                 </a>
-                <a class="nodecor pb-3 {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
-                    <button type="submit" {% if selected_item.rentable_at and selected_item.cat_name_id != CATEGORY_CONSUMABLES_ID %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
+                <a class="nodecor pb-3 {% if not selected_item.is_possible_to_rent.0 %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if not selected_item.is_possible_to_rent.0 %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
@@ -99,7 +113,7 @@
                         <h5 class="modal-title" id="exampleModalLabel">Poista {{ selected_item.item_name|default:"" }} {{ selected_item.brand|default:"" }} tuotte</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{% url 'delete_product' selected_item.id %}" method="post">
+                    <form action="{% url 'delete_product' selected_item.id next_page %}" method="post">
                         {% csrf_token %}
                         <div class="modal-body">
                             <p><b> Haluatko varmasti poistaa tämän tuotteen?</b></p>
@@ -115,10 +129,14 @@
             </div>
         </div>
 
-
-        <div class="product_description mt-3 mb-3">
-            <div>
-                {{ selected_item.item_description|default:"-" }}
+        <div class="barcode_desc">
+            <div class="barcode">
+                <a href="{% url 'product_barcode' idx %}"><img src="data:image/png;base64,{{product_barcode}}" alt="barcode"></a>
+            </div>
+            <div class="product_description mt-3 mb-3">
+                <div>
+                    {{ selected_item.item_description|default:"-" }}
+                </div>
             </div>
         </div>
         
@@ -185,7 +203,7 @@
                         <span class="item_num_name">Määrä</span>
                         <span class="item_num">
                             {% if rental_event.units %}
-                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.units|default_if_none:"-"}}
+                            {{rental_event.contents|normalize_dec|default_if_none:"-"}} {{rental_event.item.unit|default_if_none:"-"}}
                             {% else %}
                             {{rental_event.amount|default_if_none:""}} {% if rental_event.amount > 1 %} pakettia {% else %} paketti {% endif %}
                             {% endif %}

@@ -201,7 +201,11 @@
                         <div>
                             {% if item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
                             <label class="form-label">Tavara yhteensä</label>
-                                {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents" %}
+                                {% if item.unit_id != 1 %}
+                                    {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents" %}
+                                {% else %}
+                                    {% render_field form.amount_x_contents|append_attr:"id:amount_x_contents"|attr:"data-decimals:0"|attr:"min:1"|attr:"step:1" %}
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -281,17 +285,24 @@
                             {{form.parameters}}
                         </div>
                     </div>
+                    
+                </div>
+
+                <div class="new_bottom">
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">VARASTO</label>
-                            <!-- <input class="form-control" type="text"> -->
-                            {% comment %} {{form.storage}} {% endcomment %}
-                            <!-- FIXME -->
                             {% if is_rented and item.cat_name_id != CATEGORY_CONSUMABLES_ID%}
                                 {% render_field form.storage|append_attr:is_storage_employee.1 %}
                             {% else %}
                                 {% render_field form.storage %}
                             {% endif %}
+                        </div>
+                    </div>
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">PAIKKA VARASTOSSA (mm: A25, max 5 symbolia)</label>
+                            {{form.storage_place}}
                         </div>
                     </div>
                 </div>

@@ -1,3 +1,6 @@
+from .keys import *
+
+
 # ITEMES_LETTER_CODE = 'A'
 
 
@@ -11,12 +14,13 @@ UNITS_LIST = ['kpl', 'l', 'kg', 'm', 'm³']
 CATEGORY_CONSUMABLES_ID = 1
 
 # CONSUMABLES name in database
-CATEGORY_CONSUMABLES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
+CATEGORIES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähkötyökalut']
 
 # / DATA FOR DATABASE GENERATOR (generator is not created)
 # ======================================================
 
 ITEMS_ON_A_PAGE = 20
+ITEMS_PER_PAGE = 20
 
 RENTAL_PAGE_VIEW = 'rental_events'
 
@@ -36,11 +40,10 @@ PRODUCT_IMG_PATH = 'images/goods/'
 # ====================================================
 # Email consts
 
-STORAGE_EMAIL = "office.varasto@gmail.com"
-EMAIL_PASS ="ztjzeaeqtddelbwq" 
+STORAGE_EMAIL = EMAIL_FROM_KEY
+EMAIL_PASS = EMAIL_PASS_FROM_KEY
 EMAIL_SERVER = "smtp.gmail.com"
 
-# TODO Create letter template %
 
 # MESSAGE TEMPLATE
 class Email_msg:
@@ -57,7 +60,7 @@ class Email_msg:
 
 # Viesti malli, jos tuotetta ei ole palautettu
 SUBJECT = "Automaattinen muistutus!"
-LINE1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br> <br>"
+LINE1 = "Tämä viesti on lähetetty automatisesti, ei kannata vastata. <br> <br>"
 LINE2 = "Henkilöllä {renter_first_name} {renter_last_name} (koodi: {renter_code}) on erääntynyt laina {storage_name} varastossa: <br>"
 LINE3 = "<b> - {item_name} {item_brand} {item_model} </b> {item_size} {item_parameters}, tuotteen koodi: {item_id} <br><br>"
 LINE4 = "Tarkemmat tiedot saat kirjoittamalla varaston työntekijälle {staff_email}"
@@ -68,7 +71,7 @@ PRODUCT_NOT_RETURNED_MSG = Email_msg(subject=SUBJECT, message=MESSAGE)
 
 # Viesti malli, jos tavarassa / työkalussa on vika
 SUBJECT = "Automaattinen muistutus!"
-LINE1 = "Tämä viesti on lähetetty automatisesti. Ei kannata vastaa viestista. <br><br>"
+LINE1 = "Tämä viesti on lähetetty automatisesti, ei kannata vastata. <br><br>"
 LINE2 = "Henkilö {renter_first_name} {renter_last_name} (koodi: {renter_code}) on palauttanut vaurioituneen tuotteen: <br>"
 LINE3 = "<b> - {item_name} {item_brand} {item_model} </b> {item_size} {item_parameters}, tuotteen koodi: {item_id} <br><br>"
 REMARKS = "Vaurion kuvaus: <br> {damaged_remarks} <br><br>"

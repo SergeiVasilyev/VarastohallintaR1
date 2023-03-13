@@ -14,12 +14,12 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'first_name', 'last_name', 'code', 'is_staff', 'is_active', 'role', 'storage')
-    list_filter = ('is_staff', 'is_active',)
+    list_display = ('username', 'first_name', 'last_name', 'code', 'is_storage_staff', 'is_staff', 'is_active', 'role', 'storage')
+    list_filter = ('is_storage_staff', 'is_staff', 'is_active',)
     fieldsets = (
         ('Main information', {'fields': ('username', 'password', 'first_name', 'last_name', 'group', 'storage')}),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('is_storage_staff', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         ('Main information', {
@@ -27,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'group', 'storage')}
         ),
         ('Contact information', {'fields': ('email', 'phone', 'code', 'role', 'responsible_teacher', 'photo', 'last_login', 'date_joined')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('is_storage_staff','is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     list_display_links = ('username', 'first_name', 'last_name', 'code', 'role')
     search_fields = ('username', 'first_name', 'last_name',)
@@ -46,7 +46,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class GoodsAdmin(admin.ModelAdmin):
     list_display = ['item_name', 'brand', 'model', 'cat_name', 
         'item_type', 'size', 'parameters', 'contents', 'picture',
-        'item_description', 'cost_centre', 'reg_number', 'purchase_data', 
+        'item_description', 'cost_centre', 'purchase_data', 
         'purchase_price', 'purchase_place', 'invoice_number', 'storage', 'ean', 'amount', 'unit', 'amount_x_contents']
 
 @admin.register(Storage_name)

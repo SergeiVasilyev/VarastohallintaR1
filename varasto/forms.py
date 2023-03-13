@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from .models import CustomUser, Category, Goods, Staff_audit, Units
+from .models import CustomUser, Category, Goods, Staff_audit, Units, Settings_CustomUser, Settings
 from django.forms import DateInput, DateTimeInput, ModelForm, NumberInput, Select, widgets, TextInput, CheckboxInput
 
 
@@ -52,9 +52,9 @@ class CustomUserForm(ModelForm):
 class GoodsForm(ModelForm):
     class Meta:
         model = Goods
-        fields =['ean','storage', 'cat_name', 'item_name', 'brand', 
+        fields =['ean','storage', 'storage_place', 'cat_name', 'item_name', 'brand', 
                 'model', 'item_type', 'size', 'parameters', 'contents', 
-                'picture', 'item_description', 'cost_centre', 'reg_number', 
+                'picture', 'item_description', 'cost_centre', 
                 'purchase_data', 'purchase_price', 'purchase_place', 
                 'invoice_number', 'amount', 'unit', 'amount_x_contents']
         widgets ={
@@ -65,12 +65,16 @@ class GoodsForm(ModelForm):
             'storage': widgets.Select(attrs={
                 'class': 'form-select',
             }),
+            'storage_place': TextInput(attrs={
+                'class': 'form-control',
+            }),
             'item_name': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '',
             }),
             'cat_name': widgets.Select(attrs={
                 'class': 'form-select',
+                'required': True
             }),
             'picture': widgets.FileInput(attrs={
                 'class': '',
@@ -117,10 +121,6 @@ class GoodsForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': '',
             }),
-            'reg_number': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '',
-            }),
             'purchase_price': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '',
@@ -143,7 +143,7 @@ class GoodsForm(ModelForm):
             'amount_x_contents': NumberInput(attrs={
                 'min': 0, # Min value doesn't work
                 'max': 1000000,
-                'step': 1,
+                'step': 0.0001, # Ei saa laittaa step 1, jos user halua laittaa float number. Saadaan virhe jos tietokannalta tulee float.
                 'data-decimals': 4,
                 'placeholder': '0',
             }),
@@ -176,4 +176,20 @@ class Staff_auditForm(ModelForm):
             }),
 
         }
+
+
+class Settings_CustomUserForm(ModelForm):
+
+    class Meta:
+        model = Settings_CustomUser
+        fields = ['user', 'setting_name', 'set_value', 'storage']
+        widgets = {
+            'user': forms.HiddenInput(),
+            'setting_name': forms.HiddenInput(),
+            'storage': forms.HiddenInput(),
+            'set_value': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '',
+            }),
+    }
 

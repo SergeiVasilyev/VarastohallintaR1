@@ -17,7 +17,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="{% static 'varasto/bootstrap-input-spinner.js' %}"></script>
-    <script src="{% static 'varasto/htmx.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.5" integrity="sha384-7aHh9lqPYGYZ7sTHvzP1t3BAfLhYSTy9ArHdP3Xsr9/3TlGurYgcPBoFmXX2TX/w" crossorigin="anonymous"></script>
+    <!-- <script src="{% static 'varasto/htmx.js' %}"></script> -->
+    <!-- https://select2.org/dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <title>{% block title %}{% endblock %}</title>
 
     <script type="text/javascript">
@@ -69,15 +74,15 @@
             $('.logos_burger').click(function(){
                 console.log($('.main_container').css('grid-template-columns').slice(0, 3))
                 var show_full = 0
-                // $('.button__text').toggle()
+                // $('.button__text_main_menu').toggle()
                 if ($('.main_container').css('grid-template-columns').slice(0, 3)=='100') {
                     $('.main_container').css('grid-template-columns', '280px 1fr 1fr 1fr')
                     show_full = 1
-                    $('.button__text').css('display', 'flex')
-                    $('.button__text').css('align-items', 'center')
+                    $('.button__text_main_menu').css('display', 'flex')
+                    $('.button__text_main_menu').css('align-items', 'center')
                 } else {
                     $('.main_container').css('grid-template-columns', '100px 1fr 1fr 1fr')
-                    $('.button__text').css('display', 'none')
+                    $('.button__text_main_menu').css('display', 'none')
                 }
 
                 setBurger(show_full)
@@ -87,14 +92,14 @@
     </script>
     <style>
         {% if show_full_burger %}
-            .button__text{
+            .button__text_main_menu{
                 display: inline-flex;
             }
             .main_container{
                 grid-template-columns: 280px 1fr 1fr 1fr;
             }
         {% else %}
-            .button__text{
+            .button__text_main_menu{
                 display: none;
             }
             .main_container{
