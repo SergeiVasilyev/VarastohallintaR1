@@ -116,7 +116,7 @@ $(document).ready(function() {
                 if (response.goods[0]){
                     //response.goods.forEach(element => console.log(element.id))
                     $('#add_item_list').html('')
-                    response.goods.forEach(element => $('#add_item_list').append(`<option style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model}</option>`))
+                    response.goods.forEach(element => $('#add_item_list').append(`<option style="border:1px solid red !important;" value='${element.id}'>${element.item_name} ${element.brand} ${element.model} ${element.ean}</option>`))
                 }
             }
         })
@@ -398,13 +398,15 @@ $(document).ready(function() {
                             <div class="">
                                 <input name="add_item{{forloop.counter0}}" value="{{changed_item.id}}" type="hidden" class="form-control" placeholder="kirjoita tuotenumero">
                                 <h5><a class="user_link" href="{% url 'product' changed_item.id %}">{{changed_item.item_name|default:""}} {{changed_item.brand|default:""}} {{changed_item.model|default:""}}</a></h5>
-                                <p>Tuotekoodi {{changed_item.id}}</p>
+                                <p>Tuotekoodi: {{changed_item.id}}</p>
                                 <p>{{changed_item.parameters|default:""}} {{changed_item.size|default:""}}</p>
                                 <p>
                                     {% if changed_item.cat_name.id == 1 %}
-                                        {{changed_item.amount|default:"0"}} laatikkoa
+                                        {{changed_item.amount|default:"0"}} laatikkoa / kpl
+                                        {% if changed_item.unit %}
                                         | {{changed_item.contents|normalize_dec|default:""}} {{changed_item.unit|default:""}} laatikossa
                                         | {{changed_item.amount_x_contents|normalize_dec|default:"0"}} {{changed_item.unit|default:""}} yhteensä
+                                        {% endif %}
                                     {% endif %}
                                 </p>
                             </div>
@@ -463,7 +465,7 @@ $(document).ready(function() {
                                             checked
                                         {% else %}
                                         {% endif %}
-                                        {% if changed_item.amount == 0 %}
+                                        {% if changed_item.amount == 0 or not changed_item.amount %}
                                         disabled
                                         {% endif %}
                                             />
@@ -472,16 +474,21 @@ $(document).ready(function() {
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
+                                        {% if changed_item.unit %} <!-- Jos pakkauusen määrä on määritetty sitten näytetään radio button -->
                                         <input onclick="radio_btn('{{changed_item.id}}', '{{changed_item.unit}}', '{{changed_item.amount_x_contents|normalize_dec}}')" class="form-check-input" type="radio" name="radioUnit{{changed_item.id}}" id="radioUnit2-{{changed_item.id}}"
                                         value="0"
                                         {% if changed_item.radioUnit == '0' %}
                                             checked                                       
                                         {% else %}
                                         {% endif %}
+                                        {% if not changed_item.unit %}
+                                        disabled
+                                        {% endif %}
                                             />
                                         <label class="form-check-label" for="radioUnit2-{{changed_item.id}}">
                                             {{changed_item.unit|default:""}}
                                         </label>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

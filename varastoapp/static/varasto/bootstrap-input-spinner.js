@@ -207,7 +207,7 @@
           }
 
           function setValue(newValue, updateInput) {
-            console.log('spinner, '+newValue+' '+updateInput)
+            // console.log('spinner, '+newValue+' '+updateInput)
               if (updateInput === undefined) {
                   updateInput = true
               }

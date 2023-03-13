@@ -78,6 +78,13 @@ $(document).ready(function() {
 
             <input name="got_person" value="{{person.id}}" hidden>
 
+            <div class="feedback-invalid mt-4 me-1 {% if error %}show{% else %}hide{% endif %}">
+                {{ error }}
+            </div>
+            <div class="feedback-valid mt-4 me-1 {% if approved %}show{% else %}hide{% endif %}">
+                {{ approved }}
+            </div>
+
             <div class="mb-3 mt-5">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -90,6 +97,9 @@ $(document).ready(function() {
                     </div>
                 </div>
             </div>
+
+            
+
             <div class="mb-3">
                 <label for="username" class="form-label">Käyttäjän nimi:</label>
                 <input type="text" class="form-control" id="username" name="username" value="{{person.username}}">

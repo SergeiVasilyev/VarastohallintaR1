@@ -56,12 +56,12 @@
             <div class="information ps-3 valign_end">
                 <span class="personal_field_name">tuotepaikka</span>
                 <span class="personal_field_data">{{ selected_item.storage_place|default:"-" }}</span>
+                <span class="personal_field_name">pakkauksien määrä</span>
+                <span class="personal_field_data">{{ selected_item.amount|default:"0" }} kpl</span>
                 <span class="personal_field_name">määrä pakkauksessa</span>
                 <span class="personal_field_data">{{ selected_item.contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
-                <span class="personal_field_name">pakkauksien määrä</span>
-                <span class="personal_field_data">{{ selected_item.amount|default:"-" }} kpl</span>
                 <span class="personal_field_name">kaikki yhteensä</span>
-                <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
+                <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"0" }} {{ selected_item.unit|default:"" }}</span>
                 <span class="personal_field_name">kustannuspaikka</span>
                 <span class="personal_field_data">{{ selected_item.cost_centre|default:"-" }}</span>
             </div>
