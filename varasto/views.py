@@ -1154,27 +1154,27 @@ def initialize(request):
                 for perm in auth_perms:
                     group.permissions.add(perm)
             if group.name == 'Management':
-                perm_id_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 48, 49, 50, 52, 53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+                perm_id_list = MANGEMENT_PERM
                 perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student':
-                perm_id_list = [32]
+                perm_id_list = STUDENT_PERM
                 perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student_ext':
-                perm_id_list = [24, 29, 30, 31, 32, 45, 46, 48]
+                perm_id_list = STUDENT_EXT_PERM
                 perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Storage_employee':
-                perm_id_list = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50, 52, 56, 57, 58, 59, 60, 64, 65, 66, 67, 68]
+                perm_id_list = STORAGE_EMPLOYEE_PERM
                 perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Teacher':
-                perm_id_list = [24, 32, 36, 40, 48]
+                perm_id_list = TEACHER_PERM
                 perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
