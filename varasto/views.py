@@ -1137,7 +1137,8 @@ def product_barcode_ean13(request, idx):
 @user_passes_test(lambda user: user.is_superuser)
 def initialize(request):
     groups = Group.objects.all()
-    if not groups:
+    group_first = groups.first()
+    if not group_first.permissions:
         for n in range(len(CATEGORIES)):
             cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
             # print(cats)
