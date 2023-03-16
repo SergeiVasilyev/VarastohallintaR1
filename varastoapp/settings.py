@@ -26,7 +26,7 @@ SECRET_KEY = DJ_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -133,19 +133,20 @@ USE_TZ = True
 
 STATIC_URL = 'varastoapp/static/'
 
+# STATIC_URL = 'static/'
+# STATIC_ROOT = 'static/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTH_USER_MODEL = 'varasto.CustomUser'
-
 LOGIN_URL = '/login/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'varastoapp/static/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/images/'
-
 UPLOAD_IMG = '/upload_img/'
 
 # PRODUCT_IMG_PATH = 'images/goods/'

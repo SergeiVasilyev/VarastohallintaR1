@@ -40,6 +40,8 @@ from urllib.parse import urlencode
 from functools import reduce
 
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 
 
@@ -871,10 +873,19 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
-
+    
     if request.method == "POST":
+        print(request.POST.get('storage'))
+        new_cat, is_new_category = Storage_name.objects.get_or_create(name=request.POST.get('storage'))
+        print(new_cat, is_new_category)
+
+        request.POST._mutable = True
+        request.POST['storage'] = new_cat.id
+
+
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
+            print('valid')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -909,10 +920,17 @@ def new_item(request):
         return redirect('new_item')
     else:
         form = GoodsForm(use_required_attribute=False, initial={'storage': request.user.storage})
+        if request.user.storage:
+            changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+        else:
+            changed_storage = ''
+        storages = Storage_name.objects.all()
 
     context = {
         'form': form,
-        'error_massage': error_massage
+        'error_massage': error_massage,
+        'storages': storages,
+        'changed_storage': changed_storage
     }
     return render(request, 'varasto/new_item.html', context)
 
@@ -1117,13 +1135,49 @@ def product_barcode_ean13(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 @user_passes_test(lambda user: user.is_superuser)
-def initilize(request):
-    for n in range(len(CATEGORIES)):
-        cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
-        # print(cats)
+def initialize(request):
+    groups = Group.objects.all()
+    if not groups:
+        for n in range(len(CATEGORIES)):
+            cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
+            # print(cats)
 
-    for n in range(len(UNITS_LIST)):
-        units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
+        for n in range(len(UNITS_LIST)):
+            units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
+
+        for n in range(len(AUTH_GROUPS)):
+            group = Group.objects.get_or_create(name=AUTH_GROUPS[n])
+
+        auth_perms = Permission.objects.all()
+        for group in groups:
+            if group.name == 'Administrator':
+                for perm in auth_perms:
+                    group.permissions.add(perm)
+            if group.name == 'Management':
+                perm_id_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 48, 49, 50, 52, 53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Student':
+                perm_id_list = [32]
+                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Student_ext':
+                perm_id_list = [24, 29, 30, 31, 32, 45, 46, 48]
+                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Storage_employee':
+                perm_id_list = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50, 52, 56, 57, 58, 59, 60, 64, 65, 66, 67, 68]
+                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Teacher':
+                perm_id_list = [24, 32, 36, 40, 48]
+                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
 
 
     return HttpResponse('INITIALIZE COMPLETE')

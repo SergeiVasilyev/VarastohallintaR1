@@ -107,11 +107,6 @@ class Units(models.Model):
 
 
 class Goods(models.Model):
-    ITEM_STATUS = [
-        ("available", _("saatavilla")),
-        ("not_available", _("ei saatavilla")),
-        ("under_repair", _("korjaamassa")),
-    ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)

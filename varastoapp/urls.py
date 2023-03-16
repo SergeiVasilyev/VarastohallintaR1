@@ -73,7 +73,7 @@ urlpatterns = [
     path('get_product2/', views.getProduct2, name='getProduct2'),
     path('save_permision/<int:idx>/', views.save_permision, name='save_permision'),
     path('burger_settings/', views.burger_settings, name='burger_settings'),
-    path('initilize/', views.initilize, name='initilize'),
+    path('initialize/', views.initialize, name='initialize'),
 
     path('filling_goods_description/', views.filling_goods_description, name='filling_goods_description'),
 
