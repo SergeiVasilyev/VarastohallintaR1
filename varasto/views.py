@@ -871,10 +871,19 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
-
+    
     if request.method == "POST":
+        print(request.POST.get('storage'))
+        new_cat, is_new_category = Storage_name.objects.get_or_create(name=request.POST.get('storage'))
+        print(new_cat, is_new_category)
+
+        request.POST._mutable = True
+        request.POST['storage'] = new_cat.id
+
+
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
+            print('valid')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -909,10 +918,17 @@ def new_item(request):
         return redirect('new_item')
     else:
         form = GoodsForm(use_required_attribute=False, initial={'storage': request.user.storage})
-
+        if request.user.storage:
+            changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+        else:
+            changed_storage = ''
+        storages = Storage_name.objects.all()
+        
     context = {
         'form': form,
-        'error_massage': error_massage
+        'error_massage': error_massage,
+        'storages': storages,
+        'changed_storage': changed_storage
     }
     return render(request, 'varasto/new_item.html', context)
 
