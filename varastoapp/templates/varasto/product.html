@@ -61,7 +61,13 @@
                 <span class="personal_field_name">määrä pakkauksessa</span>
                 <span class="personal_field_data">{{ selected_item.contents|normalize_dec|default:"-" }} {{ selected_item.unit|default:"" }}</span>
                 <span class="personal_field_name">kaikki yhteensä</span>
-                <span class="personal_field_data">{{ selected_item.amount_x_contents|normalize_dec|default:"0" }} {{ selected_item.unit|default:"" }}</span>
+                <span class="personal_field_data">
+                    {% if selected_item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
+                    {{ selected_item.amount_x_contents|normalize_dec|default:"0" }} {{ selected_item.unit|default:"kpl" }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </span>
                 <span class="personal_field_name">kustannuspaikka</span>
                 <span class="personal_field_data">{{ selected_item.cost_centre|default:"-" }}</span>
             </div>
