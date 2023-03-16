@@ -105,7 +105,15 @@ $(document).ready(function() {
             <div class="list__item brd_top" userid="{{grouped_event.renter.id}}" {% if not grouped_event.get_elements_by_renter|is_renter_has_not_returned_item_and_same_storage:request.user %}is_overdue="0"{% else %}is_overdue="1"{% endif %}>
                 <div class="list__item_photo">
                     <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
-                    <div><a href="{% url 'renter' grouped_event.renter_id %}"><img src="{% static grouped_event.renter.photo %}" alt="{{grouped_event.renter.photo}}"></a></div>
+                    <div>
+                        <a href="{% url 'renter' grouped_event.renter_id %}">
+                            {% if selected_user.photo %}
+                            <img src="{% static grouped_event.renter.photo %}" alt="{{grouped_event.renter.photo}}">
+                            {% else %}
+                            <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
+                            {% endif %}
+                        </a>
+                    </div>
                 </div>
                 <div class="list__item_student">
                     <span><a href="{% url 'renter' grouped_event.renter_id %}">{{grouped_event.renter.first_name}} {{grouped_event.renter.last_name}}</a></span>
