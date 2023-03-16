@@ -86,3 +86,5 @@ DEFECT_IN_PRODUCT_MSG = Email_msg(subject=SUBJECT, message=MESSAGE)
 
 
 
+# AUTH GROUPS INITIALISATION
+AUTH_GROUPS = ['Administrator', 'Management', 'Student', 'Student_ext', 'Storage_employee', 'Teacher']
