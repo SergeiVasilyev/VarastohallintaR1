@@ -28,7 +28,7 @@
             <span class="small mt-3">Tuotenumero</span>
             <span class="middle">{{rental_event.item.id}}</span>
             <span class="small mt-3">Tuotepaikka</span>
-            <span class="middle">{{rental_event.item.storage_place}}</span>
+            <span class="middle">{{rental_event.item.storage_place|default_if_none:"-"}}</span>
         </div>
     </div>
 
