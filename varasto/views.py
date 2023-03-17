@@ -1035,7 +1035,10 @@ def product(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def set_rental_event_view(request):
-    set_name = Settings.objects.get(set_name='rental_page_view')
+    try:
+        set_name = Settings.objects.get(set_name='rental_page_view')
+    except:
+        set_name = Settings.objects.create(set_name='rental_page_view', label='Vuokratapahtumat')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
     set.set_value = request.GET.get('name')
     set.save()
