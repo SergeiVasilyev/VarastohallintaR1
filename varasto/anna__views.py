@@ -90,6 +90,7 @@ def new_user(request):
     if request.method == 'POST':
         if request.POST.get('got_person'):
             username = (request.POST.get('username'))
+            group_permission = (request.POST.get('permission'))
             email = (request.POST.get('email'))
             pass1 = (request.POST.get('pass1'))
             pass2 = (request.POST.get('pass2'))
@@ -107,6 +108,9 @@ def new_user(request):
                         person.is_staff = 1 if is_staff else 0
                         person.password = make_password(pass1)
                         person.save()
+                        group = Group.objects.get(name=group_permission)
+                        person.groups.clear()
+                        group.user_set.add(person)
                         
                         base_url = reverse('new_user')
                         person_param = urlencode({'search_person': request.GET.get('search_person')})
@@ -145,11 +149,12 @@ def new_user(request):
                 person = CustomUser.objects.get(username=search_person)
             except:
                 return redirect('new_user')
-        
+    groups = Group.objects.all()
     context = {
         'person': person,
         'error': error,
-        'approved': approved
+        'approved': approved,
+        'groups': groups
     }
     return render(request, 'varasto/new_user.html', context)
 
