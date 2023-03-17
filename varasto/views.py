@@ -2,6 +2,7 @@ import operator
 import pprint
 import re
 import time
+import os
 from django.forms import DateTimeField, IntegerField
 from django.http import (
     HttpResponse,
@@ -198,44 +199,52 @@ def renter(request, idx):
         if request.POST.getlist('send_email_to_teacher'):
             # print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
 
-            subject = PRODUCT_NOT_RETURNED_MSG.subject
-            msg = PRODUCT_NOT_RETURNED_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                subject = PRODUCT_NOT_RETURNED_MSG.subject
+                msg = PRODUCT_NOT_RETURNED_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name if item.storage else '',
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
         if request.POST.getlist('send_email_item_is_damaged'):
-            damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
-            subject = DEFECT_IN_PRODUCT_MSG.subject
-            msg = DEFECT_IN_PRODUCT_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff,
-                damaged_remarks=damaged_remarks)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
+                subject = DEFECT_IN_PRODUCT_MSG.subject
+                msg = DEFECT_IN_PRODUCT_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name, 
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff,
+                    damaged_remarks=damaged_remarks)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
 
     selected_user = CustomUser.objects.get(id=idx)
@@ -385,7 +394,7 @@ def new_event(request):
                     'renter': renter, 
                     'staff': staff,
                     'start_date': datenow,
-                    'storage_id': staff.storage_id,
+                    'storage_id': staff.storage_id if staff.storage_id else item.storage_id,
                     'estimated_date': estimated_date,
                     'amount': 1,
                     # 'units': item.unit if not unit else None
@@ -873,11 +882,25 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
+
+    def storage_code_symbols(storage_name, num):
+        exist_code = Storage_name.objects.filter(storage_code__istartswith=storage_name[:num])
+        print(storage_name[:num])
+        if exist_code:
+            num += 1
+            num = storage_code_symbols(storage_name, num)
+        return num
     
     if request.method == "POST":
-        print(request.POST.get('storage'))
-        new_cat, is_new_category = Storage_name.objects.get_or_create(name=request.POST.get('storage'))
-        print(new_cat, is_new_category)
+        storage_name = request.POST.get('storage')
+        new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+        if is_new_category and storage_name: # If is new category and storage_name not empty
+            code_len = storage_code_symbols(storage_name, 1)
+            new_cat.storage_code = storage_name[:1].lower()
+            new_cat.save()
+            print(new_cat, is_new_category, 'code_len', code_len, storage_name[:code_len])
+            # return HttpResponse("<html><body><h1>Oops! Automaattinen varasto koodin luominen epäonnistui. Ennen tuotteen luomista korjaa varastokoodi hallintasivulla.</h1><a href='/new_item'>Takaisin Uusi tavara sivulle</a></body></html>")
+        
 
         request.POST._mutable = True
         request.POST['storage'] = new_cat.id
@@ -885,7 +908,6 @@ def new_item(request):
 
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
-            print('valid')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
@@ -993,7 +1015,7 @@ def product(request, idx):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    product_barcode = barcode_gen(idx)
+    product_barcode = barcode_gen(idx, selected_item.storage.storage_code)
 
     # Calculate the page number this product is on. After deleting the product, we can return to this page
     len_to_self_item = Goods.objects.filter(**storage_filter).filter(id__lt=idx).order_by("id").__len__()
@@ -1014,7 +1036,10 @@ def product(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def set_rental_event_view(request):
-    set_name = Settings.objects.get(set_name='rental_page_view')
+    try:
+        set_name = Settings.objects.get(set_name='rental_page_view')
+    except:
+        set_name = Settings.objects.create(set_name='rental_page_view', label='Vuokratapahtumat')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
     set.set_value = request.GET.get('name')
     set.save()
@@ -1100,9 +1125,11 @@ def delete_product(request, idx, next_page):
 @user_passes_test(lambda user:user.is_storage_staff)
 def burger_settings(request):
     show_full = request.POST.get('show_full')
+    try:
+        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+    except:
+        burger_setting_dict = Settings.objects.create(set_name='show_full_burger')
 
-
-    burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=burger_setting_dict, user=request.user)
     set.set_value = show_full
     set.save()
@@ -1116,7 +1143,7 @@ def burger_settings(request):
 
 def product_barcode(request, idx):
     item = Goods.objects.get(id=idx)
-    product_barcode = barcode_gen(idx)
+    product_barcode = barcode_gen(idx, item.storage.storage_code)
     context = {
         'product_barcode': product_barcode,
         'item': item,
@@ -1137,7 +1164,8 @@ def product_barcode_ean13(request, idx):
 @user_passes_test(lambda user: user.is_superuser)
 def initialize(request):
     groups = Group.objects.all()
-    if not groups:
+    group_first = groups.first()
+    if not group_first:
         for n in range(len(CATEGORIES)):
             cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
             # print(cats)
@@ -1154,28 +1182,28 @@ def initialize(request):
                 for perm in auth_perms:
                     group.permissions.add(perm)
             if group.name == 'Management':
-                perm_id_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 48, 49, 50, 52, 53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perm_id_list = MANGEMENT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student':
-                perm_id_list = [32]
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perm_id_list = STUDENT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student_ext':
-                perm_id_list = [24, 29, 30, 31, 32, 45, 46, 48]
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perm_id_list = STUDENT_EXT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Storage_employee':
-                perm_id_list = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50, 52, 56, 57, 58, 59, 60, 64, 65, 66, 67, 68]
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perm_id_list = STORAGE_EMPLOYEE_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Teacher':
-                perm_id_list = [24, 32, 36, 40, 48]
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perm_id_list = TEACHER_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
 

@@ -24,7 +24,7 @@ class Storage_place(models.Model):
 
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
-    storage_code = models.CharField(max_length=2, blank=True, null=True)
+    storage_code = models.CharField(max_length=5, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)

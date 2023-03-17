@@ -46,6 +46,12 @@ $(document).ready(function() {
     })
     //// AJAX Get persons
 
+    $('input').click(function() {
+        $('.feedback-invalid').hide()
+        $('.feedback-valid').hide()
+    })
+    
+
 
 })
 </script>
@@ -98,7 +104,15 @@ $(document).ready(function() {
                 </div>
             </div>
 
-            
+            <div class="mb-3">
+                <label for="permission" class="form-label">Oikeus</label>
+                <input type="text" class="form-control" id="permission" name="permission" value="{{person.groups.get}}" list="permission_list">
+                <datalist id="permission_list">
+                    {% for n in groups %}
+                    <option value="{{n}}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
 
             <div class="mb-3">
                 <label for="username" class="form-label">Käyttäjän nimi:</label>

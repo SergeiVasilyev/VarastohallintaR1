@@ -177,7 +177,13 @@
             {% for rental_event in rental_events %}
             <div class="history_list">
                 <div class="history_photo">
-                    <div><img src="{% static rental_event.renter.photo %}" alt="{{rental_event.renter.photo}}"></div>
+                    <div>
+                        {% if selected_user.photo %}
+                        <img src="{% static rental_event.renter.photo %}" alt="{{rental_event.renter.photo}}">
+                        {% else %}
+                        <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
+                        {% endif %}
+                    </div>
                 </div>
                 
                 <div class="item_info">
