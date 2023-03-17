@@ -393,7 +393,7 @@ def new_event(request):
                     'renter': renter, 
                     'staff': staff,
                     'start_date': datenow,
-                    'storage_id': staff.storage_id,
+                    'storage_id': staff.storage_id if staff.storage_id else item.storage_id,
                     'estimated_date': estimated_date,
                     'amount': 1,
                     # 'units': item.unit if not unit else None
