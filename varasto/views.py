@@ -1124,9 +1124,11 @@ def delete_product(request, idx, next_page):
 @user_passes_test(lambda user:user.is_storage_staff)
 def burger_settings(request):
     show_full = request.POST.get('show_full')
+    try:
+        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+    except:
+        burger_setting_dict = Settings.objects.create(set_name='show_full_burger')
 
-
-    burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=burger_setting_dict, user=request.user)
     set.set_value = show_full
     set.save()
