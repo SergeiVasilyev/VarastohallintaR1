@@ -107,7 +107,7 @@ $(document).ready(function() {
                     <!-- <div><img src="{% static 'varasto/pics/people/janko-ferlic.jpg' %}" alt="janko-ferlic.jpg"></div> -->
                     <div>
                         <a href="{% url 'renter' grouped_event.renter_id %}">
-                            {% if selected_user.photo %}
+                            {% if grouped_event.renter.photo %}
                             <img src="{% static grouped_event.renter.photo %}" alt="{{grouped_event.renter.photo}}">
                             {% else %}
                             <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
