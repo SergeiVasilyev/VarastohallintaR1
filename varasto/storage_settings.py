@@ -19,7 +19,7 @@ CATEGORIES = ['Kulutusmateriaali (ruuvit, maalit, johdot)', 'Työkalut', 'Sähk�
 # / DATA FOR DATABASE GENERATOR (generator is not created)
 # ======================================================
 
-ITEMS_ON_A_PAGE = 20
+
 ITEMS_PER_PAGE = 20
 
 RENTAL_PAGE_VIEW = 'rental_events'
@@ -89,12 +89,14 @@ DEFECT_IN_PRODUCT_MSG = Email_msg(subject=SUBJECT, message=MESSAGE)
 # AUTH GROUPS INITIALISATION
 AUTH_GROUPS = ['Administrator', 'Management', 'Student', 'Student_ext', 'Storage_employee', 'Teacher']
 
-MANGEMENT_PERM = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 48, 49, 50, 52, 53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+MANGEMENT_PERM = ['view_logentry', 'add_permission', 'change_permission', 'delete_permission', 'view_permission', 'add_group', 'change_group', 'delete_group', 'view_group', 'add_contenttype', 'change_contenttype', 'delete_contenttype', 'view_contenttype', 'view_session', 'add_customuser', 'change_customuser', 'delete_customuser', 'view_customuser', 'add_category', 'change_category', 'view_category', 'add_goods', 'change_goods', 'delete_goods', 'view_goods', 'add_storage_name', 'change_storage_name', 'delete_storage_name', 'view_storage_name', 'add_storage_place', 'change_storage_place', 'delete_storage_place', 'view_storage_place', 'view_rental_event', 'add_varasto_settings', 'change_varasto_settings', 'view_varasto_settings', 'add_settings', 'change_settings', 'view_settings', 'add_units', 'change_units', 'delete_units', 'view_units', 'add_staff_audit', 'change_staff_audit', 'delete_staff_audit', 'view_staff_audit', 'add_settings_customuser', 'change_settings_customuser', 'delete_settings_customuser', 'view_settings_customuser']
 
-STORAGE_EMPLOYEE_PERM = [4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50, 52, 56, 57, 58, 59, 60, 64, 65, 66, 67, 68]
+STORAGE_EMPLOYEE_PERM = ['view_logentry', 'add_permission', 'change_permission', 'delete_permission', 'view_permission', 'change_group', 'view_group', 'add_contenttype', 'change_contenttype', 'delete_contenttype', 'view_contenttype', 'add_customuser', 'change_customuser', 'delete_customuser', 'view_customuser', 'add_category', 'change_category', 'delete_category', 'view_category', 'add_goods', 'change_goods', 'delete_goods', 'view_goods', 'add_storage_name', 'change_storage_name', 'delete_storage_name', 'view_storage_name', 'add_storage_place', 'change_storage_place', 'delete_storage_place', 'view_storage_place', 'add_rental_event', 'change_rental_event', 'delete_rental_event', 'view_rental_event', 'add_varasto_settings', 'change_varasto_settings', 'view_varasto_settings', 'view_settings', 'add_units', 'change_units', 'delete_units', 'view_units', 'view_staff_audit', 'add_settings_customuser', 'change_settings_customuser', 'delete_settings_customuser', 'view_settings_customuser']
 
-STUDENT_PERM = [32]
+STUDENT_PERM = ['view_goods']
 
-STUDENT_EXT_PERM = [24, 29, 30, 31, 32, 45, 46, 48]
+STUDENT_EXT_PERM = ['view_customuser', 'add_goods', 'change_goods', 'delete_goods', 'view_goods', 'add_rental_event', 'change_rental_event', 'view_rental_event']
 
-TEACHER_PERM = [24, 32, 36, 40, 48]
+TEACHER_PERM = ['view_customuser', 'view_goods', 'view_storage_name', 'view_storage_place', 'view_rental_event']
+# /// AUTH GROUPS INITIALISATION
+

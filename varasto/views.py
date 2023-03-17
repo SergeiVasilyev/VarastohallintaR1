@@ -2,6 +2,7 @@ import operator
 import pprint
 import re
 import time
+import os
 from django.forms import DateTimeField, IntegerField
 from django.http import (
     HttpResponse,
@@ -1164,7 +1165,7 @@ def product_barcode_ean13(request, idx):
 def initialize(request):
     groups = Group.objects.all()
     group_first = groups.first()
-    if not group_first.permissions:
+    if not group_first:
         for n in range(len(CATEGORIES)):
             cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
             # print(cats)
@@ -1182,27 +1183,27 @@ def initialize(request):
                     group.permissions.add(perm)
             if group.name == 'Management':
                 perm_id_list = MANGEMENT_PERM
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student':
                 perm_id_list = STUDENT_PERM
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Student_ext':
                 perm_id_list = STUDENT_EXT_PERM
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Storage_employee':
                 perm_id_list = STORAGE_EMPLOYEE_PERM
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
             if group.name == 'Teacher':
                 perm_id_list = TEACHER_PERM
-                perms_to_add = Permission.objects.filter(pk__in=[x for x in perm_id_list])
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
                 for perm in perms_to_add:
                     group.permissions.add(perm)
 
