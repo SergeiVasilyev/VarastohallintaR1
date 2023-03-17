@@ -1009,7 +1009,7 @@ def product(request, idx):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    product_barcode = barcode_gen(idx)
+    product_barcode = barcode_gen(idx, selected_item.storage.storage_code)
 
     # Calculate the page number this product is on. After deleting the product, we can return to this page
     len_to_self_item = Goods.objects.filter(**storage_filter).filter(id__lt=idx).order_by("id").__len__()
@@ -1132,7 +1132,7 @@ def burger_settings(request):
 
 def product_barcode(request, idx):
     item = Goods.objects.get(id=idx)
-    product_barcode = barcode_gen(idx)
+    product_barcode = barcode_gen(idx, item.storage.storage_code)
     context = {
         'product_barcode': product_barcode,
         'item': item,
