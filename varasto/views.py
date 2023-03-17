@@ -198,44 +198,52 @@ def renter(request, idx):
         if request.POST.getlist('send_email_to_teacher'):
             # print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
 
-            subject = PRODUCT_NOT_RETURNED_MSG.subject
-            msg = PRODUCT_NOT_RETURNED_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                subject = PRODUCT_NOT_RETURNED_MSG.subject
+                msg = PRODUCT_NOT_RETURNED_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name if item.storage else '',
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
         if request.POST.getlist('send_email_item_is_damaged'):
-            damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
-            subject = DEFECT_IN_PRODUCT_MSG.subject
-            msg = DEFECT_IN_PRODUCT_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff,
-                damaged_remarks=damaged_remarks)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
+                subject = DEFECT_IN_PRODUCT_MSG.subject
+                msg = DEFECT_IN_PRODUCT_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name, 
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff,
+                    damaged_remarks=damaged_remarks)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
 
     selected_user = CustomUser.objects.get(id=idx)
