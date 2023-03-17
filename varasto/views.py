@@ -873,11 +873,27 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
+
+    def storage_code_symbols(storage_name, num):
+        exist_code = Storage_name.objects.filter(storage_code__istartswith=storage_name[:num])
+        print(storage_name[:num])
+        if exist_code:
+            num += 1
+            num = storage_code_symbols(storage_name, num)
+        return num
     
     if request.method == "POST":
-        print(request.POST.get('storage'))
-        new_cat, is_new_category = Storage_name.objects.get_or_create(name=request.POST.get('storage'))
-        print(new_cat, is_new_category)
+        storage_name = request.POST.get('storage')
+        new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+        if is_new_category and storage_name: # If is new category and storage_name not empty
+            code_len = storage_code_symbols(storage_name, 1)
+            try:
+                new_cat.storage_code = storage_name[:code_len].lower()
+                new_cat.save()
+                print(new_cat, is_new_category, 'code_len', code_len, storage_name[:code_len])
+            except:
+                return HttpResponse("<html><body><h1>Tuotetta ei voi tallentaa varastokoodin vuoksi. Ennen tuotteen luomista korjaa varastokoodi Administration sivulla.</h1><a href='/new_item'>Takaisin Uusi tavara sivulle</a></body></html>")
+        
 
         request.POST._mutable = True
         request.POST['storage'] = new_cat.id
