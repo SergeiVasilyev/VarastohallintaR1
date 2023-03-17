@@ -195,7 +195,19 @@
     /* object-position: -38px 10%; */
     object-position: 50% 50%; /* kuva keskellä */
 }
+.photo_svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7em;
+    border: 1px solid #dadada;
+}
 
+.photo_svg svg {
+    width: 50%;
+    height: 50%;
+    opacity: 95%;
+}
 .list__item_etime {
     display: flex;
     justify-content: center;
