@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import make_password
 from .storage_settings import *
 from django.urls import reverse
 from urllib.parse import urlencode
+from django.contrib.auth.models import Group, Permission
 
 
 @login_required()
@@ -164,39 +165,50 @@ def new_user(request):
 @user_passes_test(lambda user:user.is_staff)
 def storage_settings(request):
 
-    if request.user.storage_id: # Jos userilla ei ole storage_id, niin ei näytetä EMAIL FORM
-        filter_by_user = Settings_CustomUser.objects.filter(storage_id=request.user.storage_id).filter(Q(setting_name__set_name='storage_email') | Q(setting_name__set_name='email_pass') | Q(setting_name__set_name='email_server')).order_by('setting_name_id')
+    # if request.user.storage_id: # Jos userilla ei ole storage_id, niin ei näytetä EMAIL FORM
 
-        if len(filter_by_user) != 3: # if storage_email, email_pass, email_server not found for this request.user then create them with empty set_value
-            for n in range(5, 8):
-                item = Settings_CustomUser.objects.create(setting_name_id=n, user=request.user, storage_id=request.user.storage_id, set_value='')
-                # print(item)
+    filter_by_user = Settings_CustomUser.objects.filter(storage_id=request.user.storage_id).filter(Q(setting_name__set_name='storage_email') | Q(setting_name__set_name='email_pass') | Q(setting_name__set_name='email_server')).order_by('setting_name_id')
 
-        filter_by_user = Settings_CustomUser.objects.filter(storage_id=request.user.storage_id).filter(Q(setting_name__set_name='storage_email') | Q(setting_name__set_name='email_pass') | Q(setting_name__set_name='email_server')).order_by('setting_name_id')
+    if len(filter_by_user) != 3: # if storage_email, email_pass, email_server not found for this request.user then create them with empty set_value
+        list_id = []
+        storage_email = Settings.objects.create(set_name='storage_email', label='Varastonhallinnan sähköposti')
+        list_id.append(storage_email.id)
+        email_pass = Settings.objects.create(set_name='email_pass', label='Salasana')
+        list_id.append(email_pass.id)
+        email_server = Settings.objects.create(set_name='email_server', label='Palvelin nimi')
+        list_id.append(email_server.id)
 
-        Settings_CustomUser_formset = modelformset_factory(Settings_CustomUser, form=Settings_CustomUserForm, extra=0, fields = '__all__')
+        for n in list_id:
+            item = Settings_CustomUser.objects.create(setting_name_id=n, user=request.user, storage_id=request.user.storage_id, set_value='')
+            # print(item)
 
-        if request.method == "POST":
-            formset = Settings_CustomUser_formset(request.POST, request.FILES)
-            if formset.is_valid():
-                for form in formset:
-                    form.user = request.user
-                    # item = form.save(commit=False)
-                    # item.user = request.user
-                    # item.save() 
-                    # print(form.cleaned_data)               
-                formset.save()
-                return redirect('storage_settings')
+    filter_by_user = Settings_CustomUser.objects.filter(storage_id=request.user.storage_id).filter(Q(setting_name__set_name='storage_email') | Q(setting_name__set_name='email_pass') | Q(setting_name__set_name='email_server')).order_by('setting_name_id')
 
-        # storage_email_form = Settings_CustomUserForm(use_required_attribute=False, initial={'user': request.user, 'setting_name': 5})
-        
-        formset = Settings_CustomUser_formset(queryset=filter_by_user)
-        for key, n in enumerate(filter_by_user): # Get label names from Settings table
-            formset[key].new_label = n.setting_name.label
+    Settings_CustomUser_formset = modelformset_factory(Settings_CustomUser, form=Settings_CustomUserForm, extra=0, fields = '__all__')
 
-        context = {
-            'formset': formset,
-        }
-    else:
-        context = {}
+    if request.method == "POST":
+        formset = Settings_CustomUser_formset(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset:
+                form.user = request.user
+                # item = form.save(commit=False)
+                # item.user = request.user
+                # item.save() 
+                # print(form.cleaned_data)               
+            formset.save()
+            return redirect('storage_settings')
+
+    # storage_email_form = Settings_CustomUserForm(use_required_attribute=False, initial={'user': request.user, 'setting_name': 5})
+    
+    formset = Settings_CustomUser_formset(queryset=filter_by_user)
+    for key, n in enumerate(filter_by_user): # Get label names from Settings table
+        formset[key].new_label = n.setting_name.label
+
+    context = {
+        'formset': formset,
+    }
+
+    # else:
+    #     context = {}
+
     return render(request, 'varasto/storage_settings.html', context)
