@@ -895,12 +895,10 @@ def new_item(request):
         new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
         if is_new_category and storage_name: # If is new category and storage_name not empty
             code_len = storage_code_symbols(storage_name, 1)
-            try:
-                new_cat.storage_code = storage_name[:code_len].lower()
-                new_cat.save()
-                print(new_cat, is_new_category, 'code_len', code_len, storage_name[:code_len])
-            except:
-                return HttpResponse("<html><body><h1>Tuotetta ei voi tallentaa varastokoodin vuoksi. Ennen tuotteen luomista korjaa varastokoodi Administration sivulla.</h1><a href='/new_item'>Takaisin Uusi tavara sivulle</a></body></html>")
+            new_cat.storage_code = storage_name[:1].lower()
+            new_cat.save()
+            print(new_cat, is_new_category, 'code_len', code_len, storage_name[:code_len])
+            # return HttpResponse("<html><body><h1>Oops! Automaattinen varasto koodin luominen epäonnistui. Ennen tuotteen luomista korjaa varastokoodi hallintasivulla.</h1><a href='/new_item'>Takaisin Uusi tavara sivulle</a></body></html>")
         
 
         request.POST._mutable = True
@@ -909,7 +907,6 @@ def new_item(request):
 
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
-            print('valid')
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
