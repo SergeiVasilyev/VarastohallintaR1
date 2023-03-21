@@ -866,12 +866,20 @@ def edit_item(request, idx):
     if event:
         is_rented = True
 
+    if request.user.storage:
+        changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+    else:
+        changed_storage = ''
+    storages = Storage_name.objects.all()
+
     context = {
         'form': form,
         'item': get_item,
         'is_storage_employee': is_storage_employee,
         'is_rented': is_rented,
-        'error_massage': error_massage
+        'error_massage': error_massage,
+        'changed_storage': changed_storage,
+        'storages': storages
     }
     return render(request, 'varasto/edit_item.html', context)
 
@@ -895,11 +903,8 @@ def new_item(request):
         storage_name = request.POST.get('storage')
         new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
         if is_new_category and storage_name: # If is new category and storage_name not empty
-            code_len = storage_code_symbols(storage_name, 1)
             new_cat.storage_code = storage_name[:1].lower()
             new_cat.save()
-            print(new_cat, is_new_category, 'code_len', code_len, storage_name[:code_len])
-            # return HttpResponse("<html><body><h1>Oops! Automaattinen varasto koodin luominen epäonnistui. Ennen tuotteen luomista korjaa varastokoodi hallintasivulla.</h1><a href='/new_item'>Takaisin Uusi tavara sivulle</a></body></html>")
         
 
         request.POST._mutable = True
