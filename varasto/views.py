@@ -1169,7 +1169,6 @@ def product_barcode(request, idx):
     except:
         storage_code = 'z'
     product_barcode = barcode_gen(idx, storage_code)
-
     context = {
         'product_barcode': product_barcode,
         'item': item,
