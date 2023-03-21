@@ -818,6 +818,21 @@ def edit_item(request, idx):
     contents = get_item.contents
 
     if request.method == "POST":
+        new_cat = None
+        storage_name = request.POST.get('storage')
+        if storage_name:
+            
+            new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+            print('new_cat', new_cat, 'storage_name', storage_name)
+            if is_new_category and storage_name: # If is new category and storage_name not empty
+                new_cat.storage_code = storage_name[:1].lower()
+                new_cat.save()
+        
+
+        request.POST._mutable = True
+        request.POST['storage'] = new_cat.id if new_cat else None
+        print(request.POST['storage'])
+
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
             item = form.save(commit=False)
@@ -844,7 +859,6 @@ def edit_item(request, idx):
             item.contents = contents # Ei saa muokata contents
             item.cat_name = cat_name
             item.unit = unit
-            item.storage = storage if not item.storage else item.storage
 
             form.save()
             return redirect('product', idx)
@@ -868,6 +882,8 @@ def edit_item(request, idx):
 
     if request.user.storage:
         changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+    elif get_item.storage:
+        changed_storage = get_item.storage
     else:
         changed_storage = ''
     storages = Storage_name.objects.all()
@@ -890,25 +906,20 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
-
-    def storage_code_symbols(storage_name, num):
-        exist_code = Storage_name.objects.filter(storage_code__istartswith=storage_name[:num])
-        print(storage_name[:num])
-        if exist_code:
-            num += 1
-            num = storage_code_symbols(storage_name, num)
-        return num
     
     if request.method == "POST":
+        new_cat = None
         storage_name = request.POST.get('storage')
-        new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
-        if is_new_category and storage_name: # If is new category and storage_name not empty
-            new_cat.storage_code = storage_name[:1].lower()
-            new_cat.save()
+        if storage_name:
+            new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+
+            if is_new_category and storage_name: # If is new category and storage_name not empty
+                new_cat.storage_code = storage_name[:1].lower()
+                new_cat.save()
         
 
         request.POST._mutable = True
-        request.POST['storage'] = new_cat.id
+        request.POST['storage'] = new_cat.id if new_cat else None
 
 
         form = GoodsForm(request.POST, request.FILES)
@@ -1021,7 +1032,7 @@ def product(request, idx):
     page_obj = paginator.get_page(page_number)
 
     try:
-        storage_code = selected_item.storage.storage_code
+        storage_code = selected_item.storage.storage_code if selected_item.storage.storage_code else 'z'
     except:
         storage_code = 'z'
     product_barcode = barcode_gen(idx, storage_code)
@@ -1152,7 +1163,7 @@ def burger_settings(request):
 
 def product_barcode(request, idx):
     item = Goods.objects.get(id=idx)
-    
+
     try:
         storage_code = item.storage.storage_code
     except:
