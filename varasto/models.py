@@ -46,7 +46,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
@@ -116,7 +116,7 @@ class Goods(models.Model):
     parameters = models.CharField(max_length=100, blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.SET_NULL, blank=True, null=True) # Units choices moved to another table and field
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
@@ -126,7 +126,7 @@ class Goods(models.Model):
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
