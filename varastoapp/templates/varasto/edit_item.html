@@ -166,8 +166,15 @@
 
             
                 
-                
             <div class="input_wrap mt-4">
+                <div class="new_middle">
+                    <div class="div1" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">TUOTEKOODI {{ item.id }}</label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="new_middle">
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
@@ -364,14 +371,13 @@
                             {% render_field form.cost_centre|append_attr:is_storage_employee.0 %}
                         </div>
                     </div>
-                    <div class="div16" style="display: flex; justify-content: center;">
+                    <!-- <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">REKISTERINUMERO</label>
-                            <!-- <input class="form-control" type="text"> -->
                             {% comment %} {{form.reg_number}} {% endcomment %}
                             {% render_field form.reg_number|append_attr:is_storage_employee.0 %}
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
 
