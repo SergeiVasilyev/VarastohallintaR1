@@ -121,8 +121,8 @@
         
             <div class="row01">
                 <div class="item_name">
-                    <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand}}</a></span>
-                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model}}</a></span>
+                    <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand|default:""}}</a></span>
+                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model|default:"-"}}</a></span>
                 </div>
             </div>
         
