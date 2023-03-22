@@ -42,16 +42,11 @@ urlpatterns = [
     path('product_barcode/<int:idx>/', views.product_barcode, name='product_barcode'),
     path('product_barcode_ean13/<int:idx>/', views.product_barcode_ean13, name='product_barcode_ean13'),
     path('new_event/', views.new_event, name='new_event'),
-    # path('new_event/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
-    # re_path(r'.*/add_user_to_event/', views.add_user_to_event, name='add_user_to_event'),
-
-
 
     path('recovery/', views.user_recovery, name='recovery'),
     path('new_item/', views.new_item, name='new_item'),
     path('edit_item/<int:idx>/', views.edit_item, name='edit_item'),
     path('delete_product/<int:idx>/<int:next_page>', views.delete_product, name='delete_product'),
-
 
     path('new_event_goods/', views.new_event_goods, name='new_event_goods'),
     path('inventory/', views.inventory, name='inventory'),
@@ -63,8 +58,7 @@ urlpatterns = [
     path('new_user/', views.new_user, name='new_user'),
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
     path('storage_settings/', views.storage_settings, name='storage_settings'),
-    # path('video_stream', views.video_stream, name='video_stream'),
-    # path('new_item/take_pacture', views.take_pacture, name='take_pacture'),
+
     path('products/', views.products, name='products'),
     path('get_products/', views.getProducts, name='getProducts'),
     path('get_photo/', views.get_photo, name='get_photo'),
