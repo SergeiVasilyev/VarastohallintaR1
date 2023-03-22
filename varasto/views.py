@@ -814,6 +814,7 @@ def edit_item(request, idx):
     storage = get_item.storage
     amount = get_item.amount
     contents = get_item.contents
+    old_image_path = get_item.picture.path
 
     if request.method == "POST":
         new_cat = None
@@ -829,19 +830,25 @@ def edit_item(request, idx):
         request.POST._mutable = True
         request.POST['storage'] = new_cat.id if new_cat else None
 
+        def delete_old_picture(old_image_path):
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+            else:
+                print('Kuvaa ei löydy')
+
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
+
         if form.is_valid():
             item = form.save(commit=False)
-            # print('item.picture=', item.picture)
-            try:
-                if not item.picture:
-                    new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
-                else:
-                    new_picture = request.FILES['picture']
-                item.picture = new_picture
-            except:
-                pass
-                # print('get_item.picture=', get_item.picture)
+            if camera_picture:
+                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+            elif request.FILES['picture']:
+                new_picture = request.FILES['picture']
+            else:
+                new_picture = ''
+                
+            delete_old_picture(old_image_path)
+            item.picture = new_picture
 
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)
