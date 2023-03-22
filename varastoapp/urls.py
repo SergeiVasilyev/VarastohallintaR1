@@ -53,7 +53,7 @@ urlpatterns = [
     path('report/<int:idx>/', views.report, name='report'),
     path('product_report/<int:idx>/', views.product_report, name='product_report'),
 
-    path('test/', views.test, name='test'),
+
 
     path('new_user/', views.new_user, name='new_user'),
     path('grant_permissions/', views.grant_permissions, name='grant_permissions'),
