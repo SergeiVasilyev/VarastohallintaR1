@@ -814,7 +814,7 @@ def edit_item(request, idx):
     storage = get_item.storage
     amount = get_item.amount
     contents = get_item.contents
-    old_image_path = get_item.picture.path
+    old_image_path = get_item.picture.path if get_item.picture else ''
 
     if request.method == "POST":
         new_cat = None
@@ -842,8 +842,11 @@ def edit_item(request, idx):
             item = form.save(commit=False)
             if camera_picture:
                 new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
-            elif request.FILES['picture']:
-                new_picture = request.FILES['picture']
+            elif request.FILES:
+                try:
+                    new_picture = request.FILES['picture']
+                except:
+                    pass
             else:
                 new_picture = ''
 
@@ -1105,7 +1108,7 @@ def delete_product(request, idx, next_page):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
     item_data_dict = item.__dict__.copy() # Make copy of product instance
-    image_path = item.picture.path if item.picture else None
+    image_path = item.picture.path if item.picture else ''
 
     # Delete unnecessary fields in product info
     entries_to_remove = ('_state', 'cat_name_id', 'item_type', 'size', 'parameters', 'item_description', 'picture', 'storage_place', 'item_status', 'cost_centre', 'purchase_data', 'purchase_price', 'purchase_place', 'storage_id', 'cat_name_id', 'ean')
@@ -1137,11 +1140,12 @@ def delete_product(request, idx, next_page):
     
     item.delete()
 
-    try:
+    is_picture_exist_in_another_products = Goods.objects.filter(picture=item.picture)
+    if not is_picture_exist_in_another_products:
         if os.path.exists(image_path):
             os.remove(image_path)
-    except:
-        print('Kuvaa ei löydy')
+        else:
+            print('Kuvaa ei löydy')
 
     base_url = reverse('products')  # 1 URL to reverse
     query_string =  urlencode({'page': next_page})  # 2 page=next_page, save page number where product was
