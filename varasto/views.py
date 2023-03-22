@@ -21,7 +21,6 @@ from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units, Settings_CustomUser, Category
 
 from django.db.models import Min, Max
-from .test_views import test
 
 from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
@@ -407,7 +406,6 @@ def new_event(request):
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
-                                print('unit', unit)
                                 item.amount = int(item.amount) - item_amount
                                 contents = item.contents if item.contents else 1
                                 item.amount_x_contents = item.amount * contents
@@ -823,7 +821,6 @@ def edit_item(request, idx):
         if storage_name:
             
             new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
-            print('new_cat', new_cat, 'storage_name', storage_name)
             if is_new_category and storage_name: # If is new category and storage_name not empty
                 new_cat.storage_code = storage_name[:1].lower()
                 new_cat.save()
@@ -831,7 +828,6 @@ def edit_item(request, idx):
 
         request.POST._mutable = True
         request.POST['storage'] = new_cat.id if new_cat else None
-        print(request.POST['storage'])
 
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
         if form.is_valid():
