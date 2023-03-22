@@ -627,7 +627,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': settings.STATIC_URL + str(obj.picture),
+                'picture': settings.STATIC_URL + str(obj.picture) if obj.picture else '',
                 'item_name': obj.item_name if obj.item_name else '',
                 'brand': obj.brand if obj.brand else '',
                 'model': obj.model if obj.model else '',
