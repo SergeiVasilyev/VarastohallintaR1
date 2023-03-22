@@ -49,7 +49,7 @@ def email_alert(subject, body, to):
 # ===========================================
 # FILE SAVE FUNCTION
 
-def _save_image(byte_data, csrf_token) -> str:
+def _save_image(byte_data) -> str:
     """Save picture to image/goods directory,
     if generated filename does not exist
     Return: Image filename
