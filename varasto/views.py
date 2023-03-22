@@ -627,7 +627,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': settings.STATIC_URL + str(obj.picture),
+                'picture': settings.STATIC_URL + str(obj.picture) if obj.picture else '',
                 'item_name': obj.item_name if obj.item_name else '',
                 'brand': obj.brand if obj.brand else '',
                 'model': obj.model if obj.model else '',
@@ -846,7 +846,7 @@ def edit_item(request, idx):
                 new_picture = request.FILES['picture']
             else:
                 new_picture = ''
-                
+
             delete_old_picture(old_image_path)
             item.picture = new_picture
 
@@ -1105,7 +1105,7 @@ def delete_product(request, idx, next_page):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
     item_data_dict = item.__dict__.copy() # Make copy of product instance
-    image_path = item.picture.path
+    image_path = item.picture.path if item.picture else None
 
     # Delete unnecessary fields in product info
     entries_to_remove = ('_state', 'cat_name_id', 'item_type', 'size', 'parameters', 'item_description', 'picture', 'storage_place', 'item_status', 'cost_centre', 'purchase_data', 'purchase_price', 'purchase_place', 'storage_id', 'cat_name_id', 'ean')
