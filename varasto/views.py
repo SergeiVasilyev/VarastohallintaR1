@@ -932,7 +932,7 @@ def new_item(request):
         if form.is_valid():
             item = form.save(commit=False)
             if camera_picture:
-                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
             elif 'picture' in request.FILES:
                 new_picture = request.FILES['picture']
             else:
