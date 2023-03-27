@@ -129,7 +129,11 @@ $(document).ready(function() {
     }
     $('#add_item').keyup(function(e) {
         //console.log('e.target.value', e.target.value)
-        getProduct(e.target.value)
+        // getProduct(e.target.value)
+        if (!not_symbol_keys.includes(e.which)) {
+            // console.log('e.target.value', e.target.value, e.which)
+            getProduct(e.target.value)
+        }
     })
     //// AJAX Get product
 
