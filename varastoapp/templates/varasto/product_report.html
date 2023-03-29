@@ -121,7 +121,7 @@
 
     <div class="row01">
         <div class="date">
-            <span class="">{{rental_event.start_date|date:"d.m.Y"}} - {% if rental_event.returned_date %}{{rental_event.returned_date|date:"d.m.Y"}}{% else %}Vuokrattavissa{% endif %}</span>
+            <span class="">{{rental_event.start_date|date:"d.m.y"}} - {% if rental_event.returned_date %}{{rental_event.returned_date|date:"d.m.y"}}{% else %}ei ole palautettu{% endif %}</span>
         </div>
     </div>
 
