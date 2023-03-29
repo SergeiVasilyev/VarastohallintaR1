@@ -1139,7 +1139,7 @@ def delete_product(request, idx, next_page):
     staff_audit.save()
     
     item.delete()
-
+    # Delete picture if same picture name doesn't have another product
     is_picture_exist_in_another_products = Goods.objects.filter(picture=item.picture)
     if not is_picture_exist_in_another_products:
         if os.path.exists(image_path):

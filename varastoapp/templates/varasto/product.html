@@ -90,20 +90,22 @@
                         <span class="button__icon"><i class="bi bi-printer"></i></span>
                     </button>
                 </a>
-                <a class="nodecor pb-3" href="{% url 'edit_item' selected_item.id %}">
-                    <button type="submit" class="button button_bg_blue resize">
+                <a class="nodecor pb-3 {% if not selected_item|is_same_storage:user %}disable{% endif %}" href="{% url 'edit_item' selected_item.id %}">
+                    <button type="submit" class="button {% if selected_item|is_same_storage:user %}button_bg_blue{% else %}button_bg_gray{% endif %} resize">
                         <span class="button__text resize">Muokkaa tavara</span>
                         <span class="button__icon"><i class="bi bi-pencil-square"></i></span>
                     </button>
                 </a>
-                <a class="nodecor pb-3 {% if not selected_item.is_possible_to_rent.0 %}disable{% endif %}" href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
-                    <button type="submit" {% if not selected_item.is_possible_to_rent.0 %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
+                <a class="nodecor pb-3 {% if not selected_item.is_possible_to_rent.0 or not selected_item|is_same_storage:user %}disable{% endif %}" 
+                        href="{% url 'new_event' %}?add_item0={{ selected_item.id }}" >
+                    <button type="submit" {% if not selected_item.is_possible_to_rent.0 or not selected_item|is_same_storage:user %} class="button button_bg_gray resize" {% else %} class="button button_bg_green resize" {% endif %}> 
                         <span class="button__text resize">Lisää tavara</span>
                         <span class="button__icon">+</span>
                     </button>
                 </a>
-                <a class="nodecor {% if selected_item.rentable_at %}disable{% endif %}" href="#" >
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#delete_confirm_modal" {% if selected_item.rentable_at %} class="button button_bg_gray resize" {% else %} class="button button_bg_red resize" {% endif %}> 
+                <a class="nodecor {% if selected_item.rentable_at or not selected_item|is_same_storage:user %}disable{% endif %}" href="#" >
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#delete_confirm_modal" 
+                        {% if selected_item.rentable_at or not selected_item|is_same_storage:user %} class="button button_bg_gray resize" {% else %} class="button button_bg_red resize" {% endif %}> 
                         <span class="button__text resize">Poista tavara</span>
                         <span class="button__icon">X</span>
                     </button>
@@ -178,7 +180,7 @@
             <div class="history_list">
                 <div class="history_photo">
                     <div>
-                        {% if selected_user.photo %}
+                        {% if rental_event.renter.photo %}
                         <img src="{% static rental_event.renter.photo %}" alt="{{rental_event.renter.photo}}">
                         {% else %}
                         <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">

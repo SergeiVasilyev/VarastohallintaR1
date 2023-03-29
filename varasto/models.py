@@ -221,6 +221,16 @@ class Goods(models.Model):
             return [False, event.estimated_date, 'Item are consumable and storage is empty']
         return [True, None, 'Item is not rented yet']
 
+    @register.filter
+    def is_same_storage(item, user):
+        """"
+        Return True:
+        if user storage == product storage,
+        if user storage is NONE and user has status staff or superuser
+        """
+        if user.storage == item.storage or (user.storage == None and (user.is_staff or user.is_superuser)):
+            return True
+        return False
 
     def __str__(self):
         return '%s' % (self.item_name)
