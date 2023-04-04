@@ -20,8 +20,12 @@ from django.contrib.auth.models import Group, Permission
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def report(request, idx):
+    
     rental_events = Rental_event.objects.filter(renter_id=idx).order_by("-start_date")
-    renter = rental_events[0].renter
+    try:
+        renter = rental_events[0].renter
+    except:
+        renter = ''
 
     now = datetime.now()
     datenow = pytz.utc.localize(now)

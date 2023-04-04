@@ -113,6 +113,7 @@
     </div>
 </div>
 
+{% if rental_events %}
 {% for rental_event in rental_events %}
 <div class="line_content" >
 
@@ -165,6 +166,7 @@
     <span>Akku ei ota virtaa vastaan.</span>
 </div> -->
 {% endfor %}
+{% endif %}
 
 </div>
 {% endblock %}
