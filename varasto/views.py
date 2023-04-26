@@ -806,6 +806,8 @@ def edit_item(request, idx):
     contents = get_item.contents
     old_image_path = get_item.picture.path if get_item.picture else ''
 
+    print('camera_picture', camera_picture)
+
     if request.method == "POST":
         new_cat = None
         storage_name = request.POST.get('storage')
@@ -831,17 +833,16 @@ def edit_item(request, idx):
         if form.is_valid():
             item = form.save(commit=False)
             if camera_picture:
-                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+                item.picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+                delete_old_picture(old_image_path)
             elif request.FILES:
                 try:
-                    new_picture = request.FILES['picture']
+                    item.picture = request.FILES['picture']
+                    delete_old_picture(old_image_path)
                 except:
                     pass
             else:
-                new_picture = ''
-
-            delete_old_picture(old_image_path)
-            item.picture = new_picture
+                pass
 
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)
