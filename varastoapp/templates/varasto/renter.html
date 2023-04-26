@@ -16,6 +16,15 @@
 
 {% block script %}
 <script type="text/javascript">
+        function closeReturn(element, id){
+            if ( $(element).is(':checked') ) {
+                $('#return_amount'+id).prop("disabled", true)
+                $('#everything_returned'+id).prop("disabled", true)
+            } else {
+                $('#return_amount'+id).prop("disabled", false)
+                $('#everything_returned'+id).prop("disabled", false)
+            }
+        }
 </script>
 {% endblock %}
 
