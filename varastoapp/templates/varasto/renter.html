@@ -216,7 +216,7 @@
                     </div>
                     <div class="buttons">
                         <button type="button" class="list__button btn_strech {% if rental_event.returned_date or not is_staff_user_has_permission_to_edit %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.id}}">
-                            <span class="list__button__text ">Lopeta</span>
+                            <span class="list__button__text ">Palautus</span>
                         </button>
                     </div>
                 </div>
@@ -270,9 +270,9 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">sulje</button>
                                 {% if rental_event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
-                                <button type="submit" name="_close_rent_cons" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                <button type="submit" name="_close_rent_cons" value="{{rental_event.id}}" class="btn btn-primary">TALLENNA</button>
                                 {% else %}
-                                <button type="submit" name="_close_rent" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                <button type="submit" name="_close_rent" value="{{rental_event.id}}" class="btn btn-primary">TALLENNA</button>
                                 {% endif %}
                             </div>
                         </form>
