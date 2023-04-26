@@ -450,11 +450,11 @@ $(document).ready(function() {
                                                 value="1"
                                             {% endif %}
                                             
-                                            {% if changed_item.radioUnit == '0' and changed_item.units != "kpl" %}
+                                            {% if changed_item.radioUnit == '0' and changed_item.unit.unit_name != "kpl" %}
                                                 data-decimals="4"
                                                 min="0" step="0.001"
                                                 max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
-                                            {% elif changed_item.radioUnit == '0' and changed_item.units == "kpl" %}
+                                            {% elif changed_item.radioUnit == '0' and changed_item.unit.unit_name == "kpl" %}
                                                 data-decimals="0"
                                                 min="1" step="1"
                                                 max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
