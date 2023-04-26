@@ -18,6 +18,7 @@ Storage employee3: user27, Q2wertyy
 
 
 
+
 ## Päätavoitteet:
 1. Luo käyttäjä- ja järjestelmänvalvoja rooleja: hallinta, varastotyöntekijä, opettaja, opiskelija, edistynyt opiskelija ja järjestelmänvalvoja (superkäyttäjä)
 2. Roolien muokkaaminen
