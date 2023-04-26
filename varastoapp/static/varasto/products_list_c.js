@@ -6,7 +6,7 @@ function list_el_f(item, static_url, CATEGORY_CONSUMABLES_ID){
     if (d.getDate() < 10) date = '0' + d.getDate()
     if (d.getMonth() < 10) month = '0' + d.getMonth()
     if (item.picture) {
-        picture = `<img src="${static_url}${item.picture}" alt="${static_url}${item.picture}"></img>`
+        picture = `<div><img src="${static_url}${item.picture}" alt="${static_url}${item.picture}" onerror="this.onerror=null;this.src='${static_url}images/No_product.png';"></img></div>`
     } else {
         picture = `<div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">

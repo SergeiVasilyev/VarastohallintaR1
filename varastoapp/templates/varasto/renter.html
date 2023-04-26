@@ -104,7 +104,8 @@
                 <div class="history_photo">
                     {% if rental_event.item.picture %}
                     <div>
-                        <a href="{% url 'product' rental_event.item.id %}" class="nodecor"><img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}">
+                        <a href="{% url 'product' rental_event.item.id %}" class="nodecor">
+                            <img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}" onerror="this.onerror=null;this.src='{% static 'images/No_product_b.png' %}'; this.style.opacity='95%'">
                         </a>
                     </div>
                     {% else %}

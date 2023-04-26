@@ -202,7 +202,7 @@ $(document).ready(function() {
                 </svg>
             </div>`
         } else {
-            product_image = `<img src="${item.picture}" alt="${item.picture}">`
+            product_image = `<img src="${item.picture}" alt="${item.picture}" onerror="this.onerror=null;this.src='${static_url}images/No_product.png';">`
         }
         
         // console.log(rentable_at)
