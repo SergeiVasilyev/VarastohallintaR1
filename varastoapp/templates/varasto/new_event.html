@@ -185,6 +185,7 @@ $(document).ready(function() {
         let status = '<span class="status_green">Saatavilla</span>'
         let btn_class = 'button_active'
         let btnonclick = "selectItem("+item.id+")"
+        let static_url = '{{static_url}}'
         if (item.rentable_at && item.cat_name_id != {{CATEGORY_CONSUMABLES_ID}}){
             const d = new Date(item.rentable_at)
             let date = d.getDate()
@@ -210,7 +211,7 @@ $(document).ready(function() {
                 </svg>
             </div>`
         } else {
-            product_image = `<img src="${item.picture}" alt="${item.picture}" onerror="this.onerror=null;this.src='${static_url}images/No_product.png';">`
+            product_image = `<div class="noimg"><img src="${item.picture}" alt="${item.picture}" onerror="this.onerror=null;this.src='${static_url}images/No_product.png';"></div>`
         }
         
         // console.log(rentable_at)
