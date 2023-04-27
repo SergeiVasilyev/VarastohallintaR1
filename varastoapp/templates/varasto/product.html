@@ -196,18 +196,18 @@
                             <span class="item_name">{{rental_event.renter.first_name}} {{rental_event.renter.last_name}}</span>
                         </a>
                         <a href="{% url 'renter' rental_event.renter.id %}" class="nodecor">
-                            <span class="item_props">{{rental_event.renter.email}}</span>
+                            <span class="item_props">{{rental_event.renter.email|default_if_none:"-"}}</span>
                         </a>
                     </div>
                     <div class="item_info_place">
                         <span class="item_num_name">Phone</span>
                         <span class="item_num">
-                            {{rental_event.renter.phone}}
+                            {{rental_event.renter.phone|default_if_none:"-"}}
                         </span>
                     </div>
                     <span class="item_num_name">Opiskelijakoodi</span>
                     <!-- <span class="item_num">{{rental_event.id_start_null}}</span> -->
-                    <span class="item_num">{{rental_event.renter.code}}</span>
+                    <span class="item_num">{{rental_event.renter.code|default_if_none:"-"}}</span>
                 </div>
 
                 <div class="item_info">
