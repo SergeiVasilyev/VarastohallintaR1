@@ -95,6 +95,31 @@
     height: 152px;
 }
 
+.history_photo2 {
+    padding: 0.5em 0.625em;
+}
+.history_photo2 > div{
+    overflow: hidden;
+    width: 260px;
+    height: 260px;
+    border-radius: 0.7em;
+    border: 0.5px solid #7897AB;
+    /* padding: 0em; */
+}
+.photo_svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7em;
+    border: 1px solid #dadada;
+}
+
+.history_photo2 > div svg {
+    width: 50%;
+    height: 50%;
+    opacity: 95%;
+}
+
 
 
 /* Button's */

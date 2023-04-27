@@ -49,7 +49,7 @@ def email_alert(subject, body, to):
 # ===========================================
 # FILE SAVE FUNCTION
 
-def _save_image(byte_data, csrf_token) -> str:
+def _save_image(byte_data) -> str:
     """Save picture to image/goods directory,
     if generated filename does not exist
     Return: Image filename
@@ -184,10 +184,10 @@ def order_field(user) -> list:
 # BARCODE GENERATOR
 # ---------------------------------------------
 
-def barcode_gen(num):
+def barcode_gen(num, code):
     rv = io.BytesIO()
     # Code128(str(num), writer=SVGWriter()).write(rv) # To SVG
-    Code128(str(num), writer=ImageWriter()).write(rv)
+    Code128(str(code)+str(num), writer=ImageWriter()).write(rv)
     byte_data = base64.b64encode(rv.getvalue()).decode()
     # print(rv.getvalue())
     return byte_data

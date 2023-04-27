@@ -62,8 +62,11 @@ class GoodsForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': '',
             }),
-            'storage': widgets.Select(attrs={
-                'class': 'form-select',
+            # 'storage': widgets.Select(attrs={
+            #     'class': 'form-select',
+            # }),
+            'storage': TextInput(attrs={
+                'class': 'form-control',
             }),
             'storage_place': TextInput(attrs={
                 'class': 'form-control',

@@ -1,4 +1,5 @@
 {% extends "varasto/base_main.html" %}
+{% load widget_tweaks %}
 
 {% load static %}
 
@@ -6,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/new_item.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 {% endblock stylesheet %}
 
 {% block script %}
@@ -295,11 +296,17 @@
                     </div>
                     
                 </div>
+
                 <div class="new_bottom">
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">VARASTO</label>
-                            {{form.storage}}
+                            <input type="text" name="storage" value="{{changed_storage.name}}" class="form-control" id="id_storage" list="storage_list">
+                            <datalist id="storage_list">
+                                {% for storage in storages %}
+                                    <option value="{{storage}}"></option>
+                                {% endfor %}
+                            </datalist>
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">

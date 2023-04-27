@@ -2,6 +2,7 @@ import operator
 import pprint
 import re
 import time
+import os
 from django.forms import DateTimeField, IntegerField
 from django.http import (
     HttpResponse,
@@ -20,7 +21,6 @@ from datetime import datetime, timedelta
 from .models import User, Goods, Storage_name, Storage_place, Rental_event, Staff_audit, CustomUser, Settings, Units, Settings_CustomUser, Category
 
 from django.db.models import Min, Max
-from .test_views import test
 
 from .anna__views import report, new_event_goods, product_report, inventory, new_user, storage_settings
 
@@ -40,6 +40,8 @@ from urllib.parse import urlencode
 from functools import reduce
 
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 
 
@@ -128,24 +130,26 @@ def renter(request, idx):
         def add_to_goods(returned_num, is_amount):
             if is_amount:
                 product.amount += returned_num
-                product.amount_x_contents = product.amount * product.contents
+                product.amount_x_contents = product.amount_x_contents + (product.contents * returned_num)
             else:
                 product.amount_x_contents += returned_num
             product.save()
             return True
         
-        def substruct_from_rental_event():
+        def substruct_from_rental_event(close_rent_without_returning):
             if return_all:
                 if event.amount:
                     event.returned = event.amount
                     # event.amount = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
-                    add_to_goods(event.returned, 1)
+                    if not close_rent_without_returning:
+                        add_to_goods(event.returned, 1)
                 elif event.contents:
                     event.returned = event.contents
                     # event.contents = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
-                    add_to_goods(event.returned, 0)
+                    if not close_rent_without_returning:
+                        add_to_goods(event.returned, 0)
                 else:
                     return redirect('renter', idx)
                 event.save()
@@ -156,7 +160,8 @@ def renter(request, idx):
                         event.amount -= return_part_of_product
                         event.returned = return_part_of_product
                         event.returned_date = datenow
-                        add_to_goods(event.returned, 1)
+                        if not close_rent_without_returning:
+                            add_to_goods(event.returned, 1)
                     else:
                         return redirect('renter', idx)
                 elif event.contents:
@@ -165,7 +170,8 @@ def renter(request, idx):
                         event.contents -= return_part_of_product
                         event.returned = return_part_of_product
                         event.returned_date = datenow
-                        add_to_goods(event.returned, 0)
+                        if not close_rent_without_returning:
+                            add_to_goods(event.returned, 0)
                     else:
                         return redirect('renter', idx)
                 else:
@@ -175,9 +181,10 @@ def renter(request, idx):
         
         if request.POST.getlist('_close_rent_cons'): # Close rent for consumables
             return_all = request.POST.get('everything_returned')
+            close_rent_without_returning = request.POST.get('close_rent_without_returning')
             return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
             # print(return_part_of_product)
-            if substruct_from_rental_event():
+            if substruct_from_rental_event(close_rent_without_returning):
                 return redirect('renter', idx)
 
 
@@ -196,44 +203,52 @@ def renter(request, idx):
         if request.POST.getlist('send_email_to_teacher'):
             # print(PRODUCT_NOT_RETURNED_MSG.message.format(renter_first_name=item.renter.first_name, renter_last_name=item.renter.last_name, renter_code=item.renter.code, storage_name=item.storage.name, item_name=item.item.item_name, item_brand=item.item.brand, item_model=item.item.model, item_size=item.item.size, item_parameters=item.item.parameters, item_id=item.item.id, staff_email=item.staff.get_storage_staff))
 
-            subject = PRODUCT_NOT_RETURNED_MSG.subject
-            msg = PRODUCT_NOT_RETURNED_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                subject = PRODUCT_NOT_RETURNED_MSG.subject
+                msg = PRODUCT_NOT_RETURNED_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name if item.storage else '',
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
         if request.POST.getlist('send_email_item_is_damaged'):
-            damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
-            subject = DEFECT_IN_PRODUCT_MSG.subject
-            msg = DEFECT_IN_PRODUCT_MSG.message.format(
-                renter_first_name=item.renter.first_name, 
-                renter_last_name=item.renter.last_name, 
-                renter_code=item.renter.code, 
-                storage_name=item.storage.name, 
-                item_name=item.item.item_name, 
-                item_brand=item.item.brand, 
-                item_model=item.item.model, 
-                item_size=item.item.size, 
-                item_parameters=item.item.parameters, 
-                item_id=item.item.id, 
-                staff_email=item.staff.get_storage_staff,
-                damaged_remarks=damaged_remarks)
-            to = [item.renter.responsible_teacher.email, item.renter.email]
+            try:
+                damaged_remarks = request.POST.get('damaged_remarks') if request.POST.get('damaged_remarks') else ''
+                subject = DEFECT_IN_PRODUCT_MSG.subject
+                msg = DEFECT_IN_PRODUCT_MSG.message.format(
+                    renter_first_name=item.renter.first_name, 
+                    renter_last_name=item.renter.last_name, 
+                    renter_code=item.renter.code, 
+                    storage_name=item.storage.name, 
+                    item_name=item.item.item_name, 
+                    item_brand=item.item.brand, 
+                    item_model=item.item.model, 
+                    item_size=item.item.size, 
+                    item_parameters=item.item.parameters, 
+                    item_id=item.item.id, 
+                    staff_email=item.staff.get_storage_staff,
+                    damaged_remarks=damaged_remarks)
+                to = [item.renter.responsible_teacher.email, item.renter.email]
 
-            email_alert(subject, msg, to)
-            return redirect('renter', idx=item.renter_id)
+                email_alert(subject, msg, to)
+                return redirect('renter', idx=item.renter_id)
+            except Exception as e:
+                error = "Ei ole mahdollista lähettää viesti"
+                print(error, '>', e)
 
 
     selected_user = CustomUser.objects.get(id=idx)
@@ -322,39 +337,26 @@ def new_event(request):
 
 
     def contains(list, filter):
-        # print(list, filter)
         for count, x in enumerate(list):
             if x.id == int(filter):
                 return count
         return -1
     
     # FIXED Fix float number problem 4.7989999999999995 // FIXED IN bootstrap-input-spinner.js LIBRARY
-    # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
-    # print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
-            # print(idx_inp_fix)
             # fix_item = '_fix_item'+str(idx_inp_fix)
-            # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
-            # print('idxf', idxf)
 
             if idxf != -1:
                 changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
                 changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix) # Set item_amount value 
                 changed_items[idxf].fix_item = request.GET.get('_fix_item'+idx_inp_fix) if request.GET.get('_fix_item'+idx_inp_fix) else 1 # Set a fix_item (btn) value: 0, 1. If got none set 1.
 
-            # print('inp_fix', inp_fix)
-            # print('idx_inp_fix', idx_inp_fix)
-
             # print('GET _fix_item'+idx_inp_fix, request.GET.get('_fix_item'+idx_inp_fix)) 
-
-            # print('idxf', idxf)
-            # print('radioUnit', request.GET.get(inp_fix))
-            # print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
             # print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
     else:
         error[3] = 'Mitään ei löytynyt'
@@ -363,8 +365,6 @@ def new_event(request):
 
     def serch_fix_item(idx, inp_fixes):
         for inp_fix in inp_fixes:
-            # print('inp_fix ', request.GET.get(inp_fix))
-            # print('idx ', idx)
             if idx == int(request.GET.get(inp_fix)):
                 return True
 
@@ -383,7 +383,7 @@ def new_event(request):
                     'renter': renter, 
                     'staff': staff,
                     'start_date': datenow,
-                    'storage_id': staff.storage_id,
+                    'storage_id': staff.storage_id if staff.storage_id else item.storage_id,
                     'estimated_date': estimated_date,
                     'amount': 1,
                     # 'units': item.unit if not unit else None
@@ -396,18 +396,17 @@ def new_event(request):
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
-                                print('unit', unit)
-                                item.amount = int(item.amount) - item_amount
-                                contents = item.contents if item.contents else 1
-                                item.amount_x_contents = item.amount * contents
+                                print('PAKKAUS')
+                                item.amount = int(item.amount) - int(item_amount)
+                                item.amount_x_contents = item.amount_x_contents - (item.contents * int(item_amount))
+                                print(item.amount, item.amount_x_contents)
                                 kwargs['amount'] = item_amount
                             else: # Jos yksikkö on sisällön määrää
+                                print('SISÄLTÖ')
                                 # amount_x_contents = item.amount * item.contents # formula
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
-                                # print('new_amount', new_amount, remaining_contents, item.contents)
-                                # remainder = remaining_contents - (item.contents * new_amount)
-                                
+
                                 # Vähennetään jos amount arvo tietokannassa on suurempi kuin uusi new_amount arvo. 
                                 # Se tarvitse koska, jos palautetaan sisältö emme lisätään pakkausta, jos se oli nolla pitäisi pysyä samana
                                 item.amount = new_amount if item.amount >= new_amount else item.amount 
@@ -618,7 +617,7 @@ def getProducts(request):
         for obj in page_obj:
             item = {
                 'id': obj.id,
-                'picture': settings.STATIC_URL + str(obj.picture),
+                'picture': settings.STATIC_URL + str(obj.picture) if obj.picture else '',
                 'item_name': obj.item_name if obj.item_name else '',
                 'brand': obj.brand if obj.brand else '',
                 'model': obj.model if obj.model else '',
@@ -805,21 +804,45 @@ def edit_item(request, idx):
     storage = get_item.storage
     amount = get_item.amount
     contents = get_item.contents
+    old_image_path = get_item.picture.path if get_item.picture else ''
+
+    print('camera_picture', camera_picture)
 
     if request.method == "POST":
+        new_cat = None
+        storage_name = request.POST.get('storage')
+        if storage_name:
+            
+            new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+            if is_new_category and storage_name: # If is new category and storage_name not empty
+                new_cat.storage_code = storage_name[:1].lower()
+                new_cat.save()
+        
+
+        request.POST._mutable = True
+        request.POST['storage'] = new_cat.id if new_cat else None
+
+        def delete_old_picture(old_image_path):
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+            else:
+                print('Kuvaa ei löydy')
+
         form = GoodsForm(request.POST, request.FILES, instance=get_item)
+
         if form.is_valid():
             item = form.save(commit=False)
-            # print('item.picture=', item.picture)
-            try:
-                if not item.picture:
-                    new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
-                else:
-                    new_picture = request.FILES['picture']
-                item.picture = new_picture
-            except:
+            if camera_picture:
+                item.picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+                delete_old_picture(old_image_path)
+            elif request.FILES:
+                try:
+                    item.picture = request.FILES['picture']
+                    delete_old_picture(old_image_path)
+                except:
+                    pass
+            else:
                 pass
-                # print('get_item.picture=', get_item.picture)
 
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)
@@ -833,7 +856,6 @@ def edit_item(request, idx):
             item.contents = contents # Ei saa muokata contents
             item.cat_name = cat_name
             item.unit = unit
-            item.storage = storage if not item.storage else item.storage
 
             form.save()
             return redirect('product', idx)
@@ -855,12 +877,22 @@ def edit_item(request, idx):
     if event:
         is_rented = True
 
+    if request.user.storage:
+        changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+    elif get_item.storage:
+        changed_storage = get_item.storage
+    else:
+        changed_storage = ''
+    storages = Storage_name.objects.all()
+
     context = {
         'form': form,
         'item': get_item,
         'is_storage_employee': is_storage_employee,
         'is_rented': is_rented,
-        'error_massage': error_massage
+        'error_massage': error_massage,
+        'changed_storage': changed_storage,
+        'storages': storages
     }
     return render(request, 'varasto/edit_item.html', context)
 
@@ -871,13 +903,27 @@ def new_item(request):
     l = []
     error_massage = ''
     camera_picture = request.POST.get('canvasData')
-
+    
     if request.method == "POST":
+        new_cat = None
+        storage_name = request.POST.get('storage')
+        if storage_name:
+            new_cat, is_new_category = Storage_name.objects.get_or_create(name=storage_name)
+
+            if is_new_category and storage_name: # If is new category and storage_name not empty
+                new_cat.storage_code = storage_name[:1].lower()
+                new_cat.save()
+        
+
+        request.POST._mutable = True
+        request.POST['storage'] = new_cat.id if new_cat else None
+
+
         form = GoodsForm(request.POST, request.FILES)
         if form.is_valid():
             item = form.save(commit=False)
             if camera_picture:
-                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture, request.POST.get('csrfmiddlewaretoken'))
+                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
             elif 'picture' in request.FILES:
                 new_picture = request.FILES['picture']
             else:
@@ -909,10 +955,17 @@ def new_item(request):
         return redirect('new_item')
     else:
         form = GoodsForm(use_required_attribute=False, initial={'storage': request.user.storage})
+        if request.user.storage:
+            changed_storage = Storage_name.objects.get(id=request.user.storage_id)
+        else:
+            changed_storage = ''
+        storages = Storage_name.objects.all()
 
     context = {
         'form': form,
-        'error_massage': error_massage
+        'error_massage': error_massage,
+        'storages': storages,
+        'changed_storage': changed_storage
     }
     return render(request, 'varasto/new_item.html', context)
 
@@ -975,7 +1028,11 @@ def product(request, idx):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    product_barcode = barcode_gen(idx)
+    try:
+        storage_code = selected_item.storage.storage_code if selected_item.storage.storage_code else 'z'
+    except:
+        storage_code = 'z'
+    product_barcode = barcode_gen(idx, storage_code)
 
     # Calculate the page number this product is on. After deleting the product, we can return to this page
     len_to_self_item = Goods.objects.filter(**storage_filter).filter(id__lt=idx).order_by("id").__len__()
@@ -996,7 +1053,10 @@ def product(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_storage_staff)
 def set_rental_event_view(request):
-    set_name = Settings.objects.get(set_name='rental_page_view')
+    try:
+        set_name = Settings.objects.get(set_name='rental_page_view')
+    except:
+        set_name = Settings.objects.create(set_name='rental_page_view', label='Vuokratapahtumat')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=set_name, user=request.user)
     set.set_value = request.GET.get('name')
     set.save()
@@ -1039,6 +1099,7 @@ def delete_product(request, idx, next_page):
     staff = CustomUser.objects.get(id=request.user.id)
     item = Goods.objects.get(id=idx)
     item_data_dict = item.__dict__.copy() # Make copy of product instance
+    image_path = item.picture.path if item.picture else ''
 
     # Delete unnecessary fields in product info
     entries_to_remove = ('_state', 'cat_name_id', 'item_type', 'size', 'parameters', 'item_description', 'picture', 'storage_place', 'item_status', 'cost_centre', 'purchase_data', 'purchase_price', 'purchase_place', 'storage_id', 'cat_name_id', 'ean')
@@ -1069,6 +1130,13 @@ def delete_product(request, idx, next_page):
     staff_audit.save()
     
     item.delete()
+    # Delete picture if same picture name doesn't have another product
+    is_picture_exist_in_another_products = Goods.objects.filter(picture=item.picture)
+    if not is_picture_exist_in_another_products:
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        else:
+            print('Kuvaa ei löydy')
 
     base_url = reverse('products')  # 1 URL to reverse
     query_string =  urlencode({'page': next_page})  # 2 page=next_page, save page number where product was
@@ -1082,9 +1150,11 @@ def delete_product(request, idx, next_page):
 @user_passes_test(lambda user:user.is_storage_staff)
 def burger_settings(request):
     show_full = request.POST.get('show_full')
+    try:
+        burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
+    except:
+        burger_setting_dict = Settings.objects.create(set_name='show_full_burger')
 
-
-    burger_setting_dict = Settings.objects.get(set_name='show_full_burger')
     set, new_set = Settings_CustomUser.objects.filter(user=request.user).get_or_create(setting_name=burger_setting_dict, user=request.user)
     set.set_value = show_full
     set.save()
@@ -1098,7 +1168,12 @@ def burger_settings(request):
 
 def product_barcode(request, idx):
     item = Goods.objects.get(id=idx)
-    product_barcode = barcode_gen(idx)
+
+    try:
+        storage_code = item.storage.storage_code
+    except:
+        storage_code = 'z'
+    product_barcode = barcode_gen(idx, storage_code)
     context = {
         'product_barcode': product_barcode,
         'item': item,
@@ -1117,13 +1192,50 @@ def product_barcode_ean13(request, idx):
 @login_required()
 @user_passes_test(lambda user:user.is_staff)
 @user_passes_test(lambda user: user.is_superuser)
-def initilize(request):
-    for n in range(len(CATEGORIES)):
-        cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
-        # print(cats)
+def initialize(request):
+    groups = Group.objects.all()
+    group_first = groups.first()
+    if not group_first:
+        for n in range(len(CATEGORIES)):
+            cats = Category.objects.get_or_create(cat_name=CATEGORIES[n])
+            # print(cats)
 
-    for n in range(len(UNITS_LIST)):
-        units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
+        for n in range(len(UNITS_LIST)):
+            units = Units.objects.get_or_create(unit_name=UNITS_LIST[n])
+
+        for n in range(len(AUTH_GROUPS)):
+            group = Group.objects.get_or_create(name=AUTH_GROUPS[n])
+
+        auth_perms = Permission.objects.all()
+        for group in groups:
+            if group.name == 'Administrator':
+                for perm in auth_perms:
+                    group.permissions.add(perm)
+            if group.name == 'Management':
+                perm_id_list = MANGEMENT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Student':
+                perm_id_list = STUDENT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Student_ext':
+                perm_id_list = STUDENT_EXT_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Storage_employee':
+                perm_id_list = STORAGE_EMPLOYEE_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
+            if group.name == 'Teacher':
+                perm_id_list = TEACHER_PERM
+                perms_to_add = Permission.objects.filter(codename__in=[x for x in perm_id_list])
+                for perm in perms_to_add:
+                    group.permissions.add(perm)
 
 
     return HttpResponse('INITIALIZE COMPLETE')

@@ -6,7 +6,7 @@
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/edit_item.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 {% endblock stylesheet %}
 
 {% block script %}
@@ -100,7 +100,7 @@
             preview.style.height = "250px";
             
             let dataURI = mycanvas.toDataURL().replace(/^data:image\/png;base64/, "")
-            console.log(dataURI)
+            // console.log(dataURI)
 
             // sendPic(dataURI)
             
@@ -166,8 +166,15 @@
 
             
                 
-                
             <div class="input_wrap mt-4">
+                <div class="new_middle">
+                    <div class="div1" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">TUOTEKOODI {{ item.id }}</label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="new_middle">
                     <div class="div1" style="display: flex; justify-content: center;">
                         <div>
@@ -288,7 +295,7 @@
                     
                 </div>
 
-                <div class="new_bottom">
+                <!-- <div class="new_bottom">
                     <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">VARASTO</label>
@@ -297,6 +304,25 @@
                             {% else %}
                                 {% render_field form.storage %}
                             {% endif %}
+                        </div>
+                    </div>
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">PAIKKA VARASTOSSA (mm: A25, max 5 symbolia)</label>
+                            {{form.storage_place}}
+                        </div>
+                    </div>
+                </div> -->
+                <div class="new_bottom">
+                    <div class="div16" style="display: flex; justify-content: center;">
+                        <div>
+                            <label class="form-label">VARASTO</label>
+                            <input type="text" name="storage" value="{{changed_storage.name}}" class="form-control" id="id_storage" list="storage_list">
+                            <datalist id="storage_list">
+                                {% for storage in storages %}
+                                    <option value="{{storage}}"></option>
+                                {% endfor %}
+                            </datalist>
                         </div>
                     </div>
                     <div class="div16" style="display: flex; justify-content: center;">
@@ -345,14 +371,13 @@
                             {% render_field form.cost_centre|append_attr:is_storage_employee.0 %}
                         </div>
                     </div>
-                    <div class="div16" style="display: flex; justify-content: center;">
+                    <!-- <div class="div16" style="display: flex; justify-content: center;">
                         <div>
                             <label class="form-label">REKISTERINUMERO</label>
-                            <!-- <input class="form-control" type="text"> -->
                             {% comment %} {{form.reg_number}} {% endcomment %}
                             {% render_field form.reg_number|append_attr:is_storage_employee.0 %}
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
 

@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/vuokraus_tilanne.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 {% endblock %}
 
 {% block title %}Vuokraaja {{ selected_user.first_name }} {{ selected_user.last_name }}{% endblock %}
@@ -16,6 +16,15 @@
 
 {% block script %}
 <script type="text/javascript">
+        function closeReturn(element, id){
+            if ( $(element).is(':checked') ) {
+                $('#return_amount'+id).prop("disabled", true)
+                $('#everything_returned'+id).prop("disabled", true)
+            } else {
+                $('#return_amount'+id).prop("disabled", false)
+                $('#everything_returned'+id).prop("disabled", false)
+            }
+        }
 </script>
 {% endblock %}
 
@@ -25,7 +34,13 @@
         <div class="person_info">
             <div class="photo">
                 <!-- <div><img src="{% static 'varasto/pics/people/portrait-800.jpg' %}" alt="portrait.jpg"></div> -->
-                <div><img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}"></div>
+                <div>
+                    {% if selected_user.photo %}
+                    <img src="{% static selected_user.photo %}" alt="{{selected_user.photo}}">
+                    {% else %}
+                    <img src="{% static 'images/no_person_photo.png' %}" alt="no_person_photo.png">
+                    {% endif %}
+                </div>
             </div>
             <div class="information ps-3">
                 <span class="student_name">{{ selected_user.first_name }} {{ selected_user.last_name }}</span>
@@ -83,16 +98,30 @@
 
         <div class="history">
             {% for rental_event in rental_events %}
+            {% if rental_event.item %}
             <div class="history_list">
                 
                 <div class="history_photo">
-                    <div><a href="{% url 'product' rental_event.item.id %}" class="nodecor"><img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}"></a></div>
+                    {% if rental_event.item.picture %}
+                    <div>
+                        <a href="{% url 'product' rental_event.item.id %}" class="nodecor">
+                            <img src="{% static rental_event.item.picture %}" alt="{{rental_event.item.picture}}" onerror="this.onerror=null;this.src='{% static 'images/No_product_b.png' %}'; this.style.opacity='95%'">
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="photo_svg">
+                        <!-- <i class="bi bi-wrench-adjustable"></i><i class="bi bi-hammer"></i> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+                            <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
+                        </svg>
+                    </div>
+                    {% endif %}
                 </div>
                 
                 <div class="">
                     <a href="{% url 'product' rental_event.item.id %}" class="nodecor item_info">
                         <div>
-                            <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand}}</span>  
+                            <span class="item_name">{{rental_event.item.item_name}} {{rental_event.item.brand|default_if_none:""}}</span>  
                             <span class="item_props">{{rental_event.item.model|default_if_none:""}} {{rental_event.item.item_type|default_if_none:""}} {{rental_event.item.parameters|default_if_none:""}} {{rental_event.item.size|default_if_none:""}}</span>
                         </div>
                         <div class="item_info_place">
@@ -188,7 +217,7 @@
                     </div>
                     <div class="buttons">
                         <button type="button" class="list__button btn_strech {% if rental_event.returned_date or not is_staff_user_has_permission_to_edit %}list__button_inactive{% else %}list__button_bg_blue{% endif %}" data-bs-toggle="modal" data-bs-target="#l{{rental_event.id}}">
-                            <span class="list__button__text ">Lopeta</span>
+                            <span class="list__button__text ">Palautus</span>
                         </button>
                     </div>
                 </div>
@@ -242,16 +271,30 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">sulje</button>
                                 {% if rental_event.item.cat_name_id == CATEGORY_CONSUMABLES_ID %}
-                                <button type="submit" name="_close_rent_cons" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                <button type="submit" name="_close_rent_cons" value="{{rental_event.id}}" class="btn btn-primary">TALLENNA</button>
                                 {% else %}
-                                <button type="submit" name="_close_rent" value="{{rental_event.id}}" class="btn btn-primary">LOPETA</button>
+                                <button type="submit" name="_close_rent" value="{{rental_event.id}}" class="btn btn-primary">TALLENNA</button>
                                 {% endif %}
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            
+            {% else %}
+            <div class="history_list">
+                <div class="history_photo">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-slash-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="item_props">Tavara poistettiin</span>
+                </div>
+            </div>
+            {% endif %}
             {% endfor %}
 
         </div>

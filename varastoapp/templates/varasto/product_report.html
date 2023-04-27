@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/product_report.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 {% endblock %}
 
 {% block title %}Vuokraus raportointi{% endblock %}
@@ -121,7 +121,7 @@
 
     <div class="row01">
         <div class="date">
-            <span class="">{{rental_event.start_date|date:"d.m.Y"}} - {% if rental_event.returned_date %}{{rental_event.returned_date|date:"d.m.Y"}}{% else %}Vuokrattavissa{% endif %}</span>
+            <span class="">{{rental_event.start_date|date:"d.m.y"}} - {% if rental_event.returned_date %}{{rental_event.returned_date|date:"d.m.y"}}{% else %}ei ole palautettu{% endif %}</span>
         </div>
     </div>
 

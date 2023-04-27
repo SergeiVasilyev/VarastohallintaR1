@@ -5,7 +5,7 @@
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/products.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 <script type="text/javascript" src="{% static 'varasto/products_list_c.js' %}"></script>
 {% endblock %}
 
@@ -76,6 +76,7 @@ $(document).ready(function() {
             var new_href = _params_list.join("&")
             
             $this.attr('href', new_href)
+            $('#search_btn').attr('href', new_href)
         })
     }
 
@@ -87,6 +88,9 @@ $(document).ready(function() {
             $('#search_item').val(e.target.value)
             updateHref(e)
         }
+        if (e.keyCode == 13){
+            document.querySelector("#search_btn").click()
+        }
     })
     // AJAX Get product
 
@@ -96,6 +100,7 @@ $(document).ready(function() {
         var $this = $(this)
         var _href = $this.attr('href')
         $this.attr('href', _href+'&search_text={{search_text}}')
+        $('#search_btn').attr('href', _href+'&search_text={{search_text}}')
     })
 
 
@@ -106,7 +111,10 @@ $(document).ready(function() {
 
 {% block main_content %}
 <div class="filter_panel">
-    <div class="pe-4"><input class="form-control" id="search_item" name="search_item" type="text" value="{{search_text}}" placeholder="Syötä koodi tai tuotteen nimi"></div>
+    <div class="input-group pe-4">
+        <input class="form-control" id="search_item" name="search_item" type="text" value="{{search_text}}" placeholder="Syötä koodi tai tuotteen nimi">
+        <a href="" class="btn btn-secondary" type="button" id="search_btn"><i class="bi bi-search"></i></a>
+    </div>
     <div class="pagination">
         <span class="step-links">
             <a href="?page=1&show_all={{is_show_all}}"><button class="list__button list__button_bg_blue btn_strech"><span class="bi bi-chevron-double-left font-size"></span></button></a>

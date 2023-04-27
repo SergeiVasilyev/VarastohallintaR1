@@ -1,11 +1,21 @@
 {% load static %}
 <div class="refund_page">
     <div class="row01">
-        <img src="{% static rental_event.item.picture %}" class="img-thumbnail" alt="{{ rental_event.item.picture }}">
+        {% if rental_event.item.picture %}
+        <img src="{% static rental_event.item.picture %}" class="img-thumbnail" alt="{{ rental_event.item.picture }}" onerror="this.onerror=null;this.src='{% static 'images/No_product_b.png' %}'; this.style.opacity='95%'">
+        {% else %}
+        <div class="history_photo2">
+            <div class="photo_svg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+                    <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
+                </svg>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="row01">
         <div class="span_warp">
-            <span class="largest">{{ rental_event.item.item_name }} {{ rental_event.item.brand }}</span>
+            <span class="largest">{{ rental_event.item.item_name }} {{ rental_event.item.brand|default_if_none:"" }}</span>
             <span class="small_medium">
                 {{rental_event.item.model|default_if_none:""}} 
                 {{rental_event.item.item_type|default_if_none:""}} 
@@ -18,7 +28,7 @@
             <span class="small mt-3">Tuotenumero</span>
             <span class="middle">{{rental_event.item.id}}</span>
             <span class="small mt-3">Tuotepaikka</span>
-            <span class="middle">{{rental_event.item.storage_place}}</span>
+            <span class="middle">{{rental_event.item.storage_place|default_if_none:"-"}}</span>
         </div>
     </div>
 

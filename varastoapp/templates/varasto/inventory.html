@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/inventory.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/components.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'varasto/base_main.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
 {% endblock %}
 
 {% block title %}Inventaario{% endblock %}
@@ -121,8 +121,8 @@
         
             <div class="row01">
                 <div class="item_name">
-                    <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand}}</a></span>
-                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model}}</a></span>
+                    <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand|default:""}}</a></span>
+                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model|default:"-"}}</a></span>
                 </div>
             </div>
         

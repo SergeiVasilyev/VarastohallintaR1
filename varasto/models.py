@@ -24,7 +24,7 @@ class Storage_place(models.Model):
 
 class Storage_name(models.Model):
     name = models.CharField(max_length=30)
-    storage_code = models.CharField(max_length=2, blank=True, null=True)
+    storage_code = models.CharField(max_length=5, blank=True, null=True)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -46,7 +46,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     photo = models.ImageField(upload_to='images/varastousers/', blank=True, null=True) # Сделать подпапки
     role = models.CharField(max_length=255, choices=ROLE, default="student")
     responsible_teacher = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
     # REQUIRED_FIELDS = ['code']
 
     def __str__(self):
@@ -107,11 +107,6 @@ class Units(models.Model):
 
 
 class Goods(models.Model):
-    ITEM_STATUS = [
-        ("available", _("saatavilla")),
-        ("not_available", _("ei saatavilla")),
-        ("under_repair", _("korjaamassa")),
-    ]
     cat_name = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
     item_name = models.CharField(max_length=150, blank=True, null=True)
     brand = models.CharField(max_length=150, blank=True, null=True)
@@ -121,7 +116,7 @@ class Goods(models.Model):
     parameters = models.CharField(max_length=100, blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     amount = IntegerRangeField(default=1, min_value=1, max_value=50, blank=True, null=True) # Jos tavaran kategori on kulutusmateriaali, käytetään amount kentä ja yksikkö
-    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.PROTECT, blank=True, null=True) # Units choices moved to another table and field
+    unit = models.ForeignKey(Units, related_name='unit', on_delete=models.SET_NULL, blank=True, null=True) # Units choices moved to another table and field
     amount_x_contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
     picture = models.ImageField(upload_to=PRODUCT_IMG_PATH, blank=True, null=True) # Make subfolders
     item_description = models.TextField(blank=True, null=True) # Kuvaus
@@ -131,7 +126,7 @@ class Goods(models.Model):
     purchase_price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True) # Hankitahinta
     purchase_place = models.CharField(max_length=50, blank=True, null=True) # Hankitapaikka
     invoice_number = models.CharField(max_length=50, blank=True, null=True) #16 Laskun numero
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
     storage_place = models.CharField(max_length=5, blank=True, null=True)
     # Packages amount, package contents, units
     # Pakkausten määrä, pakkauksen sisältö, yksiköt
@@ -226,6 +221,16 @@ class Goods(models.Model):
             return [False, event.estimated_date, 'Item are consumable and storage is empty']
         return [True, None, 'Item is not rented yet']
 
+    @register.filter
+    def is_same_storage(item, user):
+        """"
+        Return True:
+        if user storage == product storage,
+        if user storage is NONE and user has status staff or superuser
+        """
+        if user.storage == item.storage or (user.storage == None and (user.is_staff or user.is_superuser)):
+            return True
+        return False
 
     def __str__(self):
         return '%s' % (self.item_name)
@@ -235,13 +240,13 @@ class Goods(models.Model):
 
 
 class Rental_event(models.Model):
-    item = models.ForeignKey(Goods, related_name='item', on_delete=models.PROTECT)
-    storage = models.ForeignKey(Storage_name, on_delete=models.PROTECT, blank=True, null=True)
-    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.PROTECT)
-    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.PROTECT)
+    item = models.ForeignKey(Goods, related_name='item', on_delete=models.SET_NULL, blank=True, null=True)
+    storage = models.ForeignKey(Storage_name, on_delete=models.SET_NULL, blank=True, null=True)
+    renter = models.ForeignKey(CustomUser, related_name='renter', on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(CustomUser, related_name='staff', on_delete=models.SET_NULL, blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     contents = models.DecimalField(max_digits=11, decimal_places=4, blank=True, null=True)
-    units = models.ForeignKey(Units, on_delete=models.PROTECT, blank=True, null=True) # Goods, to_field='unit',
+    units = models.ForeignKey(Units, on_delete=models.SET_NULL, blank=True, null=True) # Goods, to_field='unit',
     start_date = models.DateTimeField(blank=True, null=True)
     estimated_date = models.DateTimeField(blank=True, null=True)
     returned_date = models.DateTimeField(blank=True, null=True)

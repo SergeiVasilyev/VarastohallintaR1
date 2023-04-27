@@ -79,17 +79,17 @@ $(document).ready(function() {
         } else {
             $id_pack.prop("disabled", true)
         }
-        //let accessAllowed = (age > 18) ? true : false;
-        console.log($id_units.val())
+
         if ($id_units.val() == '1') { // need to assign a variable for '1' as kpl
             unit_around = Math.round($id_pack.val())
+            //unit_around = !unit_around ? 1 : unit_around
             $id_pack.val(unit_around)
             $id_pack.attr('data-decimals', 0)
             $id_pack.attr('step', 1)           
         } else {
             let val = ($id_units.val()) ? null_is_empty($id_pack.val()) : ''
+            //val = !val ? 0.0001 : val
             $id_pack.val(val)
-
             $id_pack.attr('data-decimals', 4)
             $id_pack.attr('step', 0.001)
         }
@@ -123,35 +123,8 @@ $(document).ready(function() {
         check_cat_name()
     })
 
-    // Log
-    // $('button').click(function(){
-    //     console.log($('#id_pack').val())
-    // })
+    // / NEW ITEM PAGE
 
-    //----
-
-    // ---NEW ITEM PAGE
-
-    
-    // NEW ITEM PAGE
-    // After the picture is taken, the stream stops !!!!!!!!!!!!!!!!!
-    // $('#take_picture').click(function(){
-    //     var origin = window.location.origin
-    //     var myModalEl = document.getElementById('cam')
-    //     var modal = bootstrap.Modal.getInstance(myModalEl)
-    //     // modal.hide()
-    //     $.get('take_pacture', function (data, status) {
-    //         console.log(origin)
-    //         console.log(data)
-
-    //         var preview = document.getElementById("preview_pic")
-    //         preview.style.opacity = "1";
-    //         preview.style.maxWidth = "250px";
-    //         preview.style.height = "250px";
-    //         preview.src = origin + data
-    //         // $('#preview_pic').attr('src', origin + data)
-    //         })
-    // })
 
     // NEW EVENT PAGE
     // Click button when Date is changed
@@ -166,5 +139,7 @@ $(document).ready(function() {
     $('#rental_end').change(function(){
         document.querySelector("#date_submit").click()
     })
+    // / NEW EVENT PAGE
+
 
 })

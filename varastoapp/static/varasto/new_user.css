@@ -104,3 +104,25 @@
     text-decoration: none;
     color:#325288;
 }
+
+
+
+
+.feedback-invalid{
+    color: #D96098;
+    font-size: 0.875em;
+    max-width: 400px;
+    height: 1.2em;
+}
+.feedback-valid{
+    color: #30b35e;
+    font-size: 1.2em;
+    max-width: 400px;
+    height: 1.2em;
+}
+.show{
+    display: block;
+}
+.hide{
+    display: none;
+}
