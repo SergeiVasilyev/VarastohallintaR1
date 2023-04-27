@@ -2,7 +2,7 @@
 <div class="refund_page">
     <div class="row01">
         {% if rental_event.item.picture %}
-        <img src="{% static rental_event.item.picture %}" class="img-thumbnail" alt="{{ rental_event.item.picture }}">
+        <img src="{% static rental_event.item.picture %}" class="img-thumbnail" alt="{{ rental_event.item.picture }}" onerror="this.onerror=null;this.src='{% static 'images/No_product_b.png' %}'; this.style.opacity='95%'">
         {% else %}
         <div class="history_photo2">
             <div class="photo_svg">

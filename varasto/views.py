@@ -130,24 +130,26 @@ def renter(request, idx):
         def add_to_goods(returned_num, is_amount):
             if is_amount:
                 product.amount += returned_num
-                product.amount_x_contents = product.amount * product.contents
+                product.amount_x_contents = product.amount_x_contents + (product.contents * returned_num)
             else:
                 product.amount_x_contents += returned_num
             product.save()
             return True
         
-        def substruct_from_rental_event():
+        def substruct_from_rental_event(close_rent_without_returning):
             if return_all:
                 if event.amount:
                     event.returned = event.amount
                     # event.amount = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
-                    add_to_goods(event.returned, 1)
+                    if not close_rent_without_returning:
+                        add_to_goods(event.returned, 1)
                 elif event.contents:
                     event.returned = event.contents
                     # event.contents = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
-                    add_to_goods(event.returned, 0)
+                    if not close_rent_without_returning:
+                        add_to_goods(event.returned, 0)
                 else:
                     return redirect('renter', idx)
                 event.save()
@@ -158,7 +160,8 @@ def renter(request, idx):
                         event.amount -= return_part_of_product
                         event.returned = return_part_of_product
                         event.returned_date = datenow
-                        add_to_goods(event.returned, 1)
+                        if not close_rent_without_returning:
+                            add_to_goods(event.returned, 1)
                     else:
                         return redirect('renter', idx)
                 elif event.contents:
@@ -167,7 +170,8 @@ def renter(request, idx):
                         event.contents -= return_part_of_product
                         event.returned = return_part_of_product
                         event.returned_date = datenow
-                        add_to_goods(event.returned, 0)
+                        if not close_rent_without_returning:
+                            add_to_goods(event.returned, 0)
                     else:
                         return redirect('renter', idx)
                 else:
@@ -177,9 +181,10 @@ def renter(request, idx):
         
         if request.POST.getlist('_close_rent_cons'): # Close rent for consumables
             return_all = request.POST.get('everything_returned')
+            close_rent_without_returning = request.POST.get('close_rent_without_returning')
             return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
             # print(return_part_of_product)
-            if substruct_from_rental_event():
+            if substruct_from_rental_event(close_rent_without_returning):
                 return redirect('renter', idx)
 
 
@@ -332,39 +337,26 @@ def new_event(request):
 
 
     def contains(list, filter):
-        # print(list, filter)
         for count, x in enumerate(list):
             if x.id == int(filter):
                 return count
         return -1
     
     # FIXED Fix float number problem 4.7989999999999995 // FIXED IN bootstrap-input-spinner.js LIBRARY
-    # TODO Если в список уже добавлен один расходный материал, то при добавлении в список нового материала обновляется и поля старого, без кнопки фиксации. Надо исправить, чтобы кнопки разных товаров в списке не влияли друг на друга. На перспективу
     r = re.compile("radioUnit") # Define group of variable from Get query
     inp_fixes = list(filter(r.match, request.GET)) # Put all radioUnit### variables into list, ### - item id
-    # print('radioUnit', inp_fixes)
     if inp_fixes:
         for inp_fix in inp_fixes: # Go through all list
             idx_inp_fix = re.sub(r, '', inp_fix) # Get from the name id 
-            # print(idx_inp_fix)
             # fix_item = '_fix_item'+str(idx_inp_fix)
-            # print('fix_item', fix_item)
             idxf = contains(changed_items, idx_inp_fix) # compare lists, find the index of the change_item list
-            # print('idxf', idxf)
 
             if idxf != -1:
                 changed_items[idxf].radioUnit = request.GET.get(inp_fix) # Set radioUnit value 1 or 0 (first or second radio button)
                 changed_items[idxf].item_amount = request.GET.get('inp_amount'+idx_inp_fix) # Set item_amount value 
                 changed_items[idxf].fix_item = request.GET.get('_fix_item'+idx_inp_fix) if request.GET.get('_fix_item'+idx_inp_fix) else 1 # Set a fix_item (btn) value: 0, 1. If got none set 1.
 
-            # print('inp_fix', inp_fix)
-            # print('idx_inp_fix', idx_inp_fix)
-
             # print('GET _fix_item'+idx_inp_fix, request.GET.get('_fix_item'+idx_inp_fix)) 
-
-            # print('idxf', idxf)
-            # print('radioUnit', request.GET.get(inp_fix))
-            # print('item_amount', request.GET.get('inp_amount'+idx_inp_fix))
             # print(changed_items[idxf].id, changed_items[idxf].item_name, changed_items[idxf].item_amount)
     else:
         error[3] = 'Mitään ei löytynyt'
@@ -373,8 +365,6 @@ def new_event(request):
 
     def serch_fix_item(idx, inp_fixes):
         for inp_fix in inp_fixes:
-            # print('inp_fix ', request.GET.get(inp_fix))
-            # print('idx ', idx)
             if idx == int(request.GET.get(inp_fix)):
                 return True
 
@@ -406,17 +396,17 @@ def new_event(request):
                     if (item_amount <= int(item.amount)) or (item_amount <= item.amount_x_contents): # Tarkistus, onko varastossa tarpeeksi tuotteita?
                         try:
                             if unit: # Jos yksikkö on pakkaus, kpl
-                                item.amount = int(item.amount) - item_amount
-                                contents = item.contents if item.contents else 1
-                                item.amount_x_contents = item.amount * contents
+                                print('PAKKAUS')
+                                item.amount = int(item.amount) - int(item_amount)
+                                item.amount_x_contents = item.amount_x_contents - (item.contents * int(item_amount))
+                                print(item.amount, item.amount_x_contents)
                                 kwargs['amount'] = item_amount
                             else: # Jos yksikkö on sisällön määrää
+                                print('SISÄLTÖ')
                                 # amount_x_contents = item.amount * item.contents # formula
                                 remaining_contents = item.amount_x_contents - item_amount # vähennä lisätyt tuotteet jäljellä olevista varastossa olevista tuotteista
                                 new_amount = remaining_contents // item.contents # jako ilman jäännöstä. Se on uusi pakkausten määrä
-                                # print('new_amount', new_amount, remaining_contents, item.contents)
-                                # remainder = remaining_contents - (item.contents * new_amount)
-                                
+
                                 # Vähennetään jos amount arvo tietokannassa on suurempi kuin uusi new_amount arvo. 
                                 # Se tarvitse koska, jos palautetaan sisältö emme lisätään pakkausta, jos se oli nolla pitäisi pysyä samana
                                 item.amount = new_amount if item.amount >= new_amount else item.amount 
@@ -816,6 +806,8 @@ def edit_item(request, idx):
     contents = get_item.contents
     old_image_path = get_item.picture.path if get_item.picture else ''
 
+    print('camera_picture', camera_picture)
+
     if request.method == "POST":
         new_cat = None
         storage_name = request.POST.get('storage')
@@ -841,17 +833,16 @@ def edit_item(request, idx):
         if form.is_valid():
             item = form.save(commit=False)
             if camera_picture:
-                new_picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+                item.picture = PRODUCT_IMG_PATH + _save_image(camera_picture)
+                delete_old_picture(old_image_path)
             elif request.FILES:
                 try:
-                    new_picture = request.FILES['picture']
+                    item.picture = request.FILES['picture']
+                    delete_old_picture(old_image_path)
                 except:
                     pass
             else:
-                new_picture = ''
-
-            delete_old_picture(old_image_path)
-            item.picture = new_picture
+                pass
 
             if cat_name_id == CATEGORY_CONSUMABLES_ID:
                 # print('item.amount_x_contents', item.amount_x_contents)

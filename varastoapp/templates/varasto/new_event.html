@@ -27,27 +27,34 @@ $(document).ready(function() {
         if (e.keyCode == 13){
             if (barcode) {
                 //printBarcode(barcode)
-                checkBarcode(barcode)
+                checkBarcode(barcode, e)
             }
             barcode = ''
-            document.querySelector("button[name=_add_user]").click()
-            return
+            //document.querySelector("button[name=_add_user]").click()
+            //return
         }
         if (e.key != 'Shift')
             barcode += e.key // Tarkista, että viivakoodissa on ainakin 3 kirjainta (Letter, num, chr13)
         interval = setInterval(() => barcode = '', 20) // interval min 20ms
     })
-    function checkBarcode(scanned_barcode){
-        storage_code = "{{ user.storage.storage_code }}" // tai user.storage_id - pitää tarkista
 
-        if (parseInt(scanned_barcode, 10))
+    function checkBarcode(scanned_barcode, e){
+        //storage_code = "{{ user.storage.storage_code }}" // tai user.storage_id - pitää tarkista
+        let onlyLetters = /^[a-zA-Z]+$/ // regexp to check is simbol is letter
+
+        if (parseInt(scanned_barcode, 10) && scanned_barcode.length !== 13) {// if in the scanned barcode just numbers -> send its to the 'add_user' input field
             document.querySelector('#add_user').value = scanned_barcode
-        // first Letter in a barcodes. Etsitään varastosta varastokoodin mukaan, 
-        //Adminilla ei ole storage_code sama kuin hallinnoilla, siksi pitää tarkista NOLLaksi storage_id kentä
-        else if (scanned_barcode[0]=='{{ user.storage.storage_code }}' || !storage_code) 
-        //else if (scanned_barcode[0]=='a') // first Letter in a barcodes
+            document.querySelector("button[name=_add_user]").click()
+        }
+        else if (parseInt(scanned_barcode, 10) && scanned_barcode.length === 13) { // else if in the scanned barcode just numbers and length === 13, send code to the 'add_item' input field
+            e.preventDefault()
+            document.querySelector('#add_item').value = scanned_barcode
+            document.querySelector('#add_item').focus()
+        }
+        else if (onlyLetters.test(scanned_barcode.charAt(0))) {// else if first symbol is letter, send code to the 'add_item' input field
             document.querySelector('#add_item').value = scanned_barcode.slice(1)
-        // console.log('{{ user.storage.storage_code }}')
+            document.querySelector("button[name=_add_user]").click()
+        }
     }
 
     function printBarcode(scanned_barcode){
@@ -55,12 +62,13 @@ $(document).ready(function() {
     }
     // --Barcode reader
 
+
+
     // Errors
     var estimated_date = "{{estimated_date}}"
     var feedback_status = "{{feedback_status}}"
     var estimated_date_issmall = "{{estimated_date_issmall}}"
-    // console.log(estimated_date, feedback_status, estimated_date_issmall)
-    // if ((!estimated_date && !feedback_status) || (estimated_date && estimated_date_issmall)){
+
     if ((estimated_date=="None" && feedback_status=="False") || (estimated_date!="None" && estimated_date_issmall=="True")){
         $('#estimated_date').toggleClass('is-invalid')
     }
@@ -202,7 +210,7 @@ $(document).ready(function() {
                 </svg>
             </div>`
         } else {
-            product_image = `<img src="${item.picture}" alt="${item.picture}">`
+            product_image = `<img src="${item.picture}" alt="${item.picture}" onerror="this.onerror=null;this.src='${static_url}images/No_product.png';">`
         }
         
         // console.log(rentable_at)
@@ -392,9 +400,6 @@ $(document).ready(function() {
                                 <input name="add_item" type="text" class="form-control" id="add_item" placeholder="kirjoita tuotenumero" list="add_item_list" autocomplete="off" >
                                 <datalist id="add_item_list"></datalist>
                             </div>
-                            <!-- Сделать по нажатию кнопки "добавить" проверку на JS и затем добавить новый товар в неотображаемый input ниже, а затем сделать уже Get запрос
-                            Таким образом сможем сохранить правильный порядок добавляемых товаров -->
-                            <!-- можно задать для инпутов разные имена и прибавлять из нескрытого инпута данные в скрытый -->
                             <div class="me-3">
                                 <button id="add_product" type="button" class="list__button list__button_bg_green btn_strech btn-small" data-bs-toggle="modal" data-bs-target="#goods" >
                                     <span class="list__button_bg_green__text">Lisää tuote</span>
@@ -434,10 +439,8 @@ $(document).ready(function() {
                         </div>
                         {% if changed_item.cat_name.id == 1 %}
                         <div class="items mx-4">
-                            <!-- TODO -->
                             <div>
-                                <div onclick="hide_fixItem_btn('{{changed_item.id}}')">
-                                    
+                                <div onclick="hide_fixItem_btn('{{changed_item.id}}')">                                    
                                     {% comment %} {{ item_amount_dict|get_item_inp_amount:changed_item.id }} {% endcomment %}
                                     {% comment %} {{ item_amount_dict|get_item_radioUnit:changed_item.id }} {% endcomment %}
                                     {% comment %} {{ changed_item.id }} {{ changed_item.radioUnit }} {{ changed_item.item_amount }} {% endcomment %}
@@ -450,11 +453,11 @@ $(document).ready(function() {
                                                 value="1"
                                             {% endif %}
                                             
-                                            {% if changed_item.radioUnit == '0' and changed_item.units != "kpl" %}
+                                            {% if changed_item.radioUnit == '0' and changed_item.unit.unit_name != "kpl" %}
                                                 data-decimals="4"
                                                 min="0" step="0.001"
                                                 max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
-                                            {% elif changed_item.radioUnit == '0' and changed_item.units == "kpl" %}
+                                            {% elif changed_item.radioUnit == '0' and changed_item.unit.unit_name == "kpl" %}
                                                 data-decimals="0"
                                                 min="1" step="1"
                                                 max="{{changed_item.amount_x_contents|normalize_dec|default:''}}"
@@ -464,14 +467,6 @@ $(document).ready(function() {
                                                 max="{{changed_item.amount|default:''}}"
                                             {% endif %}
                                             />
-                                    {% comment %} <!-- <input type="number" name="inp_amount{{forloop.counter0}}" id="inp_amount{{forloop.counter0}}"
-                                            {% if changed_item.units == 'kpl' %}
-                                                value="1" min="1" step="1"
-                                            {% else %}
-                                                value="0" min="0" step="0.001" data-decimals="4" 
-                                            {% endif %}
-                                            max="{{changed_item.amount_x_pack|default:""}}"
-                                            inputmode="decimal" style="text-align: center" class="form-control" step="1" /> --> {% endcomment %}
                                 </div>
                                 {% comment %} {% for k, v in item_amount_dict.items %}
                                     value="{{ item_amount_dict|get_item:k }}"
@@ -516,7 +511,6 @@ $(document).ready(function() {
                         </div>
                         
                         <div class="items">
-                            <!-- TODO Make JS function, when press button + : BTN to - , then make GET query -->
                             {% comment %} {% if not fix_item_dict|get_key:changed_item.id %} {% endcomment %}
                             {% comment %} {% if not changed_item.fix_item %} {% endcomment %}
                             <div {% if not changed_item.fix_item %} style="display: block;" {% else %} style="display: none;" {% endif %} id="fix_item{{changed_item.id}}">
@@ -672,9 +666,7 @@ function selectMultItem(){
         // console.log('VALUE ' + url_params[i])
     }
     // console.log(url_params)
-    
-    // проверить наличие только в add_item[X] - tehty!
-    
+
     // Getting all checkboxes in val
     var val = {}
     $(':checkbox:checked').each(function(i){
@@ -693,7 +685,7 @@ function selectMultItem(){
 
     if (url.indexOf('?') > -1){
         // console.log('if url has params')
-        $.each( val, function( key, value ) { // key начинается с нуля - исправить
+        $.each( val, function( key, value ) {
             url += '&add_item'+last_item+'='+value
             last_item += 1
             // console.log( url )
@@ -744,11 +736,11 @@ function selectMultItem(){
         var url = location.protocol + '//' + location.host + location.pathname + '?'
         var i = 0
         let new_url = '' // This fix bug, when new_url is not define
-        Object.entries(paramsObj).forEach(([key, value]) => { // key начинается с нуля - исправить
+        Object.entries(paramsObj).forEach(([key, value]) => { 
             // console.log(key, ' - ', value)
             // console.log(window.location.href)
             url = window.location.href
-            let url_without_add_user = url.split(key+'='+value).join('') //находим и удаляем из строки 
+            let url_without_add_user = url.split(key+'='+value).join('') //Find and remove from string
             new_url = url_without_add_user.split('&&').join('&') // Replace && to &
             // console.log('new_url', new_url)
             // setTimeout(() => {  window.location.href = new_url2; }, 8000)
@@ -759,7 +751,7 @@ function selectMultItem(){
     $("button[name=_remove_user]").click(function(){
         let key_name = 'add_user'
         var url_params = getUrlParams(key_name)['url_params']
-        const picked = (({ add_user }) => ({ add_user }))(url_params) // Обрезаем объект до указанных параметров
+        const picked = (({ add_user }) => ({ add_user }))(url_params)
         // console.log('picked', picked)
         var updated_url = deleteParams(picked)
         // console.log('updated_url ', updated_url)
