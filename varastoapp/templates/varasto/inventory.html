@@ -122,7 +122,7 @@
             <div class="row01">
                 <div class="item_name">
                     <span class="header"><a href="{% url 'product' item.id %}">{{item.item_name}} {{item.brand|default:""}}</a></span>
-                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model|default:"-"}}</a></span>
+                    <span class="paragraph"><a href="{% url 'product' item.id %}">{{item.model|default:"-"}} {{ item.size|default:" " }}</a></span>
                 </div>
             </div>
         
