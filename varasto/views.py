@@ -1182,7 +1182,11 @@ def product_barcode(request, idx):
 
 def product_barcode_ean13(request, idx):
     item = Goods.objects.get(id=idx)
-    product_barcode = barcode_gen_ean13(item.ean)
+    product_barcode = ''
+    print(len(item.ean))
+    if len(item.ean) == 13:
+        product_barcode = barcode_gen_ean13(item.ean)
+
     context = {
         'product_barcode': product_barcode,
         'item': item,
