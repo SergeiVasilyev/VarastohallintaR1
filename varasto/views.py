@@ -137,18 +137,16 @@ def renter(request, idx):
             return True
         
         def substruct_from_rental_event(close_rent_without_returning):
-            if return_all:
+            if return_all or close_rent_without_returning:
                 if event.amount:
-                    event.returned = event.amount
-                    # event.amount = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
                     if not close_rent_without_returning:
+                        event.returned = event.amount
                         add_to_goods(event.returned, 1)
                 elif event.contents:
-                    event.returned = event.contents
-                    # event.contents = 0 # FIXED Check if delete this line
                     event.returned_date = datenow
                     if not close_rent_without_returning:
+                        event.returned = event.contents
                         add_to_goods(event.returned, 0)
                 else:
                     return redirect('renter', idx)
@@ -181,9 +179,10 @@ def renter(request, idx):
         
         if request.POST.getlist('_close_rent_cons'): # Close rent for consumables
             return_all = request.POST.get('everything_returned')
-            close_rent_without_returning = request.POST.get('close_rent_without_returning')
-            return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id)))
-            # print(return_part_of_product)
+            close_rent_without_returning = 1 if request.POST.get('close_rent_without_returning') else 0
+            print('close_rent_without_returning', close_rent_without_returning)
+            return_part_of_product = Decimal(request.POST.get('return_amount'+str(item.id))) if not close_rent_without_returning else 0
+
             if substruct_from_rental_event(close_rent_without_returning):
                 return redirect('renter', idx)
 
@@ -262,11 +261,14 @@ def renter(request, idx):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    static_url = settings.STATIC_URL
+
     context = {
         'rental_events': page_obj,
         'selected_user': selected_user,
         'idx': idx,
         'is_staff_user_has_permission_to_edit': is_staff_user_has_permission_to_edit,
+        'static_url': static_url
     }
     return render(request, 'varasto/renter.html', context)
 
@@ -440,6 +442,8 @@ def new_event(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    static_url = settings.STATIC_URL
+
     context = {
         'changed_user': changed_user,
         'changed_items': changed_items,
@@ -447,6 +451,7 @@ def new_event(request):
         'estimated_date_issmall': estimated_date_issmall,
         'items': page_obj,
         'feedback_status': feedback_status,
+        'static_url': static_url
     }
     return render(request, 'varasto/new_event.html', context)
 
@@ -1182,7 +1187,11 @@ def product_barcode(request, idx):
 
 def product_barcode_ean13(request, idx):
     item = Goods.objects.get(id=idx)
-    product_barcode = barcode_gen_ean13(item.ean)
+    product_barcode = ''
+    print(len(item.ean))
+    if len(item.ean) == 13:
+        product_barcode = barcode_gen_ean13(item.ean)
+
     context = {
         'product_barcode': product_barcode,
         'item': item,
