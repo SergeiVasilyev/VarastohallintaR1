@@ -8,7 +8,7 @@
 
 
 ## Demo
-http://109.204.232.228:8880
+http://5.61.88.179:8880
 
 Student_ext: user3, Q2wertyy
 
