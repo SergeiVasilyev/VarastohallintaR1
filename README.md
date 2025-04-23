@@ -1,4 +1,4 @@
-# Warehouse management system
+# Warehouse Management System
 ### Rasekon varastonhallintajärjestelmä.
 
 ## Built With
