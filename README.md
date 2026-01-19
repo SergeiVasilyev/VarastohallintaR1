@@ -5,6 +5,7 @@
 - Python
 - Django
 - JavaScript
+- PostgreSQL
 
 
 ## Demo
