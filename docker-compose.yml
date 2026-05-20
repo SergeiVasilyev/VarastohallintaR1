@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes: # Mount the PostgreSQL data directory. ./pgdata is the data directory
+      - ./pgdata:/var/lib/postgresql/data
+    healthcheck: # Wait until the database is ready
+      test: ["CMD-SHELL", "pg_isready -U admin -d varasto5 -h localhost -p 5434"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn canellus.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    # ports:
+    #   - "8000:8000"
+    env_file:
+      - .env
+    # depends_on:
+    #   - db
+    depends_on: # Wait until the database is ready
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8880:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
