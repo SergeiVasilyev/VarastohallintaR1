@@ -1,8 +1,15 @@
-# Varastohallinta
+# Warehouse Management System
 ### Rasekon varastonhallintajärjestelmä.
 
+## Built With
+- Python
+- Django
+- JavaScript
+- PostgreSQL
+
+
 ## Demo
-http://109.204.232.228:8880
+http://5.61.88.179:8880
 
 Student_ext: user3, Q2wertyy
 
@@ -19,7 +26,7 @@ Storage employee3: user27, Q2wertyy
 
 
 
-## Päätavoitteet:
+## Main goals:
 1. Luo käyttäjä- ja järjestelmänvalvoja rooleja: hallinta, varastotyöntekijä, opettaja, opiskelija, edistynyt opiskelija ja järjestelmänvalvoja (superkäyttäjä)
 2. Roolien muokkaaminen
 3. 2 käyttöliittymä tyyppiä: käyttäjille ja hallinnoille
