@@ -1,6 +1,11 @@
 # APP KEYS
 keys.py
 
+# Postgres
+/postgres/backup/
+/postgres/data/
+/postgres/init/
+
 # Static
 /static/
 
