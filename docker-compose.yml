@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:17
+    container_name: varasto-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes: 
+      # PostgreSQL data
+      - ./postgres/data:/var/lib/postgresql/data
+      # SQL init scripts
+      - ./postgres/init:/docker-entrypoint-initdb.d
+      # Backup folder
+      - ./backup:/backup
+    healthcheck: # Wait until the database is ready
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # web:
+  #   build: .
+  #   command: >
+  #     sh -c "python manage.py migrate &&
+  #            python manage.py collectstatic --noinput &&
+  #            gunicorn canellus.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"
+  #   volumes:
+  #     - .:/app
+  #   # ports:
+  #   #   - "8000:8000"
+  #   env_file:
+  #     - .env
+  #   # depends_on:
+  #   #   - db
+  #   depends_on: # Wait until the database is ready
+  #     db:
+  #       condition: service_healthy
+
+  # nginx:
+  #   image: nginx:latest
+  #   ports:
+  #     - "8880:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  #   depends_on:
+  #     - web
